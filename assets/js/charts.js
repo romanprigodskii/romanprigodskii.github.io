@@ -16,11 +16,19 @@
   function css(name, node) {
     return getComputedStyle(node || document.body).getPropertyValue(name).trim();
   }
+  /* canvas silently falls back to black on a colour it cannot parse, so probe once */
+  var probe = document.createElement("canvas").getContext("2d");
+  function paintable(colour, fallback) {
+    if (!probe) return colour;
+    probe.fillStyle = "#010203";
+    probe.fillStyle = colour;
+    return probe.fillStyle === "#010203" ? fallback : colour;
+  }
   function log10(v) { return Math.log(v) / Math.LN10; }
   function clampLog(v, floor) { return Math.max(v == null ? floor : v, floor); }
 
   /* ---------------------------------------------------------
-     1. Hero field. The 86 audit segments as chalk marks.
+     1. Hero field. The 84 audit hypotheses as chalk marks.
      --------------------------------------------------------- */
   function heroField(canvas, rows, opts) {
     var ctx = canvas.getContext("2d");
@@ -30,12 +38,17 @@
       var dpr = Math.min(w.devicePixelRatio || 1, 2);
       var cw = canvas.clientWidth, ch = canvas.clientHeight;
       if (!cw || !ch) return;
-      canvas.width = cw * dpr;
-      canvas.height = ch * dpr;
+      var nw = Math.round(cw * dpr), nh = Math.round(ch * dpr);
+      if (canvas.width !== nw || canvas.height !== nh) {
+        canvas.width = nw;
+        canvas.height = nh;
+      }
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, cw, ch);
 
-      var ink = css("--ink"), accent = css("--accent"), rule = css("--rule");
+      var ink = paintable(css("--ink"), "#f2eee4"),
+          accent = paintable(css("--accent"), "#f2703a"),
+          rule = paintable(css("--rule"), "#3d4f45");
 
       // chalkboard ruling
       ctx.save();
@@ -115,7 +128,17 @@
       var lo = Math.min(r.model, r.market), hi = Math.max(r.model, r.market);
       var base = Math.max(0, lo - (hi - lo) * 2.2 - 0.02);
       var top = hi + (hi - lo) * 0.9 + 0.01;
-      function pct(x) { return ((x - base) / (top - base) * 100).toFixed(2) + "%"; }
+      /* Each row carries its own truncated axis, because the differences here are
+         smaller than any shared axis would show. Rows where a lower score is the
+         better one run right to left, so that a longer bar always means better. */
+      function pct(x) {
+        var f = (x - base) / (top - base);
+        if (!r.higher) f = 1 - f;
+        return (f * 100).toFixed(2) + "%";
+      }
+      var left = (r.higher ? base : top).toFixed(3);
+      var right = (r.higher ? top : base).toFixed(3);
+      var axis = r.higher ? "truncated axis" : "truncated axis, lower is better";
 
       var row = document.createElement("div");
       row.className = "barrow";
@@ -124,6 +147,7 @@
         '<div class="barrow__t">' +
           '<div class="barline barline--b"><span class="barline__track"><span class="barline__fill" data-w="' + pct(r.model) + '"></span></span><span class="barline__v">' + r.model.toFixed(4) + " model</span></div>" +
           '<div class="barline barline--a"><span class="barline__track"><span class="barline__fill" data-w="' + pct(r.market) + '"></span></span><span class="barline__v">' + r.market.toFixed(4) + " line</span></div>" +
+          '<div class="barline barline--scale"><span class="barscale"><span>' + left + "</span><span>" + axis + "</span><span>" + right + "</span></span><span class=\"barline__v\"></span></div>" +
         "</div>";
       host.appendChild(row);
     });
@@ -138,7 +162,11 @@
     var pw = W - mL - mR, ph = H - mT - mB;
     var max = 34;
     var svg = el("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
-      "aria-label": "Three descending e-values. At fair odds 31.28, 15.64 and 10.43. Charged the bookmaker's margin, 8.47, 4.23 and 2.82. The rejection threshold is 20." });
+      "aria-label": "Three cumulative charges against a rejection threshold of 20. " +
+        d.labels.map(function (l, i) {
+          return l.replace(/^\+ /, "Also charged for ") + ": " + d.fair[i] +
+            " at fair odds, " + d.real[i] + " after the book's margin";
+        }).join(". ") + "." });
 
     function Y(v) { return mT + ph - (v / max) * ph; }
 
@@ -158,7 +186,6 @@
         var v = p[0], x = cx + p[2] * (bw / 2 + 3) - bw / 2;
         var bar = el("rect", { x: x, y: Y(v), width: bw, height: ph - (Y(v) - mT), rx: 2,
           class: "bar bar--" + p[1] });
-        bar.style.transformOrigin = (Y(0)) + "px";
         svg.appendChild(bar);
         svg.appendChild(el("text", { x: x + bw / 2, y: Y(v) - 8, "text-anchor": "middle", class: "lbl-hi" }, v.toFixed(2)));
       });
@@ -249,18 +276,18 @@
     function Y(v) { return mT + ph - (log10(clampLog(v, 0.01)) - yd[0]) / (yd[1] - yd[0]) * ph; }
 
     var svg = el("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
-      "aria-label": "Scatter of all 86 pre-registered hypotheses. The horizontal axis is the e-value at fair odds and the vertical axis the same bet charged the bookmaker's margin, both on a logarithmic scale. Six segments clear the threshold of 20 at fair odds; one clears it after the margin." });
+      "aria-label": "Scatter of all 84 pre-registered hypotheses. The horizontal axis is the e-value at fair odds and the vertical axis the same bet charged the bookmaker's margin, both on a logarithmic scale. Six clear an e-value of 20, which is the threshold for a single pre-specified hypothesis; for a family of 84 the licensed e-BH cutoff is 1,680 and none of them approaches it. One mark sits above 20 after the margin, on the most favourable of five walk-forward seeds." });
 
     var ticks = [0.01, 0.1, 1, 10, 100];
     ticks.forEach(function (t) {
       if (t <= 100) {
         svg.appendChild(el("line", { x1: X(t), x2: X(t), y1: mT, y2: mT + ph, class: "gridline" }));
-        svg.appendChild(el("text", { x: X(t), y: mT + ph + 18, "text-anchor": "middle" }, t < 1 ? String(t) : String(t)));
+        svg.appendChild(el("text", { x: X(t), y: mT + ph + 18, "text-anchor": "middle" }, t === 0.01 ? "\u22640.01" : String(t)));
       }
     });
     [0.01, 0.1, 1, 10].forEach(function (t) {
       svg.appendChild(el("line", { x1: mL, x2: mL + pw, y1: Y(t), y2: Y(t), class: "gridline" }));
-      svg.appendChild(el("text", { x: mL - 10, y: Y(t) + 4, "text-anchor": "end" }, String(t)));
+      svg.appendChild(el("text", { x: mL - 10, y: Y(t) + 4, "text-anchor": "end" }, t === 0.01 ? "\u22640.01" : String(t)));
     });
 
     svg.appendChild(el("line", { x1: X(20), x2: X(20), y1: mT, y2: mT + ph, class: "thr" }));
@@ -271,7 +298,7 @@
     svg.appendChild(el("line", { x1: mL, x2: mL + pw, y1: mT + ph, y2: mT + ph, class: "ax" }));
     svg.appendChild(el("line", { x1: mL, x2: mL, y1: mT, y2: mT + ph, class: "ax" }));
     svg.appendChild(el("text", { x: mL + pw, y: H - 10, "text-anchor": "end", class: "lbl-hi" }, "e-value at fair odds"));
-    var yl = el("text", { x: 0, y: 0, "text-anchor": "end", class: "lbl-hi",
+    var yl = el("text", { x: 0, y: 0, "text-anchor": "start", class: "lbl-hi",
       transform: "translate(16," + (mT + ph) + ") rotate(-90)" }, "e-value after the book's margin");
     svg.appendChild(yl);
 

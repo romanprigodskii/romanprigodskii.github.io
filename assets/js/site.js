@@ -102,6 +102,13 @@
   }
 
   /* ---------- work accordion ---------- */
+  /* the markup ships every panel open so the no-JS page reads in full; close the
+     ones that are not the default here, once we know JS is running */
+  Array.prototype.forEach.call(document.querySelectorAll(".work"), function (card) {
+    if (!card.classList.contains("is-open")) {
+      card.querySelector(".work__btn").setAttribute("aria-expanded", "false");
+    }
+  });
   Array.prototype.forEach.call(document.querySelectorAll(".work__btn"), function (btn) {
     btn.addEventListener("click", function () {
       var card = btn.closest(".work");
@@ -117,7 +124,7 @@
   /* ---------- charts ---------- */
   var C = window.RPCharts;
   if (C) {
-    fetch("assets/data/audit.json", { cache: "force-cache" })
+    fetch("assets/data/audit.json", { cache: "no-cache" })
       .then(function (r) { if (!r.ok) throw new Error("data " + r.status); return r.json(); })
       .then(function (d) {
         var canvas = document.getElementById("field");
@@ -136,7 +143,6 @@
         if (barsHost) {
           charts.bars = function () { fillBars(barsHost); };
           C.compareBars(barsHost, d.vertex);
-          charts.bars();
         }
 
         var ladderHost = document.getElementById("ladder");
@@ -151,8 +157,12 @@
         Array.prototype.forEach.call(document.querySelectorAll(".chart"), function (n) {
           if (n.classList.contains("is-in")) fillBars(n);
         });
-        if (reduced || !("IntersectionObserver" in window)) fillBars(document);
-        else {
+        if (reduced || !("IntersectionObserver" in window)) {
+          Array.prototype.forEach.call(document.querySelectorAll(".chart"), function (n) {
+            n.classList.add("is-drawn");
+          });
+          fillBars(document);
+        } else {
           var co = new IntersectionObserver(function (entries) {
             entries.forEach(function (e) {
               if (!e.isIntersecting) return;
@@ -176,7 +186,21 @@
     if (!id) return;
     var t = document.getElementById(id);
     var card = t && t.closest && t.closest(".work");
-    if (card && !card.classList.contains("is-open")) card.querySelector(".work__btn").click();
+    if (!card || card.classList.contains("is-open")) return;
+    card.querySelector(".work__btn").click();
+    /* the row is still growing, so re-anchor once it has finished */
+    var body = card.querySelector(".work__body");
+    var anchor = function () { card.scrollIntoView(); };
+    if (body) {
+      body.addEventListener("transitionend", function once(e) {
+        if (e.propertyName !== "grid-template-rows") return;
+        body.removeEventListener("transitionend", once);
+        anchor();
+      });
+      window.setTimeout(anchor, 750);
+    } else {
+      anchor();
+    }
   }
   window.addEventListener("hashchange", openFromHash);
   openFromHash();
