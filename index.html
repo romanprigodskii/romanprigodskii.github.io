@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- gutters are padded against env(safe-area-inset-*) in site.css -->
 <title>Roman Prigodskii</title>
 <meta name="description" content="Roman Prigodskii, 17, Moscow. Forecasting systems scored against the market's own closing line, and the statistics that make the claims checkable. Vertex MMA, Gluline, two papers under review at NeurIPS 2026 workshops.">
 <meta name="author" content="Roman Prigodskii">
@@ -27,7 +28,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Roman Prigodskii","url":"https://romanprigodskii.github.io/","email":"mailto:lioneldassy@gmail.com","jobTitle":"Independent researcher","nationality":"RU","address":{"@type":"PostalAddress","addressLocality":"Moscow","addressCountry":"RU"},"alumniOf":{"@type":"EducationalOrganization","name":"Letovo School"},"sameAs":["https://github.com/romanprigodskii","https://t.me/prigodskii","https://vertexmma.com","https://gluline.com"],"knowsAbout":["Empirical market efficiency","E-values and anytime-valid inference","Gradient boosting","Forecast calibration","Software engineering"]}
 </script>
-<script>try{var t=localStorage.getItem("rp-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("rp-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -75,15 +76,16 @@
       <a class="btn btn--solid" href="#research">Read the research</a>
       <a class="btn" href="#work">Four systems in production</a>
     </div>
-    <ul class="hero__links stagger" data-s="6">
+    <ul role="list" class="hero__links stagger" data-s="6">
       <li><a href="https://github.com/romanprigodskii" rel="me noopener">GitHub</a></li>
       <li><a href="https://t.me/prigodskii" rel="me noopener">Telegram</a></li>
       <li><a href="mailto:lioneldassy@gmail.com">lioneldassy@gmail.com</a></li>
     </ul>
   </div>
   <p class="hero__caption stagger" data-s="7">
-    Plotted here: 86 pre-registered hypotheses from the e-value audit, each at the wealth
-    it actually earned. Six clear the bar at fair odds. One survives the bookmaker's margin.
+    Plotted here: 84 pre-registered hypotheses from the e-value audit, each at the wealth
+    it actually earned. Six clear the bar a single hypothesis would have to clear. Charged
+    for asking 84 questions of one pool, none of them do. That is the finding.
   </p>
 </section>
 
@@ -161,7 +163,10 @@
           <figure class="chart chart--bars">
             <figcaption>Model against the closing line, 582 priced bouts</figcaption>
             <div class="bars" id="bars-vertex"></div>
-            <p class="chart__note">Lower is better for log-loss and Brier. Accuracy 0.6753 against 0.6838.</p>
+            <p class="chart__note">Each metric has its own truncated axis, printed under it, and every row is
+              oriented so that a longer bar is the better score. The line is ahead on all three, and the
+              decomposition is the point: the model is better calibrated and less sharp, so what is left is
+              resolution.</p>
           </figure>
 
           <dl class="facts">
@@ -171,7 +176,7 @@
             <div><dt>Stack</dt><dd>Next.js 16, React 19, TypeScript 5.9 strict, Tailwind 4, Postgres, Python 3.12, LightGBM, CatBoost</dd></div>
           </dl>
 
-          <ul class="disc">
+          <ul role="list" class="disc">
             <li><b>Point in time, five ways.</b> Snapshot-then-apply history, strictly-earlier rating lookups, a separate chronological ratings replay, a date-bounded pre-UFC career walk, and a frozen percentile-clipping anchor. Five independent mechanisms, one job: keep the future out.</li>
             <li><b>The market is never an input.</b> Odds are stored, displayed and used for scoring, and never enter the feature matrix, because a closing line is a near-leak in backtest. Removing them cost 1.5 points of test accuracy. They stayed removed.</li>
             <li><b>Two dozen rejected ideas are documented beside the shipped ones,</b> each with the reason it was rejected. One shipped feature was later identified as a leak and pulled.</li>
@@ -182,7 +187,7 @@
 
     <article class="work">
       <h3 class="work__h">
-        <button type="button" class="work__btn" aria-expanded="false" aria-controls="w2">
+        <button type="button" class="work__btn" aria-expanded="true" aria-controls="w2">
           <span class="work__idx" aria-hidden="true">02</span>
           <span class="work__name">Gluline</span>
           <span class="work__line">End-to-end encrypted messenger, four clients, shipped to 1.0.0</span>
@@ -220,7 +225,7 @@
 
     <article class="work">
       <h3 class="work__h">
-        <button type="button" class="work__btn" aria-expanded="false" aria-controls="w3">
+        <button type="button" class="work__btn" aria-expanded="true" aria-controls="w3">
           <span class="work__idx" aria-hidden="true">03</span>
           <span class="work__name">Zacks to Interactive Brokers</span>
           <span class="work__line">Commissioned execution pipeline, running on a schedule</span>
@@ -249,7 +254,7 @@
 
     <article class="work">
       <h3 class="work__h">
-        <button type="button" class="work__btn" aria-expanded="false" aria-controls="w4">
+        <button type="button" class="work__btn" aria-expanded="true" aria-controls="w4">
           <span class="work__idx" aria-hidden="true">04</span>
           <span class="work__name">Clipwell</span>
           <span class="work__line">Native clipboard history for macOS and Windows, free, MIT, on Homebrew</span>
@@ -284,7 +289,7 @@
 
   <div class="also reveal">
     <h3 class="also__h">Also on the bench</h3>
-    <ul class="also__list">
+    <ul role="list" class="also__list">
       <li>
         <span class="also__n">Vertex Boxing</span>
         <span class="also__d">The Vertex method ported to boxing, grading a fundamentals model against the closing line on soft regional markets. The interesting claim is that the protocol transplants.</span>
@@ -322,10 +327,10 @@
       4,141 walk-forward out-of-fold bouts scored by models refit at 32 quarterly origins,
       1,787 of which carry an archived closing price.
     </p>
-    <ol class="findings">
+    <ol role="list" class="findings">
       <li>
         <h4>A multiplicity correction that was not licensed</h4>
-        <p>The 84 slices are overlapping subsets of one pool. Membership correlations across the 3,486 segment pairs run from -0.49 to +0.84, half of them negative, and 83 pairs share no bouts at all. Benjamini-Hochberg needs independence or PRDS; neither is established. BH rejects four hypotheses. Benjamini-Yekutieli and e-BH, whose guarantees do hold here, reject none.</p>
+        <p>The 84 slices are overlapping subsets of one pool. Membership correlations across the 3,486 segment pairs run from -0.49 to +0.84, half of them negative, and 83 pairs share no bouts at all. Benjamini-Hochberg needs independence or PRDS; neither is established. On the 1,191-bout discovery window the lab actually searched, BH rejects four: one in the model's favour and three against it. Benjamini-Yekutieli and e-BH, whose guarantees do hold here, reject none.</p>
       </li>
       <li>
         <h4>"Failed to replicate" and "not yet" are different findings</h4>
@@ -338,8 +343,13 @@
     </ol>
 
     <figure class="chart chart--ladder">
-      <figcaption>The ladder: one post-hoc rule, charged three ways</figcaption>
+      <figcaption>The ladder: one post-hoc rule, charged for everything it was free to do</figcaption>
       <div class="ladder" id="ladder"></div>
+      <p class="chart__note">A threshold rule chosen after the shape was visible, paid for by a mixture martingale
+        over the 21 cuts it searched. Widen the mixture to the 21 cuts it could have searched in the opposite
+        direction and it drops below the threshold; add the other disagreement statistic it could have used and it
+        drops further. At the prices the book actually offered, the same three mixtures pay 8.47, 4.23 and 2.82: a
+        bettor paying the margin never clears the threshold at all.</p>
     </figure>
 
     <p class="paper__abs">
@@ -359,7 +369,7 @@
       </a>
       <a class="file" href="papers/newinml.pdf">
         <span class="file__v">NewInML</span>
-        <span class="file__k">Extended version, with the transfer to ML practice <span>/</span> PDF, 284 KB</span>
+        <span class="file__k">Extended version, double-blind submission <span>/</span> PDF, 284 KB</span>
       </a>
     </div>
     <p class="paper__note">The workshop's organisers include Grunwald and Ramdas, who built the machinery the paper uses.</p>
@@ -379,7 +389,7 @@
       <em>null lever</em>, the same recipe refit under a different random seed. It changes
       nothing real, so everything it produces is instrument noise.
     </p>
-    <ol class="findings">
+    <ol role="list" class="findings">
       <li>
         <h4>The noise floor is measurable, and it is not small</h4>
         <p>On a 3,087-row walk-forward pool under five seeds, ten null comparisons manufacture effects up to 0.00207 nats. Re-seeding alone reproduces 80% of the only lever this leg ever shipped, and the pipeline had 56% power against its own shipped result.</p>
@@ -399,7 +409,7 @@
     </ol>
 
     <figure class="chart chart--floor">
-      <figcaption>Fifteen candidate levers against a measured noise floor</figcaption>
+      <figcaption>Eleven candidates, one candidate scored three ways, and the lever that shipped</figcaption>
       <div class="floor" id="floor"></div>
       <p class="chart__note">The shaded band is the one-sided 80% minimum detectable effect at 0.00362 nats. Every lever inside it is a result the instrument cannot tell from re-seeding.</p>
     </figure>
@@ -413,9 +423,14 @@
   </article>
 
   <figure class="chart chart--scatter reveal">
-    <figcaption>All 86 segments of the audit, at the wealth each one earned</figcaption>
+    <figcaption>All 84 hypotheses of the audit, at the wealth each one earned</figcaption>
     <div class="scatter" id="scatter"></div>
-    <p class="chart__note">Each mark is one pre-registered hypothesis. The horizontal axis is the e-value at fair odds, the vertical axis the same bet charged the bookmaker's margin. Area is the number of bouts in the segment. The dotted rules mark e = 1, where the bet is breaking even, and e = 20, the 1/alpha threshold for rejecting the null at the 5% level.</p>
+    <p class="chart__note">Each mark is one pre-registered hypothesis. The horizontal axis is the e-value at fair
+      odds, the vertical axis the same bet charged the bookmaker's margin, both on a log scale. Mark size grows with
+      the number of bouts in the segment. The dotted rules mark e = 20, which rejects at the 5% level for a
+      <em>single</em> pre-specified hypothesis. For a family of 84 the cutoff that is actually licensed is e-BH's,
+      e = 1,680 at one rejection, and nothing here comes near it. The single mark above the horizontal rule is also
+      the most favourable of five walk-forward seeds: its five-seed median is 12.3, below the rule.</p>
   </figure>
 </section>
 
@@ -428,7 +443,7 @@
 
   <div class="ledger reveal">
     <h3 class="ledger__h">Economics</h3>
-    <ul class="ledger__rows">
+    <ul role="list" class="ledger__rows">
       <li class="ledger__row is-top">
         <span class="ledger__rank">1st</span>
         <span class="ledger__what"><b>Moscow Olympiad in Economics</b>, winner, first place by score in the Grade 10 division. One of the largest regional economics olympiads in Russia, and this is its top individual result.</span>
@@ -436,13 +451,13 @@
       </li>
       <li class="ledger__row">
         <span class="ledger__rank">x2</span>
-        <span class="ledger__what"><b>All-Russian Olympiad in Economics</b>, national finalist in two separate years. The All-Russian Olympiad is the national academic competition system; reaching its final twice places him in the national cohort in the subject.</span>
+        <span class="ledger__what"><b>All-Russian Olympiad in Economics</b>, national finalist in two separate years. The All-Russian Olympiad is the national academic competition system; reaching its final twice puts me in the national cohort in the subject.</span>
         <span class="ledger__ev">Verified</span>
       </li>
     </ul>
 
     <h3 class="ledger__h">Mathematics</h3>
-    <ul class="ledger__rows">
+    <ul role="list" class="ledger__rows">
       <li class="ledger__row">
         <span class="ledger__rank">Gr 9</span>
         <span class="ledger__what"><b>All-Russian Olympiad in Mathematics</b>, regional stage prize-winner.</span>
@@ -460,13 +475,13 @@
       </li>
       <li class="ledger__row">
         <span class="ledger__rank">Gr 9</span>
-        <span class="ledger__what"><b>Letovo School</b>, best MYP personal project in Mathematics, signed by the director.</span>
-        <span class="ledger__ev">Mar 2025</span>
+        <span class="ledger__what"><b>Letovo School</b>, best MYP personal project in Mathematics, signed by the director, March 2025.</span>
+        <span class="ledger__ev">Signed</span>
       </li>
     </ul>
 
     <h3 class="ledger__h">School</h3>
-    <ul class="ledger__rows">
+    <ul role="list" class="ledger__rows">
       <li class="ledger__row">
         <span class="ledger__rank">6.38</span>
         <span class="ledger__what"><b>Letovo School, Moscow.</b> Grade 11, final year, advanced mathematics track. GPA 6.38 out of 7.0, above group average in algebra and in every core quantitative subject inside the school's most competitive quantitative group.</span>
@@ -487,7 +502,7 @@
     <h2 class="sec__title">How I work</h2>
     <p class="sec__sub">Five rules, applied across all four projects, visible in the artifacts.</p>
   </div>
-  <ol class="rules">
+  <ol role="list" class="rules">
     <li class="rule reveal"><span class="rule__n" aria-hidden="true">01</span>
       <h3>Measure against the hardest baseline available, and publish the comparison</h3>
       <p>Vertex is scored against a bookmaker's closing line, the strongest benchmark the domain has, on every basis including the windows where the baseline wins.</p></li>
@@ -526,7 +541,7 @@
   <div class="contact">
     <p class="contact__kick reveal">Open to research, internships and anything with a real baseline in it.</p>
     <a class="contact__mail reveal" href="mailto:lioneldassy@gmail.com" aria-label="Email lioneldassy at gmail dot com"><b aria-hidden="true">lioneldassy</b><b aria-hidden="true">@gmail.com</b></a>
-    <ul class="contact__links reveal">
+    <ul role="list" class="contact__links reveal">
       <li><a href="https://t.me/prigodskii" rel="me noopener">Telegram, @prigodskii</a></li>
       <li><a href="https://github.com/romanprigodskii" rel="me noopener">GitHub, romanprigodskii</a></li>
       <li><a href="https://vertexmma.com" rel="noopener">vertexmma.com</a></li>

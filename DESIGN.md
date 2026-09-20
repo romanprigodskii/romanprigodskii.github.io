@@ -50,7 +50,7 @@ figures in the text face are the honest version.
 
 Four charts, all drawn from the papers' own artifacts:
 
-1. **Hero field** (canvas): the 86 audit segments as chalk marks, plus the two
+1. **Hero field** (canvas): the 84 audit hypotheses as chalk marks, plus the two
    rejection thresholds.
 2. **Model against the closing line** (HTML bars): the comparison on every
    basis, including where the baseline wins.
@@ -58,10 +58,20 @@ Four charts, all drawn from the papers' own artifacts:
 4. **The detection floor** (HTML, measured band): fifteen candidate levers
    against the noise floor. Built in HTML rather than SVG so that fifteen long
    labels stay readable on a phone.
-5. **The full scatter** (SVG): all 86 segments, log-log, area by sample size.
+5. **The full scatter** (SVG): all 84 hypotheses, log-log, mark size by sample size.
 
 Colour in the charts always encodes something: vermilion means "clears the
 threshold" or "shipped", never "decorative".
+
+Two honesty rules the charts follow, because the whole page is an argument about
+measurement:
+
+- **Every truncated axis says so, in the chart.** The model-against-the-line
+  differences are far smaller than a 0-to-1 axis would show, so each row gets its
+  own truncated range, printed underneath it.
+- **Bar length always means better.** Log-loss and Brier are lower-is-better, so
+  those rows run right to left. Without that, the longer bar would have read as
+  the winner while being the loser.
 
 ## Motion
 
