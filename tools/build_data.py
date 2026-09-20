@@ -24,16 +24,28 @@ def build(src):
     with open(os.path.join(src, "tae_numbers.json")) as fh:
         tae = json.load(fh)
 
-    segments = [
-        {
-            "n": s["n"],
-            "ef": rnd(s["e_fair"], 3),
-            "er": rnd(s["e_real"], 3),
-            "g": rnd(s["g_fair"], 5),
-            "f": s["name"].split("__")[0],
-        }
-        for s in econ["segments"]["table"]
-    ]
+    # The registry names 86 slices, but two pairs are the same slice filed under
+    # two families (five-round bouts and women's bouts each appear under both
+    # market_microstructure and division_context, with identical n and identical
+    # wealth). The paper counts 84 hypotheses throughout, and C(84,2) = 3,486 is
+    # the pair count it reports, so collapse the duplicates here rather than
+    # plotting one bout twice.
+    segments, seen = [], set()
+    for s in econ["segments"]["table"]:
+        key = (s["n"], round(s["e_fair"], 9), round(s["e_real"], 9))
+        if key in seen:
+            continue
+        seen.add(key)
+        segments.append(
+            {
+                "n": s["n"],
+                "ef": rnd(s["e_fair"], 3),
+                "er": rnd(s["e_real"], 3),
+                "g": rnd(s["g_fair"], 5),
+                "f": s["name"].split("__")[0],
+            }
+        )
+    assert len(segments) == 84, len(segments)
 
     rename = {
         "RESIDUAL_CORRECTION": "residual correction",
@@ -55,7 +67,7 @@ def build(src):
     return {
         "segments": {
             "rows": segments,
-            "n": econ["segments"]["n_segments"],
+            "n": len(segments),
             "pos_fair": econ["segments"]["pos_fair"],
             "pos_real": econ["segments"]["pos_real"],
             "clear_fair": econ["segments"]["clear_fair"],
@@ -63,13 +75,15 @@ def build(src):
             "bouts": econ["band"]["n"],
             "threshold": 20,
         },
+        # Fair-odds rungs and the same three mixtures charged the book's margin.
+        # evalues.tex: 31.3 / 15.6 / 10.4 fair, 8.5 / 4.2 / 2.8 real.
         "ladder": {
             "fair": econ["exchange"]["ladder_fair"],
             "real": econ["exchange"]["ladder_real"],
             "labels": [
                 "the search it ran",
                 "+ the direction it could have searched",
-                "+ the bookmaker's margin",
+                "+ the other disagreement statistic",
             ],
             "threshold": 20,
         },
