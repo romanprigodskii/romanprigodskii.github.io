@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roman Prigodskii, plain version</title>
+<meta name="description" content="Roman Prigodskii: a plain, printable record. Letovo School, Moscow Olympiad in Economics winner, four shipped systems, two papers under review at NeurIPS 2026 workshops.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://romanprigodskii.github.io/plain/">
+<link rel="icon" href="../assets/img/mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#f4f0e6">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+<style>
+:root{
+  --paper: oklch(0.962 0.011 88);
+  --ink:   oklch(0.215 0.028 168);
+  --ink-2: oklch(0.415 0.024 168);
+  --ink-3: oklch(0.565 0.020 168);
+  --rule:  oklch(0.855 0.016 110);
+  --sig:   oklch(0.545 0.195 31);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper: oklch(0.205 0.027 168);
+    --ink:   oklch(0.955 0.013 88);
+    --ink-2: oklch(0.800 0.020 140);
+    --ink-3: oklch(0.640 0.022 150);
+    --rule:  oklch(0.312 0.031 168);
+    --sig:   oklch(0.742 0.168 43);
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:Archivo,ui-sans-serif,system-ui,"Helvetica Neue",Arial,sans-serif;
+  font-size:16px;
+  line-height:1.58;
+  font-variant-numeric:tabular-nums;
+  -webkit-font-smoothing:antialiased;
+}
+.page{max-width:46rem;margin:0 auto;padding:clamp(2.5rem,7vw,5rem) clamp(1.25rem,5vw,2.5rem) 4rem}
+a{color:inherit;text-decoration-color:var(--sig);text-underline-offset:2px}
+a:hover{color:var(--sig)}
+h1,h2,h3{margin:0;line-height:1.15;letter-spacing:-0.02em}
+p,ul{margin:0}
+ul{padding:0;list-style:none}
+
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;
+  padding-bottom:0.9rem;border-bottom:2px solid var(--ink);margin-bottom:1.6rem}
+h1{font-size:clamp(1.9rem,6vw,2.6rem);font-stretch:112%;font-weight:760}
+.top__alt{font-size:0.8rem;font-weight:600;color:var(--sig)}
+.sum{font-size:1.05rem;color:var(--ink-2);max-width:60ch}
+.meta{display:flex;flex-wrap:wrap;gap:0.3rem 1.2rem;margin-top:1rem;font-size:0.86rem;color:var(--ink-2)}
+.meta b{font-weight:600;color:var(--ink)}
+
+section{margin-top:2.6rem}
+h2{font-size:0.74rem;font-stretch:68%;text-transform:uppercase;letter-spacing:0.14em;font-weight:700;
+  color:var(--sig);padding-bottom:0.5rem;border-bottom:1px solid var(--rule);margin-bottom:1.1rem}
+.row{display:grid;grid-template-columns:7.5rem minmax(0,1fr);gap:0.2rem 1.25rem;padding:0.75rem 0;
+  border-bottom:1px solid var(--rule)}
+.row:last-child{border-bottom:0;padding-bottom:0}
+.row__k{font-size:0.78rem;color:var(--ink-3);font-stretch:80%;font-weight:600;padding-top:0.22rem;letter-spacing:0.02em}
+.row__v{font-size:0.94rem}
+.row__v h3{font-size:1rem;font-weight:680;margin-bottom:0.15rem}
+.row__v p{color:var(--ink-2);font-size:0.9rem}
+.row__v .sub{color:var(--ink-3);font-size:0.82rem;margin-top:0.2rem}
+.row__v ul{margin-top:0.45rem;display:grid;gap:0.25rem}
+.row__v li{position:relative;padding-left:0.95rem;font-size:0.88rem;color:var(--ink-2)}
+.row__v li::before{content:"";position:absolute;left:0;top:0.62em;width:5px;height:5px;background:var(--sig)}
+.win .row__k{color:var(--sig);font-weight:700}
+@media (max-width:620px){.row{grid-template-columns:1fr}.row__k{padding-top:0}}
+
+.foot{margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--rule);
+  font-size:0.78rem;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:0.4rem 1.5rem;justify-content:space-between}
+
+@media print{
+  :root{--paper:#fff;--ink:#111;--ink-2:#333;--ink-3:#555;--rule:#ccc;--sig:#000}
+  body{font-size:10.5pt;line-height:1.42}
+  .page{max-width:none;padding:0}
+  .top__alt,.foot a{display:none}
+  section{margin-top:14pt;break-inside:avoid}
+  .row{break-inside:avoid}
+  @page{margin:16mm}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="top">
+    <h1>Roman Prigodskii</h1>
+    <a class="top__alt" href="../">Full version &rarr;</a>
+  </header>
+
+  <p class="sum">
+    Seventeen, final year at Letovo School in Moscow, advanced mathematics track.
+    Winner of the Moscow Olympiad in Economics and a two-time national finalist in
+    the All-Russian Olympiad. Four shipped systems and two sole-authored papers
+    under review at NeurIPS 2026 workshops. The through-line is empirical market
+    efficiency: what can honestly be claimed about a price, and with what evidence.
+  </p>
+
+  <div class="meta">
+    <span><b>Email</b> <a href="mailto:lioneldassy@gmail.com">lioneldassy@gmail.com</a></span>
+    <span><b>Telegram</b> <a href="https://t.me/prigodskii" rel="me noopener">@prigodskii</a></span>
+    <span><b>GitHub</b> <a href="https://github.com/romanprigodskii" rel="me noopener">romanprigodskii</a></span>
+    <span><b>Location</b> Moscow</span>
+  </div>
+
+  <section>
+    <h2>Education</h2>
+    <div class="row">
+      <span class="row__k">2020&ndash;2027</span>
+      <div class="row__v">
+        <h3>Letovo School, Moscow</h3>
+        <p>Grade 11, final year. Russian national curriculum, advanced (profile) mathematics track. GPA 6.38 / 7.0, above group average in algebra and in every core quantitative subject inside the school's most competitive quantitative group.</p>
+        <p class="sub">SAT Mathematics 790, August 2026. A further sitting scheduled for December 2026. IELTS 7.0.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Awards</h2>
+    <div class="row win">
+      <span class="row__k">1st place</span>
+      <div class="row__v">
+        <h3>Moscow Olympiad in Economics</h3>
+        <p>Winner, first place by score in the Grade 10 division. One of the largest regional economics olympiads in Russia; first by score in the division is its top individual result.</p>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row__k">Finalist x2</span>
+      <div class="row__v">
+        <h3>All-Russian Olympiad in Economics</h3>
+        <p>National finalist in two separate years. The All-Russian Olympiad is the national academic competition system; reaching its final twice places him in the national cohort in the subject.</p>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row__k">Prize-winner</span>
+      <div class="row__v">
+        <h3>All-Russian Olympiad in Mathematics, regional stage</h3>
+        <p>Grade 9. Protocol-verified.</p>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row__k">3rd degree</span>
+      <div class="row__v">
+        <h3>Leonhard Euler Olympiad, regional prize-winner</h3>
+        <p>Grade 8. The Euler Olympiad is the All-Russian mathematics olympiad at Year 8: same regional dates, problems set by the same central methodological commission. Read with the row above, that is a regional prize in two consecutive years.</p>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row__k">3rd degree</span>
+      <div class="row__v">
+        <h3>All-Siberian Open Olympiad</h3>
+        <p>Grade 7. Protocol-verified.</p>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row__k">Mar 2025</span>
+      <div class="row__v">
+        <h3>Letovo School, best MYP personal project in Mathematics</h3>
+        <p>Director-signed.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Research</h2>
+    <div class="row">
+      <span class="row__k">Under review</span>
+      <div class="row__v">
+        <h3>Testing by betting when the bets are real</h3>
+        <p>An e-value audit of 84 pre-registered market-efficiency hypotheses. Sole author. Submitted to the NeurIPS 2026 workshop <i>E-Values: From Statistics to ML</i> and to NewInML.</p>
+        <ul>
+          <li>The null is a bookmaker's posted price, the stake is a stake, and the wealth process is the e-process. 4,141 walk-forward out-of-fold bouts, 1,787 of them carrying an archived closing price.</li>
+          <li>The 84 slices overlap, so Benjamini-Hochberg's guarantee is not established. Its four discoveries do not survive Benjamini-Yekutieli or e-BH.</li>
+          <li>A segment written off at p = 0.30 is still growing on the wealth scale: not refuted, 100 bouts short at fair odds.</li>
+          <li>A post-hoc threshold rule is charged for the search it ran, the direction it could have searched, and the bookmaker's margin. The ladder is the finding.</li>
+          <li>Validated before use: 40,000 null replications give E[e] = 0.985 &plusmn; 0.018 per segment. The headline result is negative and is reported as negative.</li>
+        </ul>
+        <p class="sub"><a href="../papers/evalues.pdf">PDF, E-Values version</a> &nbsp;&middot;&nbsp; <a href="../papers/newinml.pdf">PDF, NewInML version</a></p>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row__k">Under review</span>
+      <div class="row__v">
+        <h3>Measure the instrument first</h3>
+        <p>Detection floors for model selection and for LLM judges. Sole author. Submitted to the NeurIPS 2026 workshop <i>TAE: Can We Trust AI Evaluation?</i></p>
+        <ul>
+          <li>The null lever: the same recipe refit under a different random seed changes nothing real, so everything it produces is instrument noise.</li>
+          <li>On a 3,087-row walk-forward pool under five seeds, re-seeding alone reproduces 80% of the only lever ever shipped; the pipeline had 56% power against its own shipped result.</li>
+          <li>A floor belongs to the instrument that measured the effect. Recomputed on the right pool, the project's one large win is 4x its own floor rather than 13x another pool's, correcting the paper's own earlier draft in print.</li>
+          <li>The protocol transplants: on a deployed LLM classifier, two identical reruns disagree on 5.6% of items and the floor is 2.9 points of agreement.</li>
+        </ul>
+        <p class="sub"><a href="../papers/tae.pdf">PDF</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Independent work</h2>
+    <div class="row">
+      <span class="row__k">Live product</span>
+      <div class="row__v">
+        <h3>Vertex MMA, <a href="https://vertexmma.com" rel="noopener">vertexmma.com</a></h3>
+        <p>UFC analytics and forecasting platform, English and Russian, virtual currency only. Sole developer.</p>
+        <ul>
+          <li>4,581 fighters, 8,906 bouts, 795 events. 243k score-history rows, 86k career bouts, 49k ranking snapshots, 41k round-stat rows, 31k judge scorecards.</li>
+          <li>Nine fitted objects plus a 10,000-run Monte Carlo simulator: a 118-feature winner ensemble over LightGBM, CatBoost and logistic regression, a debut specialist, method models, a cause-specific Poisson finish hazard, a no-intercept decision model.</li>
+          <li>Held out from January 2025: accuracy 0.6747, log-loss 0.6137, Brier 0.2124, AUC 0.7244 over 664 bouts. Against the bookmaker's closing line on the 582 priced bouts, better calibrated and less sharp.</li>
+          <li>Point-in-time enforced by five independent mechanisms. Bookmaker odds are never a feature: removing them cost 1.5 points of test accuracy and they stayed removed.</li>
+          <li>Roughly two dozen rejected ideas documented beside the shipped ones, each with its reason.</li>
+          <li>Next.js 16, React 19, TypeScript 5.9 strict, Tailwind 4, Postgres, Python 3.12. 35 routes across two locales, 1,533 translation keys each.</li>
+        </ul>
+        <p class="sub"><a href="https://github.com/romanprigodskii/vertex-mma" rel="noopener">Source</a></p>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row__k">Live product</span>
+      <div class="row__v">
+        <h3>Gluline, <a href="https://gluline.com" rel="noopener">gluline.com</a></h3>
+        <p>End-to-end encrypted cross-platform messenger. Android in Jetpack Compose, iOS in SwiftUI, web, Python and FastAPI backend, infrastructure, protocol. Sole developer.</p>
+        <ul>
+          <li>Ephemeral key exchange, per-message key derivation, Argon2id, elliptic-curve signatures, WebRTC peer-to-peer calls, built-in contextual AI assistant.</li>
+          <li>Android client alone is about 251 Kotlin files and 70,000 lines. Shipped as a 1.0.0 production release, .aab and .apk, mapping and checksums retained.</li>
+          <li>Release gate at the August 2026 audit: compile green, 309 unit tests passing, lintVital clean, R8 keep-rules verified.</li>
+          <li>Two formal codebase audits on record. August 2026: 74 candidate findings narrowed to 42 confirmed by an adversarial second pass, 32 written down as refuted.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row__k">Paid client</span>
+      <div class="row__v">
+        <h3>Zacks to Interactive Brokers execution pipeline</h3>
+        <p>Commissioned and paid third-party work. Screen ingestion from Zacks exports into an Interactive Brokers execution path, VPS hosted, scheduled collection, dry-run by default.</p>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row__k">Open source</span>
+      <div class="row__v">
+        <h3>Clipwell</h3>
+        <p>A native clipboard history for macOS (Swift, SwiftUI) and Windows (C#, WPF). MIT licensed, distributed as a Homebrew cask, English and Russian UI. Content marked concealed by a password manager is never stored.</p>
+        <p class="sub"><a href="https://romanprigodskii.github.io/clipwell/" rel="noopener">Product site</a> &nbsp;&middot;&nbsp; <a href="https://github.com/romanprigodskii/clipwell" rel="noopener">Source</a></p>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row__k">In progress</span>
+      <div class="row__v">
+        <h3>Vertex Boxing</h3>
+        <p>The Vertex method ported to boxing, grading a fundamentals model against the closing line on soft regional markets.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Method</h2>
+    <div class="row">
+      <span class="row__k">Working rules</span>
+      <div class="row__v">
+        <ul>
+          <li>Measure against the hardest available baseline, and publish the comparison on every basis, including the windows where the baseline wins.</li>
+          <li>Gate before shipping: a change ships when it clears a pre-computed detection floor and independent evaluation legs agree on its sign.</li>
+          <li>Keep the rejects, with the reason each was rejected.</li>
+          <li>Report negative results as negative, in the abstract and not in a limitations section.</li>
+          <li>Claim precisely. Submitted means submitted. An award cites its protocol. A number carries the window it was measured on.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Skills</h2>
+    <div class="row">
+      <span class="row__k">Modelling</span>
+      <div class="row__v"><p>Python, LightGBM, CatBoost, scikit-learn, NumPy, pandas, statsmodels, Monte Carlo simulation</p></div>
+    </div>
+    <div class="row">
+      <span class="row__k">Statistics</span>
+      <div class="row__v"><p>E-values and test martingales, anytime-valid inference, walk-forward validation, calibration and sharpness decomposition, power and detection floors</p></div>
+    </div>
+    <div class="row">
+      <span class="row__k">Engineering</span>
+      <div class="row__v"><p>TypeScript, Next.js, React, Tailwind, Postgres, Supabase; Kotlin and Jetpack Compose, Swift and SwiftUI, C# and WPF; Python and FastAPI, NestJS, Docker, Linux, Caddy, SOPS</p></div>
+    </div>
+    <div class="row">
+      <span class="row__k">Languages</span>
+      <div class="row__v"><p>Russian (native), English (working). Bilingual technical writing. LaTeX.</p></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Figures as measured on the dates given. Compiled September 2026.</span>
+    <a href="../">Full version of this page</a>
+  </footer>
+
+</div>
+</body>
+</html>
