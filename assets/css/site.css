@@ -1939,7 +1939,7 @@ html.menu-open .menu__side { opacity: 1; }
   border: 1px solid var(--rule);
   position: relative;
 }
-.panel__shot img, .panel__shot svg {
+.panel__shot img, .panel__shot svg, .panel__shot video {
   width: 100%; height: 100%;
   object-fit: cover; object-position: top center;
   display: block;
@@ -2046,7 +2046,7 @@ html.has-cases .cases { display: none; }
   border: 1px solid var(--rule);
   background: var(--bg-lift);
 }
-.case__shot img { width: 100%; height: auto; display: block; }
+.case__shot img, .case__shot video { width: 100%; height: auto; display: block; }
 .case__shot figcaption { padding: 0.8rem 1rem; font-size: var(--t-xs); color: var(--ink-3); border-top: 1px solid var(--rule); }
 .case__nums {
   margin: clamp(2rem, 5vw, 3rem) 0 0;
@@ -2423,7 +2423,7 @@ html.theme-cut, html.theme-cut *, html.theme-cut *::before, html.theme-cut *::af
   gap: 5%;
   padding: 4% 7%;
 }
-.panel__shot--phones img {
+.panel__shot--phones img, .panel__shot--phones video {
   flex: none;
   width: auto; height: 84%;
   aspect-ratio: 400 / 870;
@@ -2431,8 +2431,15 @@ html.theme-cut, html.theme-cut *, html.theme-cut *::before, html.theme-cut *::af
   border-radius: 9% / 4.2%;
   box-shadow: 0 22px 40px -22px oklch(0 0 0 / 0.6), 0 0 0 1px oklch(0.5 0 0 / 0.18);
 }
-.panel__shot--phones img:nth-child(2) { height: 94%; }
+.panel__shot--phones > :nth-child(2) { height: 94%; }
 .panel:hover .panel__shot--phones img { filter: none; }
+/* where the strip is a plain list the frame's height is only its aspect ratio,
+   which a percentage height cannot resolve against; a video would then fall
+   back to its natural width and widen the whole list, so size by width here */
+@media (max-width: 899px), (orientation: portrait) {
+  .panel__shot--phones img, .panel__shot--phones video { height: auto; width: 26%; }
+  .panel__shot--phones > :nth-child(2) { height: auto; width: 29%; }
+}
 .case__phones {
   margin: clamp(2rem, 5vw, 3.5rem) 0 0;
   display: grid;
@@ -2440,7 +2447,7 @@ html.theme-cut, html.theme-cut *, html.theme-cut *::before, html.theme-cut *::af
   gap: clamp(1.4rem, 3vw, 2.4rem) clamp(0.9rem, 2vw, 1.8rem);
 }
 .phone { margin: 0; }
-.phone img {
+.phone img, .phone video {
   display: block; width: 100%; height: auto;
   border-radius: 9% / 4.2%;
   border: 1px solid var(--rule);
@@ -2449,3 +2456,5 @@ html.theme-cut, html.theme-cut *, html.theme-cut *::before, html.theme-cut *::af
 .phone figcaption { margin-top: 0.75rem; font-size: var(--t-xs); line-height: 1.45; color: var(--ink-2); max-width: 26ch; }
 .case__phones-note { margin-top: 1.2rem; font-size: var(--t-xs); color: var(--ink-3); }
 @media (max-width: 760px) { .case__phones { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.case__phones.case__phones--three { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 58rem; }
+.case__phones--three + .case__phones-note + .case__shot { margin-top: clamp(2.5rem, 6vw, 4rem); }

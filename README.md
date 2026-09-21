@@ -39,6 +39,7 @@ assets/js/site.js           theme, surface-aware header, chart bootstrap
 assets/js/vendor/lenis.min.js   smooth scroll (MIT), self-hosted
 assets/data/audit.json      generated, see above
 assets/img/work/            product screenshots, WebP at 900 and 1600 wide
+assets/video/               short product loops (Clipwell, Gluline), muted, played only on screen
 papers/                     the three submitted PDFs
 tools/build_data.py         regenerates assets/data/audit.json
 tools/palettes.py           the three palettes, with a contrast check for every pair

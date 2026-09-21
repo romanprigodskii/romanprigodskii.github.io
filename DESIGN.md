@@ -66,9 +66,13 @@ ordinary scatter chart: the 3D picture folds into the figure from the paper. The
 reticle reads out the hypothesis under it. Where WebGL is missing, a 2D canvas
 field draws the same rows.
 
-The filmstrip uses the real products: screenshots of Vertex MMA, Gluline and
-Clipwell, a drawing of the leak Vertex Boxing caught, and a drawing of a
-rebalance for the client pipeline, which is private.
+The filmstrip uses the real products. Clipwell is a five-second loop of its bar
+coming up over this site, and Gluline is three phones from the build sent to App
+Store review, the middle one a loop of the assistant being asked about a chat.
+Vertex MMA and Alfa-Romeo are screenshots; Vertex Boxing is a drawing of the leak
+it caught, and the client pipeline is a drawing of a rebalance, since it is
+private. The loops are muted H.264 under a megabyte, play only while on screen,
+and under reduced motion stay on their poster frame, which is their first frame.
 
 The charts, all drawn from the papers' own artifacts:
 

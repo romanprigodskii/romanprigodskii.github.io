@@ -556,4 +556,23 @@
       }
     });
   })();
+
+  /* ---------------------------------------------------------------
+     Product loops play only while they are on screen. Under reduced
+     motion they never start, and the poster frame is the picture
+     --------------------------------------------------------------- */
+  (function loops() {
+    var vids = all("video.loop");
+    if (!vids.length || reduced || !("IntersectionObserver" in w)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        var v = e.target;
+        if (e.isIntersecting) {
+          var p = v.play();
+          if (p && p.catch) p.catch(function () {});
+        } else if (!v.paused) v.pause();
+      });
+    }, { threshold: 0.35 });
+    vids.forEach(function (v) { io.observe(v); });
+  })();
 })(window, document);
