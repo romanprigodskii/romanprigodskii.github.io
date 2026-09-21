@@ -120,6 +120,7 @@ Effects, and what each is for:
 | word masking | headings and ledes rise word by word. Split at text-node level, so nested links survive |
 | scroll-lit statement | words go from muted to full as the paragraph passes the middle of the screen |
 | pinned filmstrip | vertical scroll drives horizontal travel through five project panels; below 900px it is a plain vertical list |
+| the record, row by row | each olympiad row reads in as it rises past the bottom of the screen and out again under the header. It is tied to the scroll position, not fired once, so scrolling back undoes it like the sheets and the filmstrip |
 | stacking method cards | the five rules stack on each other, so the section is read as one idea |
 | reticle cursor | a crosshair instead of an arrow, and over the hero field it reads out the two e-values under the point it is standing on. That is the only cursor gimmick on the page and it is a measuring instrument |
 | page wipe | between the three pages. The keyframes are `both`, so the page opens even if the script never runs again |

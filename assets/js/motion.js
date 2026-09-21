@@ -283,7 +283,7 @@
      Reveals. The entrance waits for the typeface, briefly, so the name
      does not rise in a fallback face and then jump when Archivo lands.
      --------------------------------------------------------------- */
-  var revealables = all("[data-split], .reveal, .rise, .ledger__h, .ledger__row");
+  var revealables = all("[data-split], .reveal, .rise");
   function startReveals() {
     if (!("IntersectionObserver" in w) || reduced) {
       revealables.forEach(function (n) { n.classList.add("is-in"); });
@@ -492,6 +492,48 @@
       if (k > prev) for (var i = prev; i < k; i++) words[i].classList.add("is-lit");
       else for (var j = prev - 1; j >= k; j--) words[j].classList.remove("is-lit");
       prev = k;
+    });
+  })();
+
+  /* ---------------------------------------------------------------
+     The record. Each row reads in as it rises past the bottom of the
+     screen and reads out the same way as it leaves under the header,
+     so scrolling back undoes it. The frame only writes --p; the CSS
+     turns it into the rule, the rank, the line and the evidence
+     --------------------------------------------------------------- */
+  (function ledger() {
+    var box = d.querySelector(".ledger");
+    if (!box || reduced) return;
+    var items = all(".ledger__h, .ledger__row", box).map(function (el) {
+      return { el: el, top: 0, h: 0, p: -1, nums: all("[data-count]", el) };
+    });
+    if (!items.length) return;
+    var from = 0, to = 0, on = false, was = true;
+    w.rpOnMeasure(function () {
+      items.forEach(function (it) { it.top = docTop(it.el); it.h = it.el.offsetHeight; });
+      var last = items[items.length - 1];
+      from = items[0].top;
+      to = last.top + last.h;
+    });
+    w.rpOnScroll(function (y, vh) {
+      /* one last pass on the way out, so a fast fling never leaves a row half read */
+      var near = y + vh > from - 40 && y < to + 40;
+      if (!near && !was && on) return;
+      was = near;
+      for (var i = 0; i < items.length; i++) {
+        var it = items[i], t = it.top - y, p = 0;
+        if (near) {
+          var rise = clamp((vh * 0.98 - t) / (vh * 0.24), 0, 1);
+          var fall = clamp((t + it.h - vh * 0.04) / (vh * 0.16), 0, 1);
+          p = Math.round(Math.min(rise, fall) * 1000) / 1000;
+        }
+        if (p === it.p) continue;
+        /* the rank counts up again every time its row comes back */
+        if (it.p <= 0 && p > 0) it.nums.forEach(function (n) { delete n.dataset.counted; countUp(n); });
+        it.p = p;
+        it.el.style.setProperty("--p", p);
+      }
+      if (!on) { on = true; box.classList.add("is-scrub"); }
     });
   })();
 

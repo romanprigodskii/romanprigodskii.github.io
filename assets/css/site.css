@@ -917,37 +917,42 @@ code {
   .ledger__ev { text-align: right; }
 }
 
-/* the record reads in row by row, each as the reader reaches it: the rule draws
-   across, and the rank, the line and the evidence follow it from the left. Only
-   on screen, with motion allowed and the motion layer loaded; everywhere else
-   (print, reduced motion, the no-motion failsafe) the rows simply stand */
+/* the record reads in row by row as it rises past the bottom of the screen: the
+   rule draws across, and the rank, the line and the evidence follow it from the
+   left. motion.js writes each row's place on screen as --p (0 to 1), so the same
+   reading runs backwards when the page scrolls back, and again as a row leaves
+   under the header. Each part takes its own slice of --p (--d is where it starts)
+   and eases it. Only on screen, with motion allowed and the motion layer running;
+   everywhere else (print, reduced motion, no JavaScript) the rows simply stand */
 @media screen and (prefers-reduced-motion: no-preference) {
-  html.js:not(.no-motion) .ledger__h,
-  html.js:not(.no-motion) .ledger__row { position: relative; border-bottom-color: transparent; }
-  html.js:not(.no-motion) .ledger__h::after,
-  html.js:not(.no-motion) .ledger__row::after {
+  .ledger.is-scrub .ledger__h,
+  .ledger.is-scrub .ledger__row { position: relative; border-bottom-color: transparent; }
+  .ledger.is-scrub .ledger__h,
+  .ledger.is-scrub .ledger__row > *,
+  .ledger.is-scrub .ledger__h::after,
+  .ledger.is-scrub .ledger__row::after {
+    --q: clamp(0, (var(--p, 0) - var(--d, 0)) / var(--span, 0.7), 1);
+    --e: calc(1 - (1 - var(--q)) * (1 - var(--q)) * (1 - var(--q)));
+  }
+  .ledger.is-scrub .ledger__h,
+  .ledger.is-scrub .ledger__row > * {
+    opacity: var(--e);
+    transform: translateX(calc((1 - var(--e)) * -1.5rem));
+  }
+  .ledger.is-scrub .ledger__row > :nth-child(2) { --d: 0.15; }
+  .ledger.is-scrub .ledger__row > :nth-child(3) { --d: 0.3; }
+  .ledger.is-scrub .ledger__h::after,
+  .ledger.is-scrub .ledger__row::after {
     content: "";
     position: absolute;
     inset: auto 0 -1px;
     height: 1px;
     background: var(--rule);
-    transform: scaleX(0);
+    transform: scaleX(var(--e));
     transform-origin: left;
-    transition: transform 1100ms var(--ease-expo);
+    --span: 0.9;
   }
-  html.js:not(.no-motion) .ledger__h::after { bottom: -2px; height: 2px; background: var(--ink); transition-delay: 120ms; }
-  html.js:not(.no-motion) .ledger__h,
-  html.js:not(.no-motion) .ledger__row > * {
-    opacity: 0;
-    transform: translateX(-1.5rem);
-    transition: opacity 900ms var(--ease-expo), transform 900ms var(--ease-expo);
-  }
-  html.js:not(.no-motion) .ledger__row > :nth-child(2) { transition-delay: 90ms; }
-  html.js:not(.no-motion) .ledger__row > :nth-child(3) { transition-delay: 180ms; }
-  html.js:not(.no-motion) .ledger__h.is-in,
-  html.js:not(.no-motion) .ledger__row.is-in > * { opacity: 1; transform: none; }
-  html.js:not(.no-motion) .ledger__h.is-in::after,
-  html.js:not(.no-motion) .ledger__row.is-in::after { transform: none; }
+  .ledger.is-scrub .ledger__h::after { bottom: -2px; height: 2px; background: var(--ink); --d: 0.1; }
 }
 
 /* ============================================================
