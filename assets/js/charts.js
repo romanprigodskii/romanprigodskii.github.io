@@ -1,4 +1,4 @@
-/* Charts for romanprigodskii.github.io
+/* Charts for prigodskii.dev
    Every series here is read from assets/data/audit.json, which is generated
    from the numbers files the two papers were compiled against. Nothing is
    invented for decoration. */

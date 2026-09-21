@@ -1,0 +1,49 @@
+# prigodskii.dev: a static nginx behind the box's Traefik (coolify-proxy),
+# the same pattern as /opt/vertex-photos. Traefik terminates TLS (Let's
+# Encrypt, HTTP challenge), compresses, and sends www to the bare domain;
+# nginx only serves files. Standalone compose, the Coolify UI does not
+# manage it.
+#
+# This file lives in the site repo under server/ and tools/deploy.sh copies
+# it to /opt/prigodskii-site on the box. Edit it in the repo, not on the box.
+#
+# The middlewares carry a prigodskii- prefix on purpose: redirect-to-https
+# and gzip on this box are defined by other containers' labels (evklid-site
+# and a Coolify app), and borrowing them would take this site down whenever
+# those containers are.
+services:
+  site:
+    image: nginx:alpine
+    container_name: prigodskii-site
+    restart: unless-stopped
+    volumes:
+      - ./html:/usr/share/nginx/html:ro
+      # A directory, not a single file: rsync replaces files by rename, and a
+      # single-file bind mount would keep serving the old inode.
+      - ./nginx:/etc/nginx/conf.d:ro
+    networks:
+      - coolify
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: coolify
+      traefik.http.routers.prigodskii-http.entryPoints: http
+      traefik.http.routers.prigodskii-http.rule: "Host(`prigodskii.dev`) || Host(`www.prigodskii.dev`)"
+      traefik.http.routers.prigodskii-http.middlewares: prigodskii-https
+      traefik.http.routers.prigodskii-http.service: prigodskii-svc
+      traefik.http.routers.prigodskii-https.entryPoints: https
+      traefik.http.routers.prigodskii-https.rule: "Host(`prigodskii.dev`) || Host(`www.prigodskii.dev`)"
+      traefik.http.routers.prigodskii-https.middlewares: prigodskii-www,prigodskii-gzip
+      traefik.http.routers.prigodskii-https.tls: "true"
+      traefik.http.routers.prigodskii-https.tls.certresolver: letsencrypt
+      traefik.http.routers.prigodskii-https.service: prigodskii-svc
+      traefik.http.middlewares.prigodskii-https.redirectscheme.scheme: https
+      traefik.http.middlewares.prigodskii-https.redirectscheme.permanent: "true"
+      traefik.http.middlewares.prigodskii-www.redirectregex.regex: '^https://www\.prigodskii\.dev/(.*)'
+      traefik.http.middlewares.prigodskii-www.redirectregex.replacement: "https://prigodskii.dev/$${1}"
+      traefik.http.middlewares.prigodskii-www.redirectregex.permanent: "true"
+      traefik.http.middlewares.prigodskii-gzip.compress: "true"
+      traefik.http.services.prigodskii-svc.loadbalancer.server.port: "80"
+
+networks:
+  coolify:
+    external: true

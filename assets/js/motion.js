@@ -41,7 +41,7 @@
      --------------------------------------------------------------- */
   var measures = [], reads = [], writes = [], frames = [];
   var Y = w.scrollY, VH = w.innerHeight, VW = w.innerWidth;
-  var vel = 0, dir = 1, moved = true, needMeasure = true, lastT = 0;
+  var vel = 0, moved = true, needMeasure = true, lastT = 0;
 
   function measure() {
     VH = w.innerHeight; VW = w.innerWidth;
@@ -67,7 +67,7 @@
     if (lenis) lenis.raf(t);
     if (needMeasure) { needMeasure = false; measure(); }
     var ny = w.scrollY, dy = ny - Y, i;
-    if (dy !== 0) { moved = true; if (Math.abs(dy) > 0.5) dir = dy > 0 ? 1 : -1; }
+    if (dy !== 0) moved = true;
     vel += (dy / dt - vel) * 0.2;
     if (Math.abs(vel) < 0.01) vel = 0;
     Y = ny;
@@ -283,7 +283,7 @@
      Reveals. The entrance waits for the typeface, briefly, so the name
      does not rise in a fallback face and then jump when Archivo lands.
      --------------------------------------------------------------- */
-  var revealables = all("[data-split], .reveal, .rise");
+  var revealables = all("[data-split], .reveal, .rise, .ledger__h, .ledger__row");
   function startReveals() {
     if (!("IntersectionObserver" in w) || reduced) {
       revealables.forEach(function (n) { n.classList.add("is-in"); });
@@ -359,36 +359,6 @@
       }
     });
   })();
-
-  /* ---------------------------------------------------------------
-     Tickers follow the scroll: direction flips with it, speed rises
-     with it
-     --------------------------------------------------------------- */
-  all(".ticker").forEach(function (tk) {
-    var track = tk.querySelector(".ticker__track");
-    if (!track) return;
-    var one = track.scrollWidth || 1;
-    var copies = Math.min(8, Math.ceil((w.innerWidth * 1.5) / one));
-    if (copies > 1) track.innerHTML = new Array(copies + 1).join(track.innerHTML);
-    var clone = track.cloneNode(true);
-    clone.setAttribute("aria-hidden", "true");
-    tk.appendChild(clone);
-    if (reduced) return;
-    tk.classList.add("is-driven");
-    var x = 0, width = 0, visible = true;
-    if ("IntersectionObserver" in w) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(tk);
-    w.rpOnMeasure(function () { width = track.offsetWidth; });
-    w.rpOnFrame(function (t, dt) {
-      if (!visible || !width) return;
-      var speed = 0.55 + Math.min(Math.abs(vel) * 0.18, 9);
-      x -= speed * dir * dt;
-      if (x <= -width) x += width;
-      if (x > 0) x -= width;
-      var tf = "translate3d(" + x.toFixed(2) + "px,0,0)";
-      track.style.transform = tf;
-      clone.style.transform = tf;
-    });
-  });
 
   /* ---------------------------------------------------------------
      The work filmstrip. Vertical scroll drives horizontal travel, a

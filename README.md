@@ -1,15 +1,15 @@
-# romanprigodskii.github.io
+# prigodskii.dev
 
 My personal site. Two versions of the same record:
 
 | | |
 |---|---|
-| **[/](https://romanprigodskii.github.io/)** | the front page: a scroll-driven read, with the work as a pinned horizontal filmstrip |
-| **[/research/](https://romanprigodskii.github.io/research/)** | both papers in full, with the charts that carry their results |
-| **[/plain/](https://romanprigodskii.github.io/plain/)** | one self-contained file, no JavaScript, prints cleanly to A4 |
+| **[/](https://prigodskii.dev/)** | the front page: a scroll-driven read, with the work as a pinned horizontal filmstrip |
+| **[/research/](https://prigodskii.dev/research/)** | both papers in full, with the charts that carry their results |
+| **[/plain/](https://prigodskii.dev/plain/)** | one self-contained file, no JavaScript, prints cleanly to A4 |
 
 No framework, no build step, no dependencies. Static HTML, CSS and vanilla JS,
-served by GitHub Pages from `main`.
+served by nginx on my own server (see [Deploying](#deploying)).
 
 ## Why the charts are real
 
@@ -42,6 +42,8 @@ assets/img/work/            product screenshots, WebP at 900 and 1600 wide
 papers/                     the three submitted PDFs
 tools/build_data.py         regenerates assets/data/audit.json
 tools/palettes.py           the three palettes, with a contrast check for every pair
+tools/deploy.sh             publishes HEAD to prigodskii.dev
+server/                     the nginx container and its Traefik routing, as it runs on the server
 DESIGN.md                   the design system and why it looks like this
 ```
 
@@ -71,12 +73,21 @@ Any static server:
 python3 -m http.server 8777
 ```
 
-## Using a custom domain later
+## Deploying
 
-Add a `CNAME` file at the repository root containing the bare domain, point an
-`ALIAS`/`ANAME` (or four `A` records) at GitHub Pages, then update the absolute
-URLs in `index.html` (canonical, `og:url`, `og:image`), `plain/index.html`,
-`robots.txt` and `sitemap.xml`.
+```bash
+tools/deploy.sh
+```
+
+It publishes the last commit, not the working tree: the pages and what they
+load go to `/opt/prigodskii-site/html` on the server, and `server/` goes next to
+them. There the site is a small nginx container behind the server's Traefik,
+which holds the Let's Encrypt certificate and sends `www` to the bare domain.
+DNS is on Cloudflare, both records set to "DNS only", since Traefik renews the
+certificate over plain HTTP.
+
+GitHub Pages still builds `main` at romanprigodskii.github.io; every page there
+names prigodskii.dev as canonical.
 
 ## Licence
 

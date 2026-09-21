@@ -242,6 +242,25 @@ body {
 
 section[data-surface] { line-height: calc(1.6 + var(--lh-bump)); }
 
+/* a change of surface arrives as a sheet, not a cut: the section comes up inset
+   with rounded corners and is full width by the time its edge reaches the middle
+   of the screen, which is where the section indicator changes colour with it.
+   It closes the same way on the way out. Without scroll timelines, or with
+   reduced motion, the edges stay straight */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .sec[data-surface] {
+      animation: sheet linear both;
+      animation-timeline: view();
+    }
+  }
+}
+@keyframes sheet {
+  entry 0%            { clip-path: inset(0 clamp(12px, 4vw, 64px) round clamp(20px, 3vw, 44px)); }
+  entry 50%, exit 50% { clip-path: inset(0 0 round 0); }
+  exit 100%           { clip-path: inset(0 clamp(12px, 4vw, 64px) round clamp(20px, 3vw, 44px)); }
+}
+
 h1, h2, h3, h4 { margin: 0; text-wrap: balance; }
 p { margin: 0; text-wrap: pretty; }
 ul, ol { margin: 0; padding: 0; list-style: none; }
@@ -741,6 +760,39 @@ code {
   .ledger__ev { text-align: right; }
 }
 
+/* the record reads in row by row, each as the reader reaches it: the rule draws
+   across, and the rank, the line and the evidence follow it from the left. Only
+   on screen, with motion allowed and the motion layer loaded; everywhere else
+   (print, reduced motion, the no-motion failsafe) the rows simply stand */
+@media screen and (prefers-reduced-motion: no-preference) {
+  html.js:not(.no-motion) .ledger__h,
+  html.js:not(.no-motion) .ledger__row { position: relative; border-bottom-color: transparent; }
+  html.js:not(.no-motion) .ledger__h::after,
+  html.js:not(.no-motion) .ledger__row::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 -1px;
+    height: 1px;
+    background: var(--rule);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1100ms var(--ease-expo);
+  }
+  html.js:not(.no-motion) .ledger__h::after { bottom: -2px; height: 2px; background: var(--ink); transition-delay: 120ms; }
+  html.js:not(.no-motion) .ledger__h,
+  html.js:not(.no-motion) .ledger__row > * {
+    opacity: 0;
+    transform: translateX(-1.5rem);
+    transition: opacity 900ms var(--ease-expo), transform 900ms var(--ease-expo);
+  }
+  html.js:not(.no-motion) .ledger__row > :nth-child(2) { transition-delay: 90ms; }
+  html.js:not(.no-motion) .ledger__row > :nth-child(3) { transition-delay: 180ms; }
+  html.js:not(.no-motion) .ledger__h.is-in,
+  html.js:not(.no-motion) .ledger__row.is-in > * { opacity: 1; transform: none; }
+  html.js:not(.no-motion) .ledger__h.is-in::after,
+  html.js:not(.no-motion) .ledger__row.is-in::after { transform: none; }
+}
+
 /* ============================================================
    METHOD
    ============================================================ */
@@ -1157,50 +1209,6 @@ html.wipe-out .wipe {
 @media (max-width: 899px), (orientation: portrait) {
   .hero__caption { grid-column: 1 / -1; justify-self: start; text-align: left; max-width: 52ch; }
 }
-
-/* ============================================================
-   TICKER
-   ============================================================ */
-.ticker {
-  display: flex;
-  overflow: hidden;
-  background: var(--bg-sunk);
-  border-block: 1px solid var(--rule);
-  user-select: none;
-}
-.ticker__track {
-  display: flex; align-items: center;
-  flex: 0 0 auto;
-  gap: clamp(1.4rem, 3vw, 2.6rem);
-  padding: clamp(0.8rem, 1.8vw, 1.3rem) 0;
-  padding-right: clamp(1.4rem, 3vw, 2.6rem);
-  white-space: nowrap;
-  animation: tickerRun 42s linear infinite;
-}
-@keyframes tickerRun { to { transform: translateX(-100%); } }
-.ticker:hover .ticker__track { animation-play-state: paused; }
-.ticker.is-driven .ticker__track { animation: none; will-change: transform; }
-.ticker span {
-  font-size: clamp(1rem, 2.1vw, 1.65rem);
-  font-stretch: 104%;
-  font-weight: 620;
-  letter-spacing: -0.015em;
-  color: var(--ink-2);
-}
-.ticker i { color: var(--accent); font-style: normal; font-size: 0.7em; }
-.ticker--foot {
-  margin-top: clamp(3rem, 8vw, 6rem);
-  background: transparent;
-  border-color: var(--rule);
-}
-.ticker--foot span {
-  color: var(--ink);
-  font-weight: 760;
-  font-stretch: 110%;
-  font-size: clamp(1.6rem, 5vw, 3.6rem);
-  letter-spacing: -0.03em;
-}
-.ticker--foot .ticker__track { animation-duration: 26s; }
 
 /* ============================================================
    STATEMENT

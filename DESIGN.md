@@ -18,9 +18,9 @@ contrast-checked by the script before it ships.
 
 ## Shape
 
-The front page is one scroll with five gears: a hero that is mostly the name, a
-ticker, a statement that lights word by word as it passes, the work as a pinned
-horizontal filmstrip, and a research teaser that hands off to its own page. The
+The front page is one scroll with four gears: a hero that is mostly the name, a
+statement that lights word by word as it passes, the work as a pinned horizontal
+filmstrip, and a research teaser that hands off to its own page. The
 papers used to sit in the middle of the front page, which made a visitor read a
 statistics abstract before they knew who they were reading. They now live at
 `/research/`, where there is room for them.
@@ -102,7 +102,6 @@ Effects, and what each is for:
 |---|---|
 | intro counter | counts to 84, the number of hypotheses the page is about. Once per session, skippable, gone under reduced motion |
 | word masking | headings and ledes rise word by word. Split at text-node level, so nested links survive |
-| ticker | the credentials, moving, so the fold is not the only place they appear |
 | scroll-lit statement | words go from muted to full as the paragraph passes the middle of the screen |
 | pinned filmstrip | vertical scroll drives horizontal travel through five project panels; below 900px it is a plain vertical list |
 | stacking method cards | the five rules stack on each other, so the section is read as one idea |
