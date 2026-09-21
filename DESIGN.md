@@ -3,18 +3,18 @@
 ## The idea
 
 The work on this site is about measurement: what a number is worth once you
-price in everything that could have produced it by accident. So the site is
-built like a school chalkboard, which is where that kind of argument is
-usually first made.
+price in everything that could have produced it by accident. Every effect on
+the page is either measuring something or showing something that was measured.
 
-- **Ground**: deep pine, the colour of a Russian school board. Not black. Near
-  black is the default for every developer portfolio and it says nothing.
-- **Ink**: chalk bone, warm, never pure white.
-- **Signal**: a red-pen vermilion, used for the thing being marked. It carries
-  thresholds, the one segment that survives, the shipped lever, and the whole
-  contact section.
-- **Chart secondaries**: chalk blue, used only where a second series needs
-  telling apart from the first.
+## Palette
+
+Three palettes share one set of slots (`tools/palettes.py`), and the default is
+**graphite**: a cool near-black ground, a warm bone ink, and one signal yellow for
+whatever is being marked. The yellow carries the thresholds, the hypotheses that
+clear them, the shipped lever, the drenched contact section and the page wipe.
+It also happens to be the accent of Vertex MMA itself, so the site and the product
+read as one hand. Every text and ground pair on every surface of every palette is
+contrast-checked by the script before it ships.
 
 ## Shape
 
@@ -57,10 +57,22 @@ figures in the text face are the honest version.
 
 ## Imagery
 
-Four charts, all drawn from the papers' own artifacts:
+The hero is WebGL (`field3d.js`, raw, no library): the 84 hypotheses in three
+dimensions, x the e-value at fair odds, y the same bet after the book's margin, z
+the nine hypothesis families, with the two e = 20 thresholds as translucent
+planes. While the hero is pinned, scrolling swings the camera round, collapses the
+families onto one plane, and the two planes become the two dashed rules of the
+ordinary scatter chart: the 3D picture folds into the figure from the paper. The
+reticle reads out the hypothesis under it. Where WebGL is missing, a 2D canvas
+field draws the same rows.
 
-1. **Hero field** (canvas): the 84 audit hypotheses as chalk marks, plus the two
-   rejection thresholds.
+The filmstrip uses the real products: screenshots of Vertex MMA, Gluline and
+Clipwell, a drawing of the leak Vertex Boxing caught, and a drawing of a
+rebalance for the client pipeline, which is private.
+
+The charts, all drawn from the papers' own artifacts:
+
+1. **Hero field**: as above.
 2. **Model against the closing line** (HTML bars): the comparison on every
    basis, including where the baseline wins.
 3. **The ladder** (SVG): one post-hoc rule charged three ways.

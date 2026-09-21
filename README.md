@@ -26,25 +26,42 @@ python3 tools/build_data.py /path/to/paper > assets/data/audit.json
 ## Layout
 
 ```
-index.html                the front page
-research/index.html       both papers, in full
-plain/index.html          the plain, printable version, self-contained
+index.html                  the front page
+research/index.html         both papers, in full
+plain/index.html            the plain, printable version, self-contained
 404.html
-assets/css/site.css       tokens, three surfaces, layout, motion
-assets/js/charts.js       hero field, comparison bars, ladder, floor, scatter
-assets/js/motion.js       intro, word reveals, filmstrip, reticle, transitions
-assets/js/site.js         theme, charts, surface-aware header
+assets/css/site.css         palettes, surfaces, layout, motion, the effects layer
+assets/js/field3d.js        the WebGL hero: 84 hypotheses in 3D, folding into their chart
+assets/js/charts.js         the 2D fallback field, comparison bars, ladder, floor, scatter
+assets/js/motion.js         smooth scroll, intro, reveals, pinned hero and filmstrip, reticle
+assets/js/ui.js             menu, project cases, rolling labels, the Now block
+assets/js/site.js           theme, surface-aware header, chart bootstrap
 assets/js/vendor/lenis.min.js   smooth scroll (MIT), self-hosted
-assets/data/audit.json    generated, see above
-assets/img/               mark, social card
-papers/                   the three submitted PDFs
-tools/build_data.py       regenerates assets/data/audit.json
-DESIGN.md                 the design system and why it looks like this
+assets/data/audit.json      generated, see above
+assets/img/work/            product screenshots, WebP at 900 and 1600 wide
+papers/                     the three submitted PDFs
+tools/build_data.py         regenerates assets/data/audit.json
+tools/palettes.py           the three palettes, with a contrast check for every pair
+DESIGN.md                   the design system and why it looks like this
 ```
 
-Everything in `motion.js` is additive. With JavaScript off, or with
-`prefers-reduced-motion` on, the filmstrip becomes a vertical list, nothing is
-hidden waiting to be revealed, and the page is a complete document.
+Everything in `motion.js` and `ui.js` is additive. With JavaScript off, or with
+`prefers-reduced-motion` on, the filmstrip is a vertical list, the project cases
+read as ordinary write-ups under it, nothing is hidden waiting to be revealed, and
+the page is a complete document. If the motion layer fails to load, a failsafe in
+the page head reveals everything after three and a half seconds.
+
+## Palettes
+
+Every colour comes from one of three palettes that share the same slots, so the
+whole site changes with one attribute on `<html>`:
+
+```bash
+python3 tools/palettes.py          # contrast report for every pair on every surface
+python3 tools/palettes.py --css    # the CSS block site.css starts with
+```
+
+`graphite` is the default. `?palette=moss` or `?palette=cobalt` previews the others.
 
 ## Running it
 
