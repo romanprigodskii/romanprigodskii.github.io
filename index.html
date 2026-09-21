@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="slate" data-palette="moss">
+<html lang="en" class="front" data-theme="slate" data-palette="moss">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -18,30 +18,16 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/img/mark.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/img/mark.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/archivo-latin.woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/site.css">
 <link rel="preload" as="fetch" href="assets/data/audit.json" crossorigin>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Roman Prigodskii","url":"https://romanprigodskii.github.io/","email":"mailto:lioneldassy@gmail.com","jobTitle":"Independent researcher","nationality":"RU","address":{"@type":"PostalAddress","addressLocality":"Moscow","addressCountry":"RU"},"alumniOf":{"@type":"EducationalOrganization","name":"Letovo School"},"sameAs":["https://github.com/romanprigodskii","https://t.me/prigodskii","https://vertexmma.com","https://gluline.com"],"knowsAbout":["Empirical market efficiency","E-values and anytime-valid inference","Gradient boosting","Forecast calibration","Software engineering"]}
 </script>
-<script>(function(d){d.classList.add("js");setTimeout(function(){if(!window.rpMotion){d.classList.remove("intro");d.classList.add("no-motion");}},3500);try{var q=new URLSearchParams(location.search).get("palette"),ok=/^(graphite|moss|cobalt)$/;if(q&&ok.test(q)){sessionStorage.setItem("rp-palette",q)}else{q=sessionStorage.getItem("rp-palette")}if(q&&ok.test(q))d.dataset.palette=q;var t=localStorage.getItem("rp-theme");if(t==="paper"||t==="slate")d.dataset.theme=t;if(!sessionStorage.getItem("rp-seen"))d.classList.add("intro");}catch(e){}})(document.documentElement);</script>
+<script>(function(d){d.classList.add("js");setTimeout(function(){if(!window.rpMotion){d.classList.add("no-motion");}},3500);try{var q=new URLSearchParams(location.search).get("palette"),ok=/^(graphite|moss|cobalt)$/;if(q&&ok.test(q)){sessionStorage.setItem("rp-palette",q)}else{q=sessionStorage.getItem("rp-palette")}if(q&&ok.test(q))d.dataset.palette=q;var t=localStorage.getItem("rp-theme");if(t==="paper"||t==="slate")d.dataset.theme=t;if(sessionStorage.getItem("rp-wipe")){sessionStorage.removeItem("rp-wipe");d.classList.add("wipe-in");}}catch(e){}})(document.documentElement);</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-
-<!-- ═══ INTRO ═══ -->
-<div class="intro" id="intro" aria-hidden="true">
-  <div class="intro__grid"></div>
-  <div class="intro__read">
-    <span class="odo" id="introOdo"><span class="odo__col"></span><span class="odo__col"></span></span>
-    <span class="intro__lbl">hypotheses<br>pre-registered</span>
-  </div>
-  <div class="intro__name"><span>Roman Prigodskii</span></div>
-  <div class="intro__bar"><i id="introBar"></i></div>
-</div>
 
 <div class="reticle" id="reticle" aria-hidden="true"><i></i><i></i></div>
 <b class="reticle__read" id="reticleRead" aria-hidden="true"></b>
@@ -64,7 +50,7 @@
   </p>
   <nav class="bar__nav" aria-label="Sections">
     <a href="#work"><span class="roll">Work</span></a>
-    <a href="research/"><span class="roll">Research</span></a>
+    <a href="research/" data-for="research"><span class="roll">Research</span></a>
     <a href="#record"><span class="roll">Record</span></a>
     <a href="#method"><span class="roll">Method</span></a>
   </nav>
@@ -91,14 +77,6 @@
       <a class="menu__link" href="#contact"><span class="menu__n">05</span><span class="roll">Contact</span></a>
     </nav>
     <aside class="menu__side">
-      <div class="now" data-now>
-        <h2 class="now__h">Now</h2>
-        <dl class="now__list">
-          <div><dt>Waiting on</dt><dd><span data-now-wait>TAE decision on 22 September, E-Values and NewInML on 29 September</span></dd></div>
-          <div><dt>Building</dt><dd>Vertex Boxing, the method on professional boxing</dd></div>
-          <div><dt>Based in</dt><dd>Moscow, <time data-clock>--:--</time></dd></div>
-        </dl>
-      </div>
       <ul role="list" class="menu__links">
         <li><a href="mailto:lioneldassy@gmail.com">lioneldassy@gmail.com</a></li>
         <li><a href="https://t.me/prigodskii" rel="me noopener">Telegram</a></li>
@@ -134,8 +112,6 @@
       </div>
     </div>
     <div class="hero__base rise" style="--d:700">
-      <i class="reg reg--l" aria-hidden="true"></i><i class="reg reg--r" aria-hidden="true"></i>
-      <p class="hero__clock"><span class="dot" aria-hidden="true"></span> Moscow, <time data-clock>--:--:--</time></p>
       <a class="hero__cue" href="#position"><span>Scroll</span><i aria-hidden="true"></i></a>
       <p class="hero__caption">Behind the type: the 84 pre-registered hypotheses of the e-value audit, each at
         its e-value at fair odds and after the book's margin.<span class="only-pin"> Keep scrolling and they turn into the chart.</span></p>
@@ -165,7 +141,6 @@
 
 <!-- ═══ 03 STATEMENT ═══ -->
 <section class="stmt" id="position" data-nav="Position">
-  <svg class="ribbon" id="ribbon" aria-hidden="true" focusable="false"></svg>
   <p class="stmt__lead" data-lit>
     One question runs through all of it. A model produces a number. A market produces a
     number. Only one of them is priced, and deciding which to believe is a statistical
@@ -181,7 +156,6 @@
       protocol, or an official document. Where a diploma and a protocol both exist, this page cites
       the protocol, because a stranger can check a protocol without me.</p>
   </div>
-  <p class="ribbon__key" aria-hidden="true">The line: the 84 log e-values at fair odds, in registry order, smoothed.</p>
 </section>
 
 <!-- ═══ 04 WORK ═══ -->
@@ -296,17 +270,21 @@
         </div>
       </article>
 
-      <article class="panel panel--bench">
-        <div class="panel__shot panel__shot--bench">
-          <ul role="list" class="bench">
-            <li><b>Alfa-Romeo</b><span>A neobank demo in SwiftUI over a NestJS backend: exchange, AI copilot, business module, lending, a live peer-to-peer wallet. <a href="https://github.com/romanprigodskii/alfaromeo" rel="noopener">Source</a>.</span></li>
-          </ul>
-        </div>
+      <article class="panel" data-case="case-alfaromeo">
+        <figure class="panel__shot panel__shot--phones">
+          <img src="assets/img/work/alfaromeo-market-400.webp" srcset="assets/img/work/alfaromeo-market-400.webp 400w, assets/img/work/alfaromeo-market-800.webp 800w" sizes="(min-width: 900px) 13vw, 28vw" width="400" height="870" alt="Alfa-Romeo crypto and digital assets, priced live" loading="lazy" decoding="async">
+          <img src="assets/img/work/alfaromeo-home-400.webp" srcset="assets/img/work/alfaromeo-home-400.webp 400w, assets/img/work/alfaromeo-home-800.webp 800w" sizes="(min-width: 900px) 13vw, 28vw" width="400" height="870" alt="Alfa-Romeo home screen: roubles and crypto counted as one total, under the red cards" loading="lazy" decoding="async">
+          <img src="assets/img/work/alfaromeo-accountant-400.webp" srcset="assets/img/work/alfaromeo-accountant-400.webp 400w, assets/img/work/alfaromeo-accountant-800.webp 800w" sizes="(min-width: 900px) 13vw, 28vw" width="400" height="870" alt="Alfa-Romeo business AI accountant: ninety days of cash flow with the gap marked" loading="lazy" decoding="async">
+        </figure>
         <div class="panel__meta">
           <p class="panel__idx" aria-hidden="true">06</p>
-          <h3 class="panel__name">On the bench</h3>
-          <p class="panel__line">Smaller things, and the ones still moving</p>
-          <a class="btn magnet" href="plain/"><span class="roll">The whole record, plainly</span></a>
+          <h3 class="panel__name"><a class="panel__open" href="#case-alfaromeo" aria-haspopup="dialog">Alfa-Romeo</a></h3>
+          <p class="panel__line">Built on an internship at Alfa-Bank: the bank of 2035, nine years early</p>
+          <dl class="panel__nums">
+            <div><dt>profiles, one passport</dt><dd>4</dd></div>
+            <div><dt>real roubles moved</dt><dd>0</dd></div>
+          </dl>
+          <span class="panel__cta" aria-hidden="true"><span class="roll">Open the case</span></span>
         </div>
       </article>
 
@@ -518,13 +496,81 @@
     </div>
   </article>
 
+  <article class="case" id="case-alfaromeo" aria-labelledby="case-alfaromeo-t">
+    <header class="case__head">
+      <p class="case__idx">06 <span aria-hidden="true">/</span> Internship at Alfa-Bank</p>
+      <h2 class="case__title" id="case-alfaromeo-t">Alfa-Romeo</h2>
+      <p class="case__line">Built during an internship at Alfa-Bank, as a concept of what a bank becomes by 2035. One passport, every profile a life needs, roubles and crypto in one balance, and an AI that works as a copilot rather than a chat window.</p>
+      <p class="case__links"><a href="https://github.com/romanprigodskii/alfaromeo" rel="noopener">Source on GitHub</a></p>
+    </header>
+    <div class="case__phones">
+          <figure class="phone">
+            <img src="assets/img/work/alfaromeo-onboarding-400.webp" srcset="assets/img/work/alfaromeo-onboarding-400.webp 400w, assets/img/work/alfaromeo-onboarding-800.webp 800w" sizes="(min-width: 1100px) 240px, (min-width: 700px) 22vw, 44vw" width="400" height="870" alt="Onboarding screen: the AI copilot, which acts only with confirmation" loading="lazy" decoding="async">
+            <figcaption>The copilot, introduced before anything else</figcaption>
+          </figure>
+          <figure class="phone">
+            <img src="assets/img/work/alfaromeo-home-400.webp" srcset="assets/img/work/alfaromeo-home-400.webp 400w, assets/img/work/alfaromeo-home-800.webp 800w" sizes="(min-width: 1100px) 240px, (min-width: 700px) 22vw, 44vw" width="400" height="870" alt="Home screen: current, savings, digital rouble and crypto accounts counted in one rouble total" loading="lazy" decoding="async">
+            <figcaption>Roubles and crypto, one total</figcaption>
+          </figure>
+          <figure class="phone">
+            <img src="assets/img/work/alfaromeo-market-400.webp" srcset="assets/img/work/alfaromeo-market-400.webp 400w, assets/img/work/alfaromeo-market-800.webp 800w" sizes="(min-width: 1100px) 240px, (min-width: 700px) 22vw, 44vw" width="400" height="870" alt="Crypto and digital assets hub with coin balances in roubles" loading="lazy" decoding="async">
+            <figcaption>Crypto and digital assets, at live prices</figcaption>
+          </figure>
+          <figure class="phone">
+            <img src="assets/img/work/alfaromeo-credit-400.webp" srcset="assets/img/work/alfaromeo-credit-400.webp 400w, assets/img/work/alfaromeo-credit-800.webp 800w" sizes="(min-width: 1100px) 240px, (min-width: 700px) 22vw, 44vw" width="400" height="870" alt="Loan prequalification: the three factors behind the limit, and what-if steps that recount it" loading="lazy" decoding="async">
+            <figcaption>A limit that shows its reasons</figcaption>
+          </figure>
+          <figure class="phone">
+            <img src="assets/img/work/alfaromeo-copilot-400.webp" srcset="assets/img/work/alfaromeo-copilot-400.webp 400w, assets/img/work/alfaromeo-copilot-800.webp 800w" sizes="(min-width: 1100px) 240px, (min-width: 700px) 22vw, 44vw" width="400" height="870" alt="The copilot chat, with support, financial coach and agent modes" loading="lazy" decoding="async">
+            <figcaption>Support, coach and agent in one chat</figcaption>
+          </figure>
+          <figure class="phone">
+            <img src="assets/img/work/alfaromeo-profiles-400.webp" srcset="assets/img/work/alfaromeo-profiles-400.webp 400w, assets/img/work/alfaromeo-profiles-800.webp 800w" sizes="(min-width: 1100px) 240px, (min-width: 700px) 22vw, 44vw" width="400" height="870" alt="Profile switcher: a personal profile and a company profile under one identity" loading="lazy" decoding="async">
+            <figcaption>Personal and business, one passport</figcaption>
+          </figure>
+          <figure class="phone">
+            <img src="assets/img/work/alfaromeo-business-400.webp" srcset="assets/img/work/alfaromeo-business-400.webp 400w, assets/img/work/alfaromeo-business-800.webp 800w" sizes="(min-width: 1100px) 240px, (min-width: 700px) 22vw, 44vw" width="400" height="870" alt="Business dashboard: the AI accountant warns of a cash gap in fourteen days" loading="lazy" decoding="async">
+            <figcaption>A cash gap, seen two weeks early</figcaption>
+          </figure>
+          <figure class="phone">
+            <img src="assets/img/work/alfaromeo-accountant-400.webp" srcset="assets/img/work/alfaromeo-accountant-400.webp 400w, assets/img/work/alfaromeo-accountant-800.webp 800w" sizes="(min-width: 1100px) 240px, (min-width: 700px) 22vw, 44vw" width="400" height="870" alt="AI accountant: a ninety-day cash-flow forecast, the gap and how to close it" loading="lazy" decoding="async">
+            <figcaption>The AI accountant's ninety days</figcaption>
+          </figure>
+    </div>
+    <p class="case__phones-note">The demo as it runs. Every name, balance and date on these screens is demo data.</p>
+    <dl class="case__nums">
+      <div><dt>profiles on one passport</dt><dd data-count="4">4</dd></div>
+      <div><dt>rouble and crypto rates</dt><dd>live</dd></div>
+      <div><dt>signatures on a large business payment</dt><dd>2 of N</dd></div>
+      <div><dt>real roubles moved</dt><dd>0</dd></div>
+    </dl>
+    <div class="case__body">
+      <section>
+        <h3>The bank of 2035</h3>
+        <p>In 2035 your bank is also your mobile operator, your accountant and your crypto exchange. One passport opens as many profiles as a life needs: personal, business, a budget shared with a spouse, a child's card. Roubles, the digital rouble and crypto sit in one balance, because by then nobody should care which rail the money took. Even the cashback is flexible: it can arrive in gigabytes.</p>
+      </section>
+      <section>
+        <h3>What actually runs</h3>
+        <p>The rates are live, from the Bank of Russia's daily fixing and from CoinGecko. The copilot is Claude behind guardrails: it drafts the action and waits for a yes, and when there is no key or no network a deterministic stand-in takes over, so the demo never falls over halfway through a pitch. The wallet is a closed economy on Postgres: sign up with a phone number and send play roubles, or play crypto, to another phone.</p>
+      </section>
+      <section>
+        <h3>A loan that explains itself</h3>
+        <p>The credit screen does not stop at yes or no. It shows the three factors behind the limit, then lets you ask what if: close that credit card, and watch the limit recount.</p>
+      </section>
+      <section>
+        <h3>The business half</h3>
+        <p>Romeo Business lives in the same app: accounts with crypto treasuries, acquiring by payment link, QR, NFC and terminal, stablecoins converted to roubles on arrival, a team where a large payment waits for a second signature, and an AI accountant that draws the next ninety days of cash flow and points at the gap two weeks before it opens.</p>
+      </section>
+    </div>
+  </article>
+
 </div>
 
 <!-- ═══ 05 RESEARCH TEASER ═══ -->
-<section class="sec sec--tease risesec" id="research" data-surface="paper" data-nav="Research">
+<section class="sec sec--tease" id="research" data-surface="paper" data-nav="Research">
   <div class="tease">
     <div class="tease__head">
-      <div class="sec__row"><h2 class="sec__title" data-split>Research</h2><span class="count" aria-hidden="true"><svg class="spin" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g><path d="M12 1.5v6M12 16.5v6M1.5 12h6M16.5 12h6M4.6 4.6l4.2 4.2M15.2 15.2l4.2 4.2M19.4 4.6l-4.2 4.2M8.8 15.2l-4.2 4.2"/></g></svg><span class="count__n">02</span></span></div>
+      <div class="sec__row"><h2 class="sec__title" data-split>Research</h2></div>
       <p class="tease__lead reveal">Two sole-authored papers, three submissions, all under review at
         NeurIPS 2026 workshops. Both grew out of Vertex, and both are about one discomfort: an
         evaluation that reports what it found and not what it could have found.</p>
@@ -538,6 +584,9 @@
           <em>is</em> the e-process. 84 pre-registered hypotheses, 1,787 priced bouts, re-audited
           as bets.</p>
         <p class="tease__venue">E-Values: From Statistics to ML <span aria-hidden="true">/</span><span class="u-sr"> and</span> NewInML</p>
+        <p class="cd" data-countdown="2026-09-30T11:59:00Z" data-live="Decisions in" title="Counted to the end of 29 September, anywhere on earth">
+          <span class="cd__k">Decisions due</span> <span class="cd__t">29 September</span>
+        </p>
       </li>
       <li class="reveal">
         <span class="tease__n" aria-hidden="true">02</span>
@@ -545,6 +594,9 @@
         <p>An evaluation reports that a candidate improved a metric. It almost never reports the
           smallest improvement it could have detected, and those are different claims.</p>
         <p class="tease__venue">TAE: Can We Trust AI Evaluation?</p>
+        <p class="cd" data-countdown="2026-09-23T11:59:00Z" data-live="Decision in" title="Counted to the end of 22 September, anywhere on earth">
+          <span class="cd__k">Decision due</span> <span class="cd__t">22 September</span>
+        </p>
       </li>
     </ol>
 
@@ -562,9 +614,8 @@
 
 <!-- ═══ 06 RECORD ═══ -->
 <section class="sec sec--record" id="record" data-nav="Record">
-  <div class="giant" aria-hidden="true"><span class="giant__l">Protocols,</span><span class="giant__l">not diplomas</span></div>
   <div class="sec__head">
-    <div class="sec__row"><h2 class="sec__title" data-split>The record</h2><span class="count" aria-hidden="true"><svg class="spin" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g><path d="M12 1.5v6M12 16.5v6M1.5 12h6M16.5 12h6M4.6 4.6l4.2 4.2M15.2 15.2l4.2 4.2M19.4 4.6l-4.2 4.2M8.8 15.2l-4.2 4.2"/></g></svg><span class="count__n">08</span></span></div>
+    <div class="sec__row"><h2 class="sec__title" data-split>The record</h2></div>
     <p class="sec__sub reveal">Evidenced against published competition protocols wherever a protocol
       exists, on the principle that a protocol can be checked by a stranger. Links to each on request.</p>
   </div>
@@ -608,27 +659,13 @@
       </li>
     </ul>
 
-    <h3 class="ledger__h">School</h3>
-    <ul role="list" class="ledger__rows">
-      <li class="ledger__row">
-        <span class="ledger__rank" data-count="6.38" data-dec="2">6.38</span>
-        <span class="ledger__what"><b>Letovo School, Moscow.</b> Grade 11, final year, advanced mathematics track. GPA 6.38 out of 7.0, above group average in algebra and in every core quantitative subject inside the school's most competitive quantitative group.</span>
-        <span class="ledger__ev">/ 7.0</span>
-      </li>
-      <li class="ledger__row">
-        <span class="ledger__rank" data-count="790">790</span>
-        <span class="ledger__what"><b>SAT Mathematics</b>, August 2026. A further sitting is scheduled for December 2026.</span>
-        <span class="ledger__ev">/ 800</span>
-      </li>
-    </ul>
   </div>
 </section>
 
 <!-- ═══ 07 METHOD ═══ -->
 <section class="sec sec--method" id="method" data-nav="Method">
-  <div class="giant giant--method" aria-hidden="true"><span class="giant__l">Measure the</span><span class="giant__l">instrument first</span></div>
   <div class="sec__head">
-    <div class="sec__row"><h2 class="sec__title" data-split>How I work</h2><span class="count" aria-hidden="true"><svg class="spin" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g><path d="M12 1.5v6M12 16.5v6M1.5 12h6M16.5 12h6M4.6 4.6l4.2 4.2M15.2 15.2l4.2 4.2M19.4 4.6l-4.2 4.2M8.8 15.2l-4.2 4.2"/></g></svg><span class="count__n">05</span></span></div>
+    <div class="sec__row"><h2 class="sec__title" data-split>How I work</h2></div>
     <p class="sec__sub reveal">Five rules, applied across every project, visible in the artifacts.</p>
   </div>
   <ol role="list" class="stack" id="stack">
@@ -652,7 +689,7 @@
 
 <!-- ═══ 08 TOOLKIT ═══ -->
 <section class="sec sec--kit" id="toolkit" data-nav="Toolkit">
-  <div class="sec__head"><div class="sec__row"><h2 class="sec__title" data-split>Toolkit</h2><span class="count" aria-hidden="true"><svg class="spin" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g><path d="M12 1.5v6M12 16.5v6M1.5 12h6M16.5 12h6M4.6 4.6l4.2 4.2M15.2 15.2l4.2 4.2M19.4 4.6l-4.2 4.2M8.8 15.2l-4.2 4.2"/></g></svg><span class="count__n">06</span></span></div></div>
+  <div class="sec__head"><div class="sec__row"><h2 class="sec__title" data-split>Toolkit</h2></div></div>
   <ul role="list" class="kit2">
     <li class="kit2__row"><h3>Modelling</h3><p>Python, LightGBM, CatBoost, scikit-learn, NumPy, pandas, statsmodels, Monte Carlo simulation</p></li>
     <li class="kit2__row"><h3>Statistics</h3><p>E-values and test martingales, anytime-valid inference, walk-forward validation, calibration and sharpness, detection floors</p></li>
@@ -664,7 +701,7 @@
 </section>
 
 <!-- ═══ 09 CONTACT ═══ -->
-<section class="sec sec--contact risesec" id="contact" data-surface="signal" data-nav="Contact">
+<section class="sec sec--contact" id="contact" data-surface="signal" data-nav="Contact">
   <div class="contact">
     <p class="contact__kick reveal">Research, internships, or a problem with a real baseline in it.
       The address below copies itself when you click it.</p>
@@ -672,14 +709,6 @@
       <b aria-hidden="true" data-split>lioneldassy</b><b aria-hidden="true" data-split>@gmail.com</b>
     </a>
     <div class="contact__grid">
-      <div class="now now--inline" data-now>
-        <h2 class="now__h">Now</h2>
-        <dl class="now__list">
-          <div><dt>Waiting on</dt><dd><span data-now-wait>TAE decision on 22 September, E-Values and NewInML on 29 September</span></dd></div>
-          <div><dt>Building</dt><dd>Vertex Boxing, the method on professional boxing</dd></div>
-          <div><dt>Based in</dt><dd>Moscow, <time data-clock>--:--</time></dd></div>
-        </dl>
-      </div>
       <ul role="list" class="contact__links">
         <li><a href="https://t.me/prigodskii" rel="me noopener"><span class="roll">Telegram, @prigodskii</span></a></li>
         <li><a href="https://github.com/romanprigodskii" rel="me noopener"><span class="roll">GitHub, romanprigodskii</span></a></li>

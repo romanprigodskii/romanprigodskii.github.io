@@ -15,14 +15,13 @@
 <meta property="og:image" content="https://romanprigodskii.github.io/assets/img/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../assets/img/mark.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+<link rel="preload" as="font" type="font/woff2" href="../assets/fonts/archivo-latin.woff2" crossorigin>
 <link rel="stylesheet" href="../assets/css/site.css">
 <link rel="preload" as="fetch" href="../assets/data/audit.json" crossorigin>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"CollectionPage","name":"Research, Roman Prigodskii","url":"https://romanprigodskii.github.io/research/","author":{"@type":"Person","name":"Roman Prigodskii"},"hasPart":[{"@type":"ScholarlyArticle","name":"Testing by betting when the bets are real: an e-value audit of 84 pre-registered market-efficiency hypotheses","author":{"@type":"Person","name":"Roman Prigodskii"},"url":"https://romanprigodskii.github.io/papers/evalues.pdf","creativeWorkStatus":"Under review"},{"@type":"ScholarlyArticle","name":"Measure the instrument first: detection floors for model selection and for LLM judges","author":{"@type":"Person","name":"Roman Prigodskii"},"url":"https://romanprigodskii.github.io/papers/tae.pdf","creativeWorkStatus":"Under review"}]}
 </script>
-<script>(function(d){d.classList.add("js");setTimeout(function(){if(!window.rpMotion){d.classList.add("no-motion");}},3500);try{var q=new URLSearchParams(location.search).get("palette"),ok=/^(graphite|moss|cobalt)$/;if(q&&ok.test(q)){sessionStorage.setItem("rp-palette",q)}else{q=sessionStorage.getItem("rp-palette")}if(q&&ok.test(q))d.dataset.palette=q;var t=localStorage.getItem("rp-theme");if(t==="paper"||t==="slate")d.dataset.theme=t;}catch(e){}})(document.documentElement);</script>
+<script>(function(d){d.classList.add("js");setTimeout(function(){if(!window.rpMotion){d.classList.add("no-motion");}},3500);try{var q=new URLSearchParams(location.search).get("palette"),ok=/^(graphite|moss|cobalt)$/;if(q&&ok.test(q)){sessionStorage.setItem("rp-palette",q)}else{q=sessionStorage.getItem("rp-palette")}if(q&&ok.test(q))d.dataset.palette=q;var t=localStorage.getItem("rp-theme");if(t==="paper"||t==="slate")d.dataset.theme=t;if(sessionStorage.getItem("rp-wipe")){sessionStorage.removeItem("rp-wipe");d.classList.add("wipe-in");}}catch(e){}})(document.documentElement);</script>
 </head>
 <body class="is-sub" data-base="../">
 <a class="skip" href="#main">Skip to content</a>
@@ -65,14 +64,6 @@
       <a class="menu__link" href="../#contact"><span class="menu__n">05</span><span class="roll">Contact</span></a>
     </nav>
     <aside class="menu__side">
-      <div class="now" data-now>
-        <h2 class="now__h">Now</h2>
-        <dl class="now__list">
-          <div><dt>Waiting on</dt><dd><span data-now-wait>NeurIPS 2026 workshop notifications, due 29 September</span></dd></div>
-          <div><dt>Building</dt><dd>Vertex Boxing, the method on a softer market</dd></div>
-          <div><dt>Based in</dt><dd>Moscow, <time data-clock>--:--</time></dd></div>
-        </dl>
-      </div>
       <ul role="list" class="menu__links">
         <li><a href="mailto:lioneldassy@gmail.com">lioneldassy@gmail.com</a></li>
         <li><a href="https://t.me/prigodskii" rel="me noopener">Telegram</a></li>
@@ -106,6 +97,7 @@
     <div class="paper__meta">
       <span class="paper__tag">Paper one</span>
       <span class="paper__status" data-status>Under review</span>
+      <span class="cd" data-countdown="2026-09-30T11:59:00Z" data-live="Decisions in" title="Counted to the end of 29 September, anywhere on earth"><span class="cd__k">Decisions due</span> <span class="cd__t">29 September</span></span>
     </div>
     <h2 class="paper__title" data-split>Testing by betting when the bets are real</h2>
     <p class="paper__sub">An e-value audit of 84 pre-registered market-efficiency hypotheses</p>
@@ -183,6 +175,7 @@
     <div class="paper__meta">
       <span class="paper__tag">Paper two</span>
       <span class="paper__status" data-status>Under review</span>
+      <span class="cd" data-countdown="2026-09-23T11:59:00Z" data-live="Decision in" title="Counted to the end of 22 September, anywhere on earth"><span class="cd__k">Decision due</span> <span class="cd__t">22 September</span></span>
     </div>
     <h2 class="paper__title" data-split>Measure the instrument first</h2>
     <p class="paper__sub">Detection floors for model selection and for LLM judges</p>

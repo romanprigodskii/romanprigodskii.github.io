@@ -1,6 +1,11 @@
 /* Motion layer.
    Everything here is additive: with JavaScript off, or with reduced motion on,
-   the page is a plain, complete document and none of this runs. */
+   the page is a plain, complete document and none of this runs.
+
+   One frame loop drives all of it. Nothing measures the page while it
+   scrolls: offsets are cached whenever the layout changes, and a frame only
+   does arithmetic and writes. Reading the layout in the same frame as writing
+   it is what used to cost the scroll its smoothness. */
 (function (w, d) {
   "use strict";
 
@@ -9,36 +14,14 @@
   var fine = w.matchMedia("(pointer: fine)").matches;
   w.rpMotion = 1;
 
-  /* a slow device measures itself while scrolling, which is where the cost is:
-     if sixty scrolling frames come in at a median slower than about 45 a second,
-     the most expensive effects step down for the rest of the visit */
-  w.rpLite = false;
-  (function probe() {
-    var gaps = [], last = 0, lastY = w.scrollY, slow = 0;
-    function f(t) {
-      if (w.rpLite) return;
-      var y = w.scrollY, moving = Math.abs(y - lastY) > 0.5;
-      lastY = y;
-      if (last && moving && !d.hidden) gaps.push(t - last);
-      last = t;
-      if (gaps.length >= 45) {
-        var sorted = gaps.slice().sort(function (a, b) { return a - b; });
-        /* two slow windows in a row, not one: a single burst of chart drawing or
-           font loading should not cost a capable machine its effects */
-        slow = sorted[22] > 24 ? slow + 1 : 0;
-        gaps = [];
-        if (slow >= 2) { w.rpLite = true; root.classList.add("lite"); return; }
-      }
-      w.requestAnimationFrame(f);
-    }
-    /* the first seconds are the page building itself, not the device's steady state */
-    w.setTimeout(function () { w.requestAnimationFrame(f); }, 2500);
-  })();
   var glOK = (function () {
     try { var c = d.createElement("canvas"); return !!(c.getContext("webgl") || c.getContext("experimental-webgl")); }
     catch (e) { return false; }
   })();
   function roomy() { return w.innerWidth >= 900 && w.innerWidth > w.innerHeight && !reduced; }
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  function all(sel, ctx) { return Array.prototype.slice.call((ctx || d).querySelectorAll(sel)); }
+  function docTop(el) { return el.getBoundingClientRect().top + w.scrollY; }
 
   /* our own scroll restoration: the pinned sections change the page height after
      load, so the browser's guess lands thousands of pixels off */
@@ -47,42 +30,108 @@
     try { sessionStorage.setItem("rp-y:" + location.pathname, String(Math.round(w.scrollY))); } catch (e) {}
   });
 
-  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
-  function all(sel, ctx) { return Array.prototype.slice.call((ctx || d).querySelectorAll(sel)); }
+  /* keyboard or pointer: focus that arrives by mouse must never move the page */
+  var keyboard = false;
+  d.addEventListener("keydown", function (e) { if (e.key === "Tab") keyboard = true; }, true);
+  d.addEventListener("pointerdown", function () { keyboard = false; }, true);
+  w.rpKeyboard = function () { return keyboard; };
+
+  /* ---------------------------------------------------------------
+     The frame loop, and the cache it reads from
+     --------------------------------------------------------------- */
+  var measures = [], reads = [], writes = [], frames = [];
+  var Y = w.scrollY, VH = w.innerHeight, VW = w.innerWidth;
+  var vel = 0, dir = 1, moved = true, needMeasure = true, lastT = 0;
+
+  function measure() {
+    VH = w.innerHeight; VW = w.innerWidth;
+    for (var i = 0; i < measures.length; i++) measures[i]();
+    moved = true;
+  }
+  function remeasure() { needMeasure = true; }
+  w.rpMeasure = remeasure;
+  /* fn() runs on the next frame and after every layout change; cache offsets
+     there. Registering is cheap: the first frame measures everything at once */
+  w.rpOnMeasure = function (fn) { measures.push(fn); needMeasure = true; };
+  /* fn(y, vh) runs on every frame the page moved: reads first, then writes */
+  w.rpOnScrollRead = function (fn) { reads.push(fn); moved = true; };
+  w.rpOnScroll = function (fn) { writes.push(fn); moved = true; };
+  /* fn(t, dt) runs every frame; dt is in 60 Hz frames, so speeds match on 120 Hz */
+  w.rpOnFrame = function (fn) { frames.push(fn); };
+  w.rpVelocity = function () { return vel; };
+
+  var lenis = null;
+  function frame(t) {
+    var dt = lastT ? clamp((t - lastT) / 16.667, 0.25, 4) : 1;
+    lastT = t;
+    if (lenis) lenis.raf(t);
+    if (needMeasure) { needMeasure = false; measure(); }
+    var ny = w.scrollY, dy = ny - Y, i;
+    if (dy !== 0) { moved = true; if (Math.abs(dy) > 0.5) dir = dy > 0 ? 1 : -1; }
+    vel += (dy / dt - vel) * 0.2;
+    if (Math.abs(vel) < 0.01) vel = 0;
+    Y = ny;
+    if (moved) {
+      moved = false;
+      for (i = 0; i < reads.length; i++) reads[i](Y, VH);
+      for (i = 0; i < writes.length; i++) writes[i](Y, VH);
+    }
+    for (i = 0; i < frames.length; i++) frames[i](t, dt);
+    w.requestAnimationFrame(frame);
+  }
+
+  var rt = 0;
+  w.addEventListener("resize", function () {
+    w.clearTimeout(rt);
+    rt = w.setTimeout(remeasure, 80);
+  }, { passive: true });
+  if (d.fonts && d.fonts.ready) d.fonts.ready.then(remeasure);
+  w.addEventListener("load", remeasure);
+  /* charts, images and late fonts change the page height; the cache follows */
+  if ("ResizeObserver" in w) {
+    var main = d.getElementById("main");
+    if (main) new ResizeObserver(remeasure).observe(main);
+  }
 
   /* ---------------------------------------------------------------
      Smooth scroll. Lenis keeps real scroll position, so sticky,
      IntersectionObserver and anchor links all behave normally.
      --------------------------------------------------------------- */
-  var lenis = null;
+  var strip = { on: false, top: 0, end: 0 };
+  function overLayer(ev) {
+    var t = ev && ev.target;
+    return root.classList.contains("case-open") || root.classList.contains("menu-open") ||
+      !!(t && t.closest && t.closest("[data-lenis-prevent]"));
+  }
+  /* a sideways swipe over the pinned strip moves the strip. Left to the
+     browser, the same swipe reads as "back" and leaves the page */
+  function sideways(data) {
+    var ev = data.event;
+    if (!strip.on || !ev || ev.ctrlKey || ev.type.indexOf("wheel") < 0 || overLayer(ev)) return true;
+    if (Math.abs(data.deltaX) <= Math.abs(data.deltaY)) return true;
+    if (Y < strip.top - 2 || Y > strip.end + 2) return true;
+    ev.preventDefault();
+    var from = lenis.targetScroll, to = clamp(from + data.deltaX, strip.top, strip.end);
+    if (Math.abs(to - from) < 0.5) return false;
+    data.deltaY = to - from;
+    data.deltaX = 0;
+    return true;
+  }
   if (w.Lenis && !reduced && fine) {
     try {
-      lenis = new w.Lenis({ duration: 1.1, smoothWheel: true, syncTouch: false, prevent: function (node) { return !!(node.closest && node.closest("[data-lenis-prevent]")); } });
-      var raf = function (t) { lenis.raf(t); w.requestAnimationFrame(raf); };
-      w.requestAnimationFrame(raf);
+      lenis = new w.Lenis({
+        duration: 1.1, smoothWheel: true, syncTouch: false,
+        prevent: function (node) { return !!(node.closest && node.closest("[data-lenis-prevent]")); },
+        virtualScroll: sideways
+      });
       root.classList.add("rp-smooth");
     } catch (e) { lenis = null; }
   }
   w.rpLenis = lenis;
-
-  /* every scroll-driven piece subscribes here, so with Lenis they run inside the
-     same frame Lenis moved the page in, rather than one frame late */
-  var scrollFns = [];
-  function onScroll(fn) { scrollFns.push(fn); }
-  w.rpOnScroll = function (fn) { onScroll(fn); fn(); };
-  w.rpVelocity = function () { return vel; };
-  function runScroll() { for (var i = 0; i < scrollFns.length; i++) scrollFns[i](); }
-  if (lenis) lenis.on("scroll", runScroll);
-  /* and the native event as well: find-in-page, the scrollbar and browser anchor
-     jumps move the page without Lenis always hearing about it */
-  var sq = false;
-  w.addEventListener("scroll", function () {
-    if (sq) return; sq = true;
-    w.requestAnimationFrame(function () { sq = false; runScroll(); });
-  }, { passive: true });
+  w.requestAnimationFrame(frame);
 
   /* land on the fragment once the layout has its final height */
-  var holding = false;
+  var holding = false, userMoved = false;
   function goToHash() {
     var h = location.hash.slice(1);
     if (!h || h.indexOf("case-") === 0) return false;
@@ -109,7 +158,6 @@
     }
     return true;
   }
-  var userMoved = false;
   ["wheel", "touchstart", "keydown", "pointerdown"].forEach(function (ev) {
     w.addEventListener(ev, function () { userMoved = true; }, { passive: true, once: true });
   });
@@ -153,17 +201,6 @@
     if (lenis) lenis.scrollTo(target, { offset: -64 });
     else if (target && target.scrollIntoView) target.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
   };
-
-  /* one shared velocity reading, used by the ticker and the filmstrip */
-  var vel = 0, lastY = w.scrollY, dir = 1;
-  if (!reduced) (function track() {
-    var y = w.scrollY;
-    var dy = y - lastY;
-    lastY = y;
-    if (Math.abs(dy) > 0.5) dir = dy > 0 ? 1 : -1;
-    vel += (dy - vel) * 0.2;
-    w.requestAnimationFrame(track);
-  })();
 
   /* ---------------------------------------------------------------
      Word splitting. Only text nodes are touched, so nested links and
@@ -243,11 +280,16 @@
   w.rpCountUp = countUp;
 
   /* ---------------------------------------------------------------
-     Reveals, held until the intro is out of the way
+     Reveals. The entrance waits for the typeface, briefly, so the name
+     does not rise in a fallback face and then jump when Archivo lands.
      --------------------------------------------------------------- */
   var revealables = all("[data-split], .reveal, .rise");
-  var startReveals;
-  if ("IntersectionObserver" in w && !reduced) {
+  function startReveals() {
+    if (!("IntersectionObserver" in w) || reduced) {
+      revealables.forEach(function (n) { n.classList.add("is-in"); });
+      countUp(d);
+      return;
+    }
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (!e.isIntersecting) return;
@@ -257,77 +299,16 @@
         countUp(e.target);
       });
     }, { rootMargin: "0px 0px -6% 0px", threshold: 0.05 });
-    startReveals = function () { revealables.forEach(function (n) { io.observe(n); }); };
-  } else {
-    startReveals = function () {
-      revealables.forEach(function (n) { n.classList.add("is-in"); });
-      countUp(d);
-    };
+    revealables.forEach(function (n) { io.observe(n); });
   }
-  if (!root.classList.contains("intro")) startReveals();
-
-  /* ---------------------------------------------------------------
-     Intro. A two-digit odometer rolls to 84 while the fonts and the
-     data actually load. Once per session, skippable.
-     --------------------------------------------------------------- */
-  (function intro() {
-    var el = d.getElementById("intro");
-    if (!el) return;
-    if (!root.classList.contains("intro")) { el.remove(); return; }
-    try { sessionStorage.setItem("rp-seen", "1"); } catch (e) {}
+  (function gate() {
     var done = false;
-    function finish() {
-      if (done) return;
-      done = true;
-      root.classList.add("intro-out", "no-wipe");
-      startReveals();
-      try { w.dispatchEvent(new Event("rp:intro-done")); } catch (e) {}
-      w.setTimeout(function () {
-        root.classList.remove("intro", "intro-out");
-        el.remove();
-        if (w.rpFilmMeasure) w.rpFilmMeasure();
-        goToHash();
-      }, 900);
-    }
-    if (reduced || location.hash) {
-      /* a visitor arriving on a fragment wants that section, not a preloader */
-      root.classList.remove("intro"); root.classList.add("no-wipe");
-      el.remove(); startReveals(); return;
-    }
-
-    var cols = all(".odo__col", el);
-    cols.forEach(function (c) {
-      for (var k = 0; k <= 9; k++) { var s = d.createElement("span"); s.textContent = k; c.appendChild(s); }
-    });
-    var bar = d.getElementById("introBar");
-    function show(v) {
-      var n = Math.round(v);
-      var tens = Math.floor(n / 10), ones = n % 10;
-      if (cols[0]) cols[0].style.transform = "translateY(" + -tens * 10 + "%)";
-      if (cols[1]) cols[1].style.transform = "translateY(" + -ones * 10 + "%)";
-    }
-
-    /* real progress: fonts and the chart data, with a floor of time so it reads */
-    var loaded = 0, want = 2;
-    function got() { loaded++; }
-    if (d.fonts && d.fonts.ready) d.fonts.ready.then(got, got); else got();
-    fetch("assets/data/audit.json").then(got, got);
-
-    var t0 = null, shown = 0;
-    (function tick(t) {
-      if (t0 == null) t0 = t;
-      var timeP = clamp((t - t0) / 1150, 0, 1);
-      var target = Math.min(timeP, 0.25 + 0.75 * (loaded / want));
-      shown += (target - shown) * 0.16;
-      show(84 * shown);
-      if (bar) bar.style.transform = "scaleX(" + shown.toFixed(3) + ")";
-      if (shown > 0.995 && timeP >= 1) { show(84); w.setTimeout(finish, 260); return; }
-      w.requestAnimationFrame(tick);
-    })(performance.now());
-
-    d.addEventListener("keydown", finish, { once: true });
-    el.addEventListener("click", finish, { once: true });
-    w.setTimeout(finish, 4000);
+    function go() { if (done) return; done = true; startReveals(); }
+    w.setTimeout(go, 900);
+    try {
+      if (d.fonts && d.fonts.load) d.fonts.load("780 1em Archivo").then(go, go);
+      else go();
+    } catch (e) { go(); }
   })();
 
   /* ---------------------------------------------------------------
@@ -336,33 +317,47 @@
   (function heroPin() {
     var hero = d.querySelector(".hero");
     if (!hero || !hero.querySelector(".hero__pin")) return;
-    var on = false;
-    function measure() {
-      on = roomy() && glOK && !d.documentElement.classList.contains("no-webgl");
+    var inner = hero.querySelector(".hero__inner");
+    var base = hero.querySelector(".hero__base");
+    var flat = hero.querySelector(".hero__flat");
+    var on = false, top = 0, span = 0, last = -1;
+    w.rpHeroFold = function () { return last < 0 ? 0 : last; };
+    function measureHero() {
+      on = roomy() && glOK && !root.classList.contains("no-webgl");
       hero.classList.toggle("is-pinned", on);
-      update();
+      top = docTop(hero);
+      span = hero.offsetHeight - VH;
+      last = -1;
     }
-    w.rpHeroMeasure = function () { d.documentElement.classList.add("no-webgl"); measure(); };
-    function update() {
-      if (!on) { hero.style.setProperty("--fold", "0"); if (w.rpSetFold) w.rpSetFold(0); return; }
-      var r = hero.getBoundingClientRect();
-      var span = hero.offsetHeight - w.innerHeight;
-      var p = span > 0 ? clamp(-r.top / span, 0, 1) : 0;
-      var fold = clamp((p - 0.1) / 0.55, 0, 1);
-      hero.style.setProperty("--fold", fold.toFixed(4));
-      hero.style.setProperty("--p", p.toFixed(4));
-      if (w.rpSetFold) w.rpSetFold(fold);
+    function paint(y) {
+      var f = 0;
+      if (on && span > 0) f = clamp((clamp((y - top) / span, 0, 1) - 0.1) / 0.55, 0, 1);
+      f = Math.round(f * 1000) / 1000;
+      if (f === last) return;
+      last = f;
+      /* at rest the entrance animations own these properties; only the fold writes them */
+      if (inner) {
+        inner.style.opacity = f > 0 ? String(clamp(1 - f * 1.7, 0, 1)) : "";
+        inner.style.transform = f > 0 ? "translate3d(0," + (-f * 9).toFixed(2) + "vh,0)" : "";
+      }
+      if (base) base.style.opacity = f > 0 ? String(clamp(1 - f * 2.6, 0, 1)) : "";
+      if (flat) {
+        var k = clamp((f - 0.72) * 4, 0, 1);
+        flat.style.opacity = String(k);
+        flat.style.transform = "translate3d(0," + ((1 - k) * 20).toFixed(1) + "px,0)";
+      }
+      if (w.rpSetFold) w.rpSetFold(f);
     }
-    onScroll(update);
-    w.addEventListener("resize", measure, { passive: true });
+    w.rpOnMeasure(measureHero);
+    w.rpOnScroll(paint);
+    w.rpHeroMeasure = function () { root.classList.add("no-webgl"); remeasure(); };
     hero.addEventListener("focusin", function (e) {
-      if (!on || !e.target.closest(".hero__inner, .hero__base")) return;
-      if (parseFloat(hero.style.getPropertyValue("--fold")) > 0.05) {
-        if (lenis) lenis.scrollTo(hero.offsetTop, { immediate: true, force: true });
-        else w.scrollTo(0, hero.offsetTop);
+      if (!on || !keyboard || !e.target.closest(".hero__inner, .hero__base")) return;
+      if (last > 0.05) {
+        if (lenis) lenis.scrollTo(top, { immediate: true, force: true });
+        else w.scrollTo(0, top);
       }
     });
-    measure();
   })();
 
   /* ---------------------------------------------------------------
@@ -372,34 +367,32 @@
   all(".ticker").forEach(function (tk) {
     var track = tk.querySelector(".ticker__track");
     if (!track) return;
-    var base = track.innerHTML;
-    var guard = 0;
-    while (track.scrollWidth < w.innerWidth * 1.5 && guard++ < 8) track.innerHTML += base;
+    var one = track.scrollWidth || 1;
+    var copies = Math.min(8, Math.ceil((w.innerWidth * 1.5) / one));
+    if (copies > 1) track.innerHTML = new Array(copies + 1).join(track.innerHTML);
     var clone = track.cloneNode(true);
     clone.setAttribute("aria-hidden", "true");
     tk.appendChild(clone);
     if (reduced) return;
     tk.classList.add("is-driven");
-    var x = 0, width = track.offsetWidth, visible = true;
+    var x = 0, width = 0, visible = true;
     if ("IntersectionObserver" in w) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; }).observe(tk);
-    w.addEventListener("resize", function () { width = track.offsetWidth; }, { passive: true });
-    (function loop() {
-      if (visible && width) {
-        var speed = 0.55 + Math.min(Math.abs(vel) * 0.18, 9);
-        x -= speed * dir;
-        if (x <= -width) x += width;
-        if (x > 0) x -= width;
-        var tf = "translate3d(" + x.toFixed(2) + "px,0,0)";
-        track.style.transform = tf;
-        clone.style.transform = tf;
-      }
-      w.requestAnimationFrame(loop);
-    })();
+    w.rpOnMeasure(function () { width = track.offsetWidth; });
+    w.rpOnFrame(function (t, dt) {
+      if (!visible || !width) return;
+      var speed = 0.55 + Math.min(Math.abs(vel) * 0.18, 9);
+      x -= speed * dir * dt;
+      if (x <= -width) x += width;
+      if (x > 0) x -= width;
+      var tf = "translate3d(" + x.toFixed(2) + "px,0,0)";
+      track.style.transform = tf;
+      clone.style.transform = tf;
+    });
   });
 
   /* ---------------------------------------------------------------
-     The work filmstrip. Vertical scroll drives horizontal travel, and
-     the panels lean into the speed of it.
+     The work filmstrip. Vertical scroll drives horizontal travel, a
+     sideways swipe does the same, and the panels lean into the speed.
      --------------------------------------------------------------- */
   (function film() {
     var sec = d.querySelector(".film");
@@ -408,158 +401,106 @@
     if (!sec || !track) return;
     var panels = all(".panel", track);
     var pin = sec.querySelector(".film__pin");
-    var on = false, dist = 0, skew = 0;
+    var on = false, dist = 0, top = 0, geo = [], skew = 0, lastTx = null, stale = true;
 
     /* focus moving into an off-screen panel makes the browser scroll the pin
        sideways; the pin must never scroll, the vertical position drives it */
     if (pin) pin.addEventListener("scroll", function () { if (pin.scrollLeft) pin.scrollLeft = 0; }, { passive: true });
 
-    function measure() {
+    function measureFilm() {
       on = roomy();
       sec.classList.toggle("is-pinned", on);
-      if (!on) { sec.style.height = ""; track.style.transform = ""; return; }
+      strip.on = on;
+      if (!on) {
+        sec.style.height = "";
+        track.style.transform = "";
+        panels.forEach(function (p) { p.style.transform = ""; });
+        geo = [];
+        return;
+      }
       var last = panels[panels.length - 1];
       var padR = parseFloat(getComputedStyle(track).paddingRight) || 0;
-      dist = Math.max(0, last.offsetLeft + last.offsetWidth + padR - w.innerWidth);
-      sec.style.height = w.innerHeight + dist + "px";
-      update();
+      dist = Math.max(0, last.offsetLeft + last.offsetWidth + padR - VW);
+      sec.style.height = VH + dist + "px";
+      top = docTop(sec);
+      strip.top = top;
+      strip.end = top + dist;
+      geo = panels.map(function (p) { return { l: p.offsetLeft, w: p.offsetWidth, tf: null }; });
+      lastTx = null;
+      stale = true;
     }
 
-    /* tabbing to a panel scrolls the page to where that panel is on screen */
-    track.addEventListener("focusin", function (e) {
+    function paint(y) {
       if (!on) return;
-      var pn = e.target.closest(".panel");
-      if (!pn) return;
-      if (pin) pin.scrollLeft = 0;
-      var want = clamp((pn.offsetLeft + pn.offsetWidth / 2 - w.innerWidth / 2) / Math.max(1, dist), 0, 1);
-      var y = sec.offsetTop + want * (sec.offsetHeight - w.innerHeight);
-      if (lenis) lenis.scrollTo(y, { immediate: true, force: true }); else w.scrollTo(0, y);
-    });
-    function update() {
-      if (!on) return;
-      var rect = sec.getBoundingClientRect();
-      var span = sec.offsetHeight - w.innerHeight;
-      var p = span > 0 ? clamp(-rect.top / span, 0, 1) : 0;
-      track.style.transform = "translate3d(" + -(p * dist).toFixed(1) + "px,0,0)";
-      /* each screenshot drifts inside its frame, opposite to the travel; and the
-         counter names whichever panel is most on screen */
-      var vw = w.innerWidth, best = 0, bestVis = -1;
-      panels.forEach(function (pn, i) {
-        var r = pn.getBoundingClientRect();
-        var vis = Math.min(vw, r.right) - Math.max(0, r.left);
+      var p = dist > 0 ? clamp((y - top) / dist, 0, 1) : 0;
+      var tx = -Math.round(p * dist * 10) / 10;
+      if (tx !== lastTx) { track.style.transform = "translate3d(" + tx + "px,0,0)"; lastTx = tx; stale = true; }
+      if (!stale) return;
+      stale = false;
+      var best = 0, bestVis = -1;
+      for (var i = 0; i < geo.length; i++) {
+        var g = geo[i], left = g.l + tx, right = left + g.w;
+        var vis = Math.min(VW, right) - Math.max(0, left);
         if (vis > bestVis) { bestVis = vis; best = i; }
+        if (right < -VW * 0.25 || left > VW * 1.25) continue;
         /* a coverflow: panels turn away from the viewer as they leave the centre */
-        var cc = clamp((r.left + r.width / 2 - vw / 2) / (vw * 0.7), -1.2, 1.2);
-        pn.style.setProperty("--ry", (cc * -20).toFixed(2) + "deg");
-        pn.style.setProperty("--rs", (1 - Math.abs(cc) * 0.07).toFixed(4));
-      });
+        var cc = clamp((left + g.w / 2 - VW / 2) / (VW * 0.7), -1.2, 1.2);
+        var tf = "perspective(1400px) rotateY(" + (cc * -20).toFixed(2) + "deg) scale(" +
+          (1 - Math.abs(cc) * 0.07).toFixed(4) + ")" + (skew ? " skewX(" + skew.toFixed(2) + "deg)" : "");
+        if (g.tf !== tf) { panels[i].style.transform = tf; g.tf = tf; }
+      }
       if (p >= 0.999) best = panels.length - 1;
       if (idxOut) {
         var s = String(best + 1).padStart(2, "0");
         if (idxOut.textContent !== s) idxOut.textContent = s;
       }
     }
-    if (!reduced) (function lean() {
-      if (on) {
-        var target = clamp(vel * -0.12, -5, 5);
-        skew += (target - skew) * 0.12;
-        if (Math.abs(target) < 0.01 && Math.abs(skew) < 0.02) {
-          if (skew !== 0) { skew = 0; track.style.removeProperty("--skew"); }
-        } else track.style.setProperty("--skew", skew.toFixed(3) + "deg");
-      }
-      w.requestAnimationFrame(lean);
-    })();
-    onScroll(update);
-    w.addEventListener("resize", measure, { passive: true });
-    if (d.fonts && d.fonts.ready) d.fonts.ready.then(measure);
-    all("img", track).forEach(function (im) { if (!im.complete) im.addEventListener("load", measure, { once: true }); });
-    measure();
-    w.rpFilmMeasure = measure;
-  })();
 
-  /* ---------------------------------------------------------------
-     Sections that rise over the one before them
-     --------------------------------------------------------------- */
-  (function riseSections() {
-    var secs = all(".risesec");
-    if (!secs.length || reduced) return;
-    var q = false;
-    function run() {
-      q = false;
-      var vh = w.innerHeight;
-      secs.forEach(function (s) {
-        var r = s.getBoundingClientRect();
-        var k = clamp(r.top / vh, 0, 1);
-        s.style.setProperty("--rise", k.toFixed(4));
-      });
+    w.rpOnMeasure(measureFilm);
+    w.rpOnScroll(paint);
+    if (!reduced) w.rpOnFrame(function () {
+      if (!on) return;
+      var target = clamp(vel * -0.12, -5, 5);
+      var next = skew + (target - skew) * 0.12;
+      if (Math.abs(target) < 0.01 && Math.abs(next) < 0.02) next = 0;
+      if (Math.abs(next - skew) < 0.005 && next !== 0) return;
+      if (next !== skew) { skew = next; stale = true; paint(Y); }
+    });
+    all("img", track).forEach(function (im) { if (!im.complete) im.addEventListener("load", remeasure, { once: true }); });
+
+    /* tabbing to a panel scrolls the page to where that panel is on screen;
+       a click never does, so a panel stays under the pointer that chose it */
+    track.addEventListener("focusin", function (e) {
+      if (!on || !keyboard || w.rpFocusRestoring) return;
+      var pn = e.target.closest(".panel");
+      if (!pn) return;
+      if (pin) pin.scrollLeft = 0;
+      var want = clamp((pn.offsetLeft + pn.offsetWidth / 2 - VW / 2) / Math.max(1, dist), 0, 1);
+      var y = top + want * dist;
+      if (lenis) lenis.scrollTo(y, { immediate: true, force: true }); else w.scrollTo(0, y);
+    });
+
+    /* touch: a sideways drag over the pinned strip moves it too */
+    if (pin) {
+      var x0 = 0, y0 = 0, lastX = 0, mode = null;
+      pin.addEventListener("touchstart", function (e) {
+        if (!on || e.touches.length !== 1) { mode = "v"; return; }
+        x0 = lastX = e.touches[0].clientX; y0 = e.touches[0].clientY; mode = null;
+      }, { passive: true });
+      pin.addEventListener("touchmove", function (e) {
+        if (!on || mode === "v" || e.touches.length !== 1) return;
+        var t = e.touches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+        if (!mode) {
+          if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+          mode = Math.abs(dx) > Math.abs(dy) ? "h" : "v";
+          if (mode === "v") return;
+        }
+        if (e.cancelable) e.preventDefault();
+        var step = (lastX - t.clientX) * 1.4;
+        lastX = t.clientX;
+        w.scrollTo(0, clamp(w.scrollY + step, strip.top, strip.end));
+      }, { passive: false });
     }
-    onScroll(run);
-    run();
-  })();
-
-  /* ---------------------------------------------------------------
-     Scenes: the page takes the palette of whichever section is at the
-     middle of the screen, and the colours animate between them
-     --------------------------------------------------------------- */
-  (function scenes() {
-    if (reduced) return;
-    var secs = all("main > section, main > article");
-    if (!secs.length || !(w.CSS && CSS.supports && CSS.supports("color", "oklch(0.5 0.1 100)"))) return;
-    root.classList.add("has-scenes");
-    var cur = null, t = null;
-    function run() {
-      var mid = w.innerHeight * 0.5, scene = "slate";
-      for (var i = 0; i < secs.length; i++) {
-        var r = secs[i].getBoundingClientRect();
-        if (r.top <= mid && r.bottom > mid) { scene = secs[i].dataset.surface || "slate"; break; }
-      }
-      if (scene === cur) return;
-      cur = scene;
-      if (scene === "slate") delete root.dataset.scene; else root.dataset.scene = scene;
-      /* the canvas caches its colours, so it re-reads them once the change has landed */
-      w.clearTimeout(t);
-      t = w.setTimeout(function () { if (w.rpSceneChanged) w.rpSceneChanged(); }, 760);
-    }
-    onScroll(run);
-    run();
-  })();
-
-  /* ---------------------------------------------------------------
-     Glyphs beside the section titles turn, faster while scrolling
-     --------------------------------------------------------------- */
-  (function spinners() {
-    var gs = all(".spin g");
-    if (!gs.length || reduced) return;
-    var angle = 0;
-    (function loop() {
-      if (!w.rpLite) {
-        angle = (angle + 0.35 + Math.min(Math.abs(vel) * 0.35, 14)) % 360;
-        for (var i = 0; i < gs.length; i++) gs[i].style.transform = "rotate(" + angle.toFixed(1) + "deg)";
-      }
-      w.requestAnimationFrame(loop);
-    })();
-  })();
-
-  /* ---------------------------------------------------------------
-     Giant background type drifts across its section as it passes
-     --------------------------------------------------------------- */
-  (function giants() {
-    var gs = all(".giant");
-    if (!gs.length || reduced) return;
-    function run() {
-      var vh = w.innerHeight;
-      gs.forEach(function (g) {
-        var host = g.parentElement.getBoundingClientRect();
-        if (host.bottom < -vh * 0.2 || host.top > vh * 1.2) return;
-        var p = clamp((vh - host.top) / (host.height + vh), 0, 1);
-        all(".giant__l", g).forEach(function (line, i) {
-          var dirn = i % 2 ? 1 : -1;
-          line.style.transform = "translate3d(" + ((p - 0.5) * 38 * dirn).toFixed(2) + "vw,0,0)";
-        });
-      });
-    }
-    onScroll(run);
-    run();
   })();
 
   /* ---------------------------------------------------------------
@@ -571,19 +512,17 @@
     var words = all(".w", el);
     if (!words.length) return;
     if (reduced) { words.forEach(function (n) { n.classList.add("is-lit"); }); return; }
-    var prev = 0;
-    function run() {
-      var r = el.getBoundingClientRect();
-      var start = w.innerHeight * 0.82, end = w.innerHeight * 0.34;
-      var p = clamp((start - r.top) / Math.max(1, r.height + (start - end)), 0, 1);
+    var top = 0, h = 0, prev = 0;
+    w.rpOnMeasure(function () { top = docTop(el); h = el.offsetHeight; });
+    w.rpOnScroll(function (y, vh) {
+      var start = vh * 0.82, end = vh * 0.34;
+      var p = clamp((start - (top - y)) / Math.max(1, h + (start - end)), 0, 1);
       var k = Math.round(p * words.length);
       if (k === prev) return;
       if (k > prev) for (var i = prev; i < k; i++) words[i].classList.add("is-lit");
       else for (var j = prev - 1; j >= k; j--) words[j].classList.remove("is-lit");
       prev = k;
-    }
-    onScroll(run);
-    run();
+    });
   })();
 
   /* ---------------------------------------------------------------
@@ -592,58 +531,66 @@
   (function progress() {
     var bar = d.getElementById("prog");
     if (!bar) return;
-    function run() {
-      var h = d.documentElement.scrollHeight - w.innerHeight;
-      bar.style.transform = "scaleX(" + (h > 0 ? clamp(w.scrollY / h, 0, 1) : 0) + ")";
-    }
-    onScroll(run);
-    w.addEventListener("resize", run, { passive: true });
-    run();
+    var h = 1, last = -1;
+    w.rpOnMeasure(function () { h = Math.max(1, root.scrollHeight - VH); });
+    w.rpOnScroll(function (y) {
+      var p = Math.round(clamp(y / h, 0, 1) * 1000) / 1000;
+      if (p === last) return;
+      last = p;
+      bar.style.transform = "scaleX(" + p + ")";
+    });
   })();
 
   /* ---------------------------------------------------------------
      The reticle. A measuring cursor; over the hero field it reads out
-     the hypothesis under it.
+     the hypothesis under it. It only animates while it is catching up
+     with the pointer, and it never asks the page what is under it.
      --------------------------------------------------------------- */
   (function reticle() {
     var el = d.getElementById("reticle");
     var read = d.getElementById("reticleRead");
     if (!el || !fine || reduced) { if (el) el.remove(); if (read) read.remove(); return; }
-    var tx = -100, ty = -100, cx = tx, cy = ty, seen = false;
-    var frameN = 0;
-    (function loop() {
-      cx += (tx - cx) * 0.2;
-      cy += (ty - cy) * 0.2;
+    var tx = -100, ty = -100, cx = tx, cy = ty, seen = false, running = false, big = false;
+    function place() {
       var tf = "translate3d(" + cx.toFixed(1) + "px," + cy.toFixed(1) + "px,0)";
       el.style.transform = tf;
       if (read) read.style.transform = tf;
-      if (seen && (++frameN % 6 === 0)) sense(tx, ty, null, true);
+    }
+    function loop() {
+      cx += (tx - cx) * 0.24;
+      cy += (ty - cy) * 0.24;
+      if (Math.abs(tx - cx) < 0.15 && Math.abs(ty - cy) < 0.15) { cx = tx; cy = ty; running = false; place(); return; }
+      place();
       w.requestAnimationFrame(loop);
-    })();
-    function sense(x, y, target, readOnly) {
-      if (!readOnly) el.classList.toggle("is-lg", !!(target && target.closest && target.closest("a, button, .panel, .file")));
-      var v = w.rpFieldRead ? w.rpFieldRead(x, y) : null;
+    }
+    function kick() { if (!running) { running = true; w.requestAnimationFrame(loop); } }
+    var readOn = false;
+    function sense() {
+      var v = w.rpFieldRead ? w.rpFieldRead(tx, ty) : null;
       if (v && read) {
-        read.textContent = v.x + "  /  " + v.y;
-        read.classList.add("is-on");
-      } else if (read) read.classList.remove("is-on");
+        var s = v.x + "  /  " + v.y;
+        if (read.textContent !== s) read.textContent = s;
+        if (!readOn) { read.classList.add("is-on"); readOn = true; }
+      } else if (readOn && read) { read.classList.remove("is-on"); readOn = false; }
     }
     d.addEventListener("pointermove", function (ev) {
       if (ev.pointerType && ev.pointerType !== "mouse") return;
       tx = ev.clientX; ty = ev.clientY;
       /* the native cursor stays until the reticle actually has somewhere to be */
-      if (!seen) { seen = true; cx = tx; cy = ty; root.classList.add("has-reticle"); }
-      el.classList.add("is-on");
-      if (w.rpFieldPointer) w.rpFieldPointer(ev.clientX, ev.clientY);
-      sense(ev.clientX, ev.clientY, ev.target);
+      if (!seen) { seen = true; cx = tx; cy = ty; root.classList.add("has-reticle"); el.classList.add("is-on"); }
+      if (w.rpFieldPointer) w.rpFieldPointer(tx, ty);
+      sense();
+      kick();
     }, { passive: true });
-    onScroll(function () {
-      if (!seen) return;
-      sense(tx, ty, d.elementFromPoint(tx, ty));
-    });
-    d.documentElement.addEventListener("mouseleave", function () {
+    d.addEventListener("pointerover", function (ev) {
+      var b = !!(ev.target && ev.target.closest && ev.target.closest("a, button, .panel[data-case], .file"));
+      if (b !== big) { big = b; el.classList.toggle("is-lg", b); }
+    }, { passive: true });
+    /* the field folds under a still pointer as the page scrolls */
+    w.rpOnScrollRead(function () { if (seen && (readOn || w.rpHeroFold && w.rpHeroFold() < 1)) sense(); });
+    root.addEventListener("mouseleave", function () {
       el.classList.remove("is-on");
-      if (read) read.classList.remove("is-on");
+      if (read) { read.classList.remove("is-on"); readOn = false; }
       root.classList.remove("has-reticle");
       seen = false;
     });
@@ -651,7 +598,8 @@
     d.addEventListener("mouseup", function () { el.classList.remove("is-down"); });
     w.rpReticleReset = function () {
       el.classList.remove("is-on", "is-lg", "is-down");
-      if (read) read.classList.remove("is-on");
+      big = false;
+      if (read) { read.classList.remove("is-on"); readOn = false; }
     };
   })();
 
@@ -671,12 +619,14 @@
   }
 
   /* ---------------------------------------------------------------
-     Page transition between the pages of this site
+     Page transition between the pages of this site. The wipe opens a
+     page only when this site closed the one before it; a visitor who
+     arrives from anywhere else sees the page, not a curtain.
      --------------------------------------------------------------- */
   (function wipe() {
     var el = d.getElementById("wipe");
     if (!el || reduced) return;
-    el.addEventListener("animationend", function () { root.classList.add("no-wipe"); });
+    el.addEventListener("animationend", function () { root.classList.remove("wipe-in"); });
     d.addEventListener("click", function (ev) {
       if (ev.defaultPrevented) return;
       var a = ev.target.closest && ev.target.closest("a");
@@ -690,13 +640,14 @@
       if (url.pathname === location.pathname && url.hash) return;
       if (/\.pdf($|\?)/i.test(url.pathname)) return;
       ev.preventDefault();
+      try { sessionStorage.setItem("rp-wipe", "1"); } catch (e) {}
       root.classList.add("wipe-out");
       w.setTimeout(function () { location.href = a.href; }, 400);
     });
     w.addEventListener("pageshow", function (e) {
       if (!e.persisted) return;
-      root.classList.remove("wipe-out");
-      root.classList.add("no-wipe");
+      root.classList.remove("wipe-out", "wipe-in");
+      try { sessionStorage.removeItem("rp-wipe"); } catch (err) {}
       all(".magnet").forEach(function (m) { m.style.transform = ""; });
       if (w.rpReticleReset) w.rpReticleReset();
     });
@@ -722,7 +673,6 @@
   /* the first time the page has its final height, honour the fragment or the
      saved position */
   w.addEventListener("load", function () {
-    if (root.classList.contains("intro")) return;
-    w.setTimeout(function () { if (w.rpFilmMeasure) w.rpFilmMeasure(); restore(); }, 60);
+    w.setTimeout(function () { measure(); restore(); }, 60);
   });
 })(window, document);

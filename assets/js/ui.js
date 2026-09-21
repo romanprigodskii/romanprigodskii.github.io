@@ -1,7 +1,8 @@
 /* Interface layer: the menu, the project cases, rolling labels, the name
-   that breathes under the pointer, the copy-to-clipboard address, the Now
-   block and the section indicator. Each piece checks for its own markup and
-   does nothing when it is absent, so every page can load this file. */
+   that breathes under the pointer, the copy-to-clipboard address, the
+   decision countdowns and the section indicator. Each piece checks for its
+   own markup and does nothing when it is absent, so every page can load this
+   file. */
 (function (w, d) {
   "use strict";
 
@@ -10,16 +11,36 @@
   var fine = w.matchMedia("(pointer: fine)").matches;
   function all(sel, ctx) { return Array.prototype.slice.call((ctx || d).querySelectorAll(sel)); }
   function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  function docTop(el) { return el.getBoundingClientRect().top + w.scrollY; }
+
+  /* the motion layer's cached frame loop, or plain scroll events without it */
+  function onMeasure(fn) { if (w.rpOnMeasure) w.rpOnMeasure(fn); else { fn(); w.addEventListener("resize", fn, { passive: true }); w.addEventListener("load", fn); } }
+  function onScroll(fn) {
+    if (w.rpOnScroll) { w.rpOnScroll(fn); return; }
+    var q = false;
+    var run = function () { q = false; fn(w.scrollY, w.innerHeight); };
+    w.addEventListener("scroll", function () { if (!q) { q = true; w.requestAnimationFrame(run); } }, { passive: true });
+    w.addEventListener("resize", run, { passive: true });
+    run();
+  }
 
   function lenis() { return w.rpLenis || null; }
-  /* while a dialog is open, everything behind it is inert: no focus, no reading */
+  /* while a dialog is open, everything behind it is inert: no focus, no reading.
+     Marking a whole page inert restyles all of it, so it waits until the layer
+     has finished arriving, and it lifts the moment the layer starts to leave */
   var behind = ["bar", "main", "scrollnav"].map(function (id) { return d.getElementById(id); })
     .concat(all("body > footer, body > .skip"));
+  var inertT = 0;
   function lockScroll(on) {
     var l = lenis();
     if (l) { if (on) l.stop(); else l.start(); }
     if (w.rpFieldPause) w.rpFieldPause(on);
     root.classList.toggle("is-locked", on);
+    w.clearTimeout(inertT);
+    if (on) inertT = w.setTimeout(function () { setInert(true); }, reduced ? 0 : 700);
+    else setInert(false);
+  }
+  function setInert(on) {
     behind.forEach(function (el) {
       if (!el) return;
       if (on) el.setAttribute("inert", ""); else el.removeAttribute("inert");
@@ -52,6 +73,12 @@
     var first = f[0], last = f[f.length - 1];
     if (ev.shiftKey && d.activeElement === first) { ev.preventDefault(); last.focus(); }
     else if (!ev.shiftKey && d.activeElement === last) { ev.preventDefault(); first.focus(); }
+  }
+  /* giving focus back must not scroll anything, including the filmstrip */
+  function restoreFocus(el) {
+    if (!el || !el.focus) return;
+    w.rpFocusRestoring = true;
+    try { el.focus({ preventScroll: true }); } finally { w.rpFocusRestoring = false; }
   }
 
   /* ---------------------------------------------------------------
@@ -86,7 +113,7 @@
       hideT = w.setTimeout(function () {
         if (open) return;
         panel.hidden = true;
-        if (then) then(); else if (lastFocus && lastFocus.focus) lastFocus.focus();
+        if (then) then(); else restoreFocus(lastFocus);
       }, reduced ? 0 : 520);
     }
     btn.addEventListener("click", function () { open ? hide() : show(); });
@@ -133,13 +160,38 @@
     if (!layer || !slot || !store) return;
 
     var order = all(".case", store).map(function (n) { return n.id; });
-    var current = null, lastFocus = null, pushed = false, closeT = null, swapT = null;
+    var current = null, lastFocus = null, pushed = false, closeT = null, swapT = null, isOpen = false;
     scroller.setAttribute("tabindex", "-1");
     root.classList.add("has-cases");
+
+    /* a case's pictures start loading as soon as its panel is pointed at, so
+       they are decoded by the time the layer arrives */
+    function warm(id) {
+      var art = d.getElementById(id);
+      if (!art || art.dataset.warm) return;
+      art.dataset.warm = "1";
+      all("img", art).forEach(function (im) {
+        im.loading = "eager";
+        if (im.decode) im.decode().catch(function () {});
+      });
+    }
+    d.addEventListener("pointerover", function (e) {
+      var p = e.target.closest && e.target.closest(".panel[data-case]");
+      if (p) warm(p.dataset.case);
+    }, { passive: true });
+    d.addEventListener("focusin", function (e) {
+      var p = e.target.closest && e.target.closest(".panel[data-case]");
+      if (p) warm(p.dataset.case);
+    });
+    /* and the rest once the page is idle */
+    (w.requestIdleCallback || function (f) { return w.setTimeout(f, 2500); })(function () {
+      order.forEach(warm);
+    }, { timeout: 4000 });
 
     function mount(id) {
       var art = d.getElementById(id);
       if (!art) return false;
+      warm(id);
       if (current && current !== id) {
         var prev = d.getElementById(current);
         if (prev) store.appendChild(prev);
@@ -170,11 +222,16 @@
       if (w.rpMenuHide) w.rpMenuHide(function () {});
       if (!mount(id)) return;
       w.clearTimeout(closeT);
-      if (!root.classList.contains("case-open") || layer.hidden) {
+      if (!isOpen) {
+        isOpen = true;
         lastFocus = opts.from || lastFocus || d.activeElement;
         layer.hidden = false;
-        w.requestAnimationFrame(function () { root.classList.add("case-open"); });
         lockScroll(true);
+        /* one frame to lay the case out off screen, then the slide starts from
+           a finished layout instead of stalling on its first frame */
+        w.requestAnimationFrame(function () {
+          w.requestAnimationFrame(function () { if (isOpen) root.classList.add("case-open"); });
+        });
       }
       /* only now is the scroller laid out, so only now does resetting it stick */
       scroller.scrollTop = 0;
@@ -194,20 +251,21 @@
 
     function close(opts) {
       opts = opts || {};
-      if (!root.classList.contains("case-open")) return;
+      if (!isOpen) return;
+      isOpen = false;
       root.classList.remove("case-open");
       w.clearTimeout(swapT);
       layer.classList.remove("is-swapping");
       lockScroll(false);
       w.clearTimeout(closeT);
       closeT = w.setTimeout(function () {
-        if (root.classList.contains("case-open")) return;
+        if (isOpen) return;
         layer.hidden = true;
         if (current) { var art = d.getElementById(current); if (art) store.appendChild(art); }
         current = null;
-        if (lastFocus && lastFocus.focus && !(w.rpMenuOpen && w.rpMenuOpen())) lastFocus.focus({ preventScroll: true });
+        if (!(w.rpMenuOpen && w.rpMenuOpen())) restoreFocus(lastFocus);
         lastFocus = null;
-      }, reduced ? 0 : 620);
+      }, reduced ? 0 : 640);
       if (!opts.fromHistory && pushed) { pushed = false; history.back(); }
       else if (!opts.fromHistory) history.replaceState(null, "", location.pathname + location.search + "#work");
     }
@@ -226,17 +284,18 @@
     if (nextBtn) nextBtn.addEventListener("click", function () {
       var i = order.indexOf(current);
       var id = order[(i + 1) % order.length];
+      warm(id);
       layer.classList.add("is-swapping");
       w.clearTimeout(swapT);
       swapT = w.setTimeout(function () {
-        if (!root.classList.contains("case-open")) return;
+        if (!isOpen) return;
         open(id);
         layer.classList.remove("is-swapping");
       }, reduced ? 0 : 280);
     });
     layer.setAttribute("tabindex", "-1");
     d.addEventListener("keydown", function (e) {
-      if (!root.classList.contains("case-open")) return;
+      if (!isOpen) return;
       if (e.key === "Escape") { e.preventDefault(); close(); return; }
       if (e.key === "Tab" && !layer.contains(d.activeElement)) { e.preventDefault(); closeBtn && closeBtn.focus(); return; }
       trap(layer, e);
@@ -264,12 +323,14 @@
 
   /* ---------------------------------------------------------------
      The name breathes: letters near the pointer widen along the
-     typeface's own width axis
+     typeface's own width axis. Each frame reads one box, the heading's,
+     and places the letters from offsets cached at rest.
      --------------------------------------------------------------- */
   (function breathe() {
     var hosts = all("[data-letters]");
     var hero = d.querySelector(".hero");
-    if (!hosts.length || !hero || reduced || !fine) return;
+    var h1 = d.querySelector(".hero__name");
+    if (!hosts.length || !hero || !h1 || reduced || !fine) return;
     var letters = [];
     hosts.forEach(function (h) {
       all(".wi", h).forEach(function (wi) {
@@ -280,31 +341,44 @@
           s.className = "ch";
           s.textContent = ch;
           wi.appendChild(s);
-          letters.push({ el: s, w: 0, g: 0 });
+          letters.push({ el: s, x: 0, y: 0, w: 0, g: 0, v: "" });
         });
       });
     });
-    var px = -9999, py = -9999, active = false, raf = null;
+    var px = -9999, py = -9999, active = false, raf = null, placed = false;
+    function place() {
+      /* centres relative to the heading, taken while the letters are at rest */
+      var hr = h1.getBoundingClientRect();
+      letters.forEach(function (l) {
+        var r = l.el.getBoundingClientRect();
+        l.x = r.left + r.width / 2 - hr.left;
+        l.y = r.top + r.height / 2 - hr.top;
+      });
+      placed = true;
+    }
     function frame() {
       raf = null;
+      if (!placed) place();
+      var hr = h1.getBoundingClientRect();
       var still = true;
-      var rects = letters.map(function (l) { return l.el.getBoundingClientRect(); });
-      letters.forEach(function (l, i) {
-        var r = rects[i];
-        var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-        var dist = Math.hypot(px - cx, (py - cy) * 1.4);
+      for (var i = 0; i < letters.length; i++) {
+        var l = letters[i];
+        var dist = Math.hypot(px - (hr.left + l.x), (py - (hr.top + l.y)) * 1.4);
         var k = active ? Math.pow(clamp(1 - dist / 260, 0, 1), 2) : 0;
         var tw = k * 9, tg = k * 100;
         l.w += (tw - l.w) * 0.16;
         l.g += (tg - l.g) * 0.16;
         if (Math.abs(tw - l.w) > 0.05 || Math.abs(tg - l.g) > 0.5) still = false;
-        l.el.style.fontVariationSettings = '"wdth" ' + (116 + l.w).toFixed(2) + ', "wght" ' + (780 + l.g).toFixed(0);
-      });
+        var v = '"wdth" ' + (116 + l.w).toFixed(1) + ', "wght" ' + (780 + l.g).toFixed(0);
+        if (v !== l.v) { l.el.style.fontVariationSettings = v; l.v = v; }
+      }
       if (!still) raf = w.requestAnimationFrame(frame);
     }
     function kick() { if (!raf) raf = w.requestAnimationFrame(frame); }
+    hero.addEventListener("pointerenter", function () { if (!active) placed = false; });
     hero.addEventListener("pointermove", function (e) { px = e.clientX; py = e.clientY; active = true; kick(); });
     hero.addEventListener("pointerleave", function () { active = false; kick(); });
+    onMeasure(function () { placed = false; });
   })();
 
   /* ---------------------------------------------------------------
@@ -332,39 +406,64 @@
   });
 
   /* ---------------------------------------------------------------
-     Clocks and the Now block
+     Decision countdowns, beside the workshops they belong to. The
+     deadline is the end of the decision day anywhere on earth.
      --------------------------------------------------------------- */
-  (function now() {
-    var clocks = all("[data-clock]");
-    var waits = all("[data-now-wait]");
-    var fmtS = null, fmtM = null;
-    try {
-      fmtS = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Moscow", hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
-      fmtM = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Moscow", hour12: false, hour: "2-digit", minute: "2-digit" });
-    } catch (e) {}
-    /* two decision dates, each at the end of the day anywhere on earth:
-       TAE on 22 September, E-Values and NewInML on 29 September */
-    var TAE = Date.UTC(2026, 8, 23, 11, 59, 0);
-    var REST = Date.UTC(2026, 8, 30, 11, 59, 0);
-    function inWords(ms) {
-      var days = Math.floor(ms / 864e5), hrs = Math.floor((ms % 864e5) / 36e5);
-      return (days > 0 ? days + (days === 1 ? " day " : " days ") : "") + hrs + (hrs === 1 ? " hour" : " hours");
-    }
+  (function countdowns() {
+    var items = all("[data-countdown]").map(function (el) {
+      var at = Date.parse(el.getAttribute("data-countdown"));
+      var k = el.querySelector(".cd__k"), clock = el.querySelector(".cd__t");
+      if (!isFinite(at) || !clock) return null;
+      /* without script the line reads "Decision due 22 September"; with it,
+         the date becomes a live count and returns once the day has passed */
+      var it = { el: el, at: at, k: k, clock: clock, k0: k ? k.textContent : "", t0: clock.textContent, u: [] };
+      if (at > Date.now()) {
+        el.classList.add("is-live");
+        if (k) k.textContent = el.getAttribute("data-live") || "Decision in";
+        clock.setAttribute("aria-hidden", "true");
+        clock.innerHTML = '<b data-u="d">00</b><i>d</i> <b data-u="h">00</b><i>h</i> <b data-u="m">00</b><i>m</i> <b data-u="s">00</b><i>s</i>';
+        it.u = ["d", "h", "m", "s"].map(function (u) { return clock.querySelector('[data-u="' + u + '"]'); });
+        /* one readable sentence for assistive technology, rather than a ticking one */
+        var sr = d.createElement("span");
+        sr.className = "u-sr";
+        sr.textContent = it.t0 + ", end of day anywhere on earth";
+        el.appendChild(sr);
+        it.sr = sr;
+      } else it.over = true;
+      if (it.over) el.classList.add("is-over");
+      return it;
+    }).filter(Boolean);
+    if (!items.length) return;
+    function two(n) { return n < 10 ? "0" + n : String(n); }
     function tick() {
-      var n = new Date();
-      clocks.forEach(function (c) {
-        if (!fmtS) return;
-        c.textContent = (c.closest(".hero__clock") ? fmtS : fmtM).format(n);
+      var now = Date.now();
+      items.forEach(function (it) {
+        if (it.over) return;
+        var ms = it.at - now;
+        if (ms <= 0) {
+          it.over = true;
+          it.el.classList.remove("is-live");
+          it.el.classList.add("is-over");
+          if (it.k) it.k.textContent = it.k0;
+          it.clock.removeAttribute("aria-hidden");
+          it.clock.textContent = it.t0;
+          if (it.sr) it.sr.remove();
+          return;
+        }
+        var s = Math.floor(ms / 1000);
+        var v = [Math.floor(s / 86400), Math.floor((s % 86400) / 3600), Math.floor((s % 3600) / 60), s % 60];
+        for (var i = 0; i < it.u.length; i++) {
+          var t = two(v[i]);
+          if (it.u[i] && it.u[i].textContent !== t) it.u[i].textContent = t;
+        }
       });
-      var t = n.getTime(), msg;
-      if (t < TAE) msg = "the TAE decision, in " + inWords(TAE - t) + ", then E-Values and NewInML on 29 September";
-      else if (t < REST) msg = "E-Values and NewInML decisions, in " + inWords(REST - t);
-      else msg = "NeurIPS 2026 workshop decisions, which are now out";
-      waits.forEach(function (wv) { if (wv.textContent !== msg) wv.textContent = msg; });
     }
-    if (!clocks.length && !waits.length) return;
     tick();
-    w.setInterval(tick, 1000);
+    /* tick on the second, not a drifting second after the page opened */
+    (function loop() {
+      w.setTimeout(function () { if (!d.hidden) tick(); loop(); }, 1000 - (Date.now() % 1000) + 5);
+    })();
+    d.addEventListener("visibilitychange", function () { if (!d.hidden) tick(); });
   })();
 
   /* ---------------------------------------------------------------
@@ -385,64 +484,76 @@
   })();
 
   /* ---------------------------------------------------------------
-     Section indicator
+     Section indicator, from cached offsets
      --------------------------------------------------------------- */
   (function scrollnav() {
     var nav = d.getElementById("scrollnav");
     var nEl = d.getElementById("snN"), nameEl = d.getElementById("snName"), bar = d.getElementById("snBar");
     var secs = all("[data-nav]");
     if (!nav || !secs.length) return;
-    var last = -1, queued = false;
-    function run() {
-      queued = false;
-      var mid = w.innerHeight * 0.45, idx = 0;
-      for (var i = 0; i < secs.length; i++) if (secs[i].getBoundingClientRect().top <= mid) idx = i;
-      var r = secs[idx].getBoundingClientRect();
-      var p = clamp((mid - r.top) / Math.max(1, r.height), 0, 1);
-      bar.style.transform = "scaleX(" + p.toFixed(3) + ")";
+    var geo = [], navY = 0, last = -1, lastP = -1, lastSurf = null, lastOn = null, swapT = 0;
+    onMeasure(function () {
+      geo = secs.map(function (s) {
+        var t = docTop(s);
+        return { top: t, bottom: t + s.offsetHeight, surface: s.dataset.surface || null, strip: s.classList.contains("film") && s.classList.contains("is-pinned") };
+      });
+      navY = w.innerHeight / 2;
+      last = -1; lastP = -1; lastSurf = null; lastOn = null;
+    });
+    onScroll(function (y, vh) {
+      if (!geo.length) return;
+      var mid = y + vh * 0.45, idx = 0, i;
+      for (i = 0; i < geo.length; i++) if (geo[i].top <= mid) idx = i;
+      var g = geo[idx];
+      var p = Math.round(clamp((mid - g.top) / Math.max(1, g.bottom - g.top), 0, 1) * 500) / 500;
+      if (p !== lastP) { lastP = p; bar.style.transform = "scaleY(" + p + ")"; }
       if (idx !== last) {
         last = idx;
         nav.classList.add("is-swap");
-        w.setTimeout(function () {
+        w.clearTimeout(swapT);
+        swapT = w.setTimeout(function () {
           nEl.textContent = String(idx + 1).padStart(2, "0");
           nameEl.textContent = secs[idx].dataset.nav;
           nav.classList.remove("is-swap");
         }, reduced ? 0 : 180);
       }
-      var nr = nav.getBoundingClientRect(), under = null;
-      var ny = nr.top + nr.height / 2;
-      for (var k = 0; k < secs.length; k++) {
-        var sr = secs[k].getBoundingClientRect();
-        if (sr.top <= ny && sr.bottom >= ny) { under = secs[k]; break; }
-      }
-      var surf = under && under.dataset.surface;
-      if (surf) nav.dataset.surface = surf; else delete nav.dataset.surface;
+      var at = y + navY, surf = null;
+      for (i = 0; i < geo.length; i++) if (geo[i].top <= at && geo[i].bottom >= at) { surf = geo[i].surface; break; }
+      if (surf !== lastSurf) { lastSurf = surf; if (surf) nav.dataset.surface = surf; else delete nav.dataset.surface; }
       /* the pinned strip has its own counter, and its panels run through the gutter */
-      var inStrip = secs[idx].classList.contains("film") && secs[idx].classList.contains("is-pinned");
-      nav.classList.toggle("is-on", idx > 0 && idx < secs.length - 1 && !inStrip && !root.classList.contains("case-open"));
-    }
-    w.addEventListener("scroll", function () { if (!queued) { queued = true; w.requestAnimationFrame(run); } }, { passive: true });
-    w.addEventListener("resize", run, { passive: true });
-    run();
+      var show = idx > 0 && idx < secs.length - 1 && !g.strip;
+      if (show !== lastOn) { lastOn = show; nav.classList.toggle("is-on", show); }
+    });
   })();
 
   /* ---------------------------------------------------------------
-     The method cards settle back as the next one covers them
+     The method cards settle back as the next one covers them. Their
+     boxes are read in the frame's read phase, and only while the stack
+     is on screen.
      --------------------------------------------------------------- */
   (function stack() {
+    var list = d.getElementById("stack");
     var cards = all("#stack .card");
-    if (cards.length < 2 || reduced) return;
-    var queued = false;
-    function run() {
-      queued = false;
+    if (!list || cards.length < 2 || reduced || !w.rpOnScrollRead) return;
+    var top = 0, bottom = 0, near = false, covers = cards.map(function () { return 0; }), shown = covers.slice();
+    w.rpOnMeasure(function () { top = docTop(list); bottom = top + list.offsetHeight; });
+    w.rpOnScrollRead(function (y, vh) {
+      near = y + vh > top - 40 && y < bottom + 40;
+      if (!near) return;
+      var rects = cards.map(function (c) { return c.getBoundingClientRect(); });
       for (var i = 0; i < cards.length - 1; i++) {
-        var a = cards[i].getBoundingClientRect(), b = cards[i + 1].getBoundingClientRect();
-        var cover = clamp((a.bottom - b.top) / Math.max(1, a.height), 0, 1);
-        cards[i].style.transform = "scale(" + (1 - cover * 0.05).toFixed(4) + ")";
-        cards[i].style.filter = cover > 0.01 ? "brightness(" + (1 - cover * 0.28).toFixed(3) + ")" : "";
+        covers[i] = clamp((rects[i].bottom - rects[i + 1].top) / Math.max(1, rects[i].height), 0, 1);
       }
-    }
-    w.addEventListener("scroll", function () { if (!queued) { queued = true; w.requestAnimationFrame(run); } }, { passive: true });
-    run();
+    });
+    w.rpOnScroll(function () {
+      if (!near) return;
+      for (var i = 0; i < cards.length - 1; i++) {
+        var c = Math.round(covers[i] * 200) / 200;
+        if (c === shown[i]) continue;
+        shown[i] = c;
+        cards[i].style.transform = c > 0 ? "scale(" + (1 - c * 0.05).toFixed(4) + ")" : "";
+        cards[i].style.setProperty("--cover", c);
+      }
+    });
   })();
 })(window, document);

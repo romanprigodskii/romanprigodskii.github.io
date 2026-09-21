@@ -273,12 +273,36 @@
     var running = false, raf = null, visible = true, paused = false, lost = false;
     var labelsHost = opts.labels || null;
 
+    /* the canvas box is read when it changes, never from inside a frame: a
+       read there forces the page to lay itself out mid-scroll */
+    var needSize = true, cap = 2;
+    W = canvas.clientWidth || 1; H = canvas.clientHeight || 1;
+    if ("ResizeObserver" in w) {
+      new ResizeObserver(function (entries) {
+        var r = entries[entries.length - 1].contentRect;
+        W = r.width || 1; H = r.height || 1; needSize = true;
+      }).observe(canvas);
+    } else {
+      w.addEventListener("resize", function () { W = canvas.clientWidth || 1; H = canvas.clientHeight || 1; needSize = true; }, { passive: true });
+    }
     function size() {
-      dpr = Math.min(w.devicePixelRatio || 1, w.rpLite ? 1 : 2);
-      W = canvas.clientWidth || 1; H = canvas.clientHeight || 1;
+      needSize = false;
+      dpr = Math.min(w.devicePixelRatio || 1, cap);
       var nw = Math.round(W * dpr), nh = Math.round(H * dpr);
       if (canvas.width !== nw || canvas.height !== nh) { canvas.width = nw; canvas.height = nh; }
       gl.viewport(0, 0, nw, nh);
+    }
+    /* a device that cannot hold the frame rate at full resolution gets a
+       lighter canvas, once, instead of a stuttering one */
+    var gaps = [], lastFrame = 0;
+    function pace(t) {
+      if (cap <= 1.25) return;
+      if (lastFrame && t - lastFrame < 100) gaps.push(t - lastFrame);
+      lastFrame = t;
+      if (gaps.length < 90) return;
+      var sorted = gaps.slice().sort(function (a, b) { return a - b; });
+      gaps = [];
+      if (sorted[45] > 22) { cap = 1.25; needSize = true; }
     }
 
     function camera(time) {
@@ -312,7 +336,7 @@
     }
 
     function draw(time) {
-      size();
+      if (needSize) size();
       camera(time);
       var zMul = 1 - ease(clamp(fold, 0, 1));
 
@@ -397,16 +421,18 @@
       add("e-value at fair odds →", 1.7, -1.42, 0, "fl--axis fl--right");
       add("after the book's margin →", -2.05, -0.2, 0, "fl--axis fl--rot");
     }
+    var labelsOn = null;
     function placeLabels() {
       if (!labelEls) return;
-      var on = clamp((ease(clamp(fold, 0, 1)) - 0.6) / 0.35, 0, 1);
-      labelsHost.style.opacity = on.toFixed(3);
-      if (on <= 0) return;
+      var on = clamp((ease(clamp(fold, 0, 1)) - 0.6) / 0.35, 0, 1).toFixed(3);
+      if (on !== labelsOn) { labelsHost.style.opacity = on; labelsOn = on; }
+      if (+on <= 0) return;
       labelEls.forEach(function (l) {
         var p = project(l.x, l.y, l.z);
         if (!p) return;
-        l.el.style.transform = "translate3d(" + p.x.toFixed(1) + "px," + p.y.toFixed(1) + "px,0)" +
+        var tf = "translate3d(" + p.x.toFixed(1) + "px," + p.y.toFixed(1) + "px,0)" +
           (l.rot ? " translate(-50%,-50%) rotate(-90deg)" : "");
+        if (tf !== l.tf) { l.el.style.transform = tf; l.tf = tf; }
       });
     }
     buildLabels();
@@ -419,6 +445,7 @@
       smx += (mx - smx) * 0.05;
       smy += (my - smy) * 0.05;
       fold += (foldTarget - fold) * (reduced ? 1 : 0.12);
+      pace(time);
       draw(time);
       /* with reduced motion nothing changes between frames once revealed and
          settled, so stop until something asks for a new frame */
@@ -486,7 +513,8 @@
       run: function () { t0 = null; start(); },
       restartReveal: function () { if (!reduced) { reveal = 0; t0 = null; } start(); },
       pause: function (p) { paused = !!p; if (paused) stop(); else if (visible && !document.hidden) start(); },
-      redraw: function () { readColours(); if (!running && !lost) draw(performance.now()); },
+      /* new colours land in this frame, so a theme switch never shows the old ones */
+      redraw: function () { readColours(); if (!lost) draw(performance.now()); },
       setFold: function (v) { foldTarget = clamp(v, 0, 1); if (!running && !lost) { if (reduced) fold = foldTarget; start(); } },
       pointer: pointer,
       read: read,

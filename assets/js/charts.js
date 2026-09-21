@@ -334,55 +334,5 @@
     host.appendChild(svg);
   }
 
-  /* ---------------------------------------------------------
-     6. The ribbon. The 84 log e-values at fair odds, in registry
-        order, smoothed over nine neighbours: the audit drawn as one
-        line, which the page then draws as you scroll.
-     --------------------------------------------------------- */
-  function ribbon(svg, rows) {
-    var W = Math.max(200, svg.clientWidth || 500), H = Math.max(300, svg.clientHeight || 700);
-    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
-    while (svg.firstChild) svg.removeChild(svg.firstChild);
-    var vals = rows.map(function (r) { return log10(clampLog(r.ef, 0.01)); });
-    /* a 15-wide moving average, then every sixth point: the registry's trend by
-       family, which reads as a line rather than as 84 wiggles */
-    var k = 7, sm0 = vals.map(function (v, i) {
-      var s = 0, n = 0;
-      for (var j = i - k; j <= i + k; j++) if (j >= 0 && j < vals.length) { s += vals[j]; n++; }
-      return s / n;
-    });
-    var sm = sm0.filter(function (v, i) { return i % 6 === 0; });
-    if ((sm0.length - 1) % 6) sm.push(sm0[sm0.length - 1]);
-    var lo = Math.min.apply(null, sm), hi = Math.max.apply(null, sm);
-    var sw = Math.max(14, Math.min(30, W * 0.05)), pad = sw;
-    var pts = sm.map(function (v, i) {
-      return { x: pad + (v - lo) / Math.max(1e-6, hi - lo) * (W - 2 * pad), y: pad + i / (sm.length - 1) * (H - 2 * pad) };
-    });
-    var dPath = "M" + pts[0].x.toFixed(1) + "," + pts[0].y.toFixed(1);
-    for (var i = 0; i < pts.length - 1; i++) {
-      var p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
-      dPath += " C" + (p1.x + (p2.x - p0.x) / 6).toFixed(1) + "," + (p1.y + (p2.y - p0.y) / 6).toFixed(1) +
-        " " + (p2.x - (p3.x - p1.x) / 6).toFixed(1) + "," + (p2.y - (p3.y - p1.y) / 6).toFixed(1) +
-        " " + p2.x.toFixed(1) + "," + p2.y.toFixed(1);
-    }
-    var ghost = el("path", { d: dPath, class: "ribbon__ghost", "stroke-width": sw });
-    var path = el("path", { d: dPath, class: "ribbon__path", "stroke-width": sw });
-    var tip = el("circle", { r: sw * 0.9, class: "ribbon__tip" });
-    svg.appendChild(ghost); svg.appendChild(path); svg.appendChild(tip);
-    var L = path.getTotalLength();
-    path.style.strokeDasharray = L.toFixed(1);
-    path.style.strokeDashoffset = L.toFixed(1);
-    return {
-      set: function (p) {
-        p = Math.max(0, Math.min(1, p));
-        path.style.strokeDashoffset = (L * (1 - p)).toFixed(1);
-        var pt = path.getPointAtLength(L * p);
-        tip.setAttribute("cx", pt.x.toFixed(1));
-        tip.setAttribute("cy", pt.y.toFixed(1));
-        tip.style.opacity = p > 0.005 && p < 0.995 ? 1 : 0;
-      }
-    };
-  }
-
-  w.RPCharts = { ribbon: ribbon, heroField: heroField, compareBars: compareBars, ladder: ladder, floorChart: floorChart, scatter: scatter };
+  w.RPCharts = { heroField: heroField, compareBars: compareBars, ladder: ladder, floorChart: floorChart, scatter: scatter };
 })(window);

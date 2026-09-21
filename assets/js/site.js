@@ -8,6 +8,16 @@
   var base = d.body.dataset.base || "";
 
   function all(sel, ctx) { return Array.prototype.slice.call((ctx || d).querySelectorAll(sel)); }
+  function docTop(el) { return el.getBoundingClientRect().top + w.scrollY; }
+  function onMeasure(fn) { if (w.rpOnMeasure) w.rpOnMeasure(fn); else { fn(); w.addEventListener("resize", fn, { passive: true }); w.addEventListener("load", fn); } }
+  function onScroll(fn) {
+    if (w.rpOnScroll) { w.rpOnScroll(fn); return; }
+    var q = false;
+    var run = function () { q = false; fn(w.scrollY, w.innerHeight); };
+    w.addEventListener("scroll", function () { if (!q) { q = true; w.requestAnimationFrame(run); } }, { passive: true });
+    w.addEventListener("resize", run, { passive: true });
+    run();
+  }
 
   /* ---------- bars fill, shared with the motion layer ---------- */
   w.rpFillBars = function (scope) {
@@ -19,24 +29,32 @@
     });
   };
 
-  /* ---------- theme ---------- */
+  /* ---------- theme ----------
+     The switch is instant: every colour changes in the same frame, the
+     canvas re-reads its colours in that frame too, and nothing is left
+     half-way through a transition. Where the browser can, a short
+     cross-fade covers the cut. */
   var swap = d.getElementById("themeswap");
-  function applyTheme(name) {
+  function setTheme(name) {
+    root.classList.add("theme-cut");
     root.dataset.theme = name;
     if (swap) swap.setAttribute("aria-pressed", name === "paper" ? "true" : "false");
     var meta = d.querySelector('meta[name="theme-color"]');
     if (meta) {
-      var cs = getComputedStyle(root);
-      var c = cs.getPropertyValue(name === "paper" ? "--p-theme-paper" : "--p-theme").trim();
+      var c = getComputedStyle(root).getPropertyValue(name === "paper" ? "--p-theme-paper" : "--p-theme").trim();
       if (c) meta.setAttribute("content", c);
     }
-    w.setTimeout(function () { if (charts.field) charts.field.redraw(); }, 60);
+    if (charts.field && charts.field.redraw) charts.field.redraw();
+    w.requestAnimationFrame(function () {
+      w.requestAnimationFrame(function () { root.classList.remove("theme-cut"); });
+    });
   }
-  applyTheme(root.dataset.theme === "paper" ? "paper" : "slate");
+  setTheme(root.dataset.theme === "paper" ? "paper" : "slate");
   if (swap) {
     swap.addEventListener("click", function () {
       var next = root.dataset.theme === "paper" ? "slate" : "paper";
-      applyTheme(next);
+      if (d.startViewTransition && !reduced) d.startViewTransition(function () { setTheme(next); });
+      else setTheme(next);
       try { localStorage.setItem("rp-theme", next); } catch (e) {}
     });
   }
@@ -50,45 +68,35 @@
     }, { rootMargin: "-72% 0px 0px 0px" }).observe(hero);
   }
 
-  /* the bar adopts the palette of whatever section is under it */
-  var surfaced = all("main > section, main > article, main > div").filter(function (n) { return n.offsetParent !== null || n === d.querySelector(".hero"); });
-  if (bar && surfaced.length) {
-    var ticking = false;
-    var syncSurface = function () {
-      ticking = false;
-      var y = w.scrollY + 42, current = null;
-      for (var i = 0; i < surfaced.length; i++) {
-        if (surfaced[i].offsetTop <= y) current = surfaced[i];
+  /* the bar adopts the palette of whatever section is under it, and the nav
+     marks the section being read; both from offsets cached at layout time */
+  var surfaced = all("main > section, main > article, main > div");
+  var navLinks = all(".bar__nav a").map(function (a) {
+    var href = a.getAttribute("href") || "";
+    var id = a.dataset.for || (href.charAt(0) === "#" ? href.slice(1) : "");
+    var t = id && d.getElementById(id);
+    return t ? { a: a, t: t, top: 0, bottom: 0 } : null;
+  }).filter(Boolean);
+  if (bar && (surfaced.length || navLinks.length)) {
+    var geo = [], lastSurf = null, lastHere = null;
+    onMeasure(function () {
+      geo = surfaced.filter(function (n) { return n.offsetParent !== null || n.classList.contains("hero"); })
+        .map(function (n) { return { top: docTop(n), surface: n.dataset.surface || null }; });
+      navLinks.forEach(function (l) { l.top = docTop(l.t); l.bottom = l.top + l.t.offsetHeight; });
+      lastSurf = lastHere = null;
+    });
+    onScroll(function (y, vh) {
+      var at = y + 42, s = null, i;
+      for (i = 0; i < geo.length; i++) if (geo[i].top <= at) s = geo[i].surface;
+      if (s !== lastSurf) { lastSurf = s; if (s) bar.dataset.surface = s; else delete bar.dataset.surface; }
+      var mid = y + vh * 0.45, here = null;
+      for (i = 0; i < navLinks.length; i++) if (navLinks[i].top <= mid && navLinks[i].bottom > mid) here = navLinks[i];
+      if (here !== lastHere) {
+        lastHere = here;
+        navLinks.forEach(function (l) { l.a.classList.toggle("is-here", l === here); });
       }
-      var s = current && current.dataset.surface;
-      if (s) bar.dataset.surface = s; else delete bar.dataset.surface;
-    };
-    w.addEventListener("scroll", function () {
-      if (!ticking) { ticking = true; w.requestAnimationFrame(syncSurface); }
-    }, { passive: true });
-    w.addEventListener("resize", syncSurface, { passive: true });
-    syncSurface();
+    });
   }
-
-  var navLinks = all(".bar__nav a").filter(function (a) {
-    return (a.getAttribute("href") || "").charAt(0) === "#";
-  });
-  var sections = navLinks.map(function (a) { return d.querySelector(a.getAttribute("href")); }).filter(Boolean);
-  if (sections.length && "IntersectionObserver" in w) {
-    var seen = {};
-    var so = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { seen[e.target.id] = e.intersectionRatio; });
-      var best = null, bestR = 0;
-      Object.keys(seen).forEach(function (id) { if (seen[id] > bestR) { bestR = seen[id]; best = id; } });
-      navLinks.forEach(function (a) {
-        a.classList.toggle("is-here", best != null && a.getAttribute("href") === "#" + best);
-      });
-    }, { threshold: [0, 0.15, 0.4, 0.75] });
-    sections.forEach(function (s) { so.observe(s); });
-  }
-
-  /* the page's colours change with the scene; the canvas re-reads them after */
-  w.rpSceneChanged = function () { if (charts.field && charts.field.redraw) charts.field.redraw(); };
 
   /* ---------- charts ---------- */
   var C = w.RPCharts;
@@ -119,8 +127,7 @@
           w.rpFieldPointer = f3.pointer;
           w.rpFieldPause = f3.pause;
           /* the page may already be scrolled into the fold by the time the data lands */
-          var heroEl = d.querySelector(".hero");
-          if (heroEl) f3.setFold(parseFloat(heroEl.style.getPropertyValue("--fold")) || 0);
+          f3.setFold(w.rpHeroFold ? w.rpHeroFold() : 0);
           if (root.classList.contains("is-locked")) f3.pause(true);
         } else {
           /* a canvas that was ever asked for WebGL can never give a 2D context, so the
@@ -133,41 +140,12 @@
           if (w.rpHeroMeasure) w.rpHeroMeasure();
         }
         charts.field.run();
-        /* the weakest-to-strongest sweep should be seen, not played under the intro */
-        if (root.classList.contains("intro") && charts.field.restartReveal) {
-          w.addEventListener("rp:intro-done", function () { charts.field.restartReveal(); }, { once: true });
-        }
         canvas.classList.add("is-in");
         w.rpFieldRead = charts.field.read;
         var rt;
         w.addEventListener("resize", function () {
           w.clearTimeout(rt);
           rt = w.setTimeout(function () { charts.field.redraw(); }, 160);
-        }, { passive: true });
-      }
-
-      /* the ribbon draws itself as the statement passes */
-      var rib = d.getElementById("ribbon");
-      if (rib && C.ribbon) {
-        var stmt = rib.closest("section");
-        var lead = stmt.querySelector(".stmt__lead");
-        var fitRibbon = function () {
-          if (w.innerWidth < 900 || w.innerWidth <= w.innerHeight) { rib.style.top = ""; rib.style.height = ""; return; }
-          rib.style.top = lead.offsetTop + "px";
-          rib.style.height = Math.max(260, lead.offsetHeight) + "px";
-        };
-        fitRibbon();
-        var rb = C.ribbon(rib, data.segments.rows);
-        var drawRibbon = function () {
-          var r = lead.getBoundingClientRect(), vh = w.innerHeight;
-          var p = (vh * 0.9 - r.top) / Math.max(1, r.height + vh * 0.5);
-          rb.set(reduced ? 1 : p);
-        };
-        if (w.rpOnScroll) w.rpOnScroll(drawRibbon); else drawRibbon();
-        var rbT;
-        w.addEventListener("resize", function () {
-          w.clearTimeout(rbT);
-          rbT = w.setTimeout(function () { fitRibbon(); rb = C.ribbon(rib, data.segments.rows); drawRibbon(); }, 200);
         }, { passive: true });
       }
 
@@ -200,7 +178,7 @@
       var scatterHost = d.getElementById("scatter");
       if (scatterHost) C.scatter(scatterHost, data.segments);
 
-      if (w.rpFilmMeasure) w.rpFilmMeasure();
+      if (w.rpMeasure) w.rpMeasure();
       if (scatterHost) relayout();
       /* the research page only has its final height once the charts are in */
       if (w.rpRestore) w.setTimeout(w.rpRestore, 30);
@@ -218,18 +196,6 @@
           });
         }, { threshold: 0.12 });
         figs.forEach(function (n) { co.observe(n); });
-        /* inside the pinned filmstrip a chart can sit off to the side for a long
-           time, so draw those as soon as the strip itself is reached */
-        var film = d.querySelector(".film");
-        if (film) {
-          new IntersectionObserver(function (entries) {
-            if (!entries[0].isIntersecting) return;
-            all(".chart", film).forEach(function (n) {
-              n.classList.add("is-drawn");
-              w.rpFillBars(n);
-            });
-          }, { threshold: 0.05 }).observe(film);
-        }
       }
     })
     .catch(function (err) { degrade(err.message); });
