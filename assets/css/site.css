@@ -356,11 +356,7 @@ code {
 }
 .hero__name > span { display: block; }
 .hero__name > span:last-child { padding-left: clamp(0rem, 4.5vw, 5rem); }
-@media (min-width: 900px) and (max-height: 960px) {
-  .hero__name { margin-bottom: clamp(1rem, 2.4vw, 1.8rem); }
-  .hero__lede { font-size: clamp(1.05rem, 1.5vw, 1.35rem); }
-  .hero__acts { margin-top: clamp(1.4rem, 2.6vw, 2rem); }
-}
+
 
 .hero__lede {
   font-size: var(--t-lede);
@@ -1570,3 +1566,28 @@ body.is-sub { padding-top: 0; }
 .sec--paper2 { background: var(--bg-sunk); border-block: 1px solid var(--rule); }
 .sec--scatter { border-bottom: 1px solid var(--rule); }
 .sec--out { padding-block: clamp(5rem, 12vw, 9rem); }
+
+/* ============================================================
+   SHORT LAPTOPS
+   The hero carries its own base row, so on a 768 or 800 tall
+   screen the whole thing has to fit or that row is lost.
+   ============================================================ */
+@media (min-width: 900px) and (max-height: 960px) {
+  .hero { padding-top: clamp(4.6rem, 9.5vh, 6rem); }
+  .hero__inner { padding-block: clamp(0.4rem, 1.5vh, 1.4rem); }
+  .hero__name {
+    font-size: clamp(2.6rem, 7.8vw, 7rem);
+    margin-bottom: clamp(0.9rem, 2.2vw, 1.6rem);
+  }
+  .hero__place { margin-bottom: clamp(0.9rem, 2.2vw, 1.6rem); }
+  .hero__lede { font-size: clamp(1rem, 1.4vw, 1.25rem); max-width: 46ch; }
+  .hero__acts { margin-top: clamp(1.2rem, 2.4vw, 1.8rem); }
+  .hero__links { margin-top: clamp(1.1rem, 2.2vw, 1.6rem); }
+  .hero__base { padding-top: clamp(1rem, 2.2vh, 1.7rem); }
+}
+@media (min-width: 900px) and (max-height: 820px) {
+  .hero { padding-top: clamp(4.2rem, 8.5vh, 5rem); }
+  .hero__name { font-size: clamp(2.4rem, 6.8vw, 5.6rem); }
+  .hero__lede { font-size: 1.05rem; }
+  .hero__caption { display: none; }
+}
