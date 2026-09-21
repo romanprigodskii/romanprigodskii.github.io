@@ -283,31 +283,79 @@
   }
 
   /* ---------------------------------------------------------
-     5. The full scatter
+     5. The full scatter, explorable. The nearest mark follows the
+        pointer, the arrow keys walk the marks in order of wealth, and a
+        family can be picked out. What is picked survives a redraw at a
+        new width, because it is kept on the host.
      --------------------------------------------------------- */
+  var FAMILIES = {
+    form_momentum: "Form and momentum",
+    style_matchups: "Style matchups",
+    physical_durability: "Physical durability",
+    market_microstructure: "Market microstructure",
+    gap: "Gap",
+    experience_pedigree: "Experience and pedigree",
+    division_context: "Division context",
+    style_and_age: "Style and age",
+    activity_layoff: "Activity and layoff"
+  };
+  var WORDS = { tdd: "takedown defence", ufc: "UFC", elo: "Elo", ko: "KO", womens: "women's", pickem: "pick'em", "4plus": "4+" };
+  /* registry slugs read as names: long_layoff_400 is "Long layoff, 400 days" */
+  function sliceName(slug) {
+    var t = slug.split("_").map(function (x) { return WORDS[x] || x; }).join(" ")
+      .replace(/ (\d+)d?$/, ", $1 days");
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  }
+  function fmtE(v) {
+    if (v < 0.01) return "< 0.01";
+    if (v < 10) return v.toFixed(2);
+    if (v < 100) return v.toFixed(1);
+    return Math.round(v).toLocaleString("en-US");
+  }
+  function verdictOf(p) {
+    if (p.er >= 20) return "Clears 20 at fair odds and after the margin, on the most favourable of five seeds: its five-seed median is 12.3. The bar for all 84 at once is 1,680.";
+    if (p.ef >= 20) return "Clears 20 at fair odds, then loses it to the book's margin. The bar for all 84 at once is 1,680.";
+    if (p.ef >= 1) return "Made money at fair odds, and stopped short of the bar of 20.";
+    return "Lost money at fair odds: an e-value below 1 is a bankroll that shrank.";
+  }
+
   function scatter(host, s) {
+    var st = host._rp || (host._rp = { fam: null, sel: -1 });
+    var rows = s.rows;
+    var byWealth = rows.map(function (_, i) { return i; }).sort(function (a, b) { return rows[b].ef - rows[a].ef; });
+    if (st.sel < 0) st.sel = byWealth[0];
+
     host.innerHTML = "";
-    var W = Math.max(340, Math.min(780, host.clientWidth || 780));
+    var plot = document.createElement("div");
+    plot.className = "explore__plot";
+    plot.tabIndex = 0;
+    plot.setAttribute("role", "group");
+    plot.setAttribute("aria-label", "The 84 hypotheses. The arrow keys step through them in order of e-value at fair odds; Escape clears a picked family.");
+    var side = document.createElement("div");
+    side.className = "explore__side";
+    host.appendChild(plot);
+    host.appendChild(side);
+
+    var W = Math.max(300, Math.min(780, plot.clientWidth || host.clientWidth || 780));
     var narrow = W < 560;
     var H = Math.round(W * (narrow ? 0.8 : 0.667)), mL = narrow ? 44 : 62, mR = narrow ? 12 : 22, mT = 22, mB = narrow ? 50 : 58;
     var pw = W - mL - mR, ph = H - mT - mB;
     var xd = [-2, 2.25], yd = [-2, 1.45];
     function X(v) { return mL + (log10(clampLog(v, 0.01)) - xd[0]) / (xd[1] - xd[0]) * pw; }
     function Y(v) { return mT + ph - (log10(clampLog(v, 0.01)) - yd[0]) / (yd[1] - yd[0]) * ph; }
+    function R(p) { return (narrow ? 2.2 : 2.6) + Math.sqrt(p.n) * (narrow ? 0.12 : 0.17); }
 
     var svg = el("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
       "aria-label": "Scatter of all 84 pre-registered hypotheses. The horizontal axis is the e-value at fair odds and the vertical axis the same bet charged the bookmaker's margin, both on a logarithmic scale. Six clear an e-value of 20, which is the threshold for a single pre-specified hypothesis; for a family of 84 the licensed e-BH cutoff is 1,680 and none of them approaches it. One mark sits above 20 after the margin, on the most favourable of five walk-forward seeds." });
 
     var ticks = [0.01, 0.1, 1, 10, 100];
     ticks.forEach(function (t) {
-      if (t <= 100) {
-        svg.appendChild(el("line", { x1: X(t), x2: X(t), y1: mT, y2: mT + ph, class: "gridline" }));
-        svg.appendChild(el("text", { x: X(t), y: mT + ph + 18, "text-anchor": "middle" }, t === 0.01 ? "\u22640.01" : String(t)));
-      }
+      svg.appendChild(el("line", { x1: X(t), x2: X(t), y1: mT, y2: mT + ph, class: "gridline" }));
+      svg.appendChild(el("text", { x: X(t), y: mT + ph + 18, "text-anchor": "middle" }, t === 0.01 ? "≤0.01" : String(t)));
     });
     [0.01, 0.1, 1, 10].forEach(function (t) {
       svg.appendChild(el("line", { x1: mL, x2: mL + pw, y1: Y(t), y2: Y(t), class: "gridline" }));
-      svg.appendChild(el("text", { x: mL - 10, y: Y(t) + 4, "text-anchor": "end" }, t === 0.01 ? "\u22640.01" : String(t)));
+      svg.appendChild(el("text", { x: mL - 10, y: Y(t) + 4, "text-anchor": "end" }, t === 0.01 ? "≤0.01" : String(t)));
     });
 
     svg.appendChild(el("line", { x1: X(20), x2: X(20), y1: mT, y2: mT + ph, class: "thr" }));
@@ -318,20 +366,110 @@
     svg.appendChild(el("line", { x1: mL, x2: mL + pw, y1: mT + ph, y2: mT + ph, class: "ax" }));
     svg.appendChild(el("line", { x1: mL, x2: mL, y1: mT, y2: mT + ph, class: "ax" }));
     svg.appendChild(el("text", { x: mL + pw, y: H - 10, "text-anchor": "end", class: "lbl-hi" }, "e-value at fair odds"));
-    var yl = el("text", { x: 0, y: 0, "text-anchor": "start", class: "lbl-hi",
-      transform: "translate(" + (narrow ? 11 : 16) + "," + (mT + ph) + ") rotate(-90)" }, narrow ? "after the margin" : "e-value after the book's margin");
-    svg.appendChild(yl);
+    svg.appendChild(el("text", { x: 0, y: 0, "text-anchor": "start", class: "lbl-hi",
+      transform: "translate(" + (narrow ? 11 : 16) + "," + (mT + ph) + ") rotate(-90)" }, narrow ? "after the margin" : "e-value after the book's margin"));
 
-    var pts = s.rows.slice().sort(function (a, b) { return b.n - a.n; });
-    pts.forEach(function (p, i) {
-      var cls = p.er >= 20 ? "dot dot--won" : (p.ef >= 20 ? "dot dot--near" : "dot");
-      var c = el("circle", { cx: X(p.ef), cy: Y(p.er), r: (narrow ? 2.2 : 2.6) + Math.sqrt(p.n) * (narrow ? 0.12 : 0.17), class: cls,
-        style: "--i:" + i });
-      c.appendChild(el("title", {}, p.f.replace(/_/g, " ") + ", " + p.n + " bouts, e = " + p.ef.toFixed(2) + " fair, " + p.er.toFixed(2) + " after margin"));
-      svg.appendChild(c);
+    /* the largest samples are drawn first, so a small mark is never buried */
+    var groups = [];
+    rows.map(function (_, i) { return i; }).sort(function (a, b) { return rows[b].n - rows[a].n; }).forEach(function (idx, k) {
+      var p = rows[idx];
+      var g = el("g", { class: "dotg" });
+      g.appendChild(el("circle", { cx: X(p.ef), cy: Y(p.er), r: R(p),
+        class: p.er >= 20 ? "dot dot--won" : (p.ef >= 20 ? "dot dot--near" : "dot"), style: "--i:" + k }));
+      svg.appendChild(g);
+      groups[idx] = g;
     });
 
-    host.appendChild(svg);
+    var probe = el("g", { class: "probe" });
+    var hairX = el("line", { class: "hair" }), hairY = el("line", { class: "hair" }), ring = el("circle", { class: "ring" });
+    probe.appendChild(hairX); probe.appendChild(hairY); probe.appendChild(ring);
+    svg.appendChild(probe);
+    plot.appendChild(svg);
+
+    var read = document.createElement("div");
+    read.className = "explore__read";
+    read.setAttribute("aria-live", "polite");
+    side.appendChild(read);
+
+    function num(k, v, hi) { return "<div" + (hi ? ' class="is-hi"' : "") + "><dt>" + k + "</dt><dd>" + v + "</dd></div>"; }
+    function select(i) {
+      st.sel = i;
+      var p = rows[i], x = X(p.ef), y = Y(p.er), r = R(p) + 4;
+      ring.setAttribute("cx", x); ring.setAttribute("cy", y); ring.setAttribute("r", r);
+      hairX.setAttribute("x1", x); hairX.setAttribute("x2", x); hairX.setAttribute("y1", y + r); hairX.setAttribute("y2", mT + ph);
+      hairY.setAttribute("x1", mL); hairY.setAttribute("x2", x - r); hairY.setAttribute("y1", y); hairY.setAttribute("y2", y);
+      read.innerHTML = '<p class="read__fam">' + FAMILIES[p.f] + '</p>' +
+        '<p class="read__name">' + sliceName(p.s) + '</p>' +
+        '<dl class="read__nums">' +
+          num("at fair odds", "e = " + fmtE(p.ef), p.ef >= 20) +
+          num("after the margin", "e = " + fmtE(p.er), p.er >= 20) +
+          num("bouts", p.n.toLocaleString("en-US")) +
+          num("rank at fair odds", (byWealth.indexOf(i) + 1) + " of " + rows.length) +
+        '</dl><p class="read__verdict">' + verdictOf(p) + '</p>';
+    }
+
+    var counts = {};
+    rows.forEach(function (p) { counts[p.f] = (counts[p.f] || 0) + 1; });
+    var fams = document.createElement("div");
+    fams.className = "explore__fams";
+    fams.setAttribute("role", "group");
+    fams.setAttribute("aria-label", "Pick out one family of hypotheses");
+    fams.innerHTML = '<p class="explore__fams-k">The nine families the registry filed them under</p>';
+    var chips = Object.keys(FAMILIES).filter(function (f) { return counts[f]; }).map(function (f) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "fam";
+      b.innerHTML = FAMILIES[f] + " <i>" + counts[f] + "</i>";
+      b.addEventListener("click", function () { setFam(st.fam === f ? null : f); });
+      fams.appendChild(b);
+      return { f: f, b: b };
+    });
+    side.appendChild(fams);
+
+    function inFam(i) { return !st.fam || rows[i].f === st.fam; }
+    function setFam(f) {
+      st.fam = f;
+      chips.forEach(function (c) { c.b.setAttribute("aria-pressed", String(c.f === f)); });
+      groups.forEach(function (g, i) { g.classList.toggle("is-dim", !inFam(i)); });
+      select(inFam(st.sel) ? st.sel : byWealth.filter(inFam)[0]);
+    }
+
+    /* the pointer picks the nearest mark, in drawing units, so a small
+       circle does not have to be hit exactly */
+    function nearest(e, reach) {
+      var box = svg.getBoundingClientRect();
+      if (!box.width) return -1;
+      var k = W / box.width, mx = (e.clientX - box.left) * k, my = (e.clientY - box.top) * k;
+      var best = -1, bd = reach * reach;
+      rows.forEach(function (p, i) {
+        if (!inFam(i)) return;
+        var dx = X(p.ef) - mx, dy = Y(p.er) - my, d = dx * dx + dy * dy;
+        if (d < bd) { bd = d; best = i; }
+      });
+      return best;
+    }
+    svg.addEventListener("pointermove", function (e) {
+      if (e.pointerType === "touch") return;
+      var i = nearest(e, 40);
+      if (i >= 0 && i !== st.sel) select(i);
+    });
+    svg.addEventListener("pointerdown", function (e) {
+      var i = nearest(e, 60);
+      if (i >= 0) select(i);
+    });
+    plot.addEventListener("keydown", function (e) {
+      var list = byWealth.filter(inFam), at = Math.max(0, list.indexOf(st.sel)), k = e.key;
+      if (k === "ArrowRight" || k === "ArrowUp") at = Math.max(0, at - 1);
+      else if (k === "ArrowLeft" || k === "ArrowDown") at = Math.min(list.length - 1, at + 1);
+      else if (k === "Home") at = 0;
+      else if (k === "End") at = list.length - 1;
+      else if (k === "Escape" && st.fam) { e.preventDefault(); setFam(null); return; }
+      else return;
+      e.preventDefault();
+      select(list[at]);
+    });
+
+    setFam(st.fam);
   }
 
   w.RPCharts = { heroField: heroField, compareBars: compareBars, ladder: ladder, floorChart: floorChart, scatter: scatter };

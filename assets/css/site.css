@@ -304,7 +304,7 @@ code {
 .skip:focus { transform: translate(-50%, 0); }
 
 /* ---------- prose link ---------- */
-.work__prose a, .paper__abs a, .also__d a, .facts a, .foot a, .findings a {
+.work__prose a, .paper__abs a, .also__d a, .facts a, .foot a, .claim__txt a, .step a {
   text-decoration: none;
   background-image: linear-gradient(var(--accent), var(--accent));
   background-size: 100% 1px;
@@ -314,7 +314,7 @@ code {
   transition: background-size 280ms var(--ease-quart), color 200ms;
 }
 .work__prose a:hover, .paper__abs a:hover, .also__d a:hover,
-.facts a:hover, .foot a:hover, .findings a:hover {
+.facts a:hover, .foot a:hover, .claim__txt a:hover, .step a:hover {
   background-size: 100% 1.15em;
   background-position: 0 100%;
   color: var(--accent-ink);
@@ -582,15 +582,15 @@ code {
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
 
 .paper__title {
-  font-size: var(--t-h3);
-  font-stretch: 110%;
-  font-weight: 740;
-  line-height: 1.04;
-  letter-spacing: -0.025em;
-  max-width: 24ch;
+  font-size: var(--t-h2);
+  font-stretch: 112%;
+  font-weight: 760;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  max-width: 16ch;
 }
 .paper__sub {
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   font-size: var(--t-lede);
   font-weight: 400;
   color: var(--ink-2);
@@ -604,34 +604,6 @@ code {
 }
 .paper__abs em { font-style: italic; color: var(--ink); }
 .paper__abs sup { font-size: 0.7em; }
-
-.findings {
-  counter-reset: f;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
-  gap: clamp(1.4rem, 3vw, 2.4rem);
-  margin-top: clamp(2rem, 4vw, 3rem);
-}
-.findings li { counter-increment: f; }
-.findings li::before {
-  content: "(" counter(f, lower-roman) ")";
-  display: block;
-  font-stretch: 68%;
-  font-weight: 700;
-  font-size: var(--t-xs);
-  letter-spacing: 0.08em;
-  color: var(--accent);
-  margin-bottom: 0.6rem;
-}
-.findings h4 {
-  font-size: var(--t-h4);
-  font-weight: 680;
-  line-height: 1.25;
-  letter-spacing: -0.012em;
-  margin-bottom: 0.5rem;
-  max-width: 26ch;
-}
-.findings p { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.58; max-width: 46ch; }
 
 .paper__files {
   display: flex; flex-wrap: wrap; gap: 0.8rem;
@@ -659,6 +631,152 @@ code {
 .file__k span { padding-inline: 0.25em; }
 
 .paper__note { margin-top: 1.1rem; font-size: var(--t-xs); color: var(--ink-3); max-width: 60ch; }
+
+/* The two papers share a header and nothing else: each opens on the one
+   number it is about, drawn as a measurement, and lays its findings out the
+   way its argument runs. Green still means a threshold or the thing that shipped */
+
+/* ---------- paper one: the verdict, on one log scale ---------- */
+.verdict { --th: clamp(10px, 1.1vw, 14px); margin: clamp(2.5rem, 6vw, 4.5rem) 0 0; }
+.verdict__track {
+  position: relative;
+  height: var(--th);
+  margin-block: clamp(6rem, 10vw, 7.5rem) clamp(5rem, 8vw, 6rem);
+  background: var(--rule-soft);
+}
+.verdict__fill {
+  position: absolute; inset: 0 auto 0 0;
+  width: var(--to);
+  background: var(--ink);
+  transform-origin: left;
+}
+.verdict__at {
+  position: absolute; left: var(--at);
+  display: grid; gap: 0.35rem;
+  width: max-content; max-width: 15ch;
+  padding-left: 0.75rem;
+}
+.verdict__at::before { content: ""; position: absolute; left: 0; width: 1.5px; height: calc(0.9rem + var(--th)); background: currentColor; }
+.verdict__at b { font-size: clamp(1.9rem, 4.6vw, 3.8rem); font-stretch: 110%; font-weight: 760; line-height: 0.88; letter-spacing: -0.035em; }
+.verdict__at i { font-style: normal; font-size: var(--t-xs); line-height: 1.35; color: var(--ink-2); }
+.verdict__at--best { bottom: calc(100% + 0.9rem); }
+.verdict__at--best::before { top: 100%; }
+.verdict__at--bar { top: calc(100% + 0.9rem); color: var(--accent); }
+.verdict__at--bar::before { bottom: 100%; }
+.verdict__at--end { transform: translateX(-100%); padding: 0 0.75rem 0 0; justify-items: end; text-align: right; }
+.verdict__at--end::before { left: auto; right: 0; }
+.verdict__cap { font-size: var(--t-xs); color: var(--ink-3); }
+/* on a phone the two bars would collide, so the family's bar drops a row */
+@media (max-width: 560px) {
+  .verdict__at { max-width: 11ch; }
+  .verdict__track { margin-bottom: 10rem; }
+  .verdict__at--end { top: calc(100% + 5.2rem); }
+  .verdict__at--end::before { height: calc(5.2rem + var(--th)); }
+}
+
+/* ---------- paper one: findings led by their figures ---------- */
+.claims { margin-top: clamp(3rem, 6vw, 4.5rem); border-top: 2px solid var(--ink); }
+.claim {
+  display: grid;
+  gap: 1.1rem clamp(2rem, 5vw, 4rem);
+  padding-block: clamp(1.6rem, 3.5vw, 2.6rem);
+  border-bottom: 1px solid var(--rule);
+}
+@media (min-width: 860px) { .claim { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: start; } }
+.claim__fig {
+  font-size: clamp(2.3rem, 5.4vw, 4.3rem);
+  font-stretch: 112%;
+  font-weight: 760;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+}
+.claim__op { color: var(--ink-3); font-weight: 500; }
+.claim__fig small {
+  display: block;
+  margin-top: 0.8rem;
+  max-width: 32ch;
+  font-size: var(--t-xs);
+  font-stretch: 100%;
+  font-weight: 550;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+.claim__txt h3 { font-size: var(--t-h4); font-weight: 680; line-height: 1.25; letter-spacing: -0.012em; margin-bottom: 0.6rem; max-width: 30ch; }
+.claim__txt p { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.6; max-width: 52ch; }
+
+/* ---------- paper two: the shipped lever, and its echo from a re-seed ---------- */
+.echo {
+  display: grid;
+  gap: 1.2rem clamp(2rem, 4vw, 3.5rem);
+  align-items: end;
+  margin: clamp(2.5rem, 6vw, 4.5rem) 0 0;
+}
+@media (min-width: 900px) { .echo { grid-template-columns: auto minmax(0, 1fr); } }
+.echo__n b {
+  display: block;
+  font-size: clamp(5rem, 17vw, 12.5rem);
+  font-stretch: 116%;
+  font-weight: 780;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+}
+.echo__t { font-size: var(--t-lede); line-height: 1.3; color: var(--ink-2); max-width: 32ch; }
+.echo__bars { grid-column: 1 / -1; display: grid; gap: 1.1rem; margin-top: clamp(1.2rem, 3vw, 2rem); }
+.echo__bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.35rem 1rem; font-size: var(--t-xs); color: var(--ink-2); }
+.echo__bar i { font-style: normal; }
+.echo__bar b { font-weight: 650; color: var(--ink); }
+.echo__bar span { order: 3; flex: 0 0 100%; position: relative; height: clamp(10px, 1.1vw, 14px); background: var(--rule-soft); }
+.echo__bar span::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--w); background: var(--chart-a); transform-origin: left; }
+.echo__bar--won span::after { background: var(--accent); }
+
+/* ---------- paper two: the protocol, step by step ---------- */
+.steps {
+  counter-reset: step;
+  --gap: clamp(1.4rem, 3vw, 2.6rem);
+  display: grid;
+  gap: 2.6rem var(--gap);
+  margin-top: clamp(3rem, 6vw, 4.5rem);
+}
+@media (min-width: 700px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.step { counter-increment: step; position: relative; padding-top: 3rem; }
+.step::before {
+  content: counter(step);
+  position: absolute; top: 0; left: 0; z-index: 1;
+  width: 1.9rem; height: 1.9rem;
+  display: grid; place-items: center;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  background: var(--bg);
+  font-size: var(--t-xs); font-weight: 700; font-stretch: 80%;
+}
+.step::after {
+  content: "";
+  position: absolute; top: calc(0.95rem - 0.75px); left: 1.9rem; right: calc(-1 * var(--gap));
+  height: 1.5px;
+  background: var(--rule);
+  transform-origin: left;
+}
+.step:last-child::after { display: none; }
+@media (max-width: 699px) { .step::after { display: none; } }
+@media (min-width: 700px) and (max-width: 1099px) { .step:nth-child(2n)::after { display: none; } }
+.step .step__fig { color: var(--ink); font-size: clamp(1.9rem, 3.2vw, 2.7rem); font-stretch: 110%; font-weight: 760; line-height: 1; letter-spacing: -0.03em; margin-bottom: 1rem; }
+.step__fig small { margin-left: 0.3rem; font-size: var(--t-xs); font-stretch: 80%; font-weight: 650; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.step h3 { font-size: var(--t-h4); font-weight: 680; line-height: 1.25; letter-spacing: -0.012em; margin-bottom: 0.55rem; max-width: 26ch; }
+.step p { font-size: var(--t-sm); color: var(--ink-2); line-height: 1.58; }
+
+/* the measurements draw themselves once they are on screen */
+@media screen and (prefers-reduced-motion: no-preference) {
+  html.js:not(.no-motion) .verdict__fill,
+  html.js:not(.no-motion) .echo__bar span::after,
+  html.js:not(.no-motion) .step::after { transform: scaleX(0); transition: transform 1500ms var(--ease-expo) 250ms; }
+  html.js:not(.no-motion) .echo__bar + .echo__bar span::after { transition-delay: 500ms; }
+  html.js:not(.no-motion) .step::after { transition-duration: 900ms; transition-delay: 400ms; }
+  html.js:not(.no-motion) .is-in .verdict__fill,
+  html.js:not(.no-motion) .is-in .echo__bar span::after,
+  html.js:not(.no-motion) .step.is-in::after { transform: none; }
+}
 
 /* ============================================================
    CHARTS
@@ -689,7 +807,46 @@ code {
 .chart svg .thr { stroke: var(--accent); stroke-width: 1.25; stroke-dasharray: 4 4; }
 .chart svg .lbl-hi { fill: var(--ink-2); font-weight: 650; }
 
-.chart--scatter { width: var(--shell); margin-inline: auto; padding-top: clamp(2.5rem, 5vw, 4rem); border-top: 1px solid var(--rule); }
+.chart--scatter { margin-top: clamp(3rem, 6vw, 4.5rem); }
+
+/* the 84, explorable: the nearest mark follows the pointer, arrow keys step
+   through them in order of wealth, and a family can be picked out */
+.scatter { display: grid; gap: 1.8rem clamp(2rem, 4vw, 3.5rem); }
+@media (min-width: 1000px) { .scatter { grid-template-columns: minmax(0, 1fr) minmax(16rem, 19rem); align-items: start; } }
+.explore__plot { position: relative; border-radius: 4px; outline: none; touch-action: pan-y; }
+.explore__plot:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
+.explore__plot svg { display: block; }
+.chart svg .dotg { transition: opacity 320ms var(--ease-soft); }
+.chart svg .dotg.is-dim { opacity: 0.12; }
+.chart svg .probe { pointer-events: none; transition: opacity 200ms; }
+.chart svg .probe .hair { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 2 3; }
+.chart svg .probe .ring { fill: none; stroke: var(--ink); stroke-width: 1.6; }
+.chart:not(.is-drawn) svg .probe { opacity: 0; }
+.explore__read { border-top: 2px solid var(--ink); padding-top: 1rem; }
+.read__fam { font-size: var(--t-xs); font-stretch: 70%; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+.read__name { margin-top: 0.35rem; min-height: 2.5em; font-size: var(--t-h4); font-weight: 700; line-height: 1.22; }
+.read__nums { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem 1rem; margin-top: 1rem; }
+.read__nums dt { font-size: var(--t-xs); color: var(--ink-3); }
+.read__nums dd { margin: 0.15rem 0 0; font-size: clamp(1.25rem, 2vw, 1.55rem); font-weight: 740; font-stretch: 106%; letter-spacing: -0.02em; }
+.read__nums .is-hi dd { color: var(--accent); }
+.read__verdict { margin-top: 1rem; font-size: var(--t-sm); line-height: 1.5; color: var(--ink-2); }
+.explore__fams { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.6rem; }
+.explore__fams-k { flex: 0 0 100%; margin-bottom: 0.2rem; font-size: var(--t-xs); color: var(--ink-3); }
+.fam {
+  display: inline-flex; align-items: baseline; gap: 0.4rem;
+  padding: 0.38rem 0.72rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: none;
+  color: var(--ink-2);
+  font: inherit; font-size: var(--t-xs); font-weight: 600;
+  cursor: pointer;
+  transition: background-color 220ms, color 220ms, border-color 220ms;
+}
+.fam i { font-style: normal; color: var(--ink-3); font-weight: 500; }
+.fam:hover { border-color: var(--ink); color: var(--ink); }
+.fam[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.fam[aria-pressed="true"] i { color: inherit; opacity: 0.7; }
 
 /* bar comparison */
 .bars { display: grid; gap: 1.25rem; max-width: 46rem; }
@@ -861,33 +1018,36 @@ code {
    ============================================================ */
 .sec--contact { padding-block: clamp(6rem, 14vw, 12rem); }
 .contact { width: var(--shell); margin-inline: auto; }
-.contact__kick {
-  font-size: var(--t-lede);
-  font-weight: 500;
-  max-width: 24ch;
-  line-height: 1.28;
-  margin-bottom: clamp(2rem, 5vw, 3.5rem);
-}
-.contact__mail {
-  display: block;
-  font-size: clamp(2.1rem, 11vw, 8.2rem);
+.contact__title {
+  max-width: 17ch;
+  font-size: clamp(2.3rem, 6.6vw, 6rem);
   font-stretch: 110%;
   font-weight: 760;
-  line-height: 0.88;
-  letter-spacing: -0.04em;
-  text-decoration: none;
-  transition: opacity 260ms;
+  line-height: 0.95;
+  letter-spacing: -0.038em;
 }
-.contact__mail b { display: block; font-weight: inherit; white-space: nowrap; }
-.contact__mail b + b { color: color-mix(in oklab, var(--ink) 64%, transparent); }
-.contact__mail:hover { opacity: 0.66; }
+.contact__acts { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; margin-top: clamp(2.4rem, 5vw, 3.6rem); }
+.mailbtn {
+  display: inline-grid; gap: 0.3rem;
+  padding: 1rem 1.7rem 1.1rem;
+  border-radius: 1.6rem;
+  background: var(--ink);
+  color: var(--bg);
+  text-decoration: none;
+  cursor: copy;
+  transition: transform 300ms var(--ease-expo), background-color 260ms;
+}
+.mailbtn:hover { background: color-mix(in oklab, var(--ink) 86%, var(--bg)); }
+.mailbtn__k { font-size: var(--t-xs); font-stretch: 80%; font-weight: 650; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.72; }
+.mailbtn__v { font-size: clamp(1.15rem, 2.3vw, 1.65rem); font-stretch: 104%; font-weight: 720; letter-spacing: -0.015em; line-height: 1.1; }
+.contact__acts .btn { padding: 0.95rem 1.45rem; border-color: color-mix(in oklab, var(--ink) 35%, transparent); }
 .contact__links {
   display: flex; flex-wrap: wrap; gap: 0.5rem 2rem;
-  margin-top: clamp(2.2rem, 5vw, 3.5rem);
-  font-size: var(--t-sm);
-  font-weight: 550;
-  border-top: 1px solid var(--rule);
+  margin-top: clamp(2.6rem, 6vw, 4rem);
   padding-top: 1.4rem;
+  border-top: 1px solid var(--rule);
+  font-size: var(--t-sm);
+  font-weight: 600;
 }
 .contact__links a { text-decoration: none; border-bottom: 1px solid var(--rule-soft); padding-bottom: 2px; transition: border-color 220ms; }
 .contact__links a:hover { border-color: var(--ink); }
@@ -1583,7 +1743,6 @@ body.is-sub { padding-top: 0; }
 }
 .rhero__facts dd { margin: 0; font-size: var(--t-sm); }
 .sec--paper2 { background: var(--bg-sunk); border-block: 1px solid var(--rule); }
-.sec--scatter { border-bottom: 1px solid var(--rule); }
 .sec--out { padding-block: clamp(5rem, 12vw, 9rem); }
 
 /* ============================================================
@@ -2014,18 +2173,6 @@ html.case-open .caselayer__slot .case__head > *:nth-child(4) { transition-delay:
 }
 @media (max-width: 700px) { .kit2__row { grid-template-columns: 1fr; } .kit2__row h3 { color: var(--ink); } }
 
-/* ---------- contact ---------- */
-.contact__mail { cursor: copy; }
-.contact__grid {
-  margin-top: clamp(2.5rem, 6vw, 4rem);
-  padding-top: 1.6rem;
-  border-top: 1px solid var(--rule);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(2rem, 5vw, 4rem);
-}
-.contact__grid .contact__links { margin: 0; border: 0; padding: 0; gap: 0.6rem 2.4rem; font-size: var(--t-body); }
-.contact__grid .contact__links a { border: 0; font-weight: 650; }
 
 /* ---------- toast ---------- */
 .toast {

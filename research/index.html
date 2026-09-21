@@ -93,7 +93,7 @@
 
 <!-- ═══ PAPER ONE ═══ -->
 <article class="sec sec--paper" id="evalues" data-surface="paper">
-  <div class="paper">
+  <div class="paper paper--one">
     <div class="paper__meta">
       <span class="paper__tag">Paper one</span>
       <span class="paper__status" data-status>Under review</span>
@@ -101,6 +101,19 @@
     </div>
     <h2 class="paper__title" data-split>Testing by betting when the bets are real</h2>
     <p class="paper__sub">An e-value audit of 84 pre-registered market-efficiency hypotheses</p>
+
+    <!-- the whole audit on one log scale from 1 to 1,680. Positions are
+         log10(e) / log10(1680): 20 sits at 40.3%, the best mark (150.9) at 67.6% -->
+    <figure class="verdict reveal">
+      <div class="verdict__track" role="img" aria-label="On a log scale from 1 to 1,680: the best of the 84 hypotheses reaches an e-value of 151. That clears 20, the bar for one pre-specified hypothesis, and stops far short of 1,680, the bar e-BH licenses for a family of 84.">
+        <span class="verdict__fill" style="--to:67.6%"></span>
+        <span class="verdict__at verdict__at--best" style="--at:67.6%"><b>151</b><i>the best of the 84</i></span>
+        <span class="verdict__at verdict__at--bar" style="--at:40.3%"><b>20</b><i>the bar for one hypothesis</i></span>
+        <span class="verdict__at verdict__at--bar verdict__at--end" style="--at:100%"><b>1,680</b><i>the bar for all 84 at once</i></span>
+      </div>
+      <figcaption class="verdict__cap">The whole audit on one log scale, from e = 1, where a bet breaks even.</figcaption>
+    </figure>
+
     <p class="paper__abs reveal">
       E-values are usually motivated by a metaphorical gambler betting against a null hypothesis.
       Here the gambler is not a metaphor. The null is a bookmaker's posted price, the stake is a
@@ -109,31 +122,53 @@
       archived closing price, first analysed with paired log-loss and Benjamini-Hochberg and then
       re-asked as bets.
     </p>
-    <ol role="list" class="findings">
-      <li class="reveal">
-        <h3>A multiplicity correction that was not licensed</h3>
-        <p>The 84 slices are overlapping subsets of one pool. Membership correlations across the
-          3,486 segment pairs run from &minus;0.49 to +0.84, half of them negative, and 83 pairs share no
-          bouts at all. Benjamini-Hochberg needs independence or PRDS; neither is established. On
-          the 1,191-bout discovery window the lab actually searched, BH rejects four: one in the
-          model's favour and three against it. Benjamini-Yekutieli and e-BH, whose guarantees do
-          hold here, reject none.</p>
+
+    <figure class="chart chart--scatter explore" id="scatter-fig">
+      <figcaption>All 84 hypotheses, at the wealth each one earned. Point at a mark, or pick a family.</figcaption>
+      <div class="scatter" id="scatter"></div>
+      <p class="chart__note">Each mark is one pre-registered hypothesis. The horizontal axis is the
+      e-value at fair odds, the vertical axis the same bet charged the bookmaker's margin, both on a
+      log scale. Mark size grows with the number of bouts in the segment. The dotted rules mark
+      e = 20, which rejects at the 5% level for a <em>single</em> pre-specified hypothesis. For a
+      family of 84 the cutoff that is actually licensed is e-BH's, e = 1,680 at one rejection, and
+      nothing here comes near it. The single mark above the horizontal rule is also the most
+      favourable of five walk-forward seeds: its five-seed median is 12.3, below the rule.</p>
+    </figure>
+
+    <ol role="list" class="claims">
+      <li class="claim reveal">
+        <p class="claim__fig">4 <span class="claim__op">&rarr;</span> 0 <small>rejections under BH, then under the corrections that hold here</small></p>
+        <div class="claim__txt">
+          <h3>A multiplicity correction that was not licensed</h3>
+          <p>The 84 slices are overlapping subsets of one pool. Membership correlations across the
+              3,486 segment pairs run from &minus;0.49 to +0.84, half of them negative, and 83 pairs share no
+              bouts at all. Benjamini-Hochberg needs independence or PRDS; neither is established. On
+              the 1,191-bout discovery window the lab actually searched, BH rejects four: one in the
+              model's favour and three against it. Benjamini-Yekutieli and e-BH, whose guarantees do
+              hold here, reject none.</p>
+        </div>
       </li>
-      <li class="reveal">
-        <h3>"Failed to replicate" and "not yet" are different findings</h3>
-        <p>A segment the fixed-<i>n</i> analysis wrote off at <i>p</i> = 0.30 is still growing on the
-          wealth scale: +0.0143 nats per bout against +0.0174 in the window that selected it, an
-          e-value of 4.81 against a threshold of 20. It is not refuted. It is 100 bouts short at
-          fair odds and 253 at the book's, which is seventeen months, or three and a half years.
-          Optional continuation turns a refutation into a schedule.</p>
+      <li class="claim reveal">
+        <p class="claim__fig">4.81 <span class="claim__op">/</span> 20 <small>the e-value so far, against the bar it still has time to reach</small></p>
+        <div class="claim__txt">
+          <h3>"Failed to replicate" and "not yet" are different findings</h3>
+          <p>A segment the fixed-<i>n</i> analysis wrote off at <i>p</i> = 0.30 is still growing on the
+              wealth scale: +0.0143 nats per bout against +0.0174 in the window that selected it, an
+              e-value of 4.81 against a threshold of 20. It is not refuted. It is 100 bouts short at
+              fair odds and 253 at the book's, which is seventeen months, or three and a half years.
+              Optional continuation turns a refutation into a schedule.</p>
+        </div>
       </li>
-      <li class="reveal">
-        <h3>Pricing the freedom a post-hoc rule used</h3>
-        <p>A threshold rule chosen after the shape was visible, paid for by a mixture martingale over
-          the 21 cuts it searched, clears the threshold at 31.28. Widen the mixture to the 21 cuts it
-          could have searched in the opposite direction and it falls to 15.64. Add the other
-          disagreement statistic it could have used and it falls to 10.43. The ladder is the result,
-          not any rung of it.</p>
+      <li class="claim reveal">
+        <p class="claim__fig">31.28 <span class="claim__op">&rarr;</span> 10.43 <small>one post-hoc rule, charged for every freedom it had</small></p>
+        <div class="claim__txt">
+          <h3>Pricing the freedom a post-hoc rule used</h3>
+          <p>A threshold rule chosen after the shape was visible, paid for by a mixture martingale over
+              the 21 cuts it searched, clears the threshold at 31.28. Widen the mixture to the 21 cuts it
+              could have searched in the opposite direction and it falls to 15.64. Add the other
+              disagreement statistic it could have used and it falls to 10.43. The ladder is the result,
+              not any rung of it.</p>
+        </div>
       </li>
     </ol>
 
@@ -171,7 +206,7 @@
 
 <!-- ═══ PAPER TWO ═══ -->
 <article class="sec sec--paper2" id="floors">
-  <div class="paper">
+  <div class="paper paper--two">
     <div class="paper__meta">
       <span class="paper__tag">Paper two</span>
       <span class="paper__status" data-status>Under review</span>
@@ -179,6 +214,17 @@
     </div>
     <h2 class="paper__title" data-split>Measure the instrument first</h2>
     <p class="paper__sub">Detection floors for model selection and for LLM judges</p>
+
+    <!-- 0.00207 / 0.0026 = 0.796: the largest null effect against the one shipped lever -->
+    <figure class="echo reveal">
+      <p class="echo__n"><b data-count="80" data-suffix="%">80%</b></p>
+      <figcaption class="echo__t">of the only improvement this pipeline ever shipped, produced again by a change that does nothing: the same recipe, refit under another random seed.</figcaption>
+      <div class="echo__bars" role="img" aria-label="The shipped improvement is worth 0.0026 nats. The largest effect a re-seeded refit produced is 0.00207 nats, 80% of it.">
+        <p class="echo__bar echo__bar--won"><span style="--w:100%"></span><i>the improvement that shipped</i><b>0.0026 nats</b></p>
+        <p class="echo__bar"><span style="--w:79.6%"></span><i>the same recipe, another seed</i><b>0.00207 nats</b></p>
+      </div>
+    </figure>
+
     <p class="paper__abs reveal">
       An evaluation reports that a candidate improved a metric. It almost never reports the smallest
       improvement it could have detected, and those are different claims. This paper measures the
@@ -186,31 +232,36 @@
       the same recipe refit under a different random seed. It changes nothing real, so everything it
       produces is instrument noise.
     </p>
-    <ol role="list" class="findings">
-      <li class="reveal">
+
+    <ol role="list" class="steps">
+      <li class="step reveal">
+        <p class="step__fig">0.00207 <small>nats</small></p>
         <h3>The noise floor is measurable, and it is not small</h3>
         <p>On a 3,087-row walk-forward pool under five seeds, ten null comparisons manufacture
-          effects up to 0.00207 nats. Re-seeding alone reproduces 80% of the only lever this leg
-          ever shipped, and the pipeline had 56% power against its own shipped result.</p>
+            effects up to 0.00207 nats. Re-seeding alone reproduces 80% of the only lever this leg
+            ever shipped, and the pipeline had 56% power against its own shipped result.</p>
       </li>
-      <li class="reveal">
+      <li class="step reveal">
+        <p class="step__fig">0.00288 <small>nats</small></p>
         <h3>Buying seeds walks to a floor, not past it</h3>
         <p>The floor is an asymptote at 0.00288 nats. Fifteen seeds gets within 2% of it and no
-          budget gets past it, because 63% of the paired noise lives beyond any seed budget. On four
-          degrees of freedom that share is bounded only to [17%, 83%], so it is reported as an
-          estimate and not as a finding.</p>
+            budget gets past it, because 63% of the paired noise lives beyond any seed budget. On four
+            degrees of freedom that share is bounded only to [17%, 83%], so it is reported as an
+            estimate and not as a finding.</p>
       </li>
-      <li class="reveal">
+      <li class="step reveal">
+        <p class="step__fig">4&times; <small>not 13&times;</small></p>
         <h3>A floor belongs to the instrument that measured the effect</h3>
         <p>Recomputed on the 793-row pool where this project's one large win was actually measured,
-          the floor is 0.0119 rather than 0.00362. The win is 4x its own floor, not 13x another
-          pool's. The paper corrects that error in its own earlier draft, in print.</p>
+            the floor is 0.0119 rather than 0.00362. The win is 4x its own floor, not 13x another
+            pool's. The paper corrects that error in its own earlier draft, in print.</p>
       </li>
-      <li class="reveal">
+      <li class="step reveal">
+        <p class="step__fig">2.9 <small>points</small></p>
         <h3>The protocol transplants</h3>
         <p>On a deployed LLM classifier, two identical reruns disagree on 5.6% of items, and twenty
-          of them move measured agreement by 2.6 points. The floor is 2.9 points. Same recipe,
-          different instrument.</p>
+            of them move measured agreement by 2.6 points. The floor is 2.9 points. Same recipe,
+            different instrument.</p>
       </li>
     </ol>
 
@@ -231,32 +282,21 @@
   </div>
 </article>
 
-<!-- ═══ THE SCATTER ═══ -->
-<section class="sec sec--scatter" id="scatter-fig" data-surface="paper">
-  <figure class="chart chart--scatter">
-    <figcaption>All 84 hypotheses of the audit, at the wealth each one earned</figcaption>
-    <div class="scatter" id="scatter"></div>
-    <p class="chart__note">Each mark is one pre-registered hypothesis. The horizontal axis is the
-      e-value at fair odds, the vertical axis the same bet charged the bookmaker's margin, both on a
-      log scale. Mark size grows with the number of bouts in the segment. The dotted rules mark
-      e = 20, which rejects at the 5% level for a <em>single</em> pre-specified hypothesis. For a
-      family of 84 the cutoff that is actually licensed is e-BH's, e = 1,680 at one rejection, and
-      nothing here comes near it. The single mark above the horizontal rule is also the most
-      favourable of five walk-forward seeds: its five-seed median is 12.3, below the rule.</p>
-  </figure>
-</section>
-
 <!-- ═══ OUT ═══ -->
 <section class="sec sec--out" data-surface="signal">
   <div class="contact">
-    <p class="contact__kick reveal">Questions, or a reason to build the next one.</p>
-    <a class="contact__mail" href="mailto:lioneldassy@gmail.com" aria-label="Email lioneldassy at gmail dot com">
-      <b aria-hidden="true" data-split>lioneldassy</b><b aria-hidden="true" data-split>@gmail.com</b>
-    </a>
+    <h2 class="contact__title" data-split>Questions, or a reason to build the next one.</h2>
+    <div class="contact__acts reveal">
+      <a class="mailbtn magnet" href="mailto:lioneldassy@gmail.com" data-copy="lioneldassy@gmail.com" aria-label="Email lioneldassy@gmail.com. Clicking also copies the address.">
+        <span class="mailbtn__k" aria-hidden="true">Email, copies on click</span>
+        <span class="mailbtn__v" aria-hidden="true">lioneldassy@gmail.com</span>
+      </a>
+      <a class="btn magnet" href="https://t.me/prigodskii" rel="me noopener"><span class="roll">Telegram</span></a>
+      <a class="btn magnet" href="https://github.com/romanprigodskii" rel="me noopener"><span class="roll">GitHub</span></a>
+    </div>
     <ul role="list" class="contact__links reveal">
       <li><a href="../">Back to the front page</a></li>
       <li><a href="../plain/">The plain version</a></li>
-      <li><a href="https://github.com/romanprigodskii" rel="me noopener">GitHub</a></li>
     </ul>
   </div>
 </section>

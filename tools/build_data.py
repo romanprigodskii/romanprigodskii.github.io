@@ -43,6 +43,7 @@ def build(src):
                 "er": rnd(s["e_real"], 3),
                 "g": rnd(s["g_fair"], 5),
                 "f": s["name"].split("__")[0],
+                "s": s["name"].split("__")[1],
             }
         )
     assert len(segments) == 84, len(segments)

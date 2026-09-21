@@ -79,7 +79,19 @@ The charts, all drawn from the papers' own artifacts:
 4. **The detection floor** (HTML, measured band): fifteen candidate levers
    against the noise floor. Built in HTML rather than SVG so that fifteen long
    labels stay readable on a phone.
-5. **The full scatter** (SVG): all 84 hypotheses, log-log, mark size by sample size.
+5. **The 84, explorable** (SVG, inside paper one): all 84 hypotheses, log-log,
+   mark size by sample size. The nearest mark follows the pointer (or a tap, or
+   the arrow keys, in order of wealth) and a panel beside it reads out its name
+   from the registry, its family, both e-values and its rank; a family chip
+   dims the other eight.
+6. **The verdict** (HTML): paper one's whole result on one log scale from 1 to
+   1,680, with 20, the bar for one hypothesis, and 151, the best of the 84.
+7. **The echo** (HTML): paper two's shipped improvement against the largest
+   effect a re-seeded refit produced, 80% of it.
+
+The two papers share a header and nothing else. Each opens on the number it is
+about, drawn as a measurement, and lays out its findings the way its argument
+runs: paper one as figure-led rows, paper two as the four steps of a protocol.
 
 Colour in the charts always encodes something: vermilion means "clears the
 threshold" or "shipped", never "decorative".
