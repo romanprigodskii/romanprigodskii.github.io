@@ -6,7 +6,7 @@
 <title>Roman Prigodskii</title>
 <meta name="description" content="Roman Prigodskii, 17, Moscow. Forecasting systems scored against the market's own closing line, and the statistics that make the claims checkable. Vertex MMA, Gluline, two papers under review at NeurIPS 2026 workshops.">
 <meta name="author" content="Roman Prigodskii">
-<meta name="theme-color" content="#16291f">
+<meta name="theme-color" content="#101113">
 <link rel="canonical" href="https://romanprigodskii.github.io/">
 <meta property="og:type" content="profile">
 <meta property="og:title" content="Roman Prigodskii">
@@ -36,14 +36,16 @@
 <div class="intro" id="intro" aria-hidden="true">
   <div class="intro__grid"></div>
   <div class="intro__read">
-    <span class="intro__lbl">measuring</span>
-    <span class="intro__num" id="introNum">000</span>
+    <span class="odo" id="introOdo"><span class="odo__col"></span><span class="odo__col"></span></span>
+    <span class="intro__lbl">hypotheses<br>pre-registered</span>
   </div>
   <div class="intro__name"><span>Roman Prigodskii</span></div>
+  <div class="intro__bar"><i id="introBar"></i></div>
 </div>
 
 <div class="reticle" id="reticle" aria-hidden="true"><i></i><i></i><b id="reticleRead"></b></div>
 <div class="wipe" id="wipe" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <header class="bar" id="bar">
   <a class="bar__mark" href="#top" aria-label="Roman Prigodskii, back to top">
@@ -54,71 +56,105 @@
     <span>Prigodskii</span>
   </a>
   <nav class="bar__nav" aria-label="Sections">
-    <a href="#work">Work</a>
-    <a href="research/">Research</a>
-    <a href="#record">Record</a>
-    <a href="#method">Method</a>
+    <a href="#work"><span class="roll">Work</span></a>
+    <a href="research/"><span class="roll">Research</span></a>
+    <a href="#record"><span class="roll">Record</span></a>
+    <a href="#method"><span class="roll">Method</span></a>
   </nav>
   <div class="bar__end">
-    <a class="bar__cta magnet" href="mailto:lioneldassy@gmail.com">Email</a>
     <button class="themeswap" type="button" id="themeswap" aria-pressed="false">
       <span class="themeswap__track" aria-hidden="true"><span class="themeswap__dot"></span></span>
-      <span class="u-sr">Switch between chalkboard and paper</span>
+      <span class="u-sr">Light theme</span>
+    </button>
+    <button class="menubtn magnet" type="button" id="menuBtn" aria-expanded="false" aria-controls="menu">
+      <span class="roll">Menu</span><i aria-hidden="true"></i>
     </button>
   </div>
   <span class="bar__prog" id="prog" aria-hidden="true"></span>
 </header>
 
+<!-- ═══ MENU ═══ -->
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Site menu" hidden>
+  <div class="menu__inner">
+    <nav class="menu__nav" aria-label="Site">
+      <a class="menu__link" href="#work"><span class="menu__n">01</span><span class="roll">Work</span></a>
+      <a class="menu__link" href="research/"><span class="menu__n">02</span><span class="roll">Research</span></a>
+      <a class="menu__link" href="#record"><span class="menu__n">03</span><span class="roll">Record</span></a>
+      <a class="menu__link" href="#method"><span class="menu__n">04</span><span class="roll">Method</span></a>
+      <a class="menu__link" href="#contact"><span class="menu__n">05</span><span class="roll">Contact</span></a>
+    </nav>
+    <aside class="menu__side">
+      <div class="now" data-now>
+        <h2 class="now__h">Now</h2>
+        <dl class="now__list">
+          <div><dt>Waiting on</dt><dd><span data-now-wait>NeurIPS 2026 workshop notifications, due 29 September</span></dd></div>
+          <div><dt>Building</dt><dd>Vertex Boxing, the method on a softer market</dd></div>
+          <div><dt>Based in</dt><dd>Moscow, <time data-clock>--:--</time></dd></div>
+        </dl>
+      </div>
+      <ul role="list" class="menu__links">
+        <li><a href="mailto:lioneldassy@gmail.com">lioneldassy@gmail.com</a></li>
+        <li><a href="https://t.me/prigodskii" rel="me noopener">Telegram</a></li>
+        <li><a href="https://github.com/romanprigodskii" rel="me noopener">GitHub</a></li>
+        <li><a href="plain/">Plain version</a></li>
+      </ul>
+    </aside>
+  </div>
+  <button class="menu__close" type="button" id="menuClose"><span class="roll">Close</span></button>
+</div>
+
 <main id="main">
 
 <!-- ═══ 01 HERO ═══ -->
-<section class="hero" id="top">
-  <canvas class="hero__field" id="field" aria-hidden="true"></canvas>
-  <div class="hero__inner">
-    <p class="hero__place" data-split data-d="0">Moscow <span class="sep" aria-hidden="true">/</span> applying for Fall 2027 entry</p>
-    <h1 class="hero__name">
-      <span data-split data-d="60">Roman</span>
-      <span data-split data-d="140">Prigodskii</span>
-    </h1>
-    <p class="hero__lede" data-split data-d="320">
-      Seventeen. I build forecasting systems, score them against the sharpest baseline
-      the market has, and publish the statistics that let a stranger check every claim
-      without asking me anything.
-    </p>
-    <div class="hero__acts rise" style="--d:560">
-      <a class="btn btn--solid magnet" href="research/">Read the research</a>
-      <a class="btn magnet" href="#work">Four systems in production</a>
+<section class="hero" id="top" data-nav="Intro">
+  <div class="hero__pin">
+    <canvas class="hero__field" id="field" aria-hidden="true"></canvas>
+    <div class="hero__labels" id="fieldLabels" aria-hidden="true"></div>
+    <div class="hero__inner">
+      <p class="hero__place" data-split data-d="0">Moscow <span class="sep" aria-hidden="true">/</span> applying for Fall 2027 entry</p>
+      <h1 class="hero__name" aria-label="Roman Prigodskii">
+        <span data-split data-letters data-d="60" aria-hidden="true">Roman</span>
+        <span data-split data-letters data-d="140" aria-hidden="true">Prigodskii</span>
+      </h1>
+      <p class="hero__lede" data-split data-d="320">
+        Seventeen. I build forecasting systems, score them against the sharpest baseline
+        the market has, and publish the statistics that let a stranger check every claim
+        without asking me anything.
+      </p>
+      <div class="hero__acts rise" style="--d:560">
+        <a class="btn btn--solid magnet" href="#work"><span class="roll">See the work</span></a>
+        <a class="btn magnet" href="research/"><span class="roll">Read the research</span></a>
+      </div>
     </div>
-    <ul role="list" class="hero__links rise" style="--d:660">
-      <li><a href="https://github.com/romanprigodskii" rel="me noopener">GitHub</a></li>
-      <li><a href="https://t.me/prigodskii" rel="me noopener">Telegram</a></li>
-      <li><a href="mailto:lioneldassy@gmail.com">lioneldassy@gmail.com</a></li>
-    </ul>
-  </div>
-  <div class="hero__base rise" style="--d:760">
-    <p class="hero__clock"><span class="dot" aria-hidden="true"></span> Moscow, <time id="clock">--:--:--</time></p>
-    <a class="hero__cue" href="#work"><span>Scroll</span><i aria-hidden="true"></i></a>
-    <p class="hero__caption">Behind the type: 84 pre-registered hypotheses from the e-value audit,
-      each at the wealth it actually earned. <a href="research/">The audit</a>.</p>
+    <div class="hero__base rise" style="--d:700">
+      <p class="hero__clock"><span class="dot" aria-hidden="true"></span> Moscow, <time data-clock>--:--:--</time></p>
+      <a class="hero__cue" href="#position"><span>Scroll</span><i aria-hidden="true"></i></a>
+      <p class="hero__caption">Behind the type: the 84 pre-registered hypotheses of the e-value audit,
+        each at the wealth it actually earned.<span class="only-pin"> Keep scrolling and they turn into the chart.</span></p>
+    </div>
+    <div class="hero__flat" aria-hidden="true">
+      <p class="hero__flat-k">The audit, flattened</p>
+      <p class="hero__flat-t">Six clear the bar a single hypothesis has to clear. Charged for asking
+        84 questions of one pool, none of them do. The paper says so in its abstract.</p>
+    </div>
   </div>
 </section>
 
 <!-- ═══ 02 TICKER ═══ -->
 <div class="ticker" aria-hidden="true">
-  <div class="ticker__track" id="tickerTrack">
+  <div class="ticker__track">
     <span>Moscow Olympiad in Economics, first</span><i>◆</i>
     <span>0.7244 AUC against a bookmaker's closing line</span><i>◆</i>
-    <span>8,906 bouts modelled</span><i>◆</i>
-    <span>309 tests green at 1.0.0</span><i>◆</i>
     <span>On the App Store and Google Play</span><i>◆</i>
+    <span>8,906 bouts modelled</span><i>◆</i>
     <span>Two papers under review</span><i>◆</i>
     <span>Seventeen</span><i>◆</i>
   </div>
 </div>
-<p class="u-sr">Moscow Olympiad in Economics, first. 0.7244 AUC against a bookmaker's closing line. 8,906 bouts modelled. 309 tests green at 1.0.0. On the App Store and Google Play. Two papers under review. Seventeen.</p>
+<p class="u-sr">Moscow Olympiad in Economics, first. 0.7244 AUC against a bookmaker's closing line. On the App Store and Google Play. 8,906 bouts modelled. Two papers under review. Seventeen.</p>
 
 <!-- ═══ 03 STATEMENT ═══ -->
-<section class="stmt" id="position">
+<section class="stmt" id="position" data-nav="Position">
   <p class="stmt__lead" data-lit>
     One question runs through all of it. A model produces a number. A market produces a
     number. Only one of them is priced, and deciding which to believe is a statistical
@@ -127,119 +163,138 @@
   </p>
   <div class="stmt__foot">
     <p class="reveal">Final year at Letovo School in Moscow, advanced mathematics track. Won the Moscow
-      Olympiad in Economics outright on score. Four production systems shipped, two sole-authored
-      papers under review at NeurIPS 2026 workshops.</p>
+      Olympiad in Economics outright on score. Four production systems shipped, a fifth in research,
+      two sole-authored papers under review at NeurIPS 2026 workshops.</p>
     <p class="reveal">Everything here is traceable to a committed artifact, a published competition
       protocol, or an official document. Where a diploma and a protocol both exist, this page cites
       the protocol, because a stranger can check a protocol without me.</p>
   </div>
 </section>
 
-<!-- ═══ 04 WORK, horizontal ═══ -->
-<section class="film" id="work" aria-label="Built and shipped">
+<!-- ═══ 04 WORK ═══ -->
+<section class="film" id="work" aria-label="Built and shipped" data-nav="Work">
   <div class="film__pin">
     <div class="film__head">
       <h2 class="film__title" data-split>Built and shipped</h2>
-      <p class="film__meta"><span id="filmIdx">01</span> <i aria-hidden="true">/</i> 05</p>
+      <p class="film__meta"><span id="filmIdx">01</span> <i aria-hidden="true">/</i> 06 <em>Click a project to open it</em></p>
     </div>
     <div class="film__track" id="filmTrack">
 
-      <article class="panel">
-        <p class="panel__idx" aria-hidden="true">01</p>
-        <h3 class="panel__name">Vertex MMA</h3>
-        <p class="panel__line">A nine-model UFC forecasting stack, graded against the closing line</p>
-        <div class="panel__body">
-          <p>Live at <a href="https://vertexmma.com" rel="noopener">vertexmma.com</a> in English and
-            Russian, source on <a href="https://github.com/romanprigodskii/vertex-mma" rel="noopener">GitHub</a>.
-            A 118-feature winner ensemble over LightGBM, CatBoost and logistic regression, a debut
-            specialist, two method models, a cause-specific Poisson finish hazard, a no-intercept
-            decision model and a ten-thousand-run simulator.</p>
-          <p>Held out from January 2025 it reaches <b>0.7244 AUC</b> over 664 bouts, in a domain whose
-            benchmark is a bookmaker who prices for a living. Against that closing line it is better
-            calibrated and less sharp: what is left is resolution.</p>
-          <ul role="list" class="panel__facts">
-            <li><b>4,581</b> fighters, <b>8,906</b> bouts, <b>795</b> events</li>
-            <li><b>243k</b> score-history rows, <b>86k</b> career bouts, <b>31k</b> judge scorecards</li>
-            <li>Point in time enforced five independent ways; the market is never a feature</li>
-            <li>Two dozen rejected ideas documented beside the shipped ones</li>
-          </ul>
-        </div>
-        <figure class="chart chart--bars panel__chart">
-          <figcaption>Model against the closing line, 582 priced bouts</figcaption>
-          <div class="bars" id="bars-vertex"></div>
+      <article class="panel" data-case="case-vertex">
+        <figure class="panel__shot">
+          <img src="assets/img/work/vertex-markets-900.webp" srcset="assets/img/work/vertex-markets-900.webp 900w, assets/img/work/vertex-markets-1600.webp 1600w" sizes="(min-width: 900px) 60vw, 100vw" width="900" height="562" alt="Vertex MMA open markets page: each bout shows the model's price beside the market's, with the value gap marked" loading="lazy" decoding="async">
         </figure>
-      </article>
-
-      <article class="panel">
-        <p class="panel__idx" aria-hidden="true">02</p>
-        <h3 class="panel__name">Gluline</h3>
-        <p class="panel__line">End-to-end encrypted messenger, released on the App Store, Google Play and the web</p>
-        <div class="panel__body">
-          <p>Released on the App Store, Google Play and the web at
-            <a href="https://gluline.com" rel="noopener">gluline.com</a>. One monorepo across Android
-            in Jetpack Compose, iOS in SwiftUI, the web client, a Python and FastAPI backend, the
-            infrastructure and the protocol. Ephemeral key exchange, per-message key derivation,
-            Argon2id, elliptic-curve signatures, WebRTC peer-to-peer calls, a contextual AI assistant.</p>
-          <p>It shipped to the stores only after clearing a written release gate, and the gate is on
-            record.</p>
-          <ul role="list" class="panel__facts">
-            <li><b>309</b> unit tests passing, lintVital clean, R8 keep-rules verified</li>
-            <li>Two formal audits on record, April and August 2026</li>
-            <li>August: <b>74</b> candidate findings, <b>42</b> confirmed, <b>32</b> refuted by an adversarial second pass</li>
-            <li>The refutations are written down as refutations</li>
-          </ul>
+        <div class="panel__meta">
+          <p class="panel__idx" aria-hidden="true">01</p>
+          <h3 class="panel__name"><a class="panel__open" href="#case-vertex" aria-haspopup="dialog">Vertex MMA</a></h3>
+          <p class="panel__line">A nine-model UFC forecasting stack, graded against the closing line</p>
+          <dl class="panel__nums">
+            <div><dt>AUC, held out</dt><dd>0.7244</dd></div>
+            <div><dt>bouts modelled</dt><dd>8,906</dd></div>
+          </dl>
+          <span class="panel__cta" aria-hidden="true"><span class="roll">Open the case</span></span>
         </div>
       </article>
 
-      <article class="panel">
-        <p class="panel__idx" aria-hidden="true">03</p>
-        <h3 class="panel__name">Zacks to IBKR</h3>
-        <p class="panel__line">Commissioned execution pipeline, running on a schedule</p>
-        <div class="panel__body">
-          <p>Paid client work, and the only one of these that somebody else specified. Screen
-            ingestion from Zacks exports into an Interactive Brokers execution path: scheduled
-            collection, VPS hosted, dry-run by default so a bad input costs nothing.</p>
-          <p>It rebalances a real account against a published rank, which means the failure mode is
-            money and the code is written accordingly.</p>
-          <ul role="list" class="panel__facts">
-            <li>Sole developer, commissioned and paid</li>
-            <li>Parse, reconcile, place, reconcile again</li>
-            <li>Dry-run is the default, not the flag</li>
-          </ul>
+      <article class="panel" data-case="case-gluline">
+        <figure class="panel__shot">
+          <img src="assets/img/work/gluline-900.webp" srcset="assets/img/work/gluline-900.webp 900w, assets/img/work/gluline-1600.webp 1600w" sizes="(min-width: 900px) 60vw, 100vw" width="900" height="562" alt="Gluline home page: the messenger that tells you exactly what it can see" loading="lazy" decoding="async">
+        </figure>
+        <div class="panel__meta">
+          <p class="panel__idx" aria-hidden="true">02</p>
+          <h3 class="panel__name"><a class="panel__open" href="#case-gluline" aria-haspopup="dialog">Gluline</a></h3>
+          <p class="panel__line">End-to-end encrypted messenger, released on the App Store, Google Play and the web</p>
+          <dl class="panel__nums">
+            <div><dt>stores</dt><dd>iOS, Android, web</dd></div>
+            <div><dt>tests at the gate</dt><dd>309</dd></div>
+          </dl>
+          <span class="panel__cta" aria-hidden="true"><span class="roll">Open the case</span></span>
         </div>
       </article>
 
-      <article class="panel">
-        <p class="panel__idx" aria-hidden="true">04</p>
-        <h3 class="panel__name">Clipwell</h3>
-        <p class="panel__line">Native clipboard history for macOS and Windows, free, MIT, on Homebrew</p>
-        <div class="panel__body">
-          <p>A small native app written twice: Swift and SwiftUI on macOS, C# and WPF on Windows.
-            Same bar, same cards, same keys, same history format. No Electron, no account, no
-            subscription. Installing it is
-            <code>brew install --cask romanprigodskii/tap/clipwell</code>, which meant shipping a
-            cask, a release pipeline and a product site alongside the app.</p>
-          <p>The detail I care about most is the one nobody sees: content marked concealed by a
-            password manager is never written to disk.</p>
-          <ul role="list" class="panel__facts">
-            <li>macOS 14+, and a full Windows port</li>
-            <li>MIT licensed, English and Russian UI</li>
-            <li><a href="https://romanprigodskii.github.io/clipwell/" rel="noopener">Product site</a> and <a href="https://github.com/romanprigodskii/clipwell" rel="noopener">source</a></li>
-          </ul>
+      <article class="panel" data-case="case-boxing">
+        <figure class="panel__shot panel__shot--draw">
+          <svg viewBox="0 0 900 562" role="img" aria-label="The leak Vertex Boxing caught: where judges' scorecards were recorded, 9.7 percent of fights ended early; where they were not, 74.3 percent did.">
+            <g class="gfx-grid"><path d="M120 470H820M120 380H820M120 290H820M120 200H820M120 110H820"/></g>
+            <g class="gfx-lbl">
+              <text x="108" y="474" text-anchor="end">0</text><text x="108" y="294" text-anchor="end">0.4</text><text x="108" y="114" text-anchor="end">0.8</text>
+            </g>
+            <rect class="gfx-a" x="220" y="426.4" width="170" height="43.6" rx="2"/>
+            <rect class="gfx-b" x="530" y="135.6" width="170" height="334.4" rx="2"/>
+            <text class="gfx-v" x="305" y="412.4" text-anchor="middle">0.097</text>
+            <text class="gfx-v gfx-v--hi" x="615" y="121.6" text-anchor="middle">0.743</text>
+            <text class="gfx-lbl2" x="305" y="508" text-anchor="middle">judges recorded</text>
+            <text class="gfx-lbl2" x="615" y="508" text-anchor="middle">judges not recorded</text>
+            <text class="gfx-k" x="120" y="62">P(fight ended early)</text>
+          </svg>
+        </figure>
+        <div class="panel__meta">
+          <p class="panel__idx" aria-hidden="true">03</p>
+          <h3 class="panel__name"><a class="panel__open" href="#case-boxing" aria-haspopup="dialog">Vertex Boxing</a></h3>
+          <p class="panel__line">The method ported to a softer market, as a falsifiable research bet</p>
+          <dl class="panel__nums">
+            <div><dt>blended into the price</dt><dd>+0.0043</dd></div>
+            <div><dt>post-bell leak</dt><dd>caught</dd></div>
+          </dl>
+          <span class="panel__cta" aria-hidden="true"><span class="roll">Open the case</span></span>
+        </div>
+      </article>
+
+      <article class="panel" data-case="case-zacks">
+        <figure class="panel__shot panel__shot--draw">
+          <svg viewBox="0 0 900 562" role="img" aria-label="An illustration of a rebalance: target weights against current positions, with the orders that close the gap.">
+            <g class="gfx-grid"><path d="M150 90V480M750 90V480"/></g>
+            <text class="gfx-k" x="150" y="62">rank, target and order</text>
+            <g class="gfx-rows">
+              <g transform="translate(0 110)"><text class="gfx-lbl2" x="138" y="18" text-anchor="end">#1</text><rect class="gfx-a" x="150" y="4" width="360" height="18" rx="2"/><rect class="gfx-b" x="510" y="4" width="120" height="18" rx="2"/><text class="gfx-v2" x="642" y="18">buy</text></g>
+              <g transform="translate(0 170)"><text class="gfx-lbl2" x="138" y="18" text-anchor="end">#2</text><rect class="gfx-a" x="150" y="4" width="420" height="18" rx="2"/><text class="gfx-v2" x="582" y="18">hold</text></g>
+              <g transform="translate(0 230)"><text class="gfx-lbl2" x="138" y="18" text-anchor="end">#3</text><rect class="gfx-a" x="150" y="4" width="300" height="18" rx="2"/><rect class="gfx-b" x="450" y="4" width="80" height="18" rx="2"/><text class="gfx-v2" x="542" y="18">buy</text></g>
+              <g transform="translate(0 290)"><text class="gfx-lbl2" x="138" y="18" text-anchor="end">#4</text><rect class="gfx-c" x="150" y="4" width="440" height="18" rx="2"/><text class="gfx-v2" x="602" y="18">trim</text></g>
+              <g transform="translate(0 350)"><text class="gfx-lbl2" x="138" y="18" text-anchor="end">#5</text><rect class="gfx-c" x="150" y="4" width="200" height="18" rx="2"/><text class="gfx-v2" x="362" y="18">sell</text></g>
+            </g>
+            <text class="gfx-lbl2" x="150" y="440">dry run by default: nothing is placed until the reconciliation agrees</text>
+          </svg>
+        </figure>
+        <div class="panel__meta">
+          <p class="panel__idx" aria-hidden="true">04</p>
+          <h3 class="panel__name"><a class="panel__open" href="#case-zacks" aria-haspopup="dialog">Zacks to IBKR</a></h3>
+          <p class="panel__line">Commissioned execution pipeline, running on a schedule against a real account</p>
+          <dl class="panel__nums">
+            <div><dt>client</dt><dd>paid</dd></div>
+            <div><dt>default mode</dt><dd>dry run</dd></div>
+          </dl>
+          <span class="panel__cta" aria-hidden="true"><span class="roll">Open the case</span></span>
+        </div>
+      </article>
+
+      <article class="panel" data-case="case-clipwell">
+        <figure class="panel__shot">
+          <img src="assets/img/work/clipwell-900.webp" srcset="assets/img/work/clipwell-900.webp 900w, assets/img/work/clipwell-1600.webp 1600w" sizes="(min-width: 900px) 60vw, 100vw" width="900" height="562" alt="Clipwell product site: everything you copied, one keystroke away, with the Homebrew install command" loading="lazy" decoding="async">
+        </figure>
+        <div class="panel__meta">
+          <p class="panel__idx" aria-hidden="true">05</p>
+          <h3 class="panel__name"><a class="panel__open" href="#case-clipwell" aria-haspopup="dialog">Clipwell</a></h3>
+          <p class="panel__line">Native clipboard history for macOS and Windows, free, MIT, on Homebrew</p>
+          <dl class="panel__nums">
+            <div><dt>platforms</dt><dd>macOS, Windows</dd></div>
+            <div><dt>licence</dt><dd>MIT</dd></div>
+          </dl>
+          <span class="panel__cta" aria-hidden="true"><span class="roll">Open the case</span></span>
         </div>
       </article>
 
       <article class="panel panel--bench">
-        <p class="panel__idx" aria-hidden="true">05</p>
-        <h3 class="panel__name">On the bench</h3>
-        <p class="panel__line">Smaller things, and the ones still moving</p>
-        <div class="panel__body">
+        <div class="panel__shot panel__shot--bench">
           <ul role="list" class="bench">
-            <li><b>Vertex Boxing</b><span>The Vertex method ported to boxing, grading a fundamentals model against the closing line on soft regional markets. The claim worth testing is that the protocol transplants.</span></li>
-            <li><b>Alfa-Romeo</b><span>A neobank demo in SwiftUI over a NestJS backend: exchange, AI copilot, business module, lending, live peer-to-peer wallet. <a href="https://github.com/romanprigodskii/alfaromeo" rel="noopener">Source</a>.</span></li>
+            <li><b>Alfa-Romeo</b><span>A neobank demo in SwiftUI over a NestJS backend: exchange, AI copilot, business module, lending, a live peer-to-peer wallet. <a href="https://github.com/romanprigodskii/alfaromeo" rel="noopener">Source</a>.</span></li>
             <li><b>Asgard</b><span>A private VLESS and REALITY relay with a Russian-side bridge on a clean IP. Built because the alternative was not being able to work.</span></li>
           </ul>
-          <a class="btn magnet" href="plain/">See the whole record, plainly</a>
+        </div>
+        <div class="panel__meta">
+          <p class="panel__idx" aria-hidden="true">06</p>
+          <h3 class="panel__name">On the bench</h3>
+          <p class="panel__line">Smaller things, and the ones still moving</p>
+          <a class="btn magnet" href="plain/"><span class="roll">The whole record, plainly</span></a>
         </div>
       </article>
 
@@ -247,8 +302,200 @@
   </div>
 </section>
 
+<!-- ═══ CASES ═══
+     Without JavaScript these read as ordinary write-ups under the work section.
+     With it, they open one at a time in a full-screen layer. -->
+<div class="cases" id="cases">
+
+  <article class="case" id="case-vertex" aria-labelledby="case-vertex-t">
+    <header class="case__head">
+      <p class="case__idx">01 <span aria-hidden="true">/</span> Live product</p>
+      <h2 class="case__title" id="case-vertex-t">Vertex MMA</h2>
+      <p class="case__line">A nine-model UFC forecasting stack, graded against the bookmaker's closing line on every basis, including the ones where the line wins.</p>
+      <p class="case__links"><a href="https://vertexmma.com" rel="noopener">vertexmma.com</a> <span aria-hidden="true">/</span> <a href="https://github.com/romanprigodskii/vertex-mma" rel="noopener">Source on GitHub</a></p>
+    </header>
+    <figure class="case__shot">
+      <img src="assets/img/work/vertex-markets-1600.webp" width="1600" height="1000" alt="Vertex MMA open markets page: the model's price beside the market's for each bout" loading="lazy" decoding="async">
+    </figure>
+    <dl class="case__nums">
+      <div><dt>AUC, held out from 2025</dt><dd data-count="0.7244" data-dec="4">0.7244</dd></div>
+      <div><dt>fighters</dt><dd data-count="4581" data-sep>4,581</dd></div>
+      <div><dt>bouts</dt><dd data-count="8906" data-sep>8,906</dd></div>
+      <div><dt>events</dt><dd data-count="795">795</dd></div>
+    </dl>
+    <div class="case__body">
+      <section>
+        <h3>The system</h3>
+        <p>Not one model. A winner ensemble over 118 features (LightGBM, CatBoost and logistic regression, blended on a validation window and order-averaged over both fighter orderings, then a single post-blend age coefficient), a debut specialist, a method model, a debut method model, a cause-specific Poisson finish hazard, a no-intercept logistic decision model, and a ten-thousand-run Monte Carlo simulator. Live in English and Russian: 35 routes in two locales, 1,533 translation keys each, on Next.js 16, React 19, TypeScript 5.9 strict, Tailwind 4, Postgres and Python 3.12. Virtual currency only.</p>
+      </section>
+      <section>
+        <h3>Measured against the market</h3>
+        <p>Held out from January 2025, read directly from committed artifacts. The comparison is reported on every basis, including the ones where the closing line wins, because that is the comparison worth having: the model is better calibrated than the line and less sharp, so what remains is resolution, which needs information the public record does not contain.</p>
+        <div class="case__table" role="region" aria-label="Held-out performance" tabindex="0">
+          <table>
+            <thead><tr><th scope="col"></th><th scope="col">Accuracy</th><th scope="col">Log-loss</th><th scope="col">Brier</th><th scope="col">AUC</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Model, all 664 bouts</th><td>0.6747</td><td>0.6137</td><td>0.2124</td><td>0.7244</td></tr>
+              <tr><th scope="row">Model, 582 priced bouts</th><td>0.6753</td><td>0.6171</td><td>0.2140</td><td></td></tr>
+              <tr><th scope="row">Closing line, same 582</th><td>0.6838</td><td>0.5922</td><td>0.2035</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figure class="chart chart--bars">
+          <figcaption>Model against the closing line, 582 priced bouts</figcaption>
+          <div class="bars" id="bars-vertex"></div>
+          <p class="chart__note">Each metric has its own truncated axis, printed under it, and every row is oriented so that a longer bar is the better score.</p>
+        </figure>
+      </section>
+      <section>
+        <h3>Discipline</h3>
+        <ul role="list" class="case__list">
+          <li><b>Point in time, five ways.</b> Snapshot-then-apply history, strictly-earlier rating lookups, a separate chronological ratings replay, a date-bounded pre-UFC career walk, and a frozen percentile-clipping anchor.</li>
+          <li><b>The market is never an input.</b> Odds are stored, shown and used for scoring, and never enter the feature matrix. Removing them cost 1.5 points of test accuracy. They stayed removed.</li>
+          <li><b>A measured detection floor.</b> Five seeds on a 3,087-bout walk-forward pool put the minimum detectable effect at 0.0036 nats; the one lever ever shipped to the winner leg is worth 0.0026 and shipped only because three independent legs agreed on its sign. The repository says exactly that.</li>
+          <li><b>A written record of failure.</b> Two dozen ideas built, gated and rejected, documented beside the ones that shipped. One shipped feature was later identified as a leak and removed.</li>
+        </ul>
+      </section>
+      <figure class="case__shot case__shot--2">
+        <img src="assets/img/work/vertex-sim-1600.webp" width="1600" height="1000" alt="Vertex MMA simulation page: calibrated probabilities and recently graded picks" loading="lazy" decoding="async">
+        <figcaption>The simulation page grades its own recent picks in public, misses included.</figcaption>
+      </figure>
+    </div>
+  </article>
+
+  <article class="case" id="case-gluline" aria-labelledby="case-gluline-t">
+    <header class="case__head">
+      <p class="case__idx">02 <span aria-hidden="true">/</span> Released</p>
+      <h2 class="case__title" id="case-gluline-t">Gluline</h2>
+      <p class="case__line">An end-to-end encrypted messenger, released on the App Store, Google Play and the web, that tells you exactly what it can see.</p>
+      <p class="case__links"><a href="https://gluline.com" rel="noopener">gluline.com</a></p>
+    </header>
+    <figure class="case__shot">
+      <img src="assets/img/work/gluline-1600.webp" width="1600" height="1000" alt="Gluline home page" loading="lazy" decoding="async">
+    </figure>
+    <dl class="case__nums">
+      <div><dt>released on</dt><dd>iOS, Android, web</dd></div>
+      <div><dt>unit tests at the gate</dt><dd data-count="309">309</dd></div>
+      <div><dt>audit findings confirmed</dt><dd data-count="42">42</dd></div>
+      <div><dt>and refuted, on record</dt><dd data-count="32">32</dd></div>
+    </dl>
+    <div class="case__body">
+      <section>
+        <h3>What it is</h3>
+        <p>One monorepo across Android in Jetpack Compose, iOS in SwiftUI, a web client, a Python and FastAPI backend, the infrastructure and the protocol documents. The cryptography is ephemeral key exchange, per-message key derivation, Argon2id and elliptic-curve signatures, with WebRTC peer-to-peer calls and a contextual AI assistant built in. Sole developer.</p>
+      </section>
+      <section>
+        <h3>How it shipped</h3>
+        <p>Nothing went to the stores without clearing a written release gate: compile green, 309 unit tests passing, lintVital clean on the release build, and R8 keep-rules verified against the 15 wire fields that have to survive minification. The Android 1.0.0 build shipped as .aab and .apk with mapping files and checksums retained.</p>
+      </section>
+      <section>
+        <h3>Audited twice, adversarially</h3>
+        <p>Two formal codebase audits are on record. The first, in April 2026, raised about 58 findings. The second, before release in August, raised 74 candidates and then ran an adversarial second pass over them: 42 were confirmed and fixed, and 32 were refuted and written down as refuted, so the next audit does not spend time on them again.</p>
+      </section>
+    </div>
+  </article>
+
+  <article class="case" id="case-boxing" aria-labelledby="case-boxing-t">
+    <header class="case__head">
+      <p class="case__idx">03 <span aria-hidden="true">/</span> In research</p>
+      <h2 class="case__title" id="case-boxing-t">Vertex Boxing</h2>
+      <p class="case__line">The Vertex method, ported to professional boxing, where regional and undercard markets are priced far less sharply than the UFC. Built as a falsifiable research bet, not a product.</p>
+    </header>
+    <dl class="case__nums">
+      <div><dt>blended into the market price</dt><dd>+0.0043</dd></div>
+      <div><dt>closing-line value, top slice</dt><dd>+0.0143</dd></div>
+      <div><dt>backtest bets in that slice</dt><dd data-count="803">803</dd></div>
+      <div><dt>real bets placed</dt><dd>0</dd></div>
+    </dl>
+    <div class="case__body">
+      <section>
+        <h3>The bet, stated before it was run</h3>
+        <p>Success is defined in advance as closing-line value on competitive fights, where the implied probability is between 30 and 70 percent. Not accuracy: on regional cards the favourite wins 90 to 95 percent of the time, which makes accuracy meaningless. A kill-test runs before the full pipeline is built, and if there is no edge in that band the thesis is dropped regardless of any headline number.</p>
+      </section>
+      <section>
+        <h3>What ports, and what does not</h3>
+        <p>The spine is identical: the leak-free point-in-time replay, Elo and Glicko-2, strength-of-schedule aggregates, the LightGBM, CatBoost and logistic-regression ensemble, and a closing line used only for evaluation. The sport changes the rest. The target has three outcomes, win, draw or loss, scored by ranked probability score. There are no per-round punch statistics, because there is no free equivalent. New signals cover padded records, hometown and venue decision bias, title level, amateur pedigree and southpaw matchups, with an explicit draw sub-model. BoxRec was ruled out because its terms forbid extraction, so the data comes from Wikidata, DBpedia, Wikipedia record tables, boxing-data.com and The Odds API.</p>
+      </section>
+      <section>
+        <h3>The leak it caught</h3>
+        <p>Judges' scorecards are published only for fights that went the distance. So the mere presence of judge fields told the model how a fight had ended, a fact nobody knows before the bell. Where judges were recorded, 9.7 percent of fights ended early; where they were not, 74.3 percent did. A control on 5,673 events, same page and same crawl, confirmed it was the outcome and not the crawler. The leak was worth +0.0042 [+0.0035, +0.0049] on the confirmation half. It is gone, and the bench was then made to reproduce itself exactly, twice, after two identical runs were found to disagree by 0.0002.</p>
+      </section>
+      <section>
+        <h3>Where it stands</h3>
+        <p>As of 4 August 2026, and all of it backtest. The model does not beat the closing line on its own: the gap is -0.0198 with a yearly refit. But blended into the market price it improves that price by +0.0043 [+0.0024, +0.0062]. It knows something the price does not. It does not yet know enough to pay the +0.0302 margin charged at the open, which is twice the closing-line value it finds, and the record says exactly that.</p>
+      </section>
+    </div>
+  </article>
+
+  <article class="case" id="case-zacks" aria-labelledby="case-zacks-t">
+    <header class="case__head">
+      <p class="case__idx">04 <span aria-hidden="true">/</span> Client work</p>
+      <h2 class="case__title" id="case-zacks-t">Zacks to Interactive Brokers</h2>
+      <p class="case__line">A commissioned execution pipeline that rebalances a real account against a published rank, on a schedule.</p>
+    </header>
+    <dl class="case__nums">
+      <div><dt>role</dt><dd>sole developer</dd></div>
+      <div><dt>client</dt><dd>paid</dd></div>
+      <div><dt>default mode</dt><dd>dry run</dd></div>
+      <div><dt>hosting</dt><dd>VPS, scheduled</dd></div>
+    </dl>
+    <div class="case__body">
+      <section>
+        <h3>What it does</h3>
+        <p>The only project here that somebody else specified and paid for. It ingests screen exports from Zacks, turns them into target positions, reconciles those against what the Interactive Brokers account actually holds, and places the orders that close the gap. Collection runs on a schedule on a VPS.</p>
+      </section>
+      <section>
+        <h3>Why dry run is the default</h3>
+        <p>The failure mode is money. So the pipeline does nothing to the account unless it is told to, every run reconciles before and after, and a malformed export or a surprising position stops the run rather than guessing its way through it.</p>
+      </section>
+    </div>
+  </article>
+
+  <article class="case" id="case-clipwell" aria-labelledby="case-clipwell-t">
+    <header class="case__head">
+      <p class="case__idx">05 <span aria-hidden="true">/</span> Open source</p>
+      <h2 class="case__title" id="case-clipwell-t">Clipwell</h2>
+      <p class="case__line">A small, native clipboard history for macOS and Windows. Free, MIT licensed, and one Homebrew command away.</p>
+      <p class="case__links"><a href="https://romanprigodskii.github.io/clipwell/" rel="noopener">Product site</a> <span aria-hidden="true">/</span> <a href="https://github.com/romanprigodskii/clipwell" rel="noopener">Source</a></p>
+    </header>
+    <figure class="case__shot">
+      <img src="assets/img/work/clipwell-1600.webp" width="1600" height="1000" alt="Clipwell product site" loading="lazy" decoding="async">
+    </figure>
+    <dl class="case__nums">
+      <div><dt>macOS</dt><dd>Swift, SwiftUI</dd></div>
+      <div><dt>Windows</dt><dd>C#, WPF</dd></div>
+      <div><dt>install</dt><dd>Homebrew cask</dd></div>
+      <div><dt>account needed</dt><dd>none</dd></div>
+    </dl>
+    <div class="case__body">
+      <section>
+        <h3>Written twice</h3>
+        <p>The same bar, the same cards, the same keys and the same history format, implemented natively on both platforms rather than once in Electron. No account and no subscription. Installing it is <code>brew install --cask romanprigodskii/tap/clipwell</code>, which meant shipping a cask, a release pipeline and a product site alongside the app itself.</p>
+      </section>
+      <section>
+        <h3>The detail nobody sees</h3>
+        <p>Content that a password manager marks as concealed or transient is never written to disk. Clipboard managers are a quiet way to leak secrets, and this one declines to.</p>
+      </section>
+    </div>
+  </article>
+
+</div>
+
+<!-- ═══ CASE LAYER ═══ -->
+<div class="caselayer" id="caselayer" role="dialog" aria-modal="true" aria-label="Project" hidden>
+  <div class="caselayer__bar">
+    <button class="caselayer__close magnet" type="button" id="caseClose"><span class="roll">Close</span><i aria-hidden="true"></i></button>
+  </div>
+  <div class="caselayer__scroll" id="caseScroll" data-lenis-prevent>
+    <div class="caselayer__slot" id="caseSlot"></div>
+    <div class="caselayer__next">
+      <button class="bigcta" type="button" id="caseNext"><span class="roll">Next project</span><i aria-hidden="true"></i></button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ 05 RESEARCH TEASER ═══ -->
-<section class="sec sec--tease" id="research" data-surface="paper">
+<section class="sec sec--tease risesec" id="research" data-surface="paper" data-nav="Research">
   <div class="tease">
     <div class="tease__head">
       <h2 class="sec__title" data-split>Research</h2>
@@ -281,14 +528,14 @@
     </figure>
 
     <a class="bigcta magnet" href="research/">
-      <span>Read both papers</span>
+      <span class="roll">Read both papers</span>
       <i aria-hidden="true"></i>
     </a>
   </div>
 </section>
 
 <!-- ═══ 06 RECORD ═══ -->
-<section class="sec sec--record" id="record">
+<section class="sec sec--record" id="record" data-nav="Record">
   <div class="sec__head">
     <h2 class="sec__title" data-split>The record</h2>
     <p class="sec__sub reveal">Evidenced against published competition protocols wherever a protocol
@@ -350,67 +597,78 @@
   </div>
 </section>
 
-<!-- ═══ 07 METHOD, stacking ═══ -->
-<section class="sec sec--method" id="method">
+<!-- ═══ 07 METHOD ═══ -->
+<section class="sec sec--method" id="method" data-nav="Method">
   <div class="sec__head">
     <h2 class="sec__title" data-split>How I work</h2>
-    <p class="sec__sub reveal">Five rules, applied across all four projects, visible in the artifacts.</p>
+    <p class="sec__sub reveal">Five rules, applied across every project, visible in the artifacts.</p>
   </div>
-  <ol role="list" class="stack">
+  <ol role="list" class="stack" id="stack">
     <li class="card" style="--i:0"><span class="card__n" aria-hidden="true">01</span>
       <h3>Measure against the hardest baseline available, and publish the comparison</h3>
       <p>Vertex is scored against a bookmaker's closing line, the strongest benchmark the domain has, on every basis including the windows where the baseline wins.</p></li>
     <li class="card" style="--i:1"><span class="card__n" aria-hidden="true">02</span>
       <h3>Gate before shipping</h3>
-      <p>A change ships when it clears a pre-computed detection floor and independent evaluation legs agree on its sign. Not when it looks good.</p></li>
+      <p>A change ships when it clears a pre-computed detection floor and independent evaluation legs agree on its sign. Gluline went to the stores through a written gate. Not when it looks good.</p></li>
     <li class="card" style="--i:2"><span class="card__n" aria-hidden="true">03</span>
       <h3>Keep the rejects</h3>
-      <p>Two dozen failed ideas sit in the repository next to the shipped ones with the reason each was rejected. Official rankings twice, recency weighting, seed bagging, symmetry augmentation, a graded outcome label, post-hoc calibration.</p></li>
+      <p>Two dozen failed ideas sit in the Vertex repository next to the shipped ones with the reason each was rejected. Thirty-two refuted audit findings sit in Gluline's.</p></li>
     <li class="card" style="--i:3"><span class="card__n" aria-hidden="true">04</span>
       <h3>Report negative results as negative</h3>
-      <p>The e-value paper's headline finding is that the market wins, and the paper says so in its abstract rather than in a limitations section on page eight.</p></li>
+      <p>The e-value paper's headline finding is that the market wins, and the paper says so in its abstract rather than in a limitations section on page eight. Vertex Boxing's status page opens with the same sentence.</p></li>
     <li class="card" style="--i:4"><span class="card__n" aria-hidden="true">05</span>
       <h3>Claim precisely</h3>
-      <p>Submitted means submitted, not published. An award cites its protocol. A number carries the window it was measured on.</p></li>
+      <p>Submitted means submitted, not published. Backtest means backtest. An award cites its protocol. A number carries the window it was measured on.</p></li>
   </ol>
 </section>
 
 <!-- ═══ 08 TOOLKIT ═══ -->
-<section class="sec sec--kit" id="toolkit">
+<section class="sec sec--kit" id="toolkit" data-nav="Toolkit">
   <div class="sec__head"><h2 class="sec__title" data-split>Toolkit</h2></div>
-  <div class="kit reveal">
-    <div class="kit__g"><h3>Modelling</h3><p>Python, LightGBM, CatBoost, scikit-learn, NumPy, pandas, statsmodels, Monte Carlo simulation</p></div>
-    <div class="kit__g"><h3>Statistics</h3><p>E-values and test martingales, anytime-valid inference, walk-forward validation, calibration and sharpness decomposition, power and detection floors</p></div>
-    <div class="kit__g"><h3>Web</h3><p>TypeScript, Next.js, React, Tailwind, Postgres, Supabase, internationalisation</p></div>
-    <div class="kit__g"><h3>Native</h3><p>Kotlin and Jetpack Compose, Swift and SwiftUI, C# and WPF</p></div>
-    <div class="kit__g"><h3>Backend and infra</h3><p>Python and FastAPI, NestJS, Docker, Linux, Caddy, SOPS, VPS operations</p></div>
-    <div class="kit__g"><h3>Writing</h3><p>LaTeX, bilingual technical writing in Russian and English</p></div>
-  </div>
+  <ul role="list" class="kit2">
+    <li class="kit2__row"><h3>Modelling</h3><p>Python, LightGBM, CatBoost, scikit-learn, NumPy, pandas, statsmodels, Monte Carlo simulation</p></li>
+    <li class="kit2__row"><h3>Statistics</h3><p>E-values and test martingales, anytime-valid inference, walk-forward validation, calibration and sharpness, detection floors</p></li>
+    <li class="kit2__row"><h3>Web</h3><p>TypeScript, Next.js, React, Tailwind, Postgres, Supabase, Drizzle, internationalisation</p></li>
+    <li class="kit2__row"><h3>Native</h3><p>Kotlin and Jetpack Compose, Swift and SwiftUI, C# and WPF</p></li>
+    <li class="kit2__row"><h3>Backend</h3><p>Python and FastAPI, NestJS, Docker, Linux, Caddy, SOPS, VPS operations</p></li>
+    <li class="kit2__row"><h3>Writing</h3><p>LaTeX, bilingual technical writing in Russian and English</p></li>
+  </ul>
 </section>
 
 <!-- ═══ 09 CONTACT ═══ -->
-<section class="sec sec--contact" id="contact" data-surface="signal">
+<section class="sec sec--contact risesec" id="contact" data-surface="signal" data-nav="Contact">
   <div class="contact">
-    <p class="contact__kick reveal">Open to research, internships and anything with a real baseline in it.</p>
-    <a class="contact__mail" href="mailto:lioneldassy@gmail.com" aria-label="Email lioneldassy at gmail dot com">
+    <p class="contact__kick reveal">Research, internships, or a problem with a real baseline in it.
+      The address below copies itself when you click it.</p>
+    <a class="contact__mail" href="mailto:lioneldassy@gmail.com" data-copy="lioneldassy@gmail.com" aria-label="Email lioneldassy at gmail dot com. Clicking also copies the address.">
       <b aria-hidden="true" data-split>lioneldassy</b><b aria-hidden="true" data-split>@gmail.com</b>
     </a>
-    <ul role="list" class="contact__links reveal">
-      <li><a href="https://t.me/prigodskii" rel="me noopener">Telegram, @prigodskii</a></li>
-      <li><a href="https://github.com/romanprigodskii" rel="me noopener">GitHub, romanprigodskii</a></li>
-      <li><a href="https://vertexmma.com" rel="noopener">vertexmma.com</a></li>
-      <li><a href="https://gluline.com" rel="noopener">gluline.com</a></li>
-    </ul>
-  </div>
-  <div class="ticker ticker--foot" aria-hidden="true">
-    <div class="ticker__track">
-      <span>Let's talk</span><i>◆</i><span>Let's talk</span><i>◆</i><span>Let's talk</span><i>◆</i>
-      <span>Let's talk</span><i>◆</i><span>Let's talk</span><i>◆</i><span>Let's talk</span><i>◆</i>
+    <div class="contact__grid">
+      <div class="now now--inline" data-now>
+        <h2 class="now__h">Now</h2>
+        <dl class="now__list">
+          <div><dt>Waiting on</dt><dd><span data-now-wait>NeurIPS 2026 workshop notifications, due 29 September</span></dd></div>
+          <div><dt>Building</dt><dd>Vertex Boxing, the method on a softer market</dd></div>
+          <div><dt>Based in</dt><dd>Moscow, <time data-clock>--:--</time></dd></div>
+        </dl>
+      </div>
+      <ul role="list" class="contact__links">
+        <li><a href="https://t.me/prigodskii" rel="me noopener"><span class="roll">Telegram, @prigodskii</span></a></li>
+        <li><a href="https://github.com/romanprigodskii" rel="me noopener"><span class="roll">GitHub, romanprigodskii</span></a></li>
+        <li><a href="https://vertexmma.com" rel="noopener"><span class="roll">vertexmma.com</span></a></li>
+        <li><a href="https://gluline.com" rel="noopener"><span class="roll">gluline.com</span></a></li>
+      </ul>
     </div>
   </div>
 </section>
 
 </main>
+
+<nav class="scrollnav" id="scrollnav" aria-hidden="true">
+  <span class="scrollnav__n" id="snN">01</span>
+  <span class="scrollnav__name" id="snName">Intro</span>
+  <span class="scrollnav__bar"><i id="snBar"></i></span>
+</nav>
 
 <footer class="foot">
   <p>Roman Prigodskii, Moscow. Figures as measured on the dates given.</p>
@@ -419,7 +677,9 @@
 
 <script src="assets/js/vendor/lenis.min.js" defer></script>
 <script src="assets/js/charts.js" defer></script>
+<script src="assets/js/field3d.js" defer></script>
 <script src="assets/js/motion.js" defer></script>
+<script src="assets/js/ui.js" defer></script>
 <script src="assets/js/site.js" defer></script>
 </body>
 </html>
