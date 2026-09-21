@@ -55,37 +55,60 @@
 
   /* ---------- shaders ---------- */
   var VS_POINT = [
-    "attribute vec3 aPos; attribute float aSize; attribute float aKind; attribute float aIdx;",
+    "attribute vec3 aPos; attribute float aSize; attribute float aKind; attribute float aIdx; attribute float aShade;",
     "uniform mat4 uMVP; uniform float uZ; uniform float uDpr; uniform float uReveal;",
-    "uniform float uHover; uniform float uCount; uniform float uShift; uniform float uShiftY; uniform float uFoldP;",
-    "varying float vKind; varying float vAlpha; varying float vHover;",
+    "uniform float uHover; uniform float uCount; uniform float uShift; uniform float uShiftY; uniform mediump float uFoldP;",
+    "varying float vKind; varying float vAlpha; varying float vHover; varying float vShade; varying float vDepth;",
     "void main(){",
     "  vec4 clip = uMVP * vec4(aPos.x, aPos.y, aPos.z * uZ, 1.0);",
     "  clip.x += uShift * clip.w; clip.y += uShiftY * clip.w;",
     "  gl_Position = clip;",
+    "  vShade = aShade;",
+    "  vDepth = smoothstep(4.8, 8.6, clip.w) * (1.0 - uFoldP);",
     "  float h = abs(aIdx - uHover) < 0.5 ? 1.0 : 0.0;",
     "  vHover = h;",
     "  float appear = clamp((uReveal * (uCount + 24.0) - aIdx) / 24.0, 0.0, 1.0);",
     "  vAlpha = appear;",
     "  float persp = mix(4.2 / clip.w, 0.74, uFoldP);",
-    "  gl_PointSize = max(1.0, aSize * uDpr * persp * (1.0 + h * 0.9) * (0.4 + 0.6 * appear));",
+    "  float glossy = mix(2.35, 1.0, uFoldP);",
+    "  gl_PointSize = max(1.0, aSize * uDpr * persp * glossy * (1.0 + h * 0.6) * (0.4 + 0.6 * appear));",
     "  vKind = aKind;",
     "}"].join("\n");
   var FS_POINT = [
     "precision mediump float;",
-    "uniform vec3 uInk; uniform vec3 uAcc;",
-    "varying float vKind; varying float vAlpha; varying float vHover;",
+    "uniform vec3 uInk; uniform vec3 uAcc; uniform vec3 uBg; uniform float uFoldP; uniform float uLight;",
+    "varying float vKind; varying float vAlpha; varying float vHover; varying float vShade; varying float vDepth;",
     "void main(){",
-    "  vec2 c = gl_PointCoord * 2.0 - 1.0;",
-    "  float r = length(c);",
-    "  if (r > 1.0) discard;",
+    "  vec2 c = gl_PointCoord * 2.0 - 1.0; c.y = -c.y;",
+    "  float r2 = dot(c, c);",
+    "  if (r2 > 1.0) discard;",
+    "  float r = sqrt(r2);",
+    /* the chart's own mark: a ring, filled when it clears after the margin */
     "  float edge = 1.0 - smoothstep(0.82, 1.0, r);",
     "  float ring = smoothstep(0.50, 0.64, r) * edge;",
-    "  vec3 col = uInk; float a = ring * 0.46;",
-    "  if (vKind > 1.5) { col = uAcc; a = edge; }",
-    "  else if (vKind > 0.5) { col = uAcc; a = ring; }",
-    "  if (vHover > 0.5) { col = uAcc; a = max(a, edge); }",
-    "  gl_FragColor = vec4(col, a * vAlpha);",
+    "  vec3 flatCol = uInk; float flatA = ring * 0.46;",
+    "  if (vKind > 1.5) { flatCol = uAcc; flatA = edge; }",
+    "  else if (vKind > 0.5) { flatCol = uAcc; flatA = ring; }",
+    /* the 3D mark: a lit, glossy sphere */
+    "  vec3 n = vec3(c, sqrt(1.0 - r2));",
+    "  vec3 L = normalize(vec3(-0.5, 0.62, 0.6));",
+    "  vec3 H = normalize(L + vec3(0.0, 0.0, 1.0));",
+    "  float diff = max(dot(n, L), 0.0);",
+    "  float spec = pow(max(dot(n, H), 0.0), 60.0);",
+    "  float rim = pow(1.0 - n.z, 3.0);",
+    "  vec3 base = mix(vec3(0.045, 0.05, 0.045), uInk, vShade);",
+    "  if (vKind > 1.5) base = uAcc;",
+    "  else if (vKind > 0.5) base = mix(uAcc, uInk, 0.18);",
+    "  vec3 col = base * (0.2 + 0.85 * diff) + vec3(spec) * (0.9 - 0.5 * uLight) + base * rim * 0.45;",
+    "  if (vKind > 1.5) col += uAcc * 0.35 * (1.0 - r);",
+    "  col = mix(col, uBg, clamp(vDepth, 0.0, 0.55));",
+    "  float sphereA = 1.0 - smoothstep(0.93, 1.0, r);",
+    "  vec3 outCol = mix(col, flatCol, uFoldP);",
+    "  float outA = mix(sphereA, flatA, uFoldP);",
+    "  if (vHover > 0.5) { outCol = mix(outCol, uAcc, 0.55); outA = max(outA, edge); }",
+    "  outA *= vAlpha;",
+    "  if (outA < 0.02) discard;",
+    "  gl_FragColor = vec4(outCol, outA);",
     "}"].join("\n");
   var VS_LINE = [
     "attribute vec3 aPos; attribute float aKind;",
@@ -129,7 +152,7 @@
   function field3d(canvas, rows, opts) {
     var gl = null;
     try {
-      gl = canvas.getContext("webgl", { antialias: true, alpha: true, premultipliedAlpha: false, powerPreference: "low-power" });
+      gl = canvas.getContext("webgl", { antialias: true, alpha: true, depth: true, premultipliedAlpha: false, powerPreference: "low-power" });
     } catch (e) { gl = null; }
     if (!gl) return null;
 
@@ -151,11 +174,14 @@
         x: X(r.ef), y: Y(r.er),
         z: fams.length > 1 ? (fi / (fams.length - 1)) * 2 * ZS - ZS : 0,
         size: 5.5 + Math.sqrt(r.n) * 0.62,
-        kind: r.er >= 20 ? 2 : r.ef >= 20 ? 1 : 0
+        kind: r.er >= 20 ? 2 : r.ef >= 20 ? 1 : 0,
+        shade: [0.08, 0.52, 0.94][fi % 3]
       };
     }).sort(function (a, b) { return (a.r.ef + a.r.er) - (b.r.ef + b.r.er); });
     pts.forEach(function (p, i) { p.i = i; });
 
+    /* where the two e = 20 thresholds sit: data, not GPU state, so they live outside init() */
+    var x20 = X(20), y20 = Y(20), zA = -ZS - 0.15, zB = ZS + 0.15;
     var pProg, lProg, pBuf, lBuf, qBuf, loc;
     var pData, lData, qData;
     function init() {
@@ -163,9 +189,9 @@
       lProg = program(gl, VS_LINE, FS_LINE);
 
       /* points buffer: x y z size kind idx */
-      pData = new Float32Array(pts.length * 6);
+      pData = new Float32Array(pts.length * 7);
       pts.forEach(function (p, i) {
-        pData.set([p.x, p.y, p.z, p.size, p.kind, p.i], i * 6);
+        pData.set([p.x, p.y, p.z, p.size, p.kind, p.i, p.shade], i * 7);
       });
       pBuf = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, pBuf);
@@ -177,7 +203,6 @@
       for (var gx = -1.7; gx <= 1.701; gx += 0.34) seg([gx, FLOOR, -ZS - 0.15], [gx, FLOOR, ZS + 0.15], 0);
       for (var gz = -ZS - 0.15; gz <= ZS + 0.151; gz += (2 * ZS + 0.3) / 8) seg([-1.7, FLOOR, gz], [1.7, FLOOR, gz], 0);
       pts.forEach(function (p) { seg([p.x, p.y, p.z], [p.x, FLOOR, p.z], 1); });
-      var x20 = X(20), y20 = Y(20), zA = -ZS - 0.15, zB = ZS + 0.15;
       /* the vertical plane at e_fair = 20 */
       seg([x20, FLOOR, zA], [x20, 1.2, zA], 2); seg([x20, 1.2, zA], [x20, 1.2, zB], 2);
       seg([x20, 1.2, zB], [x20, FLOOR, zB], 2); seg([x20, FLOOR, zB], [x20, FLOOR, zA], 2);
@@ -203,6 +228,8 @@
         p: {
           aPos: gl.getAttribLocation(pProg, "aPos"), aSize: gl.getAttribLocation(pProg, "aSize"),
           aKind: gl.getAttribLocation(pProg, "aKind"), aIdx: gl.getAttribLocation(pProg, "aIdx"),
+          aShade: gl.getAttribLocation(pProg, "aShade"),
+          uBg: gl.getUniformLocation(pProg, "uBg"), uLight: gl.getUniformLocation(pProg, "uLight"),
           uMVP: gl.getUniformLocation(pProg, "uMVP"), uZ: gl.getUniformLocation(pProg, "uZ"),
           uDpr: gl.getUniformLocation(pProg, "uDpr"), uReveal: gl.getUniformLocation(pProg, "uReveal"),
           uHover: gl.getUniformLocation(pProg, "uHover"), uCount: gl.getUniformLocation(pProg, "uCount"),
@@ -233,6 +260,8 @@
       colours.ink = rgbOf(cs.getPropertyValue("--ink").trim(), [0.94, 0.94, 0.92]);
       colours.acc = rgbOf(cs.getPropertyValue("--accent").trim(), [0.97, 0.84, 0.19]);
       colours.rule = rgbOf(cs.getPropertyValue("--rule").trim(), [0.22, 0.23, 0.25]);
+      colours.bg = rgbOf(cs.getPropertyValue("--bg").trim(), [0.06, 0.09, 0.05]);
+      colours.light = (0.2126 * colours.bg[0] + 0.7152 * colours.bg[1] + 0.0722 * colours.bg[2]) > 0.5 ? 1 : 0;
     }
     readColours();
 
@@ -317,7 +346,10 @@
       gl.vertexAttribPointer(loc.l.aKind, 1, gl.FLOAT, false, 16, 12);
       gl.drawArrays(gl.LINES, 0, lData.length / 4);
 
-      /* points */
+      /* points: depth-tested, so near spheres sit in front of far ones */
+      gl.enable(gl.DEPTH_TEST);
+      gl.depthFunc(gl.LEQUAL);
+      gl.clear(gl.DEPTH_BUFFER_BIT);
       gl.useProgram(pProg);
       gl.uniformMatrix4fv(loc.p.uMVP, false, new Float32Array(mvp));
       gl.uniform1f(loc.p.uZ, zMul);
@@ -330,13 +362,17 @@
       gl.uniform1f(loc.p.uFoldP, ease(clamp(fold, 0, 1)));
       gl.uniform3fv(loc.p.uInk, colours.ink);
       gl.uniform3fv(loc.p.uAcc, colours.acc);
+      gl.uniform3fv(loc.p.uBg, colours.bg);
+      gl.uniform1f(loc.p.uLight, colours.light);
       gl.bindBuffer(gl.ARRAY_BUFFER, pBuf);
-      var S = 24;
+      var S = 28;
       gl.enableVertexAttribArray(loc.p.aPos); gl.vertexAttribPointer(loc.p.aPos, 3, gl.FLOAT, false, S, 0);
       gl.enableVertexAttribArray(loc.p.aSize); gl.vertexAttribPointer(loc.p.aSize, 1, gl.FLOAT, false, S, 12);
       gl.enableVertexAttribArray(loc.p.aKind); gl.vertexAttribPointer(loc.p.aKind, 1, gl.FLOAT, false, S, 16);
       gl.enableVertexAttribArray(loc.p.aIdx); gl.vertexAttribPointer(loc.p.aIdx, 1, gl.FLOAT, false, S, 20);
+      gl.enableVertexAttribArray(loc.p.aShade); gl.vertexAttribPointer(loc.p.aShade, 1, gl.FLOAT, false, S, 24);
       gl.drawArrays(gl.POINTS, 0, pts.length);
+      gl.disable(gl.DEPTH_TEST);
 
       placeLabels();
     }

@@ -120,6 +120,11 @@
           if (heroEl) f3.setFold(parseFloat(heroEl.style.getPropertyValue("--fold")) || 0);
           if (root.classList.contains("is-locked")) f3.pause(true);
         } else {
+          /* a canvas that was ever asked for WebGL can never give a 2D context, so the
+             fallback needs a fresh one */
+          var fresh = canvas.cloneNode(false);
+          canvas.parentNode.replaceChild(fresh, canvas);
+          canvas = fresh;
           charts.field = C.heroField(canvas, data.segments.rows, { reduced: reduced });
           /* no WebGL, no fold: the motion layer unpins the hero */
           if (w.rpHeroMeasure) w.rpHeroMeasure();
@@ -135,6 +140,31 @@
         w.addEventListener("resize", function () {
           w.clearTimeout(rt);
           rt = w.setTimeout(function () { charts.field.redraw(); }, 160);
+        }, { passive: true });
+      }
+
+      /* the ribbon draws itself as the statement passes */
+      var rib = d.getElementById("ribbon");
+      if (rib && C.ribbon) {
+        var stmt = rib.closest("section");
+        var lead = stmt.querySelector(".stmt__lead");
+        var fitRibbon = function () {
+          if (w.innerWidth < 900 || w.innerWidth <= w.innerHeight) { rib.style.top = ""; rib.style.height = ""; return; }
+          rib.style.top = lead.offsetTop + "px";
+          rib.style.height = Math.max(260, lead.offsetHeight) + "px";
+        };
+        fitRibbon();
+        var rb = C.ribbon(rib, data.segments.rows);
+        var drawRibbon = function () {
+          var r = lead.getBoundingClientRect(), vh = w.innerHeight;
+          var p = (vh * 0.9 - r.top) / Math.max(1, r.height + vh * 0.5);
+          rb.set(reduced ? 1 : p);
+        };
+        if (w.rpOnScroll) w.rpOnScroll(drawRibbon); else drawRibbon();
+        var rbT;
+        w.addEventListener("resize", function () {
+          w.clearTimeout(rbT);
+          rbT = w.setTimeout(function () { fitRibbon(); rb = C.ribbon(rib, data.segments.rows); drawRibbon(); }, 200);
         }, { passive: true });
       }
 

@@ -1922,7 +1922,7 @@ html.menu-open .menu__side { opacity: 1; }
   width: 100%; height: 100%;
   object-fit: cover; object-position: top center;
   display: block;
-  transform: scale(1.05);
+  transform: none;
   transition: transform 900ms var(--ease-expo), filter 500ms;
 }
 .panel:hover .panel__shot img { filter: brightness(1.06); }
@@ -2330,3 +2330,116 @@ html.lenis, html.lenis body { height: auto; }
 html:not(.js) .hero__clock,
 html:not(.js) .hero__caption,
 html:not(.js) .now__list > div:last-child { display: none; }
+
+/* ============================================================
+   WILD LAYER: the ribbon, giant type, coverflow, counters,
+   the rolling header line and registration marks
+   ============================================================ */
+
+/* the ribbon: the audit drawn as one thick line, beside the statement */
+.stmt { position: relative; overflow: hidden; isolation: isolate; }
+.stmt__lead, .stmt__foot { position: relative; z-index: 1; }
+.stmt__lead { margin-left: calc((100% - var(--shell)) / 2); }
+.ribbon {
+  position: absolute; z-index: 0;
+  top: var(--sp-sec);
+  right: var(--gut-safe);
+  width: min(34%, 500px);
+  height: 420px;
+  overflow: visible;
+  pointer-events: none;
+}
+.ribbon__ghost { fill: none; stroke: var(--rule-soft); stroke-linecap: round; stroke-linejoin: round; opacity: 0.55; }
+.ribbon__path { fill: none; stroke: var(--accent); stroke-linecap: round; stroke-linejoin: round; }
+.ribbon__tip { fill: var(--accent); filter: drop-shadow(0 0 14px var(--accent)); transition: opacity 200ms; }
+.ribbon__key {
+  position: relative; z-index: 1;
+  width: var(--shell); margin: 1.6rem auto 0;
+  text-align: right;
+  font-size: var(--t-xs); color: var(--ink-3);
+}
+@media (max-width: 899px), (orientation: portrait) {
+  .ribbon { position: relative; top: auto; right: auto; display: block; width: 100%; height: 260px; margin: 0 auto 2rem; }
+  .ribbon__key { text-align: left; }
+}
+
+/* giant type behind a section, drifting against the scroll */
+.sec--record, .sec--method { position: relative; overflow: hidden; isolation: isolate; }
+.sec--record > :not(.giant), .sec--method > :not(.giant) { position: relative; z-index: 1; }
+.giant {
+  position: absolute; z-index: 0;
+  inset: 12% -10% auto -10%;
+  display: grid; gap: 0.02em;
+  pointer-events: none;
+  user-select: none;
+}
+.giant__l {
+  display: block;
+  white-space: nowrap;
+  font-size: clamp(6rem, 17vw, 20rem);
+  font-stretch: 118%;
+  font-weight: 820;
+  letter-spacing: -0.05em;
+  line-height: 0.82;
+  color: color-mix(in oklab, var(--ink) 7%, transparent);
+  will-change: transform;
+}
+.giant__l:nth-child(2) { padding-left: 18vw; }
+.giant--method { inset: 22% -10% auto -10%; }
+@media (prefers-reduced-motion: reduce) { .giant__l { transform: none !important; } }
+
+/* coverflow in the pinned strip: panels turn away as they leave the centre */
+/* perspective per panel, around its own centre: a perspective on the whole track
+   would put the vanishing point in the middle of a 4800px strip, off screen */
+.film.is-pinned .film__track .panel {
+  transform: perspective(1400px) rotateY(var(--ry, 0deg)) scale(var(--rs, 1)) skewX(var(--skew, 0deg));
+  transform-origin: 50% 50%;
+  transition: transform 120ms linear;
+}
+
+/* a spinning glyph and a count beside section titles */
+.sec__row { display: flex; align-items: flex-end; gap: clamp(1rem, 3vw, 2.4rem); flex-wrap: wrap; }
+.count {
+  display: inline-flex; align-items: center; gap: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  font-stretch: 78%;
+  font-weight: 650;
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  color: var(--ink-2);
+  padding-bottom: 0.35em;
+}
+.spin { width: 1.3em; height: 1.3em; overflow: visible; }
+.spin path { stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; fill: none; }
+.spin g { transform-origin: 12px 12px; }
+
+/* the header's rolling line */
+.bar__roll {
+  position: relative;
+  height: 1.3em;
+  overflow: hidden;
+  flex: 0 1 26rem;
+  min-width: 0;
+  margin-right: auto;
+  font-size: var(--t-sm);
+  color: var(--ink-2);
+}
+.bar__roll span {
+  position: absolute; inset: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transform: translateY(110%);
+  opacity: 0;
+  transition: transform 700ms var(--ease-expo), opacity 400ms;
+}
+.bar__roll span.is-cur { transform: none; opacity: 1; }
+.bar__roll span.is-out { transform: translateY(-110%); opacity: 0; }
+.bar__mark { margin-right: 1.6rem; }
+@media (max-width: 1180px) { .bar__roll { display: none; } .bar__mark { margin-right: auto; } }
+
+/* registration marks at both ends of the hero's base rule */
+.hero__base { position: relative; }
+.reg { position: absolute; top: -7px; width: 13px; height: 13px; pointer-events: none; }
+.reg::before, .reg::after { content: ""; position: absolute; background: var(--ink-3); }
+.reg::before { left: 6px; top: 0; width: 1px; height: 13px; }
+.reg::after { top: 6px; left: 0; height: 1px; width: 13px; }
+.reg--l { left: -6px; }
+.reg--r { right: -6px; }

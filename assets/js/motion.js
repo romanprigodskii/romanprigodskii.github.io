@@ -43,6 +43,8 @@
      same frame Lenis moved the page in, rather than one frame late */
   var scrollFns = [];
   function onScroll(fn) { scrollFns.push(fn); }
+  w.rpOnScroll = function (fn) { onScroll(fn); fn(); };
+  w.rpVelocity = function () { return vel; };
   function runScroll() { for (var i = 0; i < scrollFns.length; i++) scrollFns[i](); }
   if (lenis) lenis.on("scroll", runScroll);
   /* and the native event as well: find-in-page, the scrollbar and browser anchor
@@ -420,10 +422,10 @@
         var r = pn.getBoundingClientRect();
         var vis = Math.min(vw, r.right) - Math.max(0, r.left);
         if (vis > bestVis) { bestVis = vis; best = i; }
-        var img = pn.querySelector(".panel__shot img, .panel__shot svg");
-        if (!img) return;
-        var c = (r.left + r.width / 2 - vw / 2) / vw;
-        img.style.transform = "translate3d(" + (c * -2.2).toFixed(2) + "%,0,0) scale(1.05)";
+        /* a coverflow: panels turn away from the viewer as they leave the centre */
+        var cc = clamp((r.left + r.width / 2 - vw / 2) / (vw * 0.7), -1.2, 1.2);
+        pn.style.setProperty("--ry", (cc * -20).toFixed(2) + "deg");
+        pn.style.setProperty("--rs", (1 - Math.abs(cc) * 0.07).toFixed(4));
       });
       if (p >= 0.999) best = panels.length - 1;
       if (idxOut) {
@@ -463,6 +465,42 @@
         var r = s.getBoundingClientRect();
         var k = clamp(r.top / vh, 0, 1);
         s.style.setProperty("--rise", k.toFixed(4));
+      });
+    }
+    onScroll(run);
+    run();
+  })();
+
+  /* ---------------------------------------------------------------
+     Glyphs beside the section titles turn, faster while scrolling
+     --------------------------------------------------------------- */
+  (function spinners() {
+    var gs = all(".spin g");
+    if (!gs.length || reduced) return;
+    var angle = 0;
+    (function loop() {
+      angle = (angle + 0.35 + Math.min(Math.abs(vel) * 0.35, 14)) % 360;
+      for (var i = 0; i < gs.length; i++) gs[i].style.transform = "rotate(" + angle.toFixed(1) + "deg)";
+      w.requestAnimationFrame(loop);
+    })();
+  })();
+
+  /* ---------------------------------------------------------------
+     Giant background type drifts across its section as it passes
+     --------------------------------------------------------------- */
+  (function giants() {
+    var gs = all(".giant");
+    if (!gs.length || reduced) return;
+    function run() {
+      var vh = w.innerHeight;
+      gs.forEach(function (g) {
+        var host = g.parentElement.getBoundingClientRect();
+        if (host.bottom < -vh * 0.2 || host.top > vh * 1.2) return;
+        var p = clamp((vh - host.top) / (host.height + vh), 0, 1);
+        all(".giant__l", g).forEach(function (line, i) {
+          var dirn = i % 2 ? 1 : -1;
+          line.style.transform = "translate3d(" + ((p - 0.5) * 38 * dirn).toFixed(2) + "vw,0,0)";
+        });
       });
     }
     onScroll(run);

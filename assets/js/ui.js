@@ -368,6 +368,23 @@
   })();
 
   /* ---------------------------------------------------------------
+     The header's rolling line
+     --------------------------------------------------------------- */
+  (function headRoll() {
+    var lines = all(".bar__roll span");
+    if (lines.length < 2 || reduced) return;
+    var i = 0;
+    w.setInterval(function () {
+      if (d.hidden) return;
+      var cur = lines[i], next = lines[(i + 1) % lines.length];
+      cur.classList.remove("is-cur"); cur.classList.add("is-out");
+      next.classList.remove("is-out"); next.classList.add("is-cur");
+      w.setTimeout(function () { cur.classList.remove("is-out"); }, 760);
+      i = (i + 1) % lines.length;
+    }, 3400);
+  })();
+
+  /* ---------------------------------------------------------------
      Section indicator
      --------------------------------------------------------------- */
   (function scrollnav() {
@@ -400,7 +417,9 @@
       }
       var surf = under && under.dataset.surface;
       if (surf) nav.dataset.surface = surf; else delete nav.dataset.surface;
-      nav.classList.toggle("is-on", idx > 0 && idx < secs.length - 1 && !root.classList.contains("case-open"));
+      /* the pinned strip has its own counter, and its panels run through the gutter */
+      var inStrip = secs[idx].classList.contains("film") && secs[idx].classList.contains("is-pinned");
+      nav.classList.toggle("is-on", idx > 0 && idx < secs.length - 1 && !inStrip && !root.classList.contains("case-open"));
     }
     w.addEventListener("scroll", function () { if (!queued) { queued = true; w.requestAnimationFrame(run); } }, { passive: true });
     w.addEventListener("resize", run, { passive: true });
