@@ -32,7 +32,7 @@
      --------------------------------------------------------- */
   function heroField(canvas, rows, opts) {
     var ctx = canvas.getContext("2d");
-    var raf = null, start = null, reduced = opts.reduced;
+    var raf = null, start = null, reduced = opts.reduced, box = null;
 
     function draw(progress) {
       var dpr = Math.min(w.devicePixelRatio || 1, 2);
@@ -74,6 +74,7 @@
       if (pw < 140) { padL = cw * 0.06; padR = cw * 0.06; pw = cw - padL - padR; }
 
       var xd = [-2, 2.22], yd = [-2, 1.42];
+      box = { l: padL, t: padT, w: pw, h: ph, xd: xd, yd: yd };
       function X(v) { return padL + (log10(clampLog(v, 0.01)) - xd[0]) / (xd[1] - xd[0]) * pw; }
       function Y(v) { return padT + ph - (log10(clampLog(v, 0.01)) - yd[0]) / (yd[1] - yd[0]) * ph; }
 
@@ -116,7 +117,22 @@
       if (reduced) draw(1); else raf = w.requestAnimationFrame(tick);
     }
 
-    return { run: run, redraw: function () { draw(1); } };
+    /* the inverse of the plot mapping, so a cursor over the field can read out
+       the two e-values at the point it is standing on */
+    function read(clientX, clientY) {
+      if (!box) return null;
+      var r = canvas.getBoundingClientRect();
+      var x = clientX - r.left, y = clientY - r.top;
+      if (x < box.l || x > box.l + box.w || y < box.t || y > box.t + box.h) return null;
+      function inv(frac, dom) { return Math.pow(10, dom[0] + frac * (dom[1] - dom[0])); }
+      function fmt(v) { return v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.toFixed(3); }
+      return {
+        x: fmt(inv((x - box.l) / box.w, box.xd)),
+        y: fmt(inv(1 - (y - box.t) / box.h, box.yd))
+      };
+    }
+
+    return { run: run, redraw: function () { draw(1); }, read: read };
   }
 
   /* ---------------------------------------------------------

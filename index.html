@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<!-- gutters are padded against env(safe-area-inset-*) in site.css -->
 <title>Roman Prigodskii</title>
 <meta name="description" content="Roman Prigodskii, 17, Moscow. Forecasting systems scored against the market's own closing line, and the statistics that make the claims checkable. Vertex MMA, Gluline, two papers under review at NeurIPS 2026 workshops.">
 <meta name="author" content="Roman Prigodskii">
@@ -28,10 +27,23 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Roman Prigodskii","url":"https://romanprigodskii.github.io/","email":"mailto:lioneldassy@gmail.com","jobTitle":"Independent researcher","nationality":"RU","address":{"@type":"PostalAddress","addressLocality":"Moscow","addressCountry":"RU"},"alumniOf":{"@type":"EducationalOrganization","name":"Letovo School"},"sameAs":["https://github.com/romanprigodskii","https://t.me/prigodskii","https://vertexmma.com","https://gluline.com"],"knowsAbout":["Empirical market efficiency","E-values and anytime-valid inference","Gradient boosting","Forecast calibration","Software engineering"]}
 </script>
-<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("rp-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("rp-theme");if(t)document.documentElement.dataset.theme=t;if(!sessionStorage.getItem("rp-seen"))document.documentElement.classList.add("intro");}catch(e){}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+
+<!-- ═══ INTRO ═══ -->
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="intro__grid"></div>
+  <div class="intro__read">
+    <span class="intro__lbl">measuring</span>
+    <span class="intro__num" id="introNum">000</span>
+  </div>
+  <div class="intro__name"><span>Roman Prigodskii</span></div>
+</div>
+
+<div class="reticle" id="reticle" aria-hidden="true"><i></i><i></i><b id="reticleRead"></b></div>
+<div class="wipe" id="wipe" aria-hidden="true"></div>
 
 <header class="bar" id="bar">
   <a class="bar__mark" href="#top" aria-label="Roman Prigodskii, back to top">
@@ -43,414 +55,254 @@
   </a>
   <nav class="bar__nav" aria-label="Sections">
     <a href="#work">Work</a>
-    <a href="#research">Research</a>
+    <a href="research/">Research</a>
     <a href="#record">Record</a>
     <a href="#method">Method</a>
   </nav>
   <div class="bar__end">
-    <a class="bar__cta" href="mailto:lioneldassy@gmail.com">Email</a>
+    <a class="bar__cta magnet" href="mailto:lioneldassy@gmail.com">Email</a>
     <button class="themeswap" type="button" id="themeswap" aria-pressed="false">
       <span class="themeswap__track" aria-hidden="true"><span class="themeswap__dot"></span></span>
       <span class="u-sr">Switch between chalkboard and paper</span>
     </button>
   </div>
+  <span class="bar__prog" id="prog" aria-hidden="true"></span>
 </header>
 
 <main id="main">
 
-<!-- ═══ HERO ═══ -->
+<!-- ═══ 01 HERO ═══ -->
 <section class="hero" id="top">
   <canvas class="hero__field" id="field" aria-hidden="true"></canvas>
   <div class="hero__inner">
-    <p class="hero__place stagger" data-s="1">Moscow <span aria-hidden="true">/</span> <span class="u-sr">and</span> applying for Fall 2027 entry</p>
+    <p class="hero__place" data-split data-d="0">Moscow <span class="sep" aria-hidden="true">/</span> applying for Fall 2027 entry</p>
     <h1 class="hero__name">
-      <span class="stagger" data-s="2">Roman</span>
-      <span class="stagger" data-s="3">Prigodskii</span>
+      <span data-split data-d="60">Roman</span>
+      <span data-split data-d="140">Prigodskii</span>
     </h1>
-    <p class="hero__lede stagger" data-s="4">
+    <p class="hero__lede" data-split data-d="320">
       Seventeen. I build forecasting systems, score them against the sharpest baseline
       the market has, and publish the statistics that let a stranger check every claim
       without asking me anything.
     </p>
-    <div class="hero__acts stagger" data-s="5">
-      <a class="btn btn--solid" href="#research">Read the research</a>
-      <a class="btn" href="#work">Four systems in production</a>
+    <div class="hero__acts rise" style="--d:560">
+      <a class="btn btn--solid magnet" href="research/">Read the research</a>
+      <a class="btn magnet" href="#work">Four systems in production</a>
     </div>
-    <ul role="list" class="hero__links stagger" data-s="6">
+    <ul role="list" class="hero__links rise" style="--d:660">
       <li><a href="https://github.com/romanprigodskii" rel="me noopener">GitHub</a></li>
       <li><a href="https://t.me/prigodskii" rel="me noopener">Telegram</a></li>
       <li><a href="mailto:lioneldassy@gmail.com">lioneldassy@gmail.com</a></li>
     </ul>
   </div>
-  <p class="hero__caption stagger" data-s="7">
-    Plotted here: 84 pre-registered hypotheses from the e-value audit, each at the wealth
-    it actually earned. Six clear the bar a single hypothesis would have to clear. Charged
-    for asking 84 questions of one pool, none of them do. That is the finding.
+  <div class="hero__base rise" style="--d:760">
+    <p class="hero__clock"><span class="dot" aria-hidden="true"></span> Moscow, <time id="clock">--:--:--</time></p>
+    <a class="hero__cue" href="#work"><span>Scroll</span><i aria-hidden="true"></i></a>
+    <p class="hero__caption">Behind the type: 84 pre-registered hypotheses from the e-value audit,
+      each at the wealth it actually earned. <a href="research/">The audit</a>.</p>
+  </div>
+</section>
+
+<!-- ═══ 02 TICKER ═══ -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track" id="tickerTrack">
+    <span>Moscow Olympiad in Economics, first</span><i>◆</i>
+    <span>0.7244 AUC against a bookmaker's closing line</span><i>◆</i>
+    <span>8,906 bouts modelled</span><i>◆</i>
+    <span>309 tests green at 1.0.0</span><i>◆</i>
+    <span>Two papers under review</span><i>◆</i>
+    <span>Seventeen</span><i>◆</i>
+  </div>
+</div>
+<p class="u-sr">Moscow Olympiad in Economics, first. 0.7244 AUC against a bookmaker's closing line. 8,906 bouts modelled. 309 tests green at 1.0.0. Two papers under review. Seventeen.</p>
+
+<!-- ═══ 03 STATEMENT ═══ -->
+<section class="stmt" id="position">
+  <p class="stmt__lead" data-lit>
+    One question runs through all of it. A model produces a number. A market produces a
+    number. Only one of them is priced, and deciding which to believe is a statistical
+    question with a real answer. I build the systems that produce the numbers, then the
+    instruments that measure how much of the difference is signal.
   </p>
+  <div class="stmt__foot">
+    <p class="reveal">Final year at Letovo School in Moscow, advanced mathematics track. Won the Moscow
+      Olympiad in Economics outright on score. Four production systems shipped, two sole-authored
+      papers under review at NeurIPS 2026 workshops.</p>
+    <p class="reveal">Everything here is traceable to a committed artifact, a published competition
+      protocol, or an official document. Where a diploma and a protocol both exist, this page cites
+      the protocol, because a stranger can check a protocol without me.</p>
+  </div>
 </section>
 
-<!-- ═══ POSITION ═══ -->
-<section class="position" id="position">
-  <div class="position__wrap">
-    <p class="position__big reveal">
-      One question runs through all of it:
-      <em>what can honestly be claimed about a price, and with what evidence.</em>
-    </p>
-    <div class="position__cols">
-      <p class="reveal">
-        I am in my final year at Letovo School in Moscow, on the advanced mathematics track,
-        and I won the Moscow Olympiad in Economics outright on score. Outside school I have
-        shipped four production systems and written two sole-authored papers, both under
-        review at NeurIPS 2026 workshops.
-      </p>
-      <p class="reveal">
-        The work keeps landing in the same place. A model produces a number. A market
-        produces a number. Only one of them is priced, and deciding which to believe is a
-        statistical question with a real answer. I have built the systems that produce the
-        numbers, and then the instruments that measure how much of the difference is signal.
-      </p>
-      <p class="reveal">
-        Everything below is traceable to a committed artifact, a published competition
-        protocol, or an official document. Where a diploma and a protocol both exist, this
-        page cites the protocol, because a stranger can check a protocol without me.
-      </p>
+<!-- ═══ 04 WORK, horizontal ═══ -->
+<section class="film" id="work" aria-label="Built and shipped">
+  <div class="film__pin">
+    <div class="film__head">
+      <h2 class="film__title" data-split>Built and shipped</h2>
+      <p class="film__meta"><span id="filmIdx">01</span> <i aria-hidden="true">/</i> 05</p>
     </div>
-  </div>
-</section>
+    <div class="film__track" id="filmTrack">
 
-<!-- ═══ WORK ═══ -->
-<section class="sec sec--work" id="work">
-  <div class="sec__head reveal">
-    <h2 class="sec__title">Built and shipped</h2>
-    <p class="sec__sub">Two live products with users, one commissioned and paid for by a client, one distributed through Homebrew.</p>
-  </div>
-
-  <div class="works">
-
-    <article class="work is-open">
-      <h3 class="work__h">
-        <button type="button" class="work__btn" aria-expanded="true" aria-controls="w1">
-          <span class="work__idx" aria-hidden="true">01</span>
-          <span class="work__name">Vertex MMA</span>
-          <span class="work__line">A nine-model UFC forecasting stack, graded against the closing line</span>
-          <span class="work__chev" aria-hidden="true"></span>
-        </button>
-      </h3>
-      <div class="work__body" id="w1">
-        <div class="work__inner">
-          <div class="work__prose">
-            <p>
-              Live at <a href="https://vertexmma.com" rel="noopener">vertexmma.com</a> in English
-              and Russian, source at
-              <a href="https://github.com/romanprigodskii/vertex-mma" rel="noopener">romanprigodskii/vertex-mma</a>.
-              The forecaster is not one model: it is a winner ensemble over 118 features
-              (LightGBM, CatBoost, logistic regression, blended on a validation window and
-              order-averaged over both fighter orderings), a debut specialist, a method model,
-              a debut method model, a cause-specific Poisson finish hazard, a no-intercept
-              logistic decision model, and a ten-thousand-run Monte Carlo simulator.
-            </p>
-            <p>
-              On the held-out window from January 2025 it reaches <strong>0.7244 AUC</strong> over
-              664 bouts, which is commercial grade in a domain where the benchmark is a
-              bookmaker who prices for a living. Against that bookmaker's closing line on the
-              582 priced bouts, the model is <strong>better calibrated and less sharp</strong>:
-              the remaining gap is resolution, and resolution needs information the public
-              record does not contain. That decomposition is the result worth having, and the
-              repository reports the comparison on every basis rather than the flattering one.
-            </p>
-          </div>
-
-          <figure class="chart chart--bars">
-            <figcaption>Model against the closing line, 582 priced bouts</figcaption>
-            <div class="bars" id="bars-vertex"></div>
-            <p class="chart__note">Each metric has its own truncated axis, printed under it, and every row is
-              oriented so that a longer bar is the better score. The line is ahead on all three, and the
-              decomposition is the point: the model is better calibrated and less sharp, so what is left is
-              resolution.</p>
-          </figure>
-
-          <dl class="facts">
-            <div><dt>Fighters, bouts, events</dt><dd>4,581 <span>/</span> 8,906 <span>/</span> 795</dd></div>
-            <div><dt>Derived rows</dt><dd>243k score history, 86k career bouts, 49k ranking snapshots, 41k round stats, 31k judge scorecards</dd></div>
-            <div><dt>Front end</dt><dd>35 routes across 2 locales, 1,533 translation keys each</dd></div>
-            <div><dt>Stack</dt><dd>Next.js 16, React 19, TypeScript 5.9 strict, Tailwind 4, Postgres, Python 3.12, LightGBM, CatBoost</dd></div>
-          </dl>
-
-          <ul role="list" class="disc">
-            <li><b>Point in time, five ways.</b> Snapshot-then-apply history, strictly-earlier rating lookups, a separate chronological ratings replay, a date-bounded pre-UFC career walk, and a frozen percentile-clipping anchor. Five independent mechanisms, one job: keep the future out.</li>
-            <li><b>The market is never an input.</b> Odds are stored, displayed and used for scoring, and never enter the feature matrix, because a closing line is a near-leak in backtest. Removing them cost 1.5 points of test accuracy. They stayed removed.</li>
-            <li><b>Two dozen rejected ideas are documented beside the shipped ones,</b> each with the reason it was rejected. One shipped feature was later identified as a leak and pulled.</li>
+      <article class="panel">
+        <p class="panel__idx" aria-hidden="true">01</p>
+        <h3 class="panel__name">Vertex MMA</h3>
+        <p class="panel__line">A nine-model UFC forecasting stack, graded against the closing line</p>
+        <div class="panel__body">
+          <p>Live at <a href="https://vertexmma.com" rel="noopener">vertexmma.com</a> in English and
+            Russian, source on <a href="https://github.com/romanprigodskii/vertex-mma" rel="noopener">GitHub</a>.
+            A 118-feature winner ensemble over LightGBM, CatBoost and logistic regression, a debut
+            specialist, two method models, a cause-specific Poisson finish hazard, a no-intercept
+            decision model and a ten-thousand-run simulator.</p>
+          <p>Held out from January 2025 it reaches <b>0.7244 AUC</b> over 664 bouts, in a domain whose
+            benchmark is a bookmaker who prices for a living. Against that closing line it is better
+            calibrated and less sharp: what is left is resolution.</p>
+          <ul role="list" class="panel__facts">
+            <li><b>4,581</b> fighters, <b>8,906</b> bouts, <b>795</b> events</li>
+            <li><b>243k</b> score-history rows, <b>86k</b> career bouts, <b>31k</b> judge scorecards</li>
+            <li>Point in time enforced five independent ways; the market is never a feature</li>
+            <li>Two dozen rejected ideas documented beside the shipped ones</li>
           </ul>
         </div>
-      </div>
-    </article>
+        <figure class="chart chart--bars panel__chart">
+          <figcaption>Model against the closing line, 582 priced bouts</figcaption>
+          <div class="bars" id="bars-vertex"></div>
+        </figure>
+      </article>
 
-    <article class="work">
-      <h3 class="work__h">
-        <button type="button" class="work__btn" aria-expanded="true" aria-controls="w2">
-          <span class="work__idx" aria-hidden="true">02</span>
-          <span class="work__name">Gluline</span>
-          <span class="work__line">End-to-end encrypted messenger, four clients, shipped to 1.0.0</span>
-          <span class="work__chev" aria-hidden="true"></span>
-        </button>
-      </h3>
-      <div class="work__body" id="w2">
-        <div class="work__inner">
-          <div class="work__prose">
-            <p>
-              Live at <a href="https://gluline.com" rel="noopener">gluline.com</a>. A monorepo
-              covering Android in Jetpack Compose, iOS in SwiftUI, a web client, a Python and
-              FastAPI backend, the infrastructure and the protocol documents. The cryptography
-              is ephemeral key exchange, per-message key derivation, Argon2id, elliptic-curve
-              signatures, and WebRTC peer-to-peer calls, with a contextual AI assistant built in.
-            </p>
-            <p>
-              The Android client alone is roughly 251 Kotlin files and 70,000 lines. It went out
-              as a 1.0.0 production release, .aab and .apk, with mapping files and checksums
-              retained, and it cleared a release gate before it went: compile green,
-              <strong>309 unit tests passing</strong>, lintVital clean on the release build, and
-              R8 keep-rules verified against 15 wire fields present in seeds.txt.
-            </p>
-          </div>
-          <dl class="facts">
-            <div><dt>Android client</dt><dd>251 Kotlin files, ~70k lines</dd></div>
-            <div><dt>Release gate</dt><dd>309 unit tests, lintVital clean, R8 keep-rules verified</dd></div>
-            <div><dt>Audits on record</dt><dd>April 2026, ~58 findings. August 2026 pre-release, 74 candidates narrowed to 42 confirmed by an adversarial second pass</dd></div>
-            <div><dt>Surfaces</dt><dd>Android, iOS, web, backend, infra, protocol</dd></div>
-          </dl>
-          <p class="work__foot">The August audit is the part worth reading: 32 of its own findings were refuted on the second pass and written down as refuted.</p>
+      <article class="panel">
+        <p class="panel__idx" aria-hidden="true">02</p>
+        <h3 class="panel__name">Gluline</h3>
+        <p class="panel__line">End-to-end encrypted messenger, four clients, shipped to 1.0.0</p>
+        <div class="panel__body">
+          <p>Live at <a href="https://gluline.com" rel="noopener">gluline.com</a>. A monorepo across
+            Android in Jetpack Compose, iOS in SwiftUI, web, a Python and FastAPI backend, the
+            infrastructure and the protocol. Ephemeral key exchange, per-message key derivation,
+            Argon2id, elliptic-curve signatures, WebRTC peer-to-peer calls, a contextual AI assistant.</p>
+          <p>The Android client alone is roughly <b>251 Kotlin files and 70,000 lines</b>. It shipped
+            as a 1.0.0 production release only after clearing a written gate.</p>
+          <ul role="list" class="panel__facts">
+            <li><b>309</b> unit tests passing, lintVital clean, R8 keep-rules verified</li>
+            <li>Two formal audits on record, April and August 2026</li>
+            <li>August: <b>74</b> candidate findings, <b>42</b> confirmed, <b>32</b> refuted by an adversarial second pass</li>
+            <li>The refutations are written down as refutations</li>
+          </ul>
         </div>
-      </div>
-    </article>
+      </article>
 
-    <article class="work">
-      <h3 class="work__h">
-        <button type="button" class="work__btn" aria-expanded="true" aria-controls="w3">
-          <span class="work__idx" aria-hidden="true">03</span>
-          <span class="work__name">Zacks to Interactive Brokers</span>
-          <span class="work__line">Commissioned execution pipeline, running on a schedule</span>
-          <span class="work__chev" aria-hidden="true"></span>
-        </button>
-      </h3>
-      <div class="work__body" id="w3">
-        <div class="work__inner">
-          <div class="work__prose">
-            <p>
-              Paid client work, and the only one of these that somebody else specified. Screen
-              ingestion from Zacks exports into an Interactive Brokers execution path: scheduled
-              collection, VPS hosted, dry-run by default so that a bad input costs nothing. It
-              rebalances a real account against a published rank, which means the failure mode
-              is money and the code is written accordingly.
-            </p>
-          </div>
-          <dl class="facts">
-            <div><dt>Role</dt><dd>Sole developer, commissioned and paid</dd></div>
-            <div><dt>Path</dt><dd>Zacks screen export, parse, reconcile, IBKR order placement</dd></div>
-            <div><dt>Operations</dt><dd>VPS hosted, scheduled collection, dry-run default</dd></div>
-          </dl>
+      <article class="panel">
+        <p class="panel__idx" aria-hidden="true">03</p>
+        <h3 class="panel__name">Zacks to IBKR</h3>
+        <p class="panel__line">Commissioned execution pipeline, running on a schedule</p>
+        <div class="panel__body">
+          <p>Paid client work, and the only one of these that somebody else specified. Screen
+            ingestion from Zacks exports into an Interactive Brokers execution path: scheduled
+            collection, VPS hosted, dry-run by default so a bad input costs nothing.</p>
+          <p>It rebalances a real account against a published rank, which means the failure mode is
+            money and the code is written accordingly.</p>
+          <ul role="list" class="panel__facts">
+            <li>Sole developer, commissioned and paid</li>
+            <li>Parse, reconcile, place, reconcile again</li>
+            <li>Dry-run is the default, not the flag</li>
+          </ul>
         </div>
-      </div>
-    </article>
+      </article>
 
-    <article class="work">
-      <h3 class="work__h">
-        <button type="button" class="work__btn" aria-expanded="true" aria-controls="w4">
-          <span class="work__idx" aria-hidden="true">04</span>
-          <span class="work__name">Clipwell</span>
-          <span class="work__line">Native clipboard history for macOS and Windows, free, MIT, on Homebrew</span>
-          <span class="work__chev" aria-hidden="true"></span>
-        </button>
-      </h3>
-      <div class="work__body" id="w4">
-        <div class="work__inner">
-          <div class="work__prose">
-            <p>
-              A small native app written twice: Swift and SwiftUI on macOS, C# and WPF on
-              Windows, same bar, same cards, same keys, same history format. No Electron, no
-              account, no subscription. It installs with
-              <code>brew install --cask romanprigodskii/tap/clipwell</code>, which meant
-              shipping a cask, a release pipeline and a product site alongside the app itself.
-            </p>
-            <p>
-              The detail I care about most is the one nobody sees: content marked concealed or
-              transient by a password manager is never written to disk.
-            </p>
-          </div>
-          <dl class="facts">
-            <div><dt>Platforms</dt><dd>macOS 14+ in Swift and SwiftUI, Windows in C# and WPF</dd></div>
-            <div><dt>Distribution</dt><dd>Homebrew cask, MIT licensed, English and Russian UI</dd></div>
-            <div><dt>Links</dt><dd><a href="https://romanprigodskii.github.io/clipwell/" rel="noopener">Product site</a> <span>/</span> <a href="https://github.com/romanprigodskii/clipwell" rel="noopener">Source</a></dd></div>
-          </dl>
+      <article class="panel">
+        <p class="panel__idx" aria-hidden="true">04</p>
+        <h3 class="panel__name">Clipwell</h3>
+        <p class="panel__line">Native clipboard history for macOS and Windows, free, MIT, on Homebrew</p>
+        <div class="panel__body">
+          <p>A small native app written twice: Swift and SwiftUI on macOS, C# and WPF on Windows.
+            Same bar, same cards, same keys, same history format. No Electron, no account, no
+            subscription. Installing it is
+            <code>brew install --cask romanprigodskii/tap/clipwell</code>, which meant shipping a
+            cask, a release pipeline and a product site alongside the app.</p>
+          <p>The detail I care about most is the one nobody sees: content marked concealed by a
+            password manager is never written to disk.</p>
+          <ul role="list" class="panel__facts">
+            <li>macOS 14+, and a full Windows port</li>
+            <li>MIT licensed, English and Russian UI</li>
+            <li><a href="https://romanprigodskii.github.io/clipwell/" rel="noopener">Product site</a> and <a href="https://github.com/romanprigodskii/clipwell" rel="noopener">source</a></li>
+          </ul>
         </div>
-      </div>
-    </article>
+      </article>
 
-  </div>
+      <article class="panel panel--bench">
+        <p class="panel__idx" aria-hidden="true">05</p>
+        <h3 class="panel__name">On the bench</h3>
+        <p class="panel__line">Smaller things, and the ones still moving</p>
+        <div class="panel__body">
+          <ul role="list" class="bench">
+            <li><b>Vertex Boxing</b><span>The Vertex method ported to boxing, grading a fundamentals model against the closing line on soft regional markets. The claim worth testing is that the protocol transplants.</span></li>
+            <li><b>Alfa-Romeo</b><span>A neobank demo in SwiftUI over a NestJS backend: exchange, AI copilot, business module, lending, live peer-to-peer wallet. <a href="https://github.com/romanprigodskii/alfaromeo" rel="noopener">Source</a>.</span></li>
+            <li><b>Asgard</b><span>A private VLESS and REALITY relay with a Russian-side bridge on a clean IP. Built because the alternative was not being able to work.</span></li>
+          </ul>
+          <a class="btn magnet" href="plain/">See the whole record, plainly</a>
+        </div>
+      </article>
 
-  <div class="also reveal">
-    <h3 class="also__h">Also on the bench</h3>
-    <ul role="list" class="also__list">
-      <li>
-        <span class="also__n">Vertex Boxing</span>
-        <span class="also__d">The Vertex method ported to boxing, grading a fundamentals model against the closing line on soft regional markets. The interesting claim is that the protocol transplants.</span>
-      </li>
-      <li>
-        <span class="also__n">Alfa-Romeo</span>
-        <span class="also__d">A neobank demo in SwiftUI over a NestJS backend: crypto exchange, AI copilot, business module, lending, live peer-to-peer wallet. <a href="https://github.com/romanprigodskii/alfaromeo" rel="noopener">Source</a>.</span>
-      </li>
-      <li>
-        <span class="also__n">Asgard</span>
-        <span class="also__d">A private VLESS and REALITY relay with a Russian-side bridge on a clean IP. Built because the alternative was not being able to work.</span>
-      </li>
-    </ul>
+    </div>
   </div>
 </section>
 
-<!-- ═══ RESEARCH ═══ -->
-<section class="sec sec--paper" id="research" data-surface="paper">
-  <div class="sec__head reveal">
-    <h2 class="sec__title">Research</h2>
-    <p class="sec__sub">Two sole-authored papers, three submissions, all under review at NeurIPS 2026 workshops. Both grew out of Vertex, and both are about the same discomfort: an evaluation that reports what it found and not what it could have found.</p>
-  </div>
-
-  <article class="paper reveal">
-    <div class="paper__meta">
-      <span class="paper__tag">Paper one</span>
-      <span class="paper__status" data-status>Under review</span>
+<!-- ═══ 05 RESEARCH TEASER ═══ -->
+<section class="sec sec--tease" id="research" data-surface="paper">
+  <div class="tease">
+    <div class="tease__head">
+      <h2 class="sec__title" data-split>Research</h2>
+      <p class="tease__lead reveal">Two sole-authored papers, three submissions, all under review at
+        NeurIPS 2026 workshops. Both grew out of Vertex, and both are about one discomfort: an
+        evaluation that reports what it found and not what it could have found.</p>
     </div>
-    <h3 class="paper__title">Testing by betting when the bets are real</h3>
-    <p class="paper__sub">An e-value audit of 84 pre-registered market-efficiency hypotheses</p>
-    <p class="paper__abs">
-      E-values are usually motivated by a metaphorical gambler betting against a null
-      hypothesis. Here the gambler is not a metaphor. The null is a bookmaker's posted price,
-      the stake is a stake, and the wealth process <em>is</em> the e-process. The audit covers
-      4,141 walk-forward out-of-fold bouts scored by models refit at 32 quarterly origins,
-      1,787 of which carry an archived closing price.
-    </p>
-    <ol role="list" class="findings">
-      <li>
-        <h4>A multiplicity correction that was not licensed</h4>
-        <p>The 84 slices are overlapping subsets of one pool. Membership correlations across the 3,486 segment pairs run from -0.49 to +0.84, half of them negative, and 83 pairs share no bouts at all. Benjamini-Hochberg needs independence or PRDS; neither is established. On the 1,191-bout discovery window the lab actually searched, BH rejects four: one in the model's favour and three against it. Benjamini-Yekutieli and e-BH, whose guarantees do hold here, reject none.</p>
+
+    <ol role="list" class="tease__list">
+      <li class="reveal">
+        <span class="tease__n" aria-hidden="true">01</span>
+        <h3>Testing by betting when the bets are real</h3>
+        <p>The null is a bookmaker's posted price, the stake is a stake, and the wealth process
+          <em>is</em> the e-process. 84 pre-registered hypotheses, 1,787 priced bouts, re-audited
+          as bets.</p>
+        <p class="tease__venue">E-Values: From Statistics to ML <span aria-hidden="true">/</span> NewInML</p>
       </li>
-      <li>
-        <h4>"Failed to replicate" and "not yet" are different findings</h4>
-        <p>A segment the fixed-<i>n</i> analysis wrote off at <i>p</i> = 0.30 is still growing on the wealth scale: +0.0143 nats per bout against +0.0174 in the window that selected it, e = 4.81 against a threshold of 20. It is not refuted. It is 100 bouts short at fair odds and 253 at the book's, which is seventeen months, or three and a half years.</p>
-      </li>
-      <li>
-        <h4>Pricing the freedom a post-hoc rule used</h4>
-        <p>A threshold rule chosen after the shape was visible survives the search it actually ran, and then dies twice. The ladder is the finding, not the top rung.</p>
+      <li class="reveal">
+        <span class="tease__n" aria-hidden="true">02</span>
+        <h3>Measure the instrument first</h3>
+        <p>An evaluation reports that a candidate improved a metric. It almost never reports the
+          smallest improvement it could have detected, and those are different claims.</p>
+        <p class="tease__venue">TAE: Can We Trust AI Evaluation?</p>
       </li>
     </ol>
 
-    <figure class="chart chart--ladder">
-      <figcaption>The ladder: one post-hoc rule, charged for everything it was free to do</figcaption>
+    <figure class="chart chart--ladder reveal">
+      <figcaption>One post-hoc rule, charged for everything it was free to do</figcaption>
       <div class="ladder" id="ladder"></div>
-      <p class="chart__note">A threshold rule chosen after the shape was visible, paid for by a mixture martingale
-        over the 21 cuts it searched. Widen the mixture to the 21 cuts it could have searched in the opposite
-        direction and it drops below the threshold; add the other disagreement statistic it could have used and it
-        drops further. At the prices the book actually offered, the same three mixtures pay 8.47, 4.23 and 2.82: a
-        bettor paying the margin never clears the threshold at all.</p>
     </figure>
 
-    <p class="paper__abs">
-      Before any of it was used, the instrument was validated: under a true null with prices
-      and stakes held and only outcomes resampled, 40,000 replications give an expected
-      e-value of 0.985 plus or minus 0.018 per segment, with none of the 84 above its own
-      alpha. And the headline result is negative, stated as negative in the abstract. Betting
-      the model against the book across the whole priced pool gives e = 3.6 x 10<sup>-4</sup>
-      at fair odds. The paper is not about beating a market. It is about what can be honestly
-      claimed inside a search that mostly failed.
-    </p>
-
-    <div class="paper__files">
-      <a class="file" href="papers/evalues.pdf">
-        <span class="file__v">E-Values: From Statistics to ML</span>
-        <span class="file__k">NeurIPS 2026 workshop, non-archival <span>/</span> PDF, 258 KB</span>
-      </a>
-      <a class="file" href="papers/newinml.pdf">
-        <span class="file__v">NewInML</span>
-        <span class="file__k">Extended version, double-blind submission <span>/</span> PDF, 284 KB</span>
-      </a>
-    </div>
-    <p class="paper__note">The workshop's organisers include Grunwald and Ramdas, who built the machinery the paper uses.</p>
-  </article>
-
-  <article class="paper reveal">
-    <div class="paper__meta">
-      <span class="paper__tag">Paper two</span>
-      <span class="paper__status" data-status>Under review</span>
-    </div>
-    <h3 class="paper__title">Measure the instrument first</h3>
-    <p class="paper__sub">Detection floors for model selection and for LLM judges</p>
-    <p class="paper__abs">
-      An evaluation reports that a candidate improved a metric. It almost never reports the
-      smallest improvement it could have detected, and those are different claims. This paper
-      measures the second one with a construction that needs no distributional assumption: the
-      <em>null lever</em>, the same recipe refit under a different random seed. It changes
-      nothing real, so everything it produces is instrument noise.
-    </p>
-    <ol role="list" class="findings">
-      <li>
-        <h4>The noise floor is measurable, and it is not small</h4>
-        <p>On a 3,087-row walk-forward pool under five seeds, ten null comparisons manufacture effects up to 0.00207 nats. Re-seeding alone reproduces 80% of the only lever this leg ever shipped, and the pipeline had 56% power against its own shipped result.</p>
-      </li>
-      <li>
-        <h4>Buying seeds walks to a floor, not past it</h4>
-        <p>The floor is an asymptote at 0.00288 nats. Fifteen seeds gets within 2% of it and no budget gets past it, because 63% of the paired noise lives beyond any seed budget. On four degrees of freedom that share is bounded only to [17%, 83%], so it is reported as an estimate and not as a finding.</p>
-      </li>
-      <li>
-        <h4>A floor belongs to the instrument that measured the effect</h4>
-        <p>Recomputed on the 793-row pool where this project's one large win was actually measured, the floor is 0.0119 rather than 0.00362. The win is 4x its own floor, not 13x another pool's. This paper corrects that error in its own earlier draft, in print.</p>
-      </li>
-      <li>
-        <h4>The protocol transplants</h4>
-        <p>On a deployed LLM classifier, two identical reruns disagree on 5.6% of items, and twenty of them move measured agreement by 2.6 points. The floor is 2.9 points. Same recipe, different instrument.</p>
-      </li>
-    </ol>
-
-    <figure class="chart chart--floor">
-      <figcaption>Eleven candidates, one candidate scored three ways, and the lever that shipped</figcaption>
-      <div class="floor" id="floor"></div>
-      <p class="chart__note">The shaded band is the one-sided 80% minimum detectable effect at 0.00362 nats. Every lever inside it is a result the instrument cannot tell from re-seeding.</p>
-    </figure>
-
-    <div class="paper__files">
-      <a class="file" href="papers/tae.pdf">
-        <span class="file__v">TAE: Can We Trust AI Evaluation?</span>
-        <span class="file__k">NeurIPS 2026 workshop, double-blind <span>/</span> PDF, 126 KB</span>
-      </a>
-    </div>
-  </article>
-
-  <figure class="chart chart--scatter reveal">
-    <figcaption>All 84 hypotheses of the audit, at the wealth each one earned</figcaption>
-    <div class="scatter" id="scatter"></div>
-    <p class="chart__note">Each mark is one pre-registered hypothesis. The horizontal axis is the e-value at fair
-      odds, the vertical axis the same bet charged the bookmaker's margin, both on a log scale. Mark size grows with
-      the number of bouts in the segment. The dotted rules mark e = 20, which rejects at the 5% level for a
-      <em>single</em> pre-specified hypothesis. For a family of 84 the cutoff that is actually licensed is e-BH's,
-      e = 1,680 at one rejection, and nothing here comes near it. The single mark above the horizontal rule is also
-      the most favourable of five walk-forward seeds: its five-seed median is 12.3, below the rule.</p>
-  </figure>
+    <a class="bigcta magnet" href="research/">
+      <span>Read both papers</span>
+      <i aria-hidden="true"></i>
+    </a>
+  </div>
 </section>
 
-<!-- ═══ RECORD ═══ -->
+<!-- ═══ 06 RECORD ═══ -->
 <section class="sec sec--record" id="record">
-  <div class="sec__head reveal">
-    <h2 class="sec__title">The record</h2>
-    <p class="sec__sub">Awards evidenced against published competition protocols wherever a protocol exists, on the principle that a protocol can be checked by a stranger.</p>
+  <div class="sec__head">
+    <h2 class="sec__title" data-split>The record</h2>
+    <p class="sec__sub reveal">Evidenced against published competition protocols wherever a protocol
+      exists, on the principle that a protocol can be checked by a stranger.</p>
   </div>
 
   <div class="ledger reveal">
     <h3 class="ledger__h">Economics</h3>
     <ul role="list" class="ledger__rows">
       <li class="ledger__row is-top">
-        <span class="ledger__rank">1st</span>
+        <span class="ledger__rank" data-count="1" data-suffix="st">1st</span>
         <span class="ledger__what"><b>Moscow Olympiad in Economics</b>, winner, first place by score in the Grade 10 division. One of the largest regional economics olympiads in Russia, and this is its top individual result.</span>
         <span class="ledger__ev">Verified</span>
       </li>
       <li class="ledger__row">
-        <span class="ledger__rank">x2</span>
+        <span class="ledger__rank" data-count="2" data-prefix="x">x2</span>
         <span class="ledger__what"><b>All-Russian Olympiad in Economics</b>, national finalist in two separate years. The All-Russian Olympiad is the national academic competition system; reaching its final twice puts me in the national cohort in the subject.</span>
         <span class="ledger__ev">Verified</span>
       </li>
@@ -483,12 +335,12 @@
     <h3 class="ledger__h">School</h3>
     <ul role="list" class="ledger__rows">
       <li class="ledger__row">
-        <span class="ledger__rank">6.38</span>
+        <span class="ledger__rank" data-count="6.38" data-dec="2">6.38</span>
         <span class="ledger__what"><b>Letovo School, Moscow.</b> Grade 11, final year, advanced mathematics track. GPA 6.38 out of 7.0, above group average in algebra and in every core quantitative subject inside the school's most competitive quantitative group.</span>
         <span class="ledger__ev">/ 7.0</span>
       </li>
       <li class="ledger__row">
-        <span class="ledger__rank">790</span>
+        <span class="ledger__rank" data-count="790">790</span>
         <span class="ledger__what"><b>SAT Mathematics</b>, August 2026. A further sitting is scheduled for December 2026.</span>
         <span class="ledger__ev">/ 800</span>
       </li>
@@ -496,36 +348,34 @@
   </div>
 </section>
 
-<!-- ═══ METHOD ═══ -->
+<!-- ═══ 07 METHOD, stacking ═══ -->
 <section class="sec sec--method" id="method">
-  <div class="sec__head reveal">
-    <h2 class="sec__title">How I work</h2>
-    <p class="sec__sub">Five rules, applied across all four projects, visible in the artifacts.</p>
+  <div class="sec__head">
+    <h2 class="sec__title" data-split>How I work</h2>
+    <p class="sec__sub reveal">Five rules, applied across all four projects, visible in the artifacts.</p>
   </div>
-  <ol role="list" class="rules">
-    <li class="rule reveal"><span class="rule__n" aria-hidden="true">01</span>
+  <ol role="list" class="stack">
+    <li class="card" style="--i:0"><span class="card__n" aria-hidden="true">01</span>
       <h3>Measure against the hardest baseline available, and publish the comparison</h3>
       <p>Vertex is scored against a bookmaker's closing line, the strongest benchmark the domain has, on every basis including the windows where the baseline wins.</p></li>
-    <li class="rule reveal"><span class="rule__n" aria-hidden="true">02</span>
+    <li class="card" style="--i:1"><span class="card__n" aria-hidden="true">02</span>
       <h3>Gate before shipping</h3>
       <p>A change ships when it clears a pre-computed detection floor and independent evaluation legs agree on its sign. Not when it looks good.</p></li>
-    <li class="rule reveal"><span class="rule__n" aria-hidden="true">03</span>
+    <li class="card" style="--i:2"><span class="card__n" aria-hidden="true">03</span>
       <h3>Keep the rejects</h3>
       <p>Two dozen failed ideas sit in the repository next to the shipped ones with the reason each was rejected. Official rankings twice, recency weighting, seed bagging, symmetry augmentation, a graded outcome label, post-hoc calibration.</p></li>
-    <li class="rule reveal"><span class="rule__n" aria-hidden="true">04</span>
+    <li class="card" style="--i:3"><span class="card__n" aria-hidden="true">04</span>
       <h3>Report negative results as negative</h3>
       <p>The e-value paper's headline finding is that the market wins, and the paper says so in its abstract rather than in a limitations section on page eight.</p></li>
-    <li class="rule reveal"><span class="rule__n" aria-hidden="true">05</span>
+    <li class="card" style="--i:4"><span class="card__n" aria-hidden="true">05</span>
       <h3>Claim precisely</h3>
       <p>Submitted means submitted, not published. An award cites its protocol. A number carries the window it was measured on.</p></li>
   </ol>
 </section>
 
-<!-- ═══ TOOLKIT ═══ -->
+<!-- ═══ 08 TOOLKIT ═══ -->
 <section class="sec sec--kit" id="toolkit">
-  <div class="sec__head reveal">
-    <h2 class="sec__title">Toolkit</h2>
-  </div>
+  <div class="sec__head"><h2 class="sec__title" data-split>Toolkit</h2></div>
   <div class="kit reveal">
     <div class="kit__g"><h3>Modelling</h3><p>Python, LightGBM, CatBoost, scikit-learn, NumPy, pandas, statsmodels, Monte Carlo simulation</p></div>
     <div class="kit__g"><h3>Statistics</h3><p>E-values and test martingales, anytime-valid inference, walk-forward validation, calibration and sharpness decomposition, power and detection floors</p></div>
@@ -536,11 +386,13 @@
   </div>
 </section>
 
-<!-- ═══ CONTACT ═══ -->
+<!-- ═══ 09 CONTACT ═══ -->
 <section class="sec sec--contact" id="contact" data-surface="signal">
   <div class="contact">
     <p class="contact__kick reveal">Open to research, internships and anything with a real baseline in it.</p>
-    <a class="contact__mail reveal" href="mailto:lioneldassy@gmail.com" aria-label="Email lioneldassy at gmail dot com"><b aria-hidden="true">lioneldassy</b><b aria-hidden="true">@gmail.com</b></a>
+    <a class="contact__mail" href="mailto:lioneldassy@gmail.com" aria-label="Email lioneldassy at gmail dot com">
+      <b aria-hidden="true" data-split>lioneldassy</b><b aria-hidden="true" data-split>@gmail.com</b>
+    </a>
     <ul role="list" class="contact__links reveal">
       <li><a href="https://t.me/prigodskii" rel="me noopener">Telegram, @prigodskii</a></li>
       <li><a href="https://github.com/romanprigodskii" rel="me noopener">GitHub, romanprigodskii</a></li>
@@ -548,16 +400,24 @@
       <li><a href="https://gluline.com" rel="noopener">gluline.com</a></li>
     </ul>
   </div>
+  <div class="ticker ticker--foot" aria-hidden="true">
+    <div class="ticker__track">
+      <span>Let's talk</span><i>◆</i><span>Let's talk</span><i>◆</i><span>Let's talk</span><i>◆</i>
+      <span>Let's talk</span><i>◆</i><span>Let's talk</span><i>◆</i><span>Let's talk</span><i>◆</i>
+    </div>
+  </div>
 </section>
 
 </main>
 
 <footer class="foot">
   <p>Roman Prigodskii, Moscow. Figures as measured on the dates given.</p>
-  <p><a href="plain/">Plain version</a> <span aria-hidden="true">/</span> <a href="https://github.com/romanprigodskii/romanprigodskii.github.io" rel="noopener">Source of this page</a></p>
+  <p><a href="research/">Research</a> <span aria-hidden="true">/</span> <a href="plain/">Plain version</a> <span aria-hidden="true">/</span> <a href="https://github.com/romanprigodskii/romanprigodskii.github.io" rel="noopener">Source of this page</a></p>
 </footer>
 
+<script src="assets/js/vendor/lenis.min.js" defer></script>
 <script src="assets/js/charts.js" defer></script>
+<script src="assets/js/motion.js" defer></script>
 <script src="assets/js/site.js" defer></script>
 </body>
 </html>
