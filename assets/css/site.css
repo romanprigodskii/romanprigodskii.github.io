@@ -158,7 +158,8 @@
 
 /* the light ground: the research section, and the whole page in the light theme */
 [data-theme="paper"],
-[data-surface="paper"] {
+[data-surface="paper"],
+html.has-scenes[data-scene="paper"] {
   --bg: var(--p-l100);
   --bg-sunk: var(--p-l200);
   --bg-lift: var(--p-l050);
@@ -175,7 +176,8 @@
 }
 
 /* in the light theme the research section flips dark, so the inversion still means something */
-[data-theme="paper"] [data-surface="paper"] {
+[data-theme="paper"] [data-surface="paper"],
+html.has-scenes[data-theme="paper"][data-scene="paper"] {
   --bg: var(--p-d800);
   --bg-sunk: var(--p-d900);
   --bg-lift: var(--p-d700);
@@ -192,7 +194,8 @@
 }
 
 /* the drench: contact, and the page wipe */
-[data-surface="signal"] {
+[data-surface="signal"],
+html.has-scenes[data-scene="signal"] {
   --bg: var(--p-sig);
   --bg-sunk: var(--p-sig-lo);
   --bg-lift: var(--p-sig-hi);
@@ -1061,7 +1064,7 @@ html.intro-out .intro {
     linear-gradient(90deg, var(--p-d600) 1px, transparent 1px);
   background-size: 88px 88px;
   opacity: 0;
-  animation: introGrid 900ms var(--ease-soft) forwards;
+  animation: introGrid 700ms var(--ease-soft) forwards;
 }
 @keyframes introGrid { to { opacity: 0.55; } }
 .intro__read {
@@ -2443,3 +2446,56 @@ html:not(.js) .now__list > div:last-child { display: none; }
 .reg::after { top: 6px; left: 0; height: 1px; width: 13px; }
 .reg--l { left: -6px; }
 .reg--r { right: -6px; }
+
+/* ============================================================
+   SCENES: the whole page takes the palette of the section at the
+   middle of the screen, and the colours themselves animate.
+   Registering the tokens as colours is what lets them transition;
+   every element that reads one follows it, charts and ribbon too.
+   ============================================================ */
+@property --bg { syntax: "<color>"; inherits: true; initial-value: #10180a; }
+@property --bg-sunk { syntax: "<color>"; inherits: true; initial-value: #0b1206; }
+@property --bg-lift { syntax: "<color>"; inherits: true; initial-value: #16200f; }
+@property --ink { syntax: "<color>"; inherits: true; initial-value: #f2eedf; }
+@property --ink-2 { syntax: "<color>"; inherits: true; initial-value: #c9ceb8; }
+@property --ink-3 { syntax: "<color>"; inherits: true; initial-value: #97a089; }
+@property --rule { syntax: "<color>"; inherits: true; initial-value: #2c3824; }
+@property --rule-soft { syntax: "<color>"; inherits: true; initial-value: #1f2a18; }
+@property --accent { syntax: "<color>"; inherits: true; initial-value: #81ef76; }
+@property --accent-ink { syntax: "<color>"; inherits: true; initial-value: #0b1206; }
+@property --chart-a { syntax: "<color>"; inherits: true; initial-value: #e3dcc4; }
+@property --chart-b { syntax: "<color>"; inherits: true; initial-value: #a88f6a; }
+
+html.has-scenes {
+  transition:
+    --bg 700ms var(--ease-soft), --bg-sunk 700ms var(--ease-soft), --bg-lift 700ms var(--ease-soft),
+    --ink 700ms var(--ease-soft), --ink-2 700ms var(--ease-soft), --ink-3 700ms var(--ease-soft),
+    --rule 700ms var(--ease-soft), --rule-soft 700ms var(--ease-soft),
+    --accent 700ms var(--ease-soft), --accent-ink 700ms var(--ease-soft),
+    --chart-a 700ms var(--ease-soft), --chart-b 700ms var(--ease-soft);
+}
+/* sections stop carrying their own palette and follow the page's */
+html.has-scenes [data-surface] {
+  --bg: inherit; --bg-sunk: inherit; --bg-lift: inherit;
+  --ink: inherit; --ink-2: inherit; --ink-3: inherit;
+  --rule: inherit; --rule-soft: inherit;
+  --accent: inherit; --accent-ink: inherit;
+  --chart-a: inherit; --chart-b: inherit;
+  --lh-bump: inherit;
+}
+/* the scene change carries the transition now, so the sections no longer rise */
+html.has-scenes .risesec { border-radius: 0; margin-top: 0; box-shadow: none; }
+
+/* a case's role line, under its title */
+.case__role {
+  margin-top: 1rem;
+  font-stretch: 78%; text-transform: uppercase; letter-spacing: 0.12em;
+  font-size: var(--t-sm); font-weight: 700;
+  color: var(--accent);
+}
+
+/* a slow device, measured at load: colours switch instead of animating, since an
+   animating palette restyles the whole page every frame */
+html.lite.has-scenes { transition: none; }
+html.lite .ribbon__tip { filter: none; }
+html.lite body::after { display: none; }
