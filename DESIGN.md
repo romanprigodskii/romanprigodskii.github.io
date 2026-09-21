@@ -16,6 +16,15 @@ usually first made.
 - **Chart secondaries**: chalk blue, used only where a second series needs
   telling apart from the first.
 
+## Shape
+
+The front page is one scroll with five gears: a hero that is mostly the name, a
+ticker, a statement that lights word by word as it passes, the work as a pinned
+horizontal filmstrip, and a research teaser that hands off to its own page. The
+papers used to sit in the middle of the front page, which made a visitor read a
+statistics abstract before they knew who they were reading. They now live at
+`/research/`, where there is room for them.
+
 ## Surfaces, not pages
 
 Three palettes live in the same document and swap by `data-surface`:
@@ -74,6 +83,21 @@ measurement:
   the winner while being the loser.
 
 ## Motion
+
+Effects, and what each is for:
+
+| effect | why it is there |
+|---|---|
+| intro counter | counts to 84, the number of hypotheses the page is about. Once per session, skippable, gone under reduced motion |
+| word masking | headings and ledes rise word by word. Split at text-node level, so nested links survive |
+| ticker | the credentials, moving, so the fold is not the only place they appear |
+| scroll-lit statement | words go from muted to full as the paragraph passes the middle of the screen |
+| pinned filmstrip | vertical scroll drives horizontal travel through five project panels; below 900px it is a plain vertical list |
+| stacking method cards | the five rules stack on each other, so the section is read as one idea |
+| reticle cursor | a crosshair instead of an arrow, and over the hero field it reads out the two e-values under the point it is standing on. That is the only cursor gimmick on the page and it is a measuring instrument |
+| page wipe | between the three pages. The keyframes are `both`, so the page opens even if the script never runs again |
+
+
 
 `cubic-bezier(0.16, 1, 0.3, 1)` throughout, no bounce. One staggered entrance,
 then scroll reveals and chart draw-ins. Collapsible sections animate

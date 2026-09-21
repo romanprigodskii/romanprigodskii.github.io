@@ -4,7 +4,8 @@ My personal site. Two versions of the same record:
 
 | | |
 |---|---|
-| **[/](https://romanprigodskii.github.io/)** | the full page: long form, live charts drawn from my papers' own numbers, two themes |
+| **[/](https://romanprigodskii.github.io/)** | the front page: a scroll-driven read, with the work as a pinned horizontal filmstrip |
+| **[/research/](https://romanprigodskii.github.io/research/)** | both papers in full, with the charts that carry their results |
 | **[/plain/](https://romanprigodskii.github.io/plain/)** | one self-contained file, no JavaScript, prints cleanly to A4 |
 
 No framework, no build step, no dependencies. Static HTML, CSS and vanilla JS,
@@ -25,18 +26,25 @@ python3 tools/build_data.py /path/to/paper > assets/data/audit.json
 ## Layout
 
 ```
-index.html              the full page
-plain/index.html        the plain, printable version, self-contained
+index.html                the front page
+research/index.html       both papers, in full
+plain/index.html          the plain, printable version, self-contained
 404.html
-assets/css/site.css     tokens, three surfaces, layout, motion
-assets/js/charts.js     hero field, comparison bars, ladder, floor, scatter
-assets/js/site.js       theme, reveals, accordion, surface-aware header
-assets/data/audit.json  generated, see above
-assets/img/             mark, social card
-papers/                 the three submitted PDFs
-tools/build_data.py     regenerates assets/data/audit.json
-DESIGN.md               the design system and why it looks like this
+assets/css/site.css       tokens, three surfaces, layout, motion
+assets/js/charts.js       hero field, comparison bars, ladder, floor, scatter
+assets/js/motion.js       intro, word reveals, filmstrip, reticle, transitions
+assets/js/site.js         theme, charts, surface-aware header
+assets/js/vendor/lenis.min.js   smooth scroll (MIT), self-hosted
+assets/data/audit.json    generated, see above
+assets/img/               mark, social card
+papers/                   the three submitted PDFs
+tools/build_data.py       regenerates assets/data/audit.json
+DESIGN.md                 the design system and why it looks like this
 ```
+
+Everything in `motion.js` is additive. With JavaScript off, or with
+`prefers-reduced-motion` on, the filmstrip becomes a vertical list, nothing is
+hidden waiting to be revealed, and the page is a complete document.
 
 ## Running it
 
