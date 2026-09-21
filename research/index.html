@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en" data-theme="slate">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Research, Roman Prigodskii</title>
+<meta name="description" content="Two sole-authored papers under review at NeurIPS 2026 workshops: an e-value audit of 84 pre-registered market-efficiency hypotheses, and detection floors for model selection and LLM judges.">
+<meta name="author" content="Roman Prigodskii">
+<meta name="theme-color" content="#16291f">
+<link rel="canonical" href="https://romanprigodskii.github.io/research/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Research, Roman Prigodskii">
+<meta property="og:description" content="An e-value audit where the gambler is not a metaphor, and a protocol for measuring what an evaluation could have detected.">
+<meta property="og:url" content="https://romanprigodskii.github.io/research/">
+<meta property="og:image" content="https://romanprigodskii.github.io/assets/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/img/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+<link rel="stylesheet" href="../assets/css/site.css">
+<link rel="preload" as="fetch" href="../assets/data/audit.json" crossorigin>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"CollectionPage","name":"Research, Roman Prigodskii","url":"https://romanprigodskii.github.io/research/","author":{"@type":"Person","name":"Roman Prigodskii"},"hasPart":[{"@type":"ScholarlyArticle","name":"Testing by betting when the bets are real: an e-value audit of 84 pre-registered market-efficiency hypotheses","author":{"@type":"Person","name":"Roman Prigodskii"},"url":"https://romanprigodskii.github.io/papers/evalues.pdf","creativeWorkStatus":"Under review"},{"@type":"ScholarlyArticle","name":"Measure the instrument first: detection floors for model selection and for LLM judges","author":{"@type":"Person","name":"Roman Prigodskii"},"url":"https://romanprigodskii.github.io/papers/tae.pdf","creativeWorkStatus":"Under review"}]}
+</script>
+<script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("rp-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body class="is-sub" data-base="../">
+<a class="skip" href="#main">Skip to content</a>
+<div class="reticle" id="reticle" aria-hidden="true"><i></i><i></i><b id="reticleRead"></b></div>
+<div class="wipe" id="wipe" aria-hidden="true"></div>
+
+<header class="bar is-shown" id="bar">
+  <a class="bar__mark" href="../" aria-label="Back to the home page">
+    <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+      <path d="M4 30h56" class="mk-line"/>
+      <g class="mk-bars"><rect x="12" y="14" width="10" height="38" rx="2"/><rect x="27" y="33" width="10" height="19" rx="2"/><rect x="42" y="39" width="10" height="13" rx="2"/></g>
+    </svg>
+    <span>Prigodskii</span>
+  </a>
+  <nav class="bar__nav" aria-label="Sections">
+    <a href="#evalues">E-values</a>
+    <a href="#floors">Floors</a>
+    <a href="#scatter-fig">The 84</a>
+  </nav>
+  <div class="bar__end">
+    <a class="bar__cta magnet" href="../">Back</a>
+    <button class="themeswap" type="button" id="themeswap" aria-pressed="false">
+      <span class="themeswap__track" aria-hidden="true"><span class="themeswap__dot"></span></span>
+      <span class="u-sr">Switch between chalkboard and paper</span>
+    </button>
+  </div>
+  <span class="bar__prog" id="prog" aria-hidden="true"></span>
+</header>
+
+<main id="main">
+
+<section class="rhero">
+  <p class="rhero__back"><a href="../">Roman Prigodskii</a> <span aria-hidden="true">/</span> Research</p>
+  <h1 class="rhero__title"><span data-split>Testing</span> <span data-split data-d="80">by betting</span></h1>
+  <p class="rhero__lede" data-split data-d="260">Two sole-authored papers, three submissions, all under
+    review at NeurIPS 2026 workshops. Both grew out of Vertex MMA, and both are about the same
+    discomfort: an evaluation that reports what it found, and not what it could have found.</p>
+  <dl class="rhero__facts rise" style="--d:520">
+    <div><dt>Author</dt><dd>Sole, on both</dd></div>
+    <div><dt>Status</dt><dd>Under review</dd></div>
+    <div><dt>Subject</dt><dd>A deployed forecaster and its own instrument</dd></div>
+    <div><dt>Data</dt><dd>4,141 walk-forward bouts, 1,787 of them priced</dd></div>
+  </dl>
+</section>
+
+<!-- ═══ PAPER ONE ═══ -->
+<article class="sec sec--paper" id="evalues" data-surface="paper">
+  <div class="paper">
+    <div class="paper__meta">
+      <span class="paper__tag">Paper one</span>
+      <span class="paper__status" data-status>Under review</span>
+    </div>
+    <h2 class="paper__title" data-split>Testing by betting when the bets are real</h2>
+    <p class="paper__sub">An e-value audit of 84 pre-registered market-efficiency hypotheses</p>
+    <p class="paper__abs reveal">
+      E-values are usually motivated by a metaphorical gambler betting against a null hypothesis.
+      Here the gambler is not a metaphor. The null is a bookmaker's posted price, the stake is a
+      stake, and the wealth process <em>is</em> the e-process. The audit covers 4,141 walk-forward
+      out-of-fold bouts scored by models refit at 32 quarterly origins, 1,787 of which carry an
+      archived closing price, first analysed with paired log-loss and Benjamini-Hochberg and then
+      re-asked as bets.
+    </p>
+    <ol role="list" class="findings">
+      <li class="reveal">
+        <h3>A multiplicity correction that was not licensed</h3>
+        <p>The 84 slices are overlapping subsets of one pool. Membership correlations across the
+          3,486 segment pairs run from -0.49 to +0.84, half of them negative, and 83 pairs share no
+          bouts at all. Benjamini-Hochberg needs independence or PRDS; neither is established. On
+          the 1,191-bout discovery window the lab actually searched, BH rejects four: one in the
+          model's favour and three against it. Benjamini-Yekutieli and e-BH, whose guarantees do
+          hold here, reject none.</p>
+      </li>
+      <li class="reveal">
+        <h3>"Failed to replicate" and "not yet" are different findings</h3>
+        <p>A segment the fixed-<i>n</i> analysis wrote off at <i>p</i> = 0.30 is still growing on the
+          wealth scale: +0.0143 nats per bout against +0.0174 in the window that selected it, an
+          e-value of 4.81 against a threshold of 20. It is not refuted. It is 100 bouts short at
+          fair odds and 253 at the book's, which is seventeen months, or three and a half years.
+          Optional continuation turns a refutation into a schedule.</p>
+      </li>
+      <li class="reveal">
+        <h3>Pricing the freedom a post-hoc rule used</h3>
+        <p>A threshold rule chosen after the shape was visible, paid for by a mixture martingale over
+          the 21 cuts it searched, clears the threshold at 31.28. Widen the mixture to the 21 cuts it
+          could have searched in the opposite direction and it falls to 15.64. Add the other
+          disagreement statistic it could have used and it falls to 10.43. The ladder is the result,
+          not any rung of it.</p>
+      </li>
+    </ol>
+
+    <figure class="chart chart--ladder reveal">
+      <figcaption>The ladder, and the same three mixtures charged the book's margin</figcaption>
+      <div class="ladder" id="ladder"></div>
+      <p class="chart__note">At the prices the book actually offered, the same three mixtures pay
+        8.47, 4.23 and 2.82: a bettor paying the margin never clears the threshold at all.</p>
+    </figure>
+
+    <p class="paper__abs reveal">
+      Before any of it was used, the instrument was validated. Under a true null with prices and
+      stakes held and only outcomes resampled, 40,000 replications give an expected e-value of
+      0.985 plus or minus 0.018 per segment, with none of the 84 above its own alpha. And the
+      headline result is negative, stated as negative in the abstract: betting the model against
+      the book across the whole priced pool gives e = 3.6 x 10<sup>-4</sup> at fair odds and
+      3.1 x 10<sup>-8</sup> at real ones. The paper is not about beating a market. It is about what
+      can be honestly claimed inside a search that mostly failed.
+    </p>
+
+    <div class="paper__files reveal">
+      <a class="file magnet" href="../papers/evalues.pdf">
+        <span class="file__v">E-Values: From Statistics to ML</span>
+        <span class="file__k">NeurIPS 2026 workshop, non-archival <span>/</span> PDF, 258 KB</span>
+      </a>
+      <a class="file magnet" href="../papers/newinml.pdf">
+        <span class="file__v">NewInML</span>
+        <span class="file__k">Extended version, double-blind submission <span>/</span> PDF, 284 KB</span>
+      </a>
+    </div>
+    <p class="paper__note reveal">The workshop's organisers include Grunwald and Ramdas, who built the
+      machinery the paper uses.</p>
+  </div>
+</article>
+
+<!-- ═══ PAPER TWO ═══ -->
+<article class="sec sec--paper2" id="floors">
+  <div class="paper">
+    <div class="paper__meta">
+      <span class="paper__tag">Paper two</span>
+      <span class="paper__status" data-status>Under review</span>
+    </div>
+    <h2 class="paper__title" data-split>Measure the instrument first</h2>
+    <p class="paper__sub">Detection floors for model selection and for LLM judges</p>
+    <p class="paper__abs reveal">
+      An evaluation reports that a candidate improved a metric. It almost never reports the smallest
+      improvement it could have detected, and those are different claims. This paper measures the
+      second one with a construction that needs no distributional assumption: the <em>null lever</em>,
+      the same recipe refit under a different random seed. It changes nothing real, so everything it
+      produces is instrument noise.
+    </p>
+    <ol role="list" class="findings">
+      <li class="reveal">
+        <h3>The noise floor is measurable, and it is not small</h3>
+        <p>On a 3,087-row walk-forward pool under five seeds, ten null comparisons manufacture
+          effects up to 0.00207 nats. Re-seeding alone reproduces 80% of the only lever this leg
+          ever shipped, and the pipeline had 56% power against its own shipped result.</p>
+      </li>
+      <li class="reveal">
+        <h3>Buying seeds walks to a floor, not past it</h3>
+        <p>The floor is an asymptote at 0.00288 nats. Fifteen seeds gets within 2% of it and no
+          budget gets past it, because 63% of the paired noise lives beyond any seed budget. On four
+          degrees of freedom that share is bounded only to [17%, 83%], so it is reported as an
+          estimate and not as a finding.</p>
+      </li>
+      <li class="reveal">
+        <h3>A floor belongs to the instrument that measured the effect</h3>
+        <p>Recomputed on the 793-row pool where this project's one large win was actually measured,
+          the floor is 0.0119 rather than 0.00362. The win is 4x its own floor, not 13x another
+          pool's. The paper corrects that error in its own earlier draft, in print.</p>
+      </li>
+      <li class="reveal">
+        <h3>The protocol transplants</h3>
+        <p>On a deployed LLM classifier, two identical reruns disagree on 5.6% of items, and twenty
+          of them move measured agreement by 2.6 points. The floor is 2.9 points. Same recipe,
+          different instrument.</p>
+      </li>
+    </ol>
+
+    <figure class="chart chart--floor reveal">
+      <figcaption>Eleven candidates, one candidate scored three ways, and the lever that shipped</figcaption>
+      <div class="floor" id="floor"></div>
+      <p class="chart__note">The shaded band is the one-sided 80% minimum detectable effect at
+        0.00362 nats. Every lever inside it is a result the instrument cannot tell apart from
+        re-seeding, including the one that shipped.</p>
+    </figure>
+
+    <div class="paper__files reveal">
+      <a class="file magnet" href="../papers/tae.pdf">
+        <span class="file__v">TAE: Can We Trust AI Evaluation?</span>
+        <span class="file__k">NeurIPS 2026 workshop, double-blind <span>/</span> PDF, 126 KB</span>
+      </a>
+    </div>
+  </div>
+</article>
+
+<!-- ═══ THE SCATTER ═══ -->
+<section class="sec sec--scatter" id="scatter-fig" data-surface="paper">
+  <figure class="chart chart--scatter">
+    <figcaption>All 84 hypotheses of the audit, at the wealth each one earned</figcaption>
+    <div class="scatter" id="scatter"></div>
+    <p class="chart__note">Each mark is one pre-registered hypothesis. The horizontal axis is the
+      e-value at fair odds, the vertical axis the same bet charged the bookmaker's margin, both on a
+      log scale. Mark size grows with the number of bouts in the segment. The dotted rules mark
+      e = 20, which rejects at the 5% level for a <em>single</em> pre-specified hypothesis. For a
+      family of 84 the cutoff that is actually licensed is e-BH's, e = 1,680 at one rejection, and
+      nothing here comes near it. The single mark above the horizontal rule is also the most
+      favourable of five walk-forward seeds: its five-seed median is 12.3, below the rule.</p>
+  </figure>
+</section>
+
+<!-- ═══ OUT ═══ -->
+<section class="sec sec--out" data-surface="signal">
+  <div class="contact">
+    <p class="contact__kick reveal">Questions, or a reason to build the next one.</p>
+    <a class="contact__mail" href="mailto:lioneldassy@gmail.com" aria-label="Email lioneldassy at gmail dot com">
+      <b aria-hidden="true" data-split>lioneldassy</b><b aria-hidden="true" data-split>@gmail.com</b>
+    </a>
+    <ul role="list" class="contact__links reveal">
+      <li><a href="../">Back to the front page</a></li>
+      <li><a href="../plain/">The plain version</a></li>
+      <li><a href="https://github.com/romanprigodskii" rel="me noopener">GitHub</a></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <p>Roman Prigodskii, Moscow. Submitted means submitted, not published.</p>
+  <p><a href="../">Home</a> <span aria-hidden="true">/</span> <a href="../plain/">Plain version</a></p>
+</footer>
+
+<script src="../assets/js/vendor/lenis.min.js" defer></script>
+<script src="../assets/js/charts.js" defer></script>
+<script src="../assets/js/motion.js" defer></script>
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>
