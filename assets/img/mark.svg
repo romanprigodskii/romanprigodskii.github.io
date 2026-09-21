@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Three descending bars crossing a threshold line">
-  <rect width="64" height="64" rx="12" fill="#182e26"/>
-  <path d="M6 30h52" stroke="#e8613c" stroke-width="3" stroke-linecap="round" stroke-dasharray="5 5"/>
-  <g fill="#f2efe4">
+  <rect width="64" height="64" rx="12" fill="#121315"/>
+  <path d="M6 30h52" stroke="#f9d630" stroke-width="3" stroke-linecap="round" stroke-dasharray="5 5"/>
+  <g fill="#f2f1ee">
     <rect x="12" y="14" width="10" height="38" rx="2"/>
     <rect x="27" y="33" width="10" height="19" rx="2"/>
     <rect x="42" y="39" width="10" height="13" rx="2"/>
