@@ -8,6 +8,32 @@
   var reduced = w.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var fine = w.matchMedia("(pointer: fine)").matches;
   w.rpMotion = 1;
+
+  /* a slow device measures itself while scrolling, which is where the cost is:
+     if sixty scrolling frames come in at a median slower than about 45 a second,
+     the most expensive effects step down for the rest of the visit */
+  w.rpLite = false;
+  (function probe() {
+    var gaps = [], last = 0, lastY = w.scrollY, slow = 0;
+    function f(t) {
+      if (w.rpLite) return;
+      var y = w.scrollY, moving = Math.abs(y - lastY) > 0.5;
+      lastY = y;
+      if (last && moving && !d.hidden) gaps.push(t - last);
+      last = t;
+      if (gaps.length >= 45) {
+        var sorted = gaps.slice().sort(function (a, b) { return a - b; });
+        /* two slow windows in a row, not one: a single burst of chart drawing or
+           font loading should not cost a capable machine its effects */
+        slow = sorted[22] > 24 ? slow + 1 : 0;
+        gaps = [];
+        if (slow >= 2) { w.rpLite = true; root.classList.add("lite"); return; }
+      }
+      w.requestAnimationFrame(f);
+    }
+    /* the first seconds are the page building itself, not the device's steady state */
+    w.setTimeout(function () { w.requestAnimationFrame(f); }, 2500);
+  })();
   var glOK = (function () {
     try { var c = d.createElement("canvas"); return !!(c.getContext("webgl") || c.getContext("experimental-webgl")); }
     catch (e) { return false; }
@@ -472,6 +498,33 @@
   })();
 
   /* ---------------------------------------------------------------
+     Scenes: the page takes the palette of whichever section is at the
+     middle of the screen, and the colours animate between them
+     --------------------------------------------------------------- */
+  (function scenes() {
+    if (reduced) return;
+    var secs = all("main > section, main > article");
+    if (!secs.length || !(w.CSS && CSS.supports && CSS.supports("color", "oklch(0.5 0.1 100)"))) return;
+    root.classList.add("has-scenes");
+    var cur = null, t = null;
+    function run() {
+      var mid = w.innerHeight * 0.5, scene = "slate";
+      for (var i = 0; i < secs.length; i++) {
+        var r = secs[i].getBoundingClientRect();
+        if (r.top <= mid && r.bottom > mid) { scene = secs[i].dataset.surface || "slate"; break; }
+      }
+      if (scene === cur) return;
+      cur = scene;
+      if (scene === "slate") delete root.dataset.scene; else root.dataset.scene = scene;
+      /* the canvas caches its colours, so it re-reads them once the change has landed */
+      w.clearTimeout(t);
+      t = w.setTimeout(function () { if (w.rpSceneChanged) w.rpSceneChanged(); }, 760);
+    }
+    onScroll(run);
+    run();
+  })();
+
+  /* ---------------------------------------------------------------
      Glyphs beside the section titles turn, faster while scrolling
      --------------------------------------------------------------- */
   (function spinners() {
@@ -479,8 +532,10 @@
     if (!gs.length || reduced) return;
     var angle = 0;
     (function loop() {
-      angle = (angle + 0.35 + Math.min(Math.abs(vel) * 0.35, 14)) % 360;
-      for (var i = 0; i < gs.length; i++) gs[i].style.transform = "rotate(" + angle.toFixed(1) + "deg)";
+      if (!w.rpLite) {
+        angle = (angle + 0.35 + Math.min(Math.abs(vel) * 0.35, 14)) % 360;
+        for (var i = 0; i < gs.length; i++) gs[i].style.transform = "rotate(" + angle.toFixed(1) + "deg)";
+      }
       w.requestAnimationFrame(loop);
     })();
   })();

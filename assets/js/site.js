@@ -87,6 +87,9 @@
     sections.forEach(function (s) { so.observe(s); });
   }
 
+  /* the page's colours change with the scene; the canvas re-reads them after */
+  w.rpSceneChanged = function () { if (charts.field && charts.field.redraw) charts.field.redraw(); };
+
   /* ---------- charts ---------- */
   var C = w.RPCharts;
   function degrade(msg) {

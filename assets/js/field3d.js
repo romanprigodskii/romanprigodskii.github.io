@@ -274,7 +274,7 @@
     var labelsHost = opts.labels || null;
 
     function size() {
-      dpr = Math.min(w.devicePixelRatio || 1, 2);
+      dpr = Math.min(w.devicePixelRatio || 1, w.rpLite ? 1 : 2);
       W = canvas.clientWidth || 1; H = canvas.clientHeight || 1;
       var nw = Math.round(W * dpr), nh = Math.round(H * dpr);
       if (canvas.width !== nw || canvas.height !== nh) { canvas.width = nw; canvas.height = nh; }
