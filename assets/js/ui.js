@@ -558,6 +558,72 @@
   })();
 
   /* ---------------------------------------------------------------
+     Before the papers: the newspaper's edge, traced from the scan.
+     It draws in as it rises into view and back out on the way down,
+     and the fitted curve can be swapped for a triangle wave, which
+     turns into it point by point
+     --------------------------------------------------------------- */
+  (function wave() {
+    var fig = d.getElementById("wave");
+    var src = d.getElementById("waveData");
+    if (!fig || !src) return;
+    var D;
+    try { D = JSON.parse(src.textContent); } catch (e) { return; }
+    var fit = fig.querySelector(".wave__fit"), miss = fig.querySelector(".wave__miss");
+    var read = d.getElementById("waveRead");
+    var btns = all("[data-fit]", fig);
+    var WORDS = {
+      s: "A sine misses the traced edge by 1.8% of its height.",
+      t: "A triangle wave, given the same freedom, misses by 4.8%, most of it at the crests and troughs."
+    };
+    var cur = "s", curve = D.s.slice(), res = D.rs.slice(), raf = 0;
+
+    function line(xs, ys, gap) {
+      var out = "", prev = null;
+      for (var i = 0; i < xs.length; i++) {
+        out += (prev == null || (gap && xs[i] - prev > gap) ? "M" : "L") + xs[i] + " " + ys[i].toFixed(1) + " ";
+        prev = xs[i];
+      }
+      return out;
+    }
+    function draw() {
+      fit.setAttribute("d", line(D.x, curve));
+      miss.setAttribute("d", line(D.rx, res, 12));
+    }
+    function pick(key) {
+      if (key === cur) return;
+      cur = key;
+      btns.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.fit === key)); });
+      fig.classList.toggle("is-tri", key === "t");
+      if (read) read.textContent = WORDS[key];
+      var c0 = curve.slice(), r0 = res.slice(), c1 = D[key], r1 = D["r" + key];
+      w.cancelAnimationFrame(raf);
+      if (reduced) { curve = c1.slice(); res = r1.slice(); draw(); return; }
+      var t0 = null;
+      raf = w.requestAnimationFrame(function step(t) {
+        if (t0 == null) t0 = t;
+        var p = clamp((t - t0) / 700, 0, 1), e = p === 1 ? 1 : 1 - Math.pow(2, -10 * p), i;
+        for (i = 0; i < curve.length; i++) curve[i] = c0[i] + (c1[i] - c0[i]) * e;
+        for (i = 0; i < res.length; i++) res[i] = r0[i] + (r1[i] - r0[i]) * e;
+        draw();
+        if (p < 1) raf = w.requestAnimationFrame(step);
+      });
+    }
+    btns.forEach(function (b) { b.addEventListener("click", function () { pick(b.dataset.fit); }); });
+
+    if (reduced) return;
+    var top = 0, last = -1, on = false;
+    onMeasure(function () { top = docTop(fig); });
+    onScroll(function (y, vh) {
+      var p = Math.round(clamp((vh * 0.95 - (top - y)) / (vh * 0.5), 0, 1) * 1000) / 1000;
+      if (p === last) return;
+      last = p;
+      fig.style.setProperty("--p", p);
+      if (!on) { on = true; fig.classList.add("is-scrub"); }
+    });
+  })();
+
+  /* ---------------------------------------------------------------
      Product loops play only while they are on screen. Under reduced
      motion they never start, and the poster frame is the picture
      --------------------------------------------------------------- */

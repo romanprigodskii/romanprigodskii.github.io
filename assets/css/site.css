@@ -1750,6 +1750,59 @@ body.is-sub { padding-top: 0; }
 .sec--paper2 { background: var(--bg-sunk); border-block: 1px solid var(--rule); }
 .sec--out { padding-block: clamp(5rem, 12vw, 9rem); }
 
+/* ---------- before the papers: a school project, drawn at the paper's own proportions ----------
+   The figure is the newspaper's cut edge traced from the scan, one scan pixel to one unit in both
+   directions, so the wave on screen has the real paper's shape. It draws in from the left as it
+   rises into view (ui.js writes --p) and the fitted curve follows it; a visitor can swap the sine
+   for a triangle wave and watch the misfit strip underneath swell at every crest and trough */
+.early {
+  width: var(--shell);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+@media (max-width: 900px) { .early { grid-template-columns: minmax(0, 1fr); } }
+.early__when {
+  font-size: var(--t-xs);
+  color: var(--ink-3);
+  padding: 0.24rem 0.65rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+}
+.early__title {
+  font-size: var(--t-h3);
+  font-stretch: 108%;
+  font-weight: 740;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  max-width: 18ch;
+}
+.early__lede { margin-top: 1.1rem; color: var(--ink-2); max-width: 50ch; }
+.early .paper__files { margin-top: 1.8rem; }
+
+.wave { margin: 0; }
+.wave__pick { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin-bottom: clamp(1rem, 2.4vw, 1.6rem); }
+.wave__pick-k { font-size: var(--t-xs); color: var(--ink-3); margin-right: 0.35rem; }
+html:not(.js) .wave__pick { display: none; }
+.wave svg { display: block; width: 100%; height: auto; overflow: visible; }
+.wave__paper { fill: color-mix(in oklab, var(--ink) 9%, transparent); }
+.wave__edge { fill: none; stroke: var(--ink-2); stroke-width: 1.5px; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.wave__fit,
+.wave__miss { fill: none; stroke: var(--accent); vector-effect: non-scaling-stroke; stroke-linejoin: round; transition: stroke 420ms var(--ease-expo); }
+.wave__fit { stroke-width: 2px; }
+.wave__miss { stroke-width: 1.25px; }
+.wave__zero { stroke: var(--rule); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.wave.is-tri .wave__fit,
+.wave.is-tri .wave__miss { stroke: var(--chart-b); }
+.wave__cap { margin-top: 1rem; font-size: var(--t-xs); color: var(--ink-3); max-width: 62ch; line-height: 1.55; }
+.wave__cap span { color: var(--ink-2); }
+@media screen and (prefers-reduced-motion: no-preference) {
+  .wave.is-scrub .wave__draw { clip-path: inset(-4px calc((1 - clamp(0, var(--p, 0) / 0.8, 1)) * 100%) -4px 0); }
+  .wave.is-scrub .wave__draw--fit { clip-path: inset(-4px calc((1 - clamp(0, (var(--p, 0) - 0.2) / 0.8, 1)) * 100%) -4px 0); }
+}
+
 /* ============================================================
    SHORT LAPTOPS
    The hero carries its own base row, so on a 768 or 800 tall
