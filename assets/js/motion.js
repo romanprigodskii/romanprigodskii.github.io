@@ -8,6 +8,11 @@
   var reduced = w.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var fine = w.matchMedia("(pointer: fine)").matches;
   w.rpMotion = 1;
+  var glOK = (function () {
+    try { var c = d.createElement("canvas"); return !!(c.getContext("webgl") || c.getContext("experimental-webgl")); }
+    catch (e) { return false; }
+  })();
+  function roomy() { return w.innerWidth >= 900 && w.innerWidth > w.innerHeight && !reduced; }
 
   /* our own scroll restoration: the pinned sections change the page height after
      load, so the browser's guess lands thousands of pixels off */
@@ -49,15 +54,31 @@
   }, { passive: true });
 
   /* land on the fragment once the layout has its final height */
+  var holding = false;
   function goToHash() {
     var h = location.hash.slice(1);
     if (!h || h.indexOf("case-") === 0) return false;
     var t = d.getElementById(decodeURIComponent(h));
     if (!t) return false;
-    /* Lenis measures the page asynchronously; after the pinned sections set their
-       heights its limit can still be the old one, and it would clamp the jump */
-    if (lenis) { if (lenis.resize) lenis.resize(); lenis.scrollTo(t, { offset: -80, immediate: true, force: true }); }
-    else w.scrollTo(0, t.getBoundingClientRect().top + w.scrollY - 80);
+    /* compute the absolute target ourselves: Lenis's own element maths uses its
+       animated position, which lags while the browser is still scrolling natively */
+    function jump() {
+      var y = Math.max(0, t.getBoundingClientRect().top + w.scrollY - 80);
+      if (lenis) { if (lenis.resize) lenis.resize(); lenis.scrollTo(y, { immediate: true, force: true }); }
+      else w.scrollTo({ top: y, behavior: "instant" });
+    }
+    jump();
+    /* charts, fonts and images keep arriving after load and push the target down;
+       hold the fragment in place until the layout settles or the reader moves */
+    if (!holding) {
+      holding = true;
+      var until = performance.now() + 2500;
+      (function hold() {
+        if (userMoved || performance.now() > until) { holding = false; return; }
+        if (Math.abs(t.getBoundingClientRect().top - 80) > 2) jump();
+        w.requestAnimationFrame(hold);
+      })();
+    }
     return true;
   }
   var userMoved = false;
@@ -107,7 +128,7 @@
 
   /* one shared velocity reading, used by the ticker and the filmstrip */
   var vel = 0, lastY = w.scrollY, dir = 1;
-  (function track() {
+  if (!reduced) (function track() {
     var y = w.scrollY;
     var dy = y - lastY;
     lastY = y;
@@ -232,6 +253,7 @@
       done = true;
       root.classList.add("intro-out", "no-wipe");
       startReveals();
+      try { w.dispatchEvent(new Event("rp:intro-done")); } catch (e) {}
       w.setTimeout(function () {
         root.classList.remove("intro", "intro-out");
         el.remove();
@@ -288,10 +310,11 @@
     if (!hero || !hero.querySelector(".hero__pin")) return;
     var on = false;
     function measure() {
-      on = w.innerWidth >= 900 && !reduced;
+      on = roomy() && glOK && !d.documentElement.classList.contains("no-webgl");
       hero.classList.toggle("is-pinned", on);
       update();
     }
+    w.rpHeroMeasure = function () { d.documentElement.classList.add("no-webgl"); measure(); };
     function update() {
       if (!on) { hero.style.setProperty("--fold", "0"); if (w.rpSetFold) w.rpSetFold(0); return; }
       var r = hero.getBoundingClientRect();
@@ -364,7 +387,7 @@
     if (pin) pin.addEventListener("scroll", function () { if (pin.scrollLeft) pin.scrollLeft = 0; }, { passive: true });
 
     function measure() {
-      on = w.innerWidth >= 900 && !reduced;
+      on = roomy();
       sec.classList.toggle("is-pinned", on);
       if (!on) { sec.style.height = ""; track.style.transform = ""; return; }
       var last = panels[panels.length - 1];
@@ -408,11 +431,13 @@
         if (idxOut.textContent !== s) idxOut.textContent = s;
       }
     }
-    (function lean() {
+    if (!reduced) (function lean() {
       if (on) {
         var target = clamp(vel * -0.12, -5, 5);
         skew += (target - skew) * 0.12;
-        if (Math.abs(skew) > 0.01) track.style.setProperty("--skew", skew.toFixed(3) + "deg");
+        if (Math.abs(target) < 0.01 && Math.abs(skew) < 0.02) {
+          if (skew !== 0) { skew = 0; track.style.removeProperty("--skew"); }
+        } else track.style.setProperty("--skew", skew.toFixed(3) + "deg");
       }
       w.requestAnimationFrame(lean);
     })();
@@ -492,16 +517,18 @@
     var read = d.getElementById("reticleRead");
     if (!el || !fine || reduced) { if (el) el.remove(); if (read) read.remove(); return; }
     var tx = -100, ty = -100, cx = tx, cy = ty, seen = false;
+    var frameN = 0;
     (function loop() {
       cx += (tx - cx) * 0.2;
       cy += (ty - cy) * 0.2;
       var tf = "translate3d(" + cx.toFixed(1) + "px," + cy.toFixed(1) + "px,0)";
       el.style.transform = tf;
       if (read) read.style.transform = tf;
+      if (seen && (++frameN % 6 === 0)) sense(tx, ty, null, true);
       w.requestAnimationFrame(loop);
     })();
-    function sense(x, y, target) {
-      el.classList.toggle("is-lg", !!(target && target.closest && target.closest("a, button, .panel, .file")));
+    function sense(x, y, target, readOnly) {
+      if (!readOnly) el.classList.toggle("is-lg", !!(target && target.closest && target.closest("a, button, .panel, .file")));
       var v = w.rpFieldRead ? w.rpFieldRead(x, y) : null;
       if (v && read) {
         read.textContent = v.x + "  /  " + v.y;

@@ -156,72 +156,75 @@
     }).sort(function (a, b) { return (a.r.ef + a.r.er) - (b.r.ef + b.r.er); });
     pts.forEach(function (p, i) { p.i = i; });
 
-    var pProg, lProg;
-    try {
+    var pProg, lProg, pBuf, lBuf, qBuf, loc;
+    var pData, lData, qData;
+    function init() {
       pProg = program(gl, VS_POINT, FS_POINT);
       lProg = program(gl, VS_LINE, FS_LINE);
-    } catch (e) {
+
+      /* points buffer: x y z size kind idx */
+      pData = new Float32Array(pts.length * 6);
+      pts.forEach(function (p, i) {
+        pData.set([p.x, p.y, p.z, p.size, p.kind, p.i], i * 6);
+      });
+      pBuf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, pBuf);
+      gl.bufferData(gl.ARRAY_BUFFER, pData, gl.STATIC_DRAW);
+
+      /* lines: floor grid (0), stems (1), threshold outlines (2) */
+      var L = [];
+      function seg(a, b, k) { L.push(a[0], a[1], a[2], k, b[0], b[1], b[2], k); }
+      for (var gx = -1.7; gx <= 1.701; gx += 0.34) seg([gx, FLOOR, -ZS - 0.15], [gx, FLOOR, ZS + 0.15], 0);
+      for (var gz = -ZS - 0.15; gz <= ZS + 0.151; gz += (2 * ZS + 0.3) / 8) seg([-1.7, FLOOR, gz], [1.7, FLOOR, gz], 0);
+      pts.forEach(function (p) { seg([p.x, p.y, p.z], [p.x, FLOOR, p.z], 1); });
+      var x20 = X(20), y20 = Y(20), zA = -ZS - 0.15, zB = ZS + 0.15;
+      /* the vertical plane at e_fair = 20 */
+      seg([x20, FLOOR, zA], [x20, 1.2, zA], 2); seg([x20, 1.2, zA], [x20, 1.2, zB], 2);
+      seg([x20, 1.2, zB], [x20, FLOOR, zB], 2); seg([x20, FLOOR, zB], [x20, FLOOR, zA], 2);
+      /* the horizontal plane at e_real = 20 */
+      seg([-1.7, y20, zA], [1.75, y20, zA], 2); seg([1.75, y20, zA], [1.75, y20, zB], 2);
+      seg([1.75, y20, zB], [-1.7, y20, zB], 2); seg([-1.7, y20, zB], [-1.7, y20, zA], 2);
+      lData = new Float32Array(L);
+      lBuf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, lBuf);
+      gl.bufferData(gl.ARRAY_BUFFER, lData, gl.STATIC_DRAW);
+
+      /* the two threshold planes as translucent quads (kind 3) */
+      var Q = [];
+      function quad(a, b, c, dd) { [a, b, c, a, c, dd].forEach(function (v) { Q.push(v[0], v[1], v[2], 3); }); }
+      quad([x20, FLOOR, zA], [x20, 1.2, zA], [x20, 1.2, zB], [x20, FLOOR, zB]);
+      quad([-1.7, y20, zA], [1.75, y20, zA], [1.75, y20, zB], [-1.7, y20, zB]);
+      qData = new Float32Array(Q);
+      qBuf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, qBuf);
+      gl.bufferData(gl.ARRAY_BUFFER, qData, gl.STATIC_DRAW);
+
+      loc = {
+        p: {
+          aPos: gl.getAttribLocation(pProg, "aPos"), aSize: gl.getAttribLocation(pProg, "aSize"),
+          aKind: gl.getAttribLocation(pProg, "aKind"), aIdx: gl.getAttribLocation(pProg, "aIdx"),
+          uMVP: gl.getUniformLocation(pProg, "uMVP"), uZ: gl.getUniformLocation(pProg, "uZ"),
+          uDpr: gl.getUniformLocation(pProg, "uDpr"), uReveal: gl.getUniformLocation(pProg, "uReveal"),
+          uHover: gl.getUniformLocation(pProg, "uHover"), uCount: gl.getUniformLocation(pProg, "uCount"),
+          uShift: gl.getUniformLocation(pProg, "uShift"), uShiftY: gl.getUniformLocation(pProg, "uShiftY"),
+          uFoldP: gl.getUniformLocation(pProg, "uFoldP"),
+          uInk: gl.getUniformLocation(pProg, "uInk"), uAcc: gl.getUniformLocation(pProg, "uAcc")
+        },
+        l: {
+          aPos: gl.getAttribLocation(lProg, "aPos"), aKind: gl.getAttribLocation(lProg, "aKind"),
+          uMVP: gl.getUniformLocation(lProg, "uMVP"), uZ: gl.getUniformLocation(lProg, "uZ"),
+          uShift: gl.getUniformLocation(lProg, "uShift"), uShiftY: gl.getUniformLocation(lProg, "uShiftY"), uFold: gl.getUniformLocation(lProg, "uFold"),
+          uReveal: gl.getUniformLocation(lProg, "uReveal"),
+          uInk: gl.getUniformLocation(lProg, "uInk"), uAcc: gl.getUniformLocation(lProg, "uAcc"),
+          uRule: gl.getUniformLocation(lProg, "uRule")
+        }
+      };
+
+    }
+    try { init(); } catch (e) {
       if (w.console) w.console.warn("field3d:", e.message);
       return null;
     }
-
-    /* points buffer: x y z size kind idx */
-    var pData = new Float32Array(pts.length * 6);
-    pts.forEach(function (p, i) {
-      pData.set([p.x, p.y, p.z, p.size, p.kind, p.i], i * 6);
-    });
-    var pBuf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, pBuf);
-    gl.bufferData(gl.ARRAY_BUFFER, pData, gl.STATIC_DRAW);
-
-    /* lines: floor grid (0), stems (1), threshold outlines (2) */
-    var L = [];
-    function seg(a, b, k) { L.push(a[0], a[1], a[2], k, b[0], b[1], b[2], k); }
-    for (var gx = -1.7; gx <= 1.701; gx += 0.34) seg([gx, FLOOR, -ZS - 0.15], [gx, FLOOR, ZS + 0.15], 0);
-    for (var gz = -ZS - 0.15; gz <= ZS + 0.151; gz += (2 * ZS + 0.3) / 8) seg([-1.7, FLOOR, gz], [1.7, FLOOR, gz], 0);
-    pts.forEach(function (p) { seg([p.x, p.y, p.z], [p.x, FLOOR, p.z], 1); });
-    var x20 = X(20), y20 = Y(20), zA = -ZS - 0.15, zB = ZS + 0.15;
-    /* the vertical plane at e_fair = 20 */
-    seg([x20, FLOOR, zA], [x20, 1.2, zA], 2); seg([x20, 1.2, zA], [x20, 1.2, zB], 2);
-    seg([x20, 1.2, zB], [x20, FLOOR, zB], 2); seg([x20, FLOOR, zB], [x20, FLOOR, zA], 2);
-    /* the horizontal plane at e_real = 20 */
-    seg([-1.7, y20, zA], [1.75, y20, zA], 2); seg([1.75, y20, zA], [1.75, y20, zB], 2);
-    seg([1.75, y20, zB], [-1.7, y20, zB], 2); seg([-1.7, y20, zB], [-1.7, y20, zA], 2);
-    var lData = new Float32Array(L);
-    var lBuf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, lBuf);
-    gl.bufferData(gl.ARRAY_BUFFER, lData, gl.STATIC_DRAW);
-
-    /* the two threshold planes as translucent quads (kind 3) */
-    var Q = [];
-    function quad(a, b, c, dd) { [a, b, c, a, c, dd].forEach(function (v) { Q.push(v[0], v[1], v[2], 3); }); }
-    quad([x20, FLOOR, zA], [x20, 1.2, zA], [x20, 1.2, zB], [x20, FLOOR, zB]);
-    quad([-1.7, y20, zA], [1.75, y20, zA], [1.75, y20, zB], [-1.7, y20, zB]);
-    var qData = new Float32Array(Q);
-    var qBuf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, qBuf);
-    gl.bufferData(gl.ARRAY_BUFFER, qData, gl.STATIC_DRAW);
-
-    var loc = {
-      p: {
-        aPos: gl.getAttribLocation(pProg, "aPos"), aSize: gl.getAttribLocation(pProg, "aSize"),
-        aKind: gl.getAttribLocation(pProg, "aKind"), aIdx: gl.getAttribLocation(pProg, "aIdx"),
-        uMVP: gl.getUniformLocation(pProg, "uMVP"), uZ: gl.getUniformLocation(pProg, "uZ"),
-        uDpr: gl.getUniformLocation(pProg, "uDpr"), uReveal: gl.getUniformLocation(pProg, "uReveal"),
-        uHover: gl.getUniformLocation(pProg, "uHover"), uCount: gl.getUniformLocation(pProg, "uCount"),
-        uShift: gl.getUniformLocation(pProg, "uShift"), uShiftY: gl.getUniformLocation(pProg, "uShiftY"),
-        uFoldP: gl.getUniformLocation(pProg, "uFoldP"),
-        uInk: gl.getUniformLocation(pProg, "uInk"), uAcc: gl.getUniformLocation(pProg, "uAcc")
-      },
-      l: {
-        aPos: gl.getAttribLocation(lProg, "aPos"), aKind: gl.getAttribLocation(lProg, "aKind"),
-        uMVP: gl.getUniformLocation(lProg, "uMVP"), uZ: gl.getUniformLocation(lProg, "uZ"),
-        uShift: gl.getUniformLocation(lProg, "uShift"), uShiftY: gl.getUniformLocation(lProg, "uShiftY"), uFold: gl.getUniformLocation(lProg, "uFold"),
-        uReveal: gl.getUniformLocation(lProg, "uReveal"),
-        uInk: gl.getUniformLocation(lProg, "uInk"), uAcc: gl.getUniformLocation(lProg, "uAcc"),
-        uRule: gl.getUniformLocation(lProg, "uRule")
-      }
-    };
 
     /* ---------- state ---------- */
     var colours = {};
@@ -238,7 +241,7 @@
     var reveal = reduced ? 1 : 0, t0 = null;
     var hover = -1;
     var W = 1, H = 1, dpr = 1, mvp = null, shift = 0, shiftY = 0;
-    var running = false, raf = null, visible = true;
+    var running = false, raf = null, visible = true, paused = false, lost = false;
     var labelsHost = opts.labels || null;
 
     function size() {
@@ -381,10 +384,13 @@
       smy += (my - smy) * 0.05;
       fold += (foldTarget - fold) * (reduced ? 1 : 0.12);
       draw(time);
+      /* with reduced motion nothing changes between frames once revealed and
+         settled, so stop until something asks for a new frame */
+      if (reduced && reveal >= 1 && Math.abs(foldTarget - fold) < 1e-4) { running = false; raf = null; return; }
       raf = w.requestAnimationFrame(loop);
     }
     function start() {
-      if (running) return;
+      if (running || paused || lost) return;
       running = true;
       raf = w.requestAnimationFrame(loop);
     }
@@ -404,7 +410,15 @@
       if (document.hidden) stop(); else if (visible) start();
     });
 
-    canvas.addEventListener("webglcontextlost", function (e) { e.preventDefault(); stop(); });
+    canvas.addEventListener("webglcontextlost", function (e) { e.preventDefault(); lost = true; stop(); });
+    canvas.addEventListener("webglcontextrestored", function () {
+      /* everything GPU-side died with the context: rebuild it and carry on */
+      try {
+        init();
+        lost = false;
+        if (visible && !document.hidden) start();
+      } catch (err) { if (w.console) w.console.warn("field3d restore:", err.message); }
+    });
 
     function pointer(clientX, clientY) {
       var r = canvas.getBoundingClientRect();
@@ -433,9 +447,11 @@
     }
 
     return {
-      run: function () { start(); },
-      redraw: function () { readColours(); if (!running) draw(performance.now()); },
-      setFold: function (v) { foldTarget = clamp(v, 0, 1); if (!running) { fold = foldTarget; draw(performance.now()); } },
+      run: function () { t0 = null; start(); },
+      restartReveal: function () { if (!reduced) { reveal = 0; t0 = null; } start(); },
+      pause: function (p) { paused = !!p; if (paused) stop(); else if (visible && !document.hidden) start(); },
+      redraw: function () { readColours(); if (!running && !lost) draw(performance.now()); },
+      setFold: function (v) { foldTarget = clamp(v, 0, 1); if (!running && !lost) { if (reduced) fold = foldTarget; start(); } },
       pointer: pointer,
       read: read,
       is3d: true

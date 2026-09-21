@@ -22,7 +22,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"CollectionPage","name":"Research, Roman Prigodskii","url":"https://romanprigodskii.github.io/research/","author":{"@type":"Person","name":"Roman Prigodskii"},"hasPart":[{"@type":"ScholarlyArticle","name":"Testing by betting when the bets are real: an e-value audit of 84 pre-registered market-efficiency hypotheses","author":{"@type":"Person","name":"Roman Prigodskii"},"url":"https://romanprigodskii.github.io/papers/evalues.pdf","creativeWorkStatus":"Under review"},{"@type":"ScholarlyArticle","name":"Measure the instrument first: detection floors for model selection and for LLM judges","author":{"@type":"Person","name":"Roman Prigodskii"},"url":"https://romanprigodskii.github.io/papers/tae.pdf","creativeWorkStatus":"Under review"}]}
 </script>
-<script>(function(d){d.classList.add("js");setTimeout(function(){if(!window.rpMotion){d.classList.add("no-motion");}},3500);try{var q=new URLSearchParams(location.search).get("palette");if(q&&/^(graphite|moss|cobalt)$/.test(q))d.dataset.palette=q;var t=localStorage.getItem("rp-theme");if(t==="paper"||t==="slate")d.dataset.theme=t;}catch(e){}})(document.documentElement);</script>
+<script>(function(d){d.classList.add("js");setTimeout(function(){if(!window.rpMotion){d.classList.add("no-motion");}},3500);try{var q=new URLSearchParams(location.search).get("palette"),ok=/^(graphite|moss|cobalt)$/;if(q&&ok.test(q)){sessionStorage.setItem("rp-palette",q)}else{q=sessionStorage.getItem("rp-palette")}if(q&&ok.test(q))d.dataset.palette=q;var t=localStorage.getItem("rp-theme");if(t==="paper"||t==="slate")d.dataset.theme=t;}catch(e){}})(document.documentElement);</script>
 </head>
 <body class="is-sub" data-base="../">
 <a class="skip" href="#main">Skip to content</a>
@@ -121,7 +121,7 @@
       <li class="reveal">
         <h3>A multiplicity correction that was not licensed</h3>
         <p>The 84 slices are overlapping subsets of one pool. Membership correlations across the
-          3,486 segment pairs run from -0.49 to +0.84, half of them negative, and 83 pairs share no
+          3,486 segment pairs run from &minus;0.49 to +0.84, half of them negative, and 83 pairs share no
           bouts at all. Benjamini-Hochberg needs independence or PRDS; neither is established. On
           the 1,191-bout discovery window the lab actually searched, BH rejects four: one in the
           model's favour and three against it. Benjamini-Yekutieli and e-BH, whose guarantees do

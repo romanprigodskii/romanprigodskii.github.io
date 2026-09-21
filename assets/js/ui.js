@@ -18,6 +18,7 @@
   function lockScroll(on) {
     var l = lenis();
     if (l) { if (on) l.stop(); else l.start(); }
+    if (w.rpFieldPause) w.rpFieldPause(on);
     root.classList.toggle("is-locked", on);
     behind.forEach(function (el) {
       if (!el) return;
@@ -61,11 +62,13 @@
     var panel = d.getElementById("menu");
     var close = d.getElementById("menuClose");
     if (!btn || !panel) return;
-    var lastFocus = null, open = false;
+    var lastFocus = null, open = false, hideT = null;
 
     function show() {
       if (open) return;
+      if (root.classList.contains("case-open")) return;
       open = true;
+      w.clearTimeout(hideT);
       lastFocus = d.activeElement;
       panel.hidden = false;
       w.requestAnimationFrame(function () { root.classList.add("menu-open"); });
@@ -79,17 +82,28 @@
       root.classList.remove("menu-open");
       btn.setAttribute("aria-expanded", "false");
       lockScroll(false);
-      w.setTimeout(function () {
+      w.clearTimeout(hideT);
+      hideT = w.setTimeout(function () {
+        if (open) return;
         panel.hidden = true;
         if (then) then(); else if (lastFocus && lastFocus.focus) lastFocus.focus();
       }, reduced ? 0 : 520);
     }
     btn.addEventListener("click", function () { open ? hide() : show(); });
     if (close) close.addEventListener("click", function () { hide(); });
-    panel.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") { e.preventDefault(); hide(); }
+    /* on the document, so Esc and Tab still work after a click on plain text
+       inside the menu has sent focus to the body */
+    d.addEventListener("keydown", function (e) {
+      if (!open) return;
+      if (e.key === "Escape") { e.preventDefault(); hide(); return; }
+      if (e.key === "Tab" && !panel.contains(d.activeElement)) {
+        e.preventDefault();
+        var f = panel.querySelector(".menu__link"); if (f) f.focus();
+        return;
+      }
       trap(panel, e);
     });
+    panel.setAttribute("tabindex", "-1");
     all("a", panel).forEach(function (a) {
       a.addEventListener("click", function (e) {
         var href = a.getAttribute("href") || "";
@@ -103,6 +117,7 @@
       });
     });
     w.rpMenuHide = hide;
+    w.rpMenuOpen = function () { return open; };
   })();
 
   /* ---------------------------------------------------------------
@@ -118,7 +133,8 @@
     if (!layer || !slot || !store) return;
 
     var order = all(".case", store).map(function (n) { return n.id; });
-    var current = null, lastFocus = null, pushed = false;
+    var current = null, lastFocus = null, pushed = false, closeT = null, swapT = null;
+    scroller.setAttribute("tabindex", "-1");
     root.classList.add("has-cases");
 
     function mount(id) {
@@ -153,30 +169,44 @@
       if (!d.getElementById(id)) return;
       if (w.rpMenuHide) w.rpMenuHide(function () {});
       if (!mount(id)) return;
-      if (!root.classList.contains("case-open")) {
-        lastFocus = opts.from || d.activeElement;
+      w.clearTimeout(closeT);
+      if (!root.classList.contains("case-open") || layer.hidden) {
+        lastFocus = opts.from || lastFocus || d.activeElement;
         layer.hidden = false;
         w.requestAnimationFrame(function () { root.classList.add("case-open"); });
         lockScroll(true);
       }
+      /* only now is the scroller laid out, so only now does resetting it stick */
+      scroller.scrollTop = 0;
       if (!opts.fromHistory) {
         var url = location.pathname + location.search + "#" + id;
         if (pushed) history.replaceState({ rpCase: id }, "", url);
         else { history.pushState({ rpCase: id }, "", url); pushed = true; }
       }
-      w.setTimeout(function () { closeBtn && closeBtn.focus(); }, 80);
+      /* focus the title inside the scroller, so the keyboard scrolls the case */
+      w.setTimeout(function () {
+        var art = d.getElementById(id);
+        var h = art && art.querySelector(".case__title");
+        if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
+        else scroller.focus({ preventScroll: true });
+      }, 80);
     }
 
     function close(opts) {
       opts = opts || {};
       if (!root.classList.contains("case-open")) return;
       root.classList.remove("case-open");
+      w.clearTimeout(swapT);
+      layer.classList.remove("is-swapping");
       lockScroll(false);
-      w.setTimeout(function () {
+      w.clearTimeout(closeT);
+      closeT = w.setTimeout(function () {
+        if (root.classList.contains("case-open")) return;
         layer.hidden = true;
         if (current) { var art = d.getElementById(current); if (art) store.appendChild(art); }
         current = null;
-        if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+        if (lastFocus && lastFocus.focus && !(w.rpMenuOpen && w.rpMenuOpen())) lastFocus.focus({ preventScroll: true });
+        lastFocus = null;
       }, reduced ? 0 : 620);
       if (!opts.fromHistory && pushed) { pushed = false; history.back(); }
       else if (!opts.fromHistory) history.replaceState(null, "", location.pathname + location.search + "#work");
@@ -197,13 +227,18 @@
       var i = order.indexOf(current);
       var id = order[(i + 1) % order.length];
       layer.classList.add("is-swapping");
-      w.setTimeout(function () {
+      w.clearTimeout(swapT);
+      swapT = w.setTimeout(function () {
+        if (!root.classList.contains("case-open")) return;
         open(id);
         layer.classList.remove("is-swapping");
       }, reduced ? 0 : 280);
     });
-    layer.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") { e.preventDefault(); close(); }
+    layer.setAttribute("tabindex", "-1");
+    d.addEventListener("keydown", function (e) {
+      if (!root.classList.contains("case-open")) return;
+      if (e.key === "Escape") { e.preventDefault(); close(); return; }
+      if (e.key === "Tab" && !layer.contains(d.activeElement)) { e.preventDefault(); closeBtn && closeBtn.focus(); return; }
       trap(layer, e);
     });
     w.addEventListener("popstate", function (e) {
@@ -214,8 +249,15 @@
     /* a deep link lands on the case itself */
     var h = location.hash.slice(1);
     if (h.indexOf("case-") === 0 && d.getElementById(h)) {
-      history.replaceState(null, "", location.pathname + location.search + "#work");
-      w.setTimeout(function () { open(h); }, 400);
+      var from = d.querySelector('.panel__open[href="#' + h + '"]');
+      if (history.state && history.state.rpCase === h) {
+        /* a reload of an open case: reuse its history entry instead of adding one */
+        pushed = true;
+        w.setTimeout(function () { open(h, { fromHistory: true, from: from }); }, 400);
+      } else {
+        history.replaceState(null, "", location.pathname + location.search + "#work");
+        w.setTimeout(function () { open(h, { from: from }); }, 400);
+      }
     }
     w.rpOpenCase = open;
   })();
@@ -246,8 +288,9 @@
     function frame() {
       raf = null;
       var still = true;
-      letters.forEach(function (l) {
-        var r = l.el.getBoundingClientRect();
+      var rects = letters.map(function (l) { return l.el.getBoundingClientRect(); });
+      letters.forEach(function (l, i) {
+        var r = rects[i];
         var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
         var dist = Math.hypot(px - cx, (py - cy) * 1.4);
         var k = active ? Math.pow(clamp(1 - dist / 260, 0, 1), 2) : 0;
@@ -274,7 +317,10 @@
     toast.textContent = msg;
     toast.classList.add("is-on");
     w.clearTimeout(toastT);
-    toastT = w.setTimeout(function () { toast.classList.remove("is-on"); }, 2200);
+    toastT = w.setTimeout(function () {
+      toast.classList.remove("is-on");
+      w.setTimeout(function () { if (!toast.classList.contains("is-on")) toast.textContent = ""; }, 400);
+    }, 2200);
   }
   all("[data-copy]").forEach(function (a) {
     a.addEventListener("click", function () {
@@ -296,21 +342,24 @@
       fmtS = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Moscow", hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
       fmtM = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Moscow", hour12: false, hour: "2-digit", minute: "2-digit" });
     } catch (e) {}
-    /* notifications are due 29 September, anywhere on earth */
-    var DUE = Date.UTC(2026, 8, 30, 11, 59, 0);
+    /* two decision dates, each at the end of the day anywhere on earth:
+       TAE on 22 September, E-Values and NewInML on 29 September */
+    var TAE = Date.UTC(2026, 8, 23, 11, 59, 0);
+    var REST = Date.UTC(2026, 8, 30, 11, 59, 0);
+    function inWords(ms) {
+      var days = Math.floor(ms / 864e5), hrs = Math.floor((ms % 864e5) / 36e5);
+      return (days > 0 ? days + (days === 1 ? " day " : " days ") : "") + hrs + (hrs === 1 ? " hour" : " hours");
+    }
     function tick() {
       var n = new Date();
       clocks.forEach(function (c) {
         if (!fmtS) return;
         c.textContent = (c.closest(".hero__clock") ? fmtS : fmtM).format(n);
       });
-      var left = DUE - n.getTime();
-      var msg;
-      if (left <= 0) msg = "NeurIPS 2026 workshop decisions, which are now out";
-      else {
-        var days = Math.floor(left / 864e5), hrs = Math.floor((left % 864e5) / 36e5);
-        msg = "NeurIPS 2026 workshop decisions, in " + (days > 0 ? days + (days === 1 ? " day " : " days ") : "") + hrs + (hrs === 1 ? " hour" : " hours");
-      }
+      var t = n.getTime(), msg;
+      if (t < TAE) msg = "the TAE decision, in " + inWords(TAE - t) + ", then E-Values and NewInML on 29 September";
+      else if (t < REST) msg = "E-Values and NewInML decisions, in " + inWords(REST - t);
+      else msg = "NeurIPS 2026 workshop decisions, which are now out";
       waits.forEach(function (wv) { if (wv.textContent !== msg) wv.textContent = msg; });
     }
     if (!clocks.length && !waits.length) return;
@@ -343,7 +392,13 @@
           nav.classList.remove("is-swap");
         }, reduced ? 0 : 180);
       }
-      var surf = secs[idx].dataset.surface;
+      var nr = nav.getBoundingClientRect(), under = null;
+      var ny = nr.top + nr.height / 2;
+      for (var k = 0; k < secs.length; k++) {
+        var sr = secs[k].getBoundingClientRect();
+        if (sr.top <= ny && sr.bottom >= ny) { under = secs[k]; break; }
+      }
+      var surf = under && under.dataset.surface;
       if (surf) nav.dataset.surface = surf; else delete nav.dataset.surface;
       nav.classList.toggle("is-on", idx > 0 && idx < secs.length - 1 && !root.classList.contains("case-open"));
     }

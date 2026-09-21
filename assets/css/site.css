@@ -424,7 +424,7 @@ code {
   transition: opacity 1400ms var(--ease-soft);
 }
 .hero__field.is-in { opacity: 1; }
-@media (max-width: 900px) {
+@media (max-width: 899px), (orientation: portrait) {
   .hero__field { top: auto; bottom: 0; height: 34svh; }
   .hero__pin { padding-bottom: calc(34svh + 1.25rem); }
 }
@@ -681,12 +681,12 @@ code {
 .barrow { display: grid; grid-template-columns: 6.5rem 1fr; gap: 0.35rem 1rem; align-items: center; }
 .barrow__m { font-size: var(--t-sm); font-weight: 600; }
 .barrow__t { display: grid; gap: 0.3rem; }
-.barline { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0.6rem; }
+.barline { display: grid; grid-template-columns: minmax(0, 1fr) 7.5rem; align-items: center; gap: 0.6rem; }
 .barline__track { height: 9px; background: color-mix(in oklab, var(--ink) 10%, transparent); position: relative; overflow: hidden; }
 .barline__fill { position: absolute; inset: 0 auto 0 0; width: 0; transition: width 900ms var(--ease-expo); }
 .barline--a .barline__fill { background: var(--chart-a); }
 .barline--b .barline__fill { background: var(--accent); }
-.barline__v { font-size: var(--t-xs); font-weight: 650; min-width: 4.6rem; }
+.barline__v { font-size: var(--t-xs); font-weight: 650; min-width: 0; }
 .barline--a .barline__v::before,
 .barline--b .barline__v::before {
   content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 0.45em; vertical-align: 0.06em;
@@ -1231,7 +1231,7 @@ html.wipe-out .wipe {
   color: var(--ink-3);
 }
 .hero__caption a { color: var(--ink-2); }
-@media (max-width: 900px) {
+@media (max-width: 899px), (orientation: portrait) {
   .hero__base { grid-template-columns: auto 1fr; }
   .hero__caption { grid-column: 1 / -1; justify-self: start; text-align: left; max-width: 52ch; }
 }
@@ -1325,6 +1325,7 @@ html:not(.js) [data-lit] { color: var(--ink); }
   top: 0;
   height: 100svh;
   overflow: hidden;
+  overflow: clip;
   display: flex;
   flex-direction: column;
 }
@@ -1444,7 +1445,7 @@ html:not(.js) [data-lit] { color: var(--ink); }
 .bench span { font-size: var(--t-xs); line-height: 1.55; }
 .panel--bench .panel__body .btn { justify-self: start; margin-top: 0.8rem; }
 
-@media (max-width: 899px) {
+@media (max-width: 899px), (orientation: portrait) {
   .film { height: auto !important; }
   .film__pin { position: static; height: auto; overflow: visible; }
   .film__head { padding-top: var(--sp-sec); }
@@ -1711,6 +1712,7 @@ a:focus-visible .roll__box, button:focus-visible .roll__box { transform: transla
 .intro__read { gap: 1.2rem; align-items: center; }
 .odo {
   display: inline-flex;
+  align-items: flex-start;
   height: 1em;
   overflow: hidden;
   font-variant-numeric: tabular-nums;
@@ -1986,7 +1988,7 @@ html.menu-open .menu__side { opacity: 1; }
 .gfx-v { fill: var(--ink-2); font-size: 26px; font-weight: 720; font-family: inherit; }
 .gfx-v--hi { fill: var(--accent); }
 
-@media (max-width: 899px) {
+@media (max-width: 899px), (orientation: portrait) {
   .film__meta { display: block !important; }
   .film__meta span, .film__meta i { display: none; }
   .film__meta em { margin: 0; }
@@ -2069,7 +2071,7 @@ html.has-cases .cases { display: none; }
 .case__table th, .case__table td { padding: 0.65rem 0.8rem; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
 .case__table thead th { font-weight: 650; color: var(--ink-3); font-size: var(--t-xs); }
 .case__table tbody th { text-align: left; font-weight: 600; color: var(--ink); }
-.case__table tbody tr:last-child th, .case__table tbody tr:last-child td { color: var(--accent); }
+.case__table tbody tr:nth-child(2) th, .case__table tbody tr:nth-child(2) td { color: var(--accent); }
 .case__body .chart { margin-top: 1.6rem; }
 .case__shot--2 { margin-top: 0; }
 @media (max-width: 760px) {
@@ -2185,11 +2187,12 @@ html.case-open .caselayer__slot .case__head > *:nth-child(4) { transition-delay:
   pointer-events: none;
 }
 .toast.is-on { opacity: 1; transform: none; }
-.toast:empty { display: none; }
+.toast:empty { padding: 0; border: 0; }
 
 /* ---------- section indicator ---------- */
 .scrollnav {
-  position: fixed; left: var(--gut-safe); bottom: 1.4rem; z-index: 70;
+  position: fixed; left: max(0.9rem, calc(var(--gut-safe) * 0.3)); top: 50%; z-index: 70;
+  writing-mode: vertical-rl;
   display: flex; align-items: center; gap: 0.8rem;
   font-size: var(--t-xs); font-weight: 650;
   color: var(--ink);
@@ -2197,14 +2200,15 @@ html.case-open .caselayer__slot .case__head > *:nth-child(4) { transition-delay:
   transition: opacity 400ms, transform 500ms var(--ease-expo);
   pointer-events: none;
 }
+.scrollnav { translate: 0 -50%; rotate: 180deg; }
 .scrollnav.is-on { opacity: 1; transform: none; }
 .scrollnav__n { font-stretch: 66%; letter-spacing: 0.1em; font-variant-numeric: tabular-nums; }
-.scrollnav__name { font-stretch: 80%; letter-spacing: 0.06em; text-transform: uppercase; min-width: 6.5rem; transition: opacity 180ms, transform 280ms var(--ease-expo); }
+.scrollnav__name { font-stretch: 80%; letter-spacing: 0.06em; text-transform: uppercase; min-height: 6.5rem; transition: opacity 180ms, transform 280ms var(--ease-expo); }
 .scrollnav.is-swap .scrollnav__name, .scrollnav.is-swap .scrollnav__n { opacity: 0; transform: translateY(-6px); }
 .scrollnav__n { transition: opacity 180ms, transform 280ms var(--ease-expo); }
-.scrollnav__bar { width: 64px; height: 1px; background: color-mix(in oklab, currentColor 30%, transparent); position: relative; overflow: hidden; }
-.scrollnav__bar i { position: absolute; inset: 0; background: currentColor; transform: scaleX(0); transform-origin: left; }
-@media (max-width: 899px) { .scrollnav { display: none; } }
+.scrollnav__bar { width: 1px; height: 64px; background: color-mix(in oklab, currentColor 30%, transparent); position: relative; overflow: hidden; }
+.scrollnav__bar i { position: absolute; inset: 0; background: currentColor; transform: scaleY(0); transform-origin: bottom; }
+@media (max-width: 899px), (orientation: portrait) { .scrollnav { display: none; } }
 
 /* ---------- reduced motion and no-JS for the new pieces ---------- */
 @media (prefers-reduced-motion: reduce) {
@@ -2295,3 +2299,34 @@ html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 .lenis.lenis-stopped { overflow: hidden; }
+
+/* ============================================================
+   FIX BATCH 2, from the six-angle QA of the rebuild
+   ============================================================ */
+/* drawings inside the filmstrip stay legible on a phone */
+@media (max-width: 560px) {
+  .gfx-lbl text, .gfx-lbl2, .gfx-v2 { font-size: 30px; }
+  .gfx-k { font-size: 30px; }
+  .gfx-v { font-size: 40px; }
+  .case__table th, .case__table td { padding: 0.55rem 0.35rem; }
+  .case__table tbody th { white-space: normal; min-width: 6.5rem; }
+}
+@media (max-width: 380px) { .case__table table { font-size: var(--t-xs); } }
+
+/* short laptops: a shorter frame keeps the panel meta clear of the bottom edge */
+@media (min-width: 900px) and (max-height: 800px) {
+  .panel__shot { height: min(44svh, 60vw * 0.625); }
+  .panel, .panel:first-child { width: calc(min(44svh, 60vw * 0.625) * 1.6); }
+}
+
+/* on phones: the bench is not a 16:10 frame, and screenshots are not cropped */
+@media (max-width: 899px), (orientation: portrait) {
+  .panel__shot--bench { aspect-ratio: auto; overflow: visible; height: auto; }
+  .panel__shot img { transform: none !important; }
+}
+.panel__shot img { transform-origin: 100% 0; }
+
+/* without JavaScript there is no clock and no drawn field to caption */
+html:not(.js) .hero__clock,
+html:not(.js) .hero__caption,
+html:not(.js) .now__list > div:last-child { display: none; }

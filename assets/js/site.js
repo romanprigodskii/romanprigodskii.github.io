@@ -114,10 +114,21 @@
           root.classList.add("has-webgl");
           w.rpSetFold = f3.setFold;
           w.rpFieldPointer = f3.pointer;
+          w.rpFieldPause = f3.pause;
+          /* the page may already be scrolled into the fold by the time the data lands */
+          var heroEl = d.querySelector(".hero");
+          if (heroEl) f3.setFold(parseFloat(heroEl.style.getPropertyValue("--fold")) || 0);
+          if (root.classList.contains("is-locked")) f3.pause(true);
         } else {
           charts.field = C.heroField(canvas, data.segments.rows, { reduced: reduced });
+          /* no WebGL, no fold: the motion layer unpins the hero */
+          if (w.rpHeroMeasure) w.rpHeroMeasure();
         }
         charts.field.run();
+        /* the weakest-to-strongest sweep should be seen, not played under the intro */
+        if (root.classList.contains("intro") && charts.field.restartReveal) {
+          w.addEventListener("rp:intro-done", function () { charts.field.restartReveal(); }, { once: true });
+        }
         canvas.classList.add("is-in");
         w.rpFieldRead = charts.field.read;
         var rt;
