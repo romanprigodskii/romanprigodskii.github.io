@@ -136,7 +136,7 @@
   <div class="stmt__foot">
     <p class="reveal">Final year at Letovo School in Moscow, advanced mathematics track. Won the Grade 10
       division of the Moscow Olympiad in Economics, first on score. Co-founder and Head of AI at Gluline,
-      four production systems shipped, a fifth, Vertex Boxing, in research, and two sole-authored papers
+      four production systems shipped, a fifth, Vertex Boxing, concluded as research, and two sole-authored papers
       under review at NeurIPS 2026 workshops.</p>
     <p class="reveal">Everything here is traceable to a committed artifact, a published competition
       protocol, or an official document. Where a diploma and a protocol both exist, this page cites
@@ -399,15 +399,16 @@
 
   <article class="case" id="case-boxing" aria-labelledby="case-boxing-t">
     <header class="case__head">
-      <p class="case__idx">03 <span aria-hidden="true">/</span> In research</p>
+      <p class="case__idx">03 <span aria-hidden="true">/</span> Concluded research</p>
       <h2 class="case__title" id="case-boxing-t">Vertex Boxing</h2>
       <p class="case__line">The Vertex method on professional boxing, built to test one thesis: that regional and
         undercard markets are priced softly enough to leave room. The data said the opposite, and the project
         records it as a finding.</p>
+      <p class="case__links"><a href="https://github.com/romanprigodskii/vertex-boxing/blob/main/docs/REPORT.md" rel="noopener">The report</a> <span aria-hidden="true">/</span> <a href="https://github.com/romanprigodskii/vertex-boxing" rel="noopener">Source on GitHub</a></p>
     </header>
     <dl class="case__nums">
       <div><dt>blended into the market price</dt><dd>+0.0043</dd></div>
-      <div><dt>closing-line value at the top, over the bottom, on unseen data</dt><dd>&times;1.8</dd></div>
+      <div><dt>closing-line value at the top, over the bottom, on unseen data</dt><dd>&times;2.0</dd></div>
       <div><dt>held-out bouts it is scored on</dt><dd data-count="89087" data-sep>89,087</dd></div>
       <div><dt>real bets placed</dt><dd>0</dd></div>
     </dl>
@@ -416,9 +417,10 @@
         <h3>The thesis, and what happened to it</h3>
         <p>The project began from a claim: the UFC closing line is sharp, but regional and club boxing lines are
           soft, so that is where a fundamentals model would find room. Cut by level, the priced test set says the
-          reverse. Club fights over four to six rounds return &minus;20.2% at a fixed 2% edge threshold. Twelve-round
-          title fights carry the strongest closing-line value, +0.0183, and +14.6%. Three independent markers of
-          level, distance, belts and depth of record, all point the same way.</p>
+          reverse. Closing-line value rises with the scheduled distance, from +0.0044 on four-to-six-round club
+          fights to +0.0180 on twelve-round title fights, and at a fixed 2% edge threshold the club fights return
+          &minus;14.9% while the title fights return +13.1%. The belt on the line agrees, rising to +0.0152 on
+          continental and world titles.</p>
         <p>The mechanism is the useful part. The model reads records and ratings, and a rating is only as good as
           the record under it. At world level both fighters have thirty bouts behind them; on a club card the
           market knows which of the two is being managed, and the model is reading two thin records.</p>
@@ -426,29 +428,31 @@
       <section>
         <h3>Checked on a window the rule never saw</h3>
         <p>The model was refit up to June 2021 and the rule copied, unedited, onto June 2021 to June 2023. The
-          direction held: the top of the market gave 1.8 times the closing-line value of the bottom, +0.0270
-          against +0.0150, with barely overlapping intervals. The money did not: +4.2% with zero inside the
-          interval, against +11.3% on the window where the cut was chosen. That is the shrinkage a post-hoc cut
-          predicts, and the record treats it as part of the answer.</p>
+          direction held: the top of the market gave 2.0 times the closing-line value of the bottom,
+          +0.0276 against +0.0136, and the two intervals do not overlap. The money did not follow:
+          +9.5% with zero inside the interval, and priced at the close &minus;3.2% or
+          +2.8%, depending on how the margin is taken out.</p>
       </section>
       <section>
         <h3>The leak it caught</h3>
         <p>Judges' scorecards are published only for fights that went the distance, so the mere presence of judge
           fields told the model how a fight had ended, a fact nobody has before the bell. Where judges were
           recorded, 9.7% of fights ended early; where they were not, 74.3% did. A control on 5,673 events, same
-          page and same crawl, confirmed it was the outcome and not the crawler. The leak was worth
-          +0.0042 [+0.0035, +0.0049] on the confirmation half. It is gone, and the bench was then made to
-          reproduce itself exactly, after two identical runs were found to disagree by 0.0002.</p>
+          page and same crawl, confirmed it was the outcome and not the crawler. Put back into the final model,
+          the leak is worth +0.0038 [+0.0031, +0.0044] on the confirmation half. It is gone, and so is a subtler defect: two
+          identical runs of the bench disagreed by 0.0002. Re-run seven weeks later, the published scoreboard
+          came back identical to sixteen significant digits.</p>
       </section>
       <section>
         <h3>Where it stands</h3>
-        <p>As of 4 August 2026, and all of it backtest. On its own the model does not beat the closing line: the
-          gap is &minus;0.0211, or &minus;0.0198 with a yearly refit. In the same run, blending it into the market
-          price improves that price by +0.0043 [+0.0024, +0.0062]: it carries information the price does not.
-          On twelve-round and continental or world title fights, 803 backtest bets show closing-line value of
-          +0.0143 [+0.0104, +0.0182] and +8.7% [&minus;0.0%, +18.0%], and the one interval that ever excluded zero
-          no longer does. The margin paid at the open is about twice the closing-line value, so at the closing
-          price the strategy's expectation is negative. The project says exactly that, first.</p>
+        <p>Concluded in September 2026, and all of it backtest. On its own the model does not beat the closing
+          line: the gap is &minus;0.0211, or &minus;0.0198 with a yearly refit, and against the opening price it is
+          &minus;0.0089 with zero inside the interval. Blending it into the market price improves that price by
+          +0.0043 [+0.0024, +0.0062]: it carries information the price does not. On twelve-round and continental
+          or world title fights, 803 backtest bets show closing-line value of +0.0143 [+0.0104, +0.0182] and +8.7%
+          [&minus;0.0%, +18.0%]. The margin paid at the open is larger than that value under either way of taking
+          it out, so priced at the close the strategy returns &minus;6.1% under the reading that calibrates the
+          closing price, and &minus;0.6% under the other. The project says exactly that, first.</p>
         <p>Scored as two-outcome log-loss: adding draws to the target was measured, and moved nothing.</p>
       </section>
     </div>
