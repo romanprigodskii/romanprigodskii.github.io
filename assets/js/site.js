@@ -25,7 +25,11 @@
     root.dataset.theme = name;
     if (swap) swap.setAttribute("aria-pressed", name === "paper" ? "true" : "false");
     var meta = d.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", name === "paper" ? "#f4f0e6" : "#16291f");
+    if (meta) {
+      var cs = getComputedStyle(root);
+      var c = cs.getPropertyValue(name === "paper" ? "--p-theme-paper" : "--p-theme").trim();
+      if (c) meta.setAttribute("content", c);
+    }
     w.setTimeout(function () { if (charts.field) charts.field.redraw(); }, 60);
   }
   applyTheme(root.dataset.theme === "paper" ? "paper" : "slate");
