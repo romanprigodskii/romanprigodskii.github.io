@@ -61,7 +61,7 @@ python3 tools/palettes.py          # contrast report for every pair on every sur
 python3 tools/palettes.py --css    # the CSS block site.css starts with
 ```
 
-`graphite` is the default. `?palette=moss` or `?palette=cobalt` previews the others.
+`moss` is the default. `?palette=graphite` or `?palette=cobalt` previews the others. 
 
 ## Running it
 

@@ -8,12 +8,12 @@ the page is either measuring something or showing something that was measured.
 
 ## Palette
 
-Three palettes share one set of slots (`tools/palettes.py`), and the default is
-**graphite**: a cool near-black ground, a warm bone ink, and one signal yellow for
-whatever is being marked. The yellow carries the thresholds, the hypotheses that
-clear them, the shipped lever, the drenched contact section and the page wipe.
-It also happens to be the accent of Vertex MMA itself, so the site and the product
-read as one hand. Every text and ground pair on every surface of every palette is
+Three palettes share one set of slots (`tools/palettes.py`), and the default,
+chosen by Roman, is **moss**: a deep moss ground, a linen ink, and one luminous
+green for whatever is being marked. The green carries the thresholds, the
+hypotheses that clear them, the shipped lever, the drenched contact section and
+the page wipe. Graphite (grey, black and a signal yellow) and cobalt (midnight
+blue, red and gold) remain available through `?palette=`. Every text and ground pair on every surface of every palette is
 contrast-checked by the script before it ships.
 
 ## Shape

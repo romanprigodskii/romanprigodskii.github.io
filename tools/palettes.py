@@ -109,10 +109,13 @@ def report():
     print("\nfailures:", bad)
     return bad
 
+DEFAULT = "moss"
+
+
 def css():
     out = []
-    for i, (name, p) in enumerate(PALETTES.items()):
-        sel = f':root[data-palette="{name}"]' + (", :root" if i == 0 else "")
+    for name, p in PALETTES.items():
+        sel = f':root[data-palette="{name}"]' + (", :root" if name == DEFAULT else "")
         def f(k):
             L, C, h = p[k]; return f"oklch({L:.3f} {C:.3f} {h})"
         out.append(sel + " {")
