@@ -174,7 +174,9 @@
      --------------------------------------------------------- */
   function ladder(host, d) {
     host.innerHTML = "";
-    var W = 760, H = 360, mL = 46, mR = 18, mT = 24, mB = 96;
+    var W = Math.max(340, Math.min(760, host.clientWidth || 760));
+    var narrow = W < 560;
+    var H = narrow ? 380 : 360, mL = narrow ? 34 : 46, mR = 12, mT = 24, mB = narrow ? 110 : 96;
     var pw = W - mL - mR, ph = H - mT - mB;
     var max = 34;
     var svg = el("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
@@ -190,10 +192,10 @@
       svg.appendChild(el("line", { x1: mL, x2: mL + pw, y1: Y(t), y2: Y(t), class: t === 20 ? "thr" : "gridline" }));
       svg.appendChild(el("text", { x: mL - 9, y: Y(t) + 4, "text-anchor": "end" }, String(t)));
     });
-    svg.appendChild(el("text", { x: mL + pw, y: Y(20) - 9, "text-anchor": "end", class: "lbl-hi" }, "e = 20, the 1/alpha threshold"));
+    svg.appendChild(el("text", { x: mL + pw, y: Y(20) - 9, "text-anchor": "end", class: "lbl-hi" }, narrow ? "e = 20" : "e = 20, the 1/alpha threshold"));
 
     var slot = pw / d.fair.length;
-    var bw = Math.min(64, slot * 0.30);
+    var bw = Math.min(64, slot * (narrow ? 0.32 : 0.30));
 
     d.fair.forEach(function (f, i) {
       var cx = mL + slot * i + slot / 2;
@@ -208,7 +210,7 @@
       var words = d.labels[i].split(" ");
       var lines = [], line = "";
       words.forEach(function (word) {
-        if ((line + " " + word).trim().length > 22) { lines.push(line.trim()); line = word; }
+        if ((line + " " + word).trim().length > (narrow ? 13 : 22)) { lines.push(line.trim()); line = word; }
         else line += " " + word;
       });
       lines.push(line.trim());
@@ -218,7 +220,7 @@
     });
 
     var lg = el("g", {});
-    [["fair", "at fair odds", mL], ["real", "charged the book's margin", mL + 140]].forEach(function (p) {
+    [["fair", "at fair odds", mL], ["real", narrow ? "after the margin" : "charged the book's margin", mL + (narrow ? 110 : 140)]].forEach(function (p) {
       lg.appendChild(el("rect", { x: p[2], y: H - 18, width: 9, height: 9, class: "bar bar--" + p[0] }));
       lg.appendChild(el("text", { x: p[2] + 15, y: H - 10 }, p[1]));
     });
@@ -285,7 +287,9 @@
      --------------------------------------------------------- */
   function scatter(host, s) {
     host.innerHTML = "";
-    var W = 780, H = 520, mL = 62, mR = 22, mT = 22, mB = 58;
+    var W = Math.max(340, Math.min(780, host.clientWidth || 780));
+    var narrow = W < 560;
+    var H = Math.round(W * (narrow ? 0.8 : 0.667)), mL = narrow ? 44 : 62, mR = narrow ? 12 : 22, mT = 22, mB = narrow ? 50 : 58;
     var pw = W - mL - mR, ph = H - mT - mB;
     var xd = [-2, 2.25], yd = [-2, 1.45];
     function X(v) { return mL + (log10(clampLog(v, 0.01)) - xd[0]) / (xd[1] - xd[0]) * pw; }
@@ -309,19 +313,19 @@
     svg.appendChild(el("line", { x1: X(20), x2: X(20), y1: mT, y2: mT + ph, class: "thr" }));
     svg.appendChild(el("line", { x1: mL, x2: mL + pw, y1: Y(20), y2: Y(20), class: "thr" }));
     svg.appendChild(el("text", { x: X(20) + 6, y: mT + 12, class: "lbl-hi" }, "e = 20"));
-    svg.appendChild(el("text", { x: mL + 6, y: Y(20) - 7, class: "lbl-hi" }, "e = 20 after the margin"));
+    svg.appendChild(el("text", { x: mL + 6, y: Y(20) - 7, class: "lbl-hi" }, narrow ? "e = 20, margin" : "e = 20 after the margin"));
 
     svg.appendChild(el("line", { x1: mL, x2: mL + pw, y1: mT + ph, y2: mT + ph, class: "ax" }));
     svg.appendChild(el("line", { x1: mL, x2: mL, y1: mT, y2: mT + ph, class: "ax" }));
     svg.appendChild(el("text", { x: mL + pw, y: H - 10, "text-anchor": "end", class: "lbl-hi" }, "e-value at fair odds"));
     var yl = el("text", { x: 0, y: 0, "text-anchor": "start", class: "lbl-hi",
-      transform: "translate(16," + (mT + ph) + ") rotate(-90)" }, "e-value after the book's margin");
+      transform: "translate(" + (narrow ? 11 : 16) + "," + (mT + ph) + ") rotate(-90)" }, narrow ? "after the margin" : "e-value after the book's margin");
     svg.appendChild(yl);
 
     var pts = s.rows.slice().sort(function (a, b) { return b.n - a.n; });
     pts.forEach(function (p, i) {
       var cls = p.er >= 20 ? "dot dot--won" : (p.ef >= 20 ? "dot dot--near" : "dot");
-      var c = el("circle", { cx: X(p.ef), cy: Y(p.er), r: 2.6 + Math.sqrt(p.n) * 0.17, class: cls,
+      var c = el("circle", { cx: X(p.ef), cy: Y(p.er), r: (narrow ? 2.2 : 2.6) + Math.sqrt(p.n) * (narrow ? 0.12 : 0.17), class: cls,
         style: "--i:" + i });
       c.appendChild(el("title", {}, p.f.replace(/_/g, " ") + ", " + p.n + " bouts, e = " + p.ef.toFixed(2) + " fair, " + p.er.toFixed(2) + " after margin"));
       svg.appendChild(c);

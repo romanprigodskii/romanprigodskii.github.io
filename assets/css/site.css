@@ -947,8 +947,9 @@ html:not(.js) .bar { background: var(--bg); border-bottom-color: var(--rule); }
 .chart.is-drawn .floor__band, html:not(.js) .floor__band { opacity: 1; }
 .floor__bandlbl {
   position: absolute;
-  right: -0.6rem; top: -1.5rem;
-  transform: translateX(100%);
+  right: 0.4rem; top: -1.5rem;
+  transform: none;
+  text-align: right;
   font-size: var(--t-xs);
   font-weight: 650;
   color: var(--accent);
@@ -2150,7 +2151,7 @@ html.case-open .caselayer__slot .case__head > *:nth-child(4) { transition-delay:
 }
 .kit2__row p { color: var(--ink-2); font-size: var(--t-sm); max-width: 50ch; }
 @media (hover: hover) and (pointer: fine) {
-  .kit2__row p { opacity: 0.35; transition: opacity 320ms, transform 520ms var(--ease-expo); transform: translateX(-8px); }
+  .kit2__row p { opacity: 0.72; transition: opacity 320ms, transform 520ms var(--ease-expo); transform: translateX(-8px); }
   .kit2__row:hover { padding-left: 0.8rem; }
   .kit2__row:hover h3 { color: var(--ink); font-stretch: 118%; }
   .kit2__row:hover p { opacity: 1; transform: none; }
@@ -2230,3 +2231,67 @@ html:not(.js) .menubtn, html:not(.js) .scrollnav { display: none; }
   .case__nums { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .case__nums dd { font-size: clamp(1.25rem, 6vw, 1.7rem); }
 }
+
+/* ============================================================
+   FIX BATCH, from two rounds of browser testing
+   ============================================================ */
+
+/* the pinned sections change height after load; do not let the browser anchor to them */
+html { overflow-anchor: none; }
+
+/* the reticle inverts whatever it is over, so it is visible on every surface,
+   including the signal drench where an accent-coloured ring used to vanish */
+.reticle { z-index: 500; mix-blend-mode: difference; }
+.reticle::before { border-color: #fff; }
+.reticle i { background: #fff; }
+.reticle b { display: none; }
+.reticle__read {
+  position: fixed; top: 0; left: 0; z-index: 501;
+  margin: 12px 0 0 24px;
+  pointer-events: none;
+  white-space: nowrap;
+  font-size: 0.68rem; font-weight: 650; font-stretch: 80%; letter-spacing: 0.04em;
+  color: var(--p-d950);
+  background: var(--p-acc);
+  padding: 0.22em 0.55em;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 180ms;
+}
+.reticle__read.is-on { opacity: 1; }
+.reticle__read:empty { display: none; }
+
+/* once the page has opened, the wipe never replays; leaving still wipes */
+html.no-wipe:not(.wipe-out) .wipe { animation: none; transform: scaleY(0); }
+
+/* tabbing into the folded hero brings its controls back, even before the page scrolls */
+.hero.is-pinned:focus-within .hero__inner,
+.hero.is-pinned:focus-within .hero__base { opacity: 1 !important; transform: none !important; }
+
+/* until the motion layer has split a heading it stays hidden, so late scripts do not
+   make painted text vanish and replay; if the layer never arrives, everything shows */
+.js [data-split]:not([data-is-split]) { opacity: 0; }
+html.no-motion [data-split],
+html.no-motion .rise,
+html.no-motion .reveal,
+html.no-motion [data-split] .wi { opacity: 1 !important; transform: none !important; }
+html.no-motion .intro { display: none !important; }
+html.no-motion .wipe { display: none; }
+
+/* the word mask must not shave the side of a round glyph */
+.w { padding-inline: 0.06em; margin-inline: -0.06em; }
+
+/* the strip counter only means something while the strip is pinned */
+.film:not(.is-pinned) .film__meta span:not(.u-sr),
+.film:not(.is-pinned) .film__meta i { display: none; }
+
+/* the comparison axis label does not fit a small phone */
+.barscale { gap: 0.6rem; }
+@media (max-width: 420px) { .barscale span:nth-child(2) { display: none; } }
+
+/* Lenis: its own recommended rules. Native smooth scrolling fights it, and a stopped
+   Lenis (menu or case open) should not let the page scroll underneath */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }

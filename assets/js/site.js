@@ -51,7 +51,7 @@
   }
 
   /* the bar adopts the palette of whatever section is under it */
-  var surfaced = all("section");
+  var surfaced = all("main > section, main > article, main > div").filter(function (n) { return n.offsetParent !== null || n === d.querySelector(".hero"); });
   if (bar && surfaced.length) {
     var ticking = false;
     var syncSurface = function () {
@@ -89,7 +89,16 @@
 
   /* ---------- charts ---------- */
   var C = w.RPCharts;
-  if (!C) return;
+  function degrade(msg) {
+    /* hide what would have been drawn, keep every caption and note */
+    all("#field, #fieldLabels, #bars-vertex, #ladder, #floor, #scatter").forEach(function (n) { n.hidden = true; });
+    if (msg && w.console) w.console.warn("charts unavailable:", msg);
+  }
+  if (!C) {
+    degrade("charts.js did not load");
+    fetch(base + "assets/data/audit.json").catch(function () {});
+    return;
+  }
 
   fetch(base + "assets/data/audit.json", { cache: "no-cache" })
     .then(function (r) { if (!r.ok) throw new Error("data " + r.status); return r.json(); })
@@ -123,6 +132,23 @@
 
       var ladderHost = d.getElementById("ladder");
       if (ladderHost) C.ladder(ladderHost, data.ladder);
+      /* the SVG charts are laid out for the width they are drawn at, so redraw
+         them when that width changes enough to matter */
+      var lastW = {};
+      function relayout() {
+        [["ladder", data.ladder, C.ladder], ["scatter", data.segments, C.scatter]].forEach(function (c) {
+          var h = d.getElementById(c[0]);
+          if (!h) return;
+          var cw = h.clientWidth;
+          if (lastW[c[0]] && Math.abs(lastW[c[0]] - cw) < 40) return;
+          lastW[c[0]] = cw;
+          c[2](h, c[1]);
+          var fig = h.closest(".chart");
+          if (fig && fig.classList.contains("is-drawn")) { fig.classList.remove("is-drawn"); void fig.offsetWidth; fig.classList.add("is-drawn"); }
+        });
+      }
+      var rl;
+      w.addEventListener("resize", function () { w.clearTimeout(rl); rl = w.setTimeout(relayout, 200); }, { passive: true });
 
       var floorHost = d.getElementById("floor");
       if (floorHost) C.floorChart(floorHost, data.floor);
@@ -131,6 +157,9 @@
       if (scatterHost) C.scatter(scatterHost, data.segments);
 
       if (w.rpFilmMeasure) w.rpFilmMeasure();
+      if (scatterHost) relayout();
+      /* the research page only has its final height once the charts are in */
+      if (w.rpRestore) w.setTimeout(w.rpRestore, 30);
 
       var figs = all(".chart");
       if (reduced || !("IntersectionObserver" in w)) {
@@ -159,8 +188,5 @@
         }
       }
     })
-    .catch(function (err) {
-      all(".chart").forEach(function (n) { n.hidden = true; });
-      if (w.console) w.console.warn("charts unavailable:", err.message);
-    });
+    .catch(function (err) { degrade(err.message); });
 })(window, document);

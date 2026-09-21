@@ -27,7 +27,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Roman Prigodskii","url":"https://romanprigodskii.github.io/","email":"mailto:lioneldassy@gmail.com","jobTitle":"Independent researcher","nationality":"RU","address":{"@type":"PostalAddress","addressLocality":"Moscow","addressCountry":"RU"},"alumniOf":{"@type":"EducationalOrganization","name":"Letovo School"},"sameAs":["https://github.com/romanprigodskii","https://t.me/prigodskii","https://vertexmma.com","https://gluline.com"],"knowsAbout":["Empirical market efficiency","E-values and anytime-valid inference","Gradient boosting","Forecast calibration","Software engineering"]}
 </script>
-<script>(function(d){d.classList.add("js");try{var q=new URLSearchParams(location.search).get("palette");if(q&&/^(graphite|moss|cobalt)$/.test(q))d.dataset.palette=q;var t=localStorage.getItem("rp-theme");if(t==="paper"||t==="slate")d.dataset.theme=t;if(!sessionStorage.getItem("rp-seen"))d.classList.add("intro");}catch(e){}})(document.documentElement);</script>
+<script>(function(d){d.classList.add("js");setTimeout(function(){if(!window.rpMotion){d.classList.remove("intro");d.classList.add("no-motion");}},3500);try{var q=new URLSearchParams(location.search).get("palette");if(q&&/^(graphite|moss|cobalt)$/.test(q))d.dataset.palette=q;var t=localStorage.getItem("rp-theme");if(t==="paper"||t==="slate")d.dataset.theme=t;if(!sessionStorage.getItem("rp-seen"))d.classList.add("intro");}catch(e){}})(document.documentElement);</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -43,7 +43,8 @@
   <div class="intro__bar"><i id="introBar"></i></div>
 </div>
 
-<div class="reticle" id="reticle" aria-hidden="true"><i></i><i></i><b id="reticleRead"></b></div>
+<div class="reticle" id="reticle" aria-hidden="true"><i></i><i></i></div>
+<b class="reticle__read" id="reticleRead" aria-hidden="true"></b>
 <div class="wipe" id="wipe" aria-hidden="true"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -132,7 +133,7 @@
       <p class="hero__caption">Behind the type: the 84 pre-registered hypotheses of the e-value audit,
         each at the wealth it actually earned.<span class="only-pin"> Keep scrolling and they turn into the chart.</span></p>
     </div>
-    <div class="hero__flat" aria-hidden="true">
+    <div class="hero__flat">
       <p class="hero__flat-k">The audit, flattened</p>
       <p class="hero__flat-t">Six clear the bar a single hypothesis has to clear. Charged for asking
         84 questions of one pool, none of them do. The paper says so in its abstract.</p>
@@ -176,7 +177,7 @@
   <div class="film__pin">
     <div class="film__head">
       <h2 class="film__title" data-split>Built and shipped</h2>
-      <p class="film__meta"><span id="filmIdx">01</span> <i aria-hidden="true">/</i> 06 <em>Click a project to open it</em></p>
+      <p class="film__meta"><span class="u-sr">Project </span><span id="filmIdx">01</span> <i aria-hidden="true">/</i><span class="u-sr"> of</span> 06 <em>Click a project to open it</em></p>
     </div>
     <div class="film__track" id="filmTrack">
 
@@ -481,19 +482,6 @@
 
 </div>
 
-<!-- ═══ CASE LAYER ═══ -->
-<div class="caselayer" id="caselayer" role="dialog" aria-modal="true" aria-label="Project" hidden>
-  <div class="caselayer__bar">
-    <button class="caselayer__close magnet" type="button" id="caseClose"><span class="roll">Close</span><i aria-hidden="true"></i></button>
-  </div>
-  <div class="caselayer__scroll" id="caseScroll" data-lenis-prevent>
-    <div class="caselayer__slot" id="caseSlot"></div>
-    <div class="caselayer__next">
-      <button class="bigcta" type="button" id="caseNext"><span class="roll">Next project</span><i aria-hidden="true"></i></button>
-    </div>
-  </div>
-</div>
-
 <!-- ═══ 05 RESEARCH TEASER ═══ -->
 <section class="sec sec--tease risesec" id="research" data-surface="paper" data-nav="Research">
   <div class="tease">
@@ -511,7 +499,7 @@
         <p>The null is a bookmaker's posted price, the stake is a stake, and the wealth process
           <em>is</em> the e-process. 84 pre-registered hypotheses, 1,787 priced bouts, re-audited
           as bets.</p>
-        <p class="tease__venue">E-Values: From Statistics to ML <span aria-hidden="true">/</span> NewInML</p>
+        <p class="tease__venue">E-Values: From Statistics to ML <span aria-hidden="true">/</span><span class="u-sr"> and</span> NewInML</p>
       </li>
       <li class="reveal">
         <span class="tease__n" aria-hidden="true">02</span>
@@ -527,7 +515,7 @@
       <div class="ladder" id="ladder"></div>
     </figure>
 
-    <a class="bigcta magnet" href="research/">
+    <a class="bigcta" href="research/">
       <span class="roll">Read both papers</span>
       <i aria-hidden="true"></i>
     </a>
@@ -663,6 +651,20 @@
 </section>
 
 </main>
+
+<!-- ═══ CASE LAYER ═══ -->
+<div class="caselayer" id="caselayer" role="dialog" aria-modal="true" aria-label="Project" hidden>
+  <div class="caselayer__bar">
+    <button class="caselayer__close magnet" type="button" id="caseClose"><span class="roll">Close</span><i aria-hidden="true"></i></button>
+  </div>
+  <div class="caselayer__scroll" id="caseScroll" data-lenis-prevent>
+    <div class="caselayer__slot" id="caseSlot"></div>
+    <div class="caselayer__next">
+      <button class="bigcta" type="button" id="caseNext"><span class="roll">Next project</span><i aria-hidden="true"></i></button>
+    </div>
+  </div>
+</div>
+
 
 <nav class="scrollnav" id="scrollnav" aria-hidden="true">
   <span class="scrollnav__n" id="snN">01</span>

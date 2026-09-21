@@ -12,10 +12,17 @@
   function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
 
   function lenis() { return w.rpLenis || null; }
+  /* while a dialog is open, everything behind it is inert: no focus, no reading */
+  var behind = ["bar", "main", "scrollnav"].map(function (id) { return d.getElementById(id); })
+    .concat(all("body > footer, body > .skip"));
   function lockScroll(on) {
     var l = lenis();
     if (l) { if (on) l.stop(); else l.start(); }
     root.classList.toggle("is-locked", on);
+    behind.forEach(function (el) {
+      if (!el) return;
+      if (on) el.setAttribute("inert", ""); else el.removeAttribute("inert");
+    });
   }
 
   /* ---------------------------------------------------------------

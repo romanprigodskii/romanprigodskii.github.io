@@ -7,6 +7,14 @@
   var root = d.documentElement;
   var reduced = w.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var fine = w.matchMedia("(pointer: fine)").matches;
+  w.rpMotion = 1;
+
+  /* our own scroll restoration: the pinned sections change the page height after
+     load, so the browser's guess lands thousands of pixels off */
+  try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+  w.addEventListener("pagehide", function () {
+    try { sessionStorage.setItem("rp-y:" + location.pathname, String(Math.round(w.scrollY))); } catch (e) {}
+  });
 
   function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
   function all(sel, ctx) { return Array.prototype.slice.call((ctx || d).querySelectorAll(sel)); }
@@ -21,10 +29,77 @@
       lenis = new w.Lenis({ duration: 1.1, smoothWheel: true, syncTouch: false, prevent: function (node) { return !!(node.closest && node.closest("[data-lenis-prevent]")); } });
       var raf = function (t) { lenis.raf(t); w.requestAnimationFrame(raf); };
       w.requestAnimationFrame(raf);
-      root.classList.add("has-lenis");
+      root.classList.add("rp-smooth");
     } catch (e) { lenis = null; }
   }
   w.rpLenis = lenis;
+
+  /* every scroll-driven piece subscribes here, so with Lenis they run inside the
+     same frame Lenis moved the page in, rather than one frame late */
+  var scrollFns = [];
+  function onScroll(fn) { scrollFns.push(fn); }
+  function runScroll() { for (var i = 0; i < scrollFns.length; i++) scrollFns[i](); }
+  if (lenis) lenis.on("scroll", runScroll);
+  /* and the native event as well: find-in-page, the scrollbar and browser anchor
+     jumps move the page without Lenis always hearing about it */
+  var sq = false;
+  w.addEventListener("scroll", function () {
+    if (sq) return; sq = true;
+    w.requestAnimationFrame(function () { sq = false; runScroll(); });
+  }, { passive: true });
+
+  /* land on the fragment once the layout has its final height */
+  function goToHash() {
+    var h = location.hash.slice(1);
+    if (!h || h.indexOf("case-") === 0) return false;
+    var t = d.getElementById(decodeURIComponent(h));
+    if (!t) return false;
+    /* Lenis measures the page asynchronously; after the pinned sections set their
+       heights its limit can still be the old one, and it would clamp the jump */
+    if (lenis) { if (lenis.resize) lenis.resize(); lenis.scrollTo(t, { offset: -80, immediate: true, force: true }); }
+    else w.scrollTo(0, t.getBoundingClientRect().top + w.scrollY - 80);
+    return true;
+  }
+  var userMoved = false;
+  ["wheel", "touchstart", "keydown", "pointerdown"].forEach(function (ev) {
+    w.addEventListener(ev, function () { userMoved = true; }, { passive: true, once: true });
+  });
+  function restore() {
+    if (userMoved) return;
+    if (goToHash()) return;
+    var y = null;
+    try { y = sessionStorage.getItem("rp-y:" + location.pathname); } catch (e) {}
+    if (y != null && +y > 0) {
+      if (lenis) { if (lenis.resize) lenis.resize(); lenis.scrollTo(+y, { immediate: true, force: true }); }
+      else w.scrollTo(0, +y);
+    }
+  }
+  w.rpGoToHash = goToHash;
+  w.rpRestore = restore;
+
+  /* keyboard scrolling keeps working while Lenis is gliding */
+  if (lenis) {
+    d.addEventListener("keydown", function (e) {
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+      var t = e.target;
+      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || (t.closest && t.closest("[data-lenis-prevent], [role=dialog]")))) return;
+      if (root.classList.contains("is-locked")) return;
+      var page = w.innerHeight - 128, line = 80, to = null;
+      var base = lenis.isScrolling ? lenis.targetScroll : w.scrollY;
+      switch (e.key) {
+        case "PageDown": to = base + page; break;
+        case "PageUp": to = base - page; break;
+        case " ": if (t && /^(BUTTON|A)$/.test(t.tagName)) return; to = base + (e.shiftKey ? -page : page); break;
+        case "ArrowDown": to = base + line; break;
+        case "ArrowUp": to = base - line; break;
+        case "Home": to = 0; break;
+        case "End": to = lenis.limit; break;
+        default: return;
+      }
+      e.preventDefault();
+      lenis.scrollTo(clamp(to, 0, lenis.limit), { duration: 0.7 });
+    });
+  }
   w.rpScrollTo = function (target) {
     if (lenis) lenis.scrollTo(target, { offset: -64 });
     else if (target && target.scrollIntoView) target.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
@@ -72,6 +147,14 @@
     })(el);
     el.style.setProperty("--words", i);
     if (el.dataset.d) el.style.setProperty("--d", el.dataset.d);
+    /* one readable copy for assistive technology, the animated words hidden from it */
+    if (!el.closest("[aria-hidden='true']") && !el.hasAttribute("aria-label")) {
+      var copy = d.createElement("span");
+      copy.className = "u-sr";
+      copy.textContent = el.textContent.replace(/\s+/g, " ").trim();
+      all(".w", el).forEach(function (wd) { wd.setAttribute("aria-hidden", "true"); });
+      el.insertBefore(copy, el.firstChild);
+    }
   }
   all("[data-split]").forEach(split);
   all("[data-lit]").forEach(split);
@@ -147,11 +230,20 @@
     function finish() {
       if (done) return;
       done = true;
-      root.classList.add("intro-out");
+      root.classList.add("intro-out", "no-wipe");
       startReveals();
-      w.setTimeout(function () { root.classList.remove("intro", "intro-out"); el.remove(); }, 900);
+      w.setTimeout(function () {
+        root.classList.remove("intro", "intro-out");
+        el.remove();
+        if (w.rpFilmMeasure) w.rpFilmMeasure();
+        goToHash();
+      }, 900);
     }
-    if (reduced) { root.classList.remove("intro"); el.remove(); startReveals(); return; }
+    if (reduced || location.hash) {
+      /* a visitor arriving on a fragment wants that section, not a preloader */
+      root.classList.remove("intro"); root.classList.add("no-wipe");
+      el.remove(); startReveals(); return;
+    }
 
     var cols = all(".odo__col", el);
     cols.forEach(function (c) {
@@ -210,9 +302,15 @@
       hero.style.setProperty("--p", p.toFixed(4));
       if (w.rpSetFold) w.rpSetFold(fold);
     }
-    var q = false;
-    w.addEventListener("scroll", function () { if (!q) { q = true; w.requestAnimationFrame(function () { q = false; update(); }); } }, { passive: true });
+    onScroll(update);
     w.addEventListener("resize", measure, { passive: true });
+    hero.addEventListener("focusin", function (e) {
+      if (!on || !e.target.closest(".hero__inner, .hero__base")) return;
+      if (parseFloat(hero.style.getPropertyValue("--fold")) > 0.05) {
+        if (lenis) lenis.scrollTo(hero.offsetTop, { immediate: true, force: true });
+        else w.scrollTo(0, hero.offsetTop);
+      }
+    });
     measure();
   })();
 
@@ -258,36 +356,57 @@
     var idxOut = d.getElementById("filmIdx");
     if (!sec || !track) return;
     var panels = all(".panel", track);
+    var pin = sec.querySelector(".film__pin");
     var on = false, dist = 0, skew = 0;
+
+    /* focus moving into an off-screen panel makes the browser scroll the pin
+       sideways; the pin must never scroll, the vertical position drives it */
+    if (pin) pin.addEventListener("scroll", function () { if (pin.scrollLeft) pin.scrollLeft = 0; }, { passive: true });
 
     function measure() {
       on = w.innerWidth >= 900 && !reduced;
       sec.classList.toggle("is-pinned", on);
       if (!on) { sec.style.height = ""; track.style.transform = ""; return; }
-      dist = Math.max(0, track.scrollWidth - w.innerWidth);
+      var last = panels[panels.length - 1];
+      var padR = parseFloat(getComputedStyle(track).paddingRight) || 0;
+      dist = Math.max(0, last.offsetLeft + last.offsetWidth + padR - w.innerWidth);
       sec.style.height = w.innerHeight + dist + "px";
       update();
     }
+
+    /* tabbing to a panel scrolls the page to where that panel is on screen */
+    track.addEventListener("focusin", function (e) {
+      if (!on) return;
+      var pn = e.target.closest(".panel");
+      if (!pn) return;
+      if (pin) pin.scrollLeft = 0;
+      var want = clamp((pn.offsetLeft + pn.offsetWidth / 2 - w.innerWidth / 2) / Math.max(1, dist), 0, 1);
+      var y = sec.offsetTop + want * (sec.offsetHeight - w.innerHeight);
+      if (lenis) lenis.scrollTo(y, { immediate: true, force: true }); else w.scrollTo(0, y);
+    });
     function update() {
       if (!on) return;
       var rect = sec.getBoundingClientRect();
       var span = sec.offsetHeight - w.innerHeight;
       var p = span > 0 ? clamp(-rect.top / span, 0, 1) : 0;
       track.style.transform = "translate3d(" + -(p * dist).toFixed(1) + "px,0,0)";
-      if (idxOut) {
-        var n = Math.min(panels.length, Math.floor(p * panels.length) + 1);
-        var s = String(n).padStart(2, "0");
-        if (idxOut.textContent !== s) idxOut.textContent = s;
-      }
-      /* each screenshot drifts inside its frame, opposite to the travel */
-      var vw = w.innerWidth;
-      panels.forEach(function (pn) {
+      /* each screenshot drifts inside its frame, opposite to the travel; and the
+         counter names whichever panel is most on screen */
+      var vw = w.innerWidth, best = 0, bestVis = -1;
+      panels.forEach(function (pn, i) {
+        var r = pn.getBoundingClientRect();
+        var vis = Math.min(vw, r.right) - Math.max(0, r.left);
+        if (vis > bestVis) { bestVis = vis; best = i; }
         var img = pn.querySelector(".panel__shot img, .panel__shot svg");
         if (!img) return;
-        var r = pn.getBoundingClientRect();
         var c = (r.left + r.width / 2 - vw / 2) / vw;
         img.style.transform = "translate3d(" + (c * -2.2).toFixed(2) + "%,0,0) scale(1.05)";
       });
+      if (p >= 0.999) best = panels.length - 1;
+      if (idxOut) {
+        var s = String(best + 1).padStart(2, "0");
+        if (idxOut.textContent !== s) idxOut.textContent = s;
+      }
     }
     (function lean() {
       if (on) {
@@ -297,8 +416,7 @@
       }
       w.requestAnimationFrame(lean);
     })();
-    var q = false;
-    w.addEventListener("scroll", function () { if (!q) { q = true; w.requestAnimationFrame(function () { q = false; update(); }); } }, { passive: true });
+    onScroll(update);
     w.addEventListener("resize", measure, { passive: true });
     if (d.fonts && d.fonts.ready) d.fonts.ready.then(measure);
     all("img", track).forEach(function (im) { if (!im.complete) im.addEventListener("load", measure, { once: true }); });
@@ -322,7 +440,7 @@
         s.style.setProperty("--rise", k.toFixed(4));
       });
     }
-    w.addEventListener("scroll", function () { if (!q) { q = true; w.requestAnimationFrame(run); } }, { passive: true });
+    onScroll(run);
     run();
   })();
 
@@ -335,9 +453,8 @@
     var words = all(".w", el);
     if (!words.length) return;
     if (reduced) { words.forEach(function (n) { n.classList.add("is-lit"); }); return; }
-    var prev = 0, q = false;
+    var prev = 0;
     function run() {
-      q = false;
       var r = el.getBoundingClientRect();
       var start = w.innerHeight * 0.82, end = w.innerHeight * 0.34;
       var p = clamp((start - r.top) / Math.max(1, r.height + (start - end)), 0, 1);
@@ -347,7 +464,7 @@
       else for (var j = prev - 1; j >= k; j--) words[j].classList.remove("is-lit");
       prev = k;
     }
-    w.addEventListener("scroll", function () { if (!q) { q = true; w.requestAnimationFrame(run); } }, { passive: true });
+    onScroll(run);
     run();
   })();
 
@@ -357,13 +474,11 @@
   (function progress() {
     var bar = d.getElementById("prog");
     if (!bar) return;
-    var q = false;
     function run() {
-      q = false;
       var h = d.documentElement.scrollHeight - w.innerHeight;
       bar.style.transform = "scaleX(" + (h > 0 ? clamp(w.scrollY / h, 0, 1) : 0) + ")";
     }
-    w.addEventListener("scroll", function () { if (!q) { q = true; w.requestAnimationFrame(run); } }, { passive: true });
+    onScroll(run);
     w.addEventListener("resize", run, { passive: true });
     run();
   })();
@@ -375,31 +490,49 @@
   (function reticle() {
     var el = d.getElementById("reticle");
     var read = d.getElementById("reticleRead");
-    if (!el || !fine || reduced) { if (el) el.remove(); return; }
-    root.classList.add("has-reticle");
-    var tx = -100, ty = -100, cx = tx, cy = ty;
+    if (!el || !fine || reduced) { if (el) el.remove(); if (read) read.remove(); return; }
+    var tx = -100, ty = -100, cx = tx, cy = ty, seen = false;
     (function loop() {
       cx += (tx - cx) * 0.2;
       cy += (ty - cy) * 0.2;
-      el.style.transform = "translate3d(" + cx.toFixed(1) + "px," + cy.toFixed(1) + "px,0)";
+      var tf = "translate3d(" + cx.toFixed(1) + "px," + cy.toFixed(1) + "px,0)";
+      el.style.transform = tf;
+      if (read) read.style.transform = tf;
       w.requestAnimationFrame(loop);
     })();
+    function sense(x, y, target) {
+      el.classList.toggle("is-lg", !!(target && target.closest && target.closest("a, button, .panel, .file")));
+      var v = w.rpFieldRead ? w.rpFieldRead(x, y) : null;
+      if (v && read) {
+        read.textContent = v.x + "  /  " + v.y;
+        read.classList.add("is-on");
+      } else if (read) read.classList.remove("is-on");
+    }
     d.addEventListener("pointermove", function (ev) {
       if (ev.pointerType && ev.pointerType !== "mouse") return;
       tx = ev.clientX; ty = ev.clientY;
+      /* the native cursor stays until the reticle actually has somewhere to be */
+      if (!seen) { seen = true; cx = tx; cy = ty; root.classList.add("has-reticle"); }
       el.classList.add("is-on");
-      var t = ev.target;
-      el.classList.toggle("is-lg", !!(t.closest && t.closest("a, button, .panel, .file")));
       if (w.rpFieldPointer) w.rpFieldPointer(ev.clientX, ev.clientY);
-      var v = w.rpFieldRead ? w.rpFieldRead(ev.clientX, ev.clientY) : null;
-      if (v) {
-        read.textContent = v.x + "  /  " + v.y;
-        el.classList.add("is-read");
-      } else el.classList.remove("is-read");
+      sense(ev.clientX, ev.clientY, ev.target);
     }, { passive: true });
-    d.documentElement.addEventListener("mouseleave", function () { el.classList.remove("is-on"); });
+    onScroll(function () {
+      if (!seen) return;
+      sense(tx, ty, d.elementFromPoint(tx, ty));
+    });
+    d.documentElement.addEventListener("mouseleave", function () {
+      el.classList.remove("is-on");
+      if (read) read.classList.remove("is-on");
+      root.classList.remove("has-reticle");
+      seen = false;
+    });
     d.addEventListener("mousedown", function () { el.classList.add("is-down"); });
     d.addEventListener("mouseup", function () { el.classList.remove("is-down"); });
+    w.rpReticleReset = function () {
+      el.classList.remove("is-on", "is-lg", "is-down");
+      if (read) read.classList.remove("is-on");
+    };
   })();
 
   /* ---------------------------------------------------------------
@@ -407,15 +540,13 @@
      --------------------------------------------------------------- */
   if (fine && !reduced) {
     all(".magnet").forEach(function (el) {
-      var r = null;
-      el.addEventListener("pointerenter", function () { r = el.getBoundingClientRect(); });
       el.addEventListener("pointermove", function (ev) {
-        if (!r) r = el.getBoundingClientRect();
-        var dx = ev.clientX - (r.left + r.width / 2);
-        var dy = ev.clientY - (r.top + r.height / 2);
-        el.style.transform = "translate(" + (dx * 0.2).toFixed(2) + "px," + (dy * 0.28).toFixed(2) + "px)";
+        var r = el.getBoundingClientRect();
+        var dx = clamp((ev.clientX - (r.left + r.width / 2)) * 0.2, -9, 9);
+        var dy = clamp((ev.clientY - (r.top + r.height / 2)) * 0.28, -7, 7);
+        el.style.transform = "translate(" + dx.toFixed(2) + "px," + dy.toFixed(2) + "px)";
       });
-      el.addEventListener("pointerleave", function () { r = null; el.style.transform = ""; });
+      el.addEventListener("pointerleave", function () { el.style.transform = ""; });
     });
   }
 
@@ -425,6 +556,7 @@
   (function wipe() {
     var el = d.getElementById("wipe");
     if (!el || reduced) return;
+    el.addEventListener("animationend", function () { root.classList.add("no-wipe"); });
     d.addEventListener("click", function (ev) {
       if (ev.defaultPrevented) return;
       var a = ev.target.closest && ev.target.closest("a");
@@ -442,7 +574,11 @@
       w.setTimeout(function () { location.href = a.href; }, 400);
     });
     w.addEventListener("pageshow", function (e) {
-      if (e.persisted) root.classList.remove("wipe-out");
+      if (!e.persisted) return;
+      root.classList.remove("wipe-out");
+      root.classList.add("no-wipe");
+      all(".magnet").forEach(function (m) { m.style.transform = ""; });
+      if (w.rpReticleReset) w.rpReticleReset();
     });
   })();
 
@@ -454,9 +590,19 @@
     var id = a.getAttribute("href").slice(1);
     if (!id || id.indexOf("case-") === 0) return;
     var t = d.getElementById(id);
-    if (!t || !lenis) return;
+    if (!t) return;
+    if (!t.hasAttribute("tabindex")) t.setAttribute("tabindex", "-1");
+    if (!lenis) { t.focus({ preventScroll: false }); return; }
     ev.preventDefault();
-    lenis.scrollTo(t, { offset: -64 });
+    lenis.scrollTo(t, { offset: -80 });
     history.replaceState(null, "", "#" + id);
+    t.focus({ preventScroll: true });
+  });
+
+  /* the first time the page has its final height, honour the fragment or the
+     saved position */
+  w.addEventListener("load", function () {
+    if (root.classList.contains("intro")) return;
+    w.setTimeout(function () { if (w.rpFilmMeasure) w.rpFilmMeasure(); restore(); }, 60);
   });
 })(window, document);
