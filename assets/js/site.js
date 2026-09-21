@@ -96,7 +96,18 @@
     .then(function (data) {
       var canvas = d.getElementById("field");
       if (canvas) {
-        charts.field = C.heroField(canvas, data.segments.rows, { reduced: reduced });
+        /* WebGL first; the 2D field is the fallback, and it reads the same rows */
+        var f3 = w.RPField3D ? w.RPField3D(canvas, data.segments.rows, {
+          reduced: reduced, labels: d.getElementById("fieldLabels")
+        }) : null;
+        if (f3) {
+          charts.field = f3;
+          root.classList.add("has-webgl");
+          w.rpSetFold = f3.setFold;
+          w.rpFieldPointer = f3.pointer;
+        } else {
+          charts.field = C.heroField(canvas, data.segments.rows, { reduced: reduced });
+        }
         charts.field.run();
         canvas.classList.add("is-in");
         w.rpFieldRead = charts.field.read;
