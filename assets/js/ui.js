@@ -624,6 +624,62 @@
   })();
 
   /* ---------------------------------------------------------------
+     The tea glass fills with discs. Their number steps up with the
+     scroll as the figure rises into view, and back down on the way
+     out, until the visitor takes the slider, which then keeps it
+     --------------------------------------------------------------- */
+  (function discs() {
+    var fig = d.getElementById("discs");
+    var range = d.getElementById("discsN");
+    if (!fig || !range) return;
+    var g = fig.querySelector(".discs__g");
+    var out = d.getElementById("discsOut"), sum = d.getElementById("discsSum"), dot = d.getElementById("discsDot");
+    var NS = "http://www.w3.org/2000/svg";
+    var STEPS = [2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64, 96, 128];
+    /* the paper's four parabolas, as [a, b, c, to]; the axis is y = 3.25 and the glass is 9.6 tall */
+    var P = [[-0.087, 0.574, 0, 3.4], [-0.089, 0.681, -0.382, 6], [0.146, -2.301, 9.146, 7.5], [0.235, -3.48, 12.926, 9.6]];
+    function radius(x) {
+      for (var i = 0; i < P.length; i++) if (x <= P[i][3] + 1e-9) return 3.25 - (P[i][0] * x * x + P[i][1] * x + P[i][2]);
+      return 0;
+    }
+    var shown = -1, touched = false;
+    function set(k) {
+      k = clamp(k, 0, STEPS.length - 1);
+      if (k === shown) return;
+      shown = k;
+      var n = STEPS[k], h = 9.6 / n, v = 0, frag = d.createDocumentFragment();
+      for (var i = 1; i <= n; i++) {
+        var r = radius(i * h);
+        v += Math.PI * r * r * h;
+        var rc = d.createElementNS(NS, "rect");
+        rc.setAttribute("x", (325 - r * 100).toFixed(1));
+        rc.setAttribute("y", ((i - 1) * h * 100).toFixed(1));
+        rc.setAttribute("width", (r * 200).toFixed(1));
+        rc.setAttribute("height", (h * 100).toFixed(2));
+        frag.appendChild(rc);
+      }
+      g.textContent = "";
+      g.appendChild(frag);
+      range.value = String(k);
+      range.setAttribute("aria-valuetext", n + " discs, " + v.toFixed(1) + " cubic centimetres");
+      out.textContent = n;
+      sum.textContent = v.toFixed(1);
+      /* the strip runs from 150 to 230 ml */
+      dot.style.setProperty("--at", (clamp((v - 150) / 80, 0, 1) * 100).toFixed(1) + "%");
+    }
+    range.addEventListener("input", function () { touched = true; set(parseInt(range.value, 10)); });
+
+    if (reduced) return;
+    var top = 0;
+    onMeasure(function () { top = docTop(fig); });
+    onScroll(function (y, vh) {
+      if (touched) return;
+      var p = clamp((vh * 0.95 - (top - y)) / (vh * 0.6), 0, 1);
+      set(Math.round(p * (STEPS.length - 1)));
+    });
+  })();
+
+  /* ---------------------------------------------------------------
      Product loops play only while they are on screen. Under reduced
      motion they never start, and the poster frame is the picture
      --------------------------------------------------------------- */

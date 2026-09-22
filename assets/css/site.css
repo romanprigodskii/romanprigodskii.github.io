@@ -1798,6 +1798,66 @@ html:not(.js) .wave__pick { display: none; }
 .wave.is-tri .wave__miss { stroke: var(--chart-b); }
 .wave__cap { margin-top: 1rem; font-size: var(--t-xs); color: var(--ink-3); max-width: 62ch; line-height: 1.55; }
 .wave__cap span { color: var(--ink-2); }
+/* the tea glass: the same section, mirrored, with its own instrument. The glass fills with discs
+   as it rises into view (ui.js steps n with the scroll until the visitor takes the slider), and a
+   dot on the beaker's scale walks into the window the water test left */
+.early--glass {
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  margin-top: clamp(4rem, 9vw, 7rem);
+  padding-top: clamp(3rem, 6vw, 4.5rem);
+  border-top: 1px solid var(--rule);
+}
+@media (max-width: 900px) {
+  .early--glass { grid-template-columns: minmax(0, 1fr); }
+  .early--glass .early__text { order: -1; }
+}
+.discs {
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(1.4rem, 4vw, 3rem);
+  align-items: center;
+}
+.discs__svg { display: block; width: 100%; height: auto; max-height: 30rem; overflow: visible; }
+.discs__axis { stroke: var(--rule); stroke-width: 1px; stroke-dasharray: 5 6; vector-effect: non-scaling-stroke; }
+.discs__g rect {
+  fill: color-mix(in oklab, var(--accent) 24%, transparent);
+  stroke: color-mix(in oklab, var(--accent) 70%, transparent);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+.discs__outline { fill: none; stroke: var(--ink); stroke-width: 1.75px; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.discs__n { display: flex; align-items: baseline; justify-content: space-between; font-size: var(--t-xs); color: var(--ink-3); }
+.discs__n output { font-size: var(--t-h4); font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.discs__range { width: 100%; margin: 0.6rem 0 1.4rem; accent-color: var(--accent); }
+html:not(.js) .discs__n,
+html:not(.js) .discs__range { display: none; }
+.discs__vals { margin: 0; display: grid; gap: 0.9rem; }
+.discs__vals div { border-top: 1px solid var(--rule); padding-top: 0.6rem; }
+.discs__vals dt { font-size: var(--t-xs); color: var(--ink-3); }
+.discs__vals dd { margin: 0.15rem 0 0; font-size: var(--t-sm); color: var(--ink-2); }
+.discs__vals b { font-size: var(--t-big); font-weight: 760; font-stretch: 96%; letter-spacing: -0.03em; color: var(--ink); font-variant-numeric: tabular-nums; }
+.discs__vals div:first-child b { color: var(--accent); }
+.beaker { margin-top: 1.6rem; }
+/* 150 to 230 ml across the track: the window is 200 to 225, the limit 216.9 */
+.beaker__track { position: relative; height: 10px; border-radius: 999px; background: color-mix(in oklab, var(--ink) 8%, transparent); }
+.beaker__win { position: absolute; inset: 0 auto 0 62.5%; width: 31.25%; border-radius: 999px; background: color-mix(in oklab, var(--ink) 22%, transparent); }
+.beaker__lim { position: absolute; left: 83.6%; top: -5px; bottom: -5px; width: 2px; margin-left: -1px; background: var(--ink); }
+.beaker__dot {
+  position: absolute; left: var(--at); top: 50%;
+  width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 0 3px var(--bg);
+  transition: left 420ms var(--ease-expo);
+}
+.beaker__ticks { position: relative; height: 1.3rem; margin-top: 0.45rem; font-size: var(--t-xs); color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.beaker__ticks span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.beaker__ticks span:nth-child(1) { left: 0; transform: none; }
+.beaker__ticks span:nth-child(2) { left: 31.25%; }
+.beaker__ticks span:nth-child(3) { left: 62.5%; }
+.beaker__ticks span:nth-child(4) { left: 93.75%; }
+.beaker__k { margin-top: 0.5rem; font-size: var(--t-xs); color: var(--ink-3); max-width: 34ch; }
+@media (prefers-reduced-motion: reduce) { .beaker__dot { transition: none; } }
+
 @media screen and (prefers-reduced-motion: no-preference) {
   .wave.is-scrub .wave__draw { clip-path: inset(-4px calc((1 - clamp(0, var(--p, 0) / 0.8, 1)) * 100%) -4px 0); }
   .wave.is-scrub .wave__draw--fit { clip-path: inset(-4px calc((1 - clamp(0, (var(--p, 0) - 0.2) / 0.8, 1)) * 100%) -4px 0); }
