@@ -597,6 +597,12 @@ code {
   max-width: 44ch;
   line-height: 1.3;
 }
+.paper__read {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 0.7rem 0.9rem;
+  margin-top: clamp(1.4rem, 3vw, 2rem);
+}
+.paper__read-k { font-size: var(--t-xs); color: var(--ink-3); }
 .paper__abs {
   margin-top: 1.6rem;
   max-width: 56ch;
@@ -637,6 +643,9 @@ code {
 
 /* ---------- paper one: the verdict, on one log scale ---------- */
 .verdict { --th: clamp(10px, 1.1vw, 14px); margin: clamp(2.5rem, 6vw, 4.5rem) 0 0; }
+/* the best mark's number stands in the track's top margin, which otherwise collapses
+   into the figure's, so below the buttons the figure holds its own margin apart */
+.paper__read + .verdict { display: flow-root; margin-top: clamp(1.5rem, 3vw, 2.5rem); }
 .verdict__track {
   position: relative;
   height: var(--th);
@@ -1517,6 +1526,9 @@ html.wipe-out .wipe {
   margin-top: 1rem !important;
 }
 .tease__venue span { color: var(--accent); padding-inline: 0.35em; }
+/* each paper gets its own way in, level with its countdown */
+.tease__read { grid-column: 2; grid-row: 3; justify-self: start; align-self: end; }
+@media (max-width: 860px) { .tease__read { grid-row: auto; margin-top: 1.2rem; } }
 .bigcta {
   display: flex; align-items: center; justify-content: space-between;
   gap: 1.5rem;
@@ -1549,6 +1561,9 @@ html.wipe-out .wipe {
 }
 .bigcta:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .bigcta:hover i { transform: translateX(5px); }
+/* the teaser's way out is the loudest thing in its section */
+.tease .bigcta { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.tease .bigcta:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 
 /* ============================================================
    RESEARCH PAGE
