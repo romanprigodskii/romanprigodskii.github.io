@@ -527,37 +527,6 @@
   })();
 
   /* ---------------------------------------------------------------
-     The method cards settle back as the next one covers them. Their
-     boxes are read in the frame's read phase, and only while the stack
-     is on screen.
-     --------------------------------------------------------------- */
-  (function stack() {
-    var list = d.getElementById("stack");
-    var cards = all("#stack .card");
-    if (!list || cards.length < 2 || reduced || !w.rpOnScrollRead) return;
-    var top = 0, bottom = 0, near = false, covers = cards.map(function () { return 0; }), shown = covers.slice();
-    w.rpOnMeasure(function () { top = docTop(list); bottom = top + list.offsetHeight; });
-    w.rpOnScrollRead(function (y, vh) {
-      near = y + vh > top - 40 && y < bottom + 40;
-      if (!near) return;
-      var rects = cards.map(function (c) { return c.getBoundingClientRect(); });
-      for (var i = 0; i < cards.length - 1; i++) {
-        covers[i] = clamp((rects[i].bottom - rects[i + 1].top) / Math.max(1, rects[i].height), 0, 1);
-      }
-    });
-    w.rpOnScroll(function () {
-      if (!near) return;
-      for (var i = 0; i < cards.length - 1; i++) {
-        var c = Math.round(covers[i] * 200) / 200;
-        if (c === shown[i]) continue;
-        shown[i] = c;
-        cards[i].style.transform = c > 0 ? "scale(" + (1 - c * 0.05).toFixed(4) + ")" : "";
-        cards[i].style.setProperty("--cover", c);
-      }
-    });
-  })();
-
-  /* ---------------------------------------------------------------
      Before the papers: the newspaper's edge, traced from the scan.
      It draws in as it rises into view and back out on the way down,
      and the fitted curve can be swapped for a triangle wave, which

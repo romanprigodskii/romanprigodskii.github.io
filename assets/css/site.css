@@ -956,49 +956,6 @@ code {
 }
 
 /* ============================================================
-   METHOD
-   ============================================================ */
-.sec--method { background: var(--bg-sunk); border-block: 1px solid var(--rule); }
-.rules {
-  width: var(--shell);
-  margin-inline: auto;
-  display: grid;
-  gap: 1px;
-  background: var(--rule);
-  border: 1px solid var(--rule);
-}
-.rule {
-  background: var(--bg-sunk);
-  display: grid;
-  grid-template-columns: 4.5rem minmax(0, 1fr);
-  gap: 0.5rem clamp(1rem, 3vw, 2.5rem);
-  padding: clamp(1.5rem, 3vw, 2.4rem) clamp(1.2rem, 3vw, 2.2rem);
-  transition: background-color 320ms var(--ease-quart);
-}
-.rule:hover { background: var(--bg-lift); }
-.rule__n {
-  font-stretch: 66%;
-  font-weight: 700;
-  font-size: var(--t-xs);
-  letter-spacing: 0.1em;
-  color: var(--accent);
-  padding-top: 0.45em;
-}
-.rule h3 {
-  font-size: clamp(1.15rem, 2.2vw, 1.7rem);
-  font-stretch: 104%;
-  font-weight: 660;
-  line-height: 1.15;
-  letter-spacing: -0.022em;
-  max-width: 34ch;
-}
-.rule p { grid-column: 2; margin-top: 0.6rem; color: var(--ink-2); font-size: var(--t-sm); max-width: 56ch; }
-@media (max-width: 620px) {
-  .rule { grid-template-columns: 1fr; }
-  .rule p { grid-column: 1; }
-}
-
-/* ============================================================
    TOOLKIT
    ============================================================ */
 .kit {
@@ -1645,55 +1602,6 @@ html:not(.js) [data-lit] { color: var(--ink); }
 }
 .bigcta:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .bigcta:hover i { transform: translateX(5px); }
-
-/* ============================================================
-   METHOD STACK
-   ============================================================ */
-.stack { width: var(--shell); margin-inline: auto; }
-.card {
-  position: sticky;
-  top: calc(15vh + var(--i) * 1.05rem);
-  background: var(--bg-lift);
-  border: 1px solid var(--rule);
-  padding: clamp(1.5rem, 3vw, 2.6rem) clamp(1.3rem, 3vw, 2.4rem);
-  margin-bottom: 1.1rem;
-  display: grid;
-  grid-template-columns: 3.6rem minmax(0, 1.05fr) minmax(0, 1fr);
-  gap: 0.5rem clamp(1rem, 3vw, 3rem);
-  align-items: start;
-  box-shadow: 0 -14px 34px -22px oklch(0 0 0 / 0.55);
-}
-.card:last-child { margin-bottom: 0; }
-.card__n {
-  font-stretch: 66%; font-weight: 700;
-  font-size: var(--t-xs); letter-spacing: 0.1em;
-  color: var(--accent);
-  padding-top: 0.5em;
-}
-.card h3 {
-  font-size: clamp(1.15rem, 2.3vw, 1.75rem);
-  font-stretch: 104%;
-  font-weight: 660;
-  line-height: 1.14;
-  letter-spacing: -0.024em;
-  max-width: 32ch;
-}
-.card h3 { grid-column: 2; }
-.card p {
-  grid-column: 3;
-  color: var(--ink-2);
-  font-size: var(--t-sm);
-  max-width: 54ch;
-}
-@media (max-width: 860px) {
-  .card { grid-template-columns: 3.6rem minmax(0, 1fr); }
-  .card p { grid-column: 2; margin-top: 0.7rem; }
-}
-@media (max-width: 620px) {
-  .card { grid-template-columns: 1fr; }
-  .card h3, .card p { grid-column: 1; }
-}
-@media (prefers-reduced-motion: reduce) { .card { position: static; } }
 
 /* ============================================================
    RESEARCH PAGE
@@ -2498,15 +2406,6 @@ html.front, html.front body { overscroll-behavior-x: none; }
 /* a theme switch is one cut, not a dozen transitions landing at different times */
 html.theme-cut, html.theme-cut *, html.theme-cut *::before, html.theme-cut *::after { transition: none !important; }
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 240ms; animation-timing-function: var(--ease-soft); }
-
-/* the method cards dim as they are covered, by an overlay rather than a filter,
-   which would repaint the whole card on every frame */
-.card::after {
-  content: ""; position: absolute; inset: -1px;
-  background: oklch(0 0 0);
-  opacity: calc(var(--cover, 0) * 0.3);
-  pointer-events: none;
-}
 
 /* decision countdowns, beside the workshops they wait on */
 .cd { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.35rem 0.8rem; }
