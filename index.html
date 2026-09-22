@@ -230,7 +230,7 @@
           <h3 class="panel__name"><a class="panel__open" href="#case-clipwell" aria-haspopup="dialog">Clipwell</a></h3>
           <p class="panel__line">Native clipboard history for macOS and Windows, free, MIT, on Homebrew</p>
           <dl class="panel__nums">
-            <div><dt>releases</dt><dd>7</dd></div>
+            <div><dt>licence</dt><dd>MIT</dd></div>
             <div><dt>network calls</dt><dd>0</dd></div>
           </dl>
           <span class="panel__cta" aria-hidden="true"><span class="roll">Open the case</span></span>
@@ -303,6 +303,15 @@
           <div class="bars" id="bars-vertex"></div>
           <p class="chart__note">Each metric has its own truncated axis, printed under it, and every row is oriented so that a longer bar is the better score.</p>
         </figure>
+      </section>
+      <section>
+        <h3>The papers it led to</h3>
+        <p>Both of my papers grew out of evaluating this model. The first re-tests the 84 places where it looked like it beat the market, as bets at the bookmaker's own prices. The second measures the smallest improvement its model-selection pipeline can detect, and finds that retraining under another random seed reproduces 80% of the only improvement it ever shipped. Both are under review at NeurIPS 2026 workshops.</p>
+        <p class="case__read">
+          <a class="btn btn--solid magnet" href="papers/evalues.pdf"><span class="roll">Read paper one</span></a>
+          <a class="btn btn--solid magnet" href="papers/tae.pdf"><span class="roll">Read paper two</span></a>
+          <a class="btn magnet" href="research/"><span class="roll">Both, chart by chart</span></a>
+        </p>
       </section>
       <figure class="case__shot case__shot--2">
         <img src="assets/img/work/vertex-sim-1600.webp" width="1600" height="1000" alt="Vertex MMA simulation page: calibrated probabilities and recently graded picks" loading="lazy" decoding="async">
@@ -409,6 +418,15 @@
           digits.</p>
       </section>
       <section>
+        <h3>A random search, with the rules written first</h3>
+        <p>The last thing tried was brute force, under a protocol committed before the first fit. 200 random
+          configurations were trained on bouts up to June 2021 and ranked on 2021&ndash;2023, and the top five
+          were scored once on 2023&ndash;2026, which the search never saw. All five did worse there than the model
+          already in use, two of them clearly so even at 99%. The best had led by +0.0017 where it was chosen and
+          trailed by 0.0004 where it was not, so its whole lead came from being picked on the window it was scored
+          on. The model already in use was the best of the 200. <a href="https://github.com/romanprigodskii/vertex-boxing/blob/main/docs/REPORT.md#8-a-large-random-search-under-a-protocol-written-first" rel="noopener">Section 8 of the report</a> has the table.</p>
+      </section>
+      <section>
         <h3>Where it stands</h3>
         <p>Concluded in September 2026, all of it backtest. On its own the model does not beat the closing line.
           Blended into the market price it improves it by +0.0043, so it carries information the price does not.
@@ -455,7 +473,7 @@
       <figcaption>&#8984;&#8679;V brings the bar up over whatever is open, the arrow keys walk the history, and it goes away again. The items in it were staged for the recording.</figcaption>
     </figure>
     <dl class="case__nums">
-      <div><dt>releases, June to July 2026</dt><dd data-count="7">7</dd></div>
+      <div><dt>licence</dt><dd>MIT</dd></div>
       <div><dt>network calls</dt><dd>0</dd></div>
       <div><dt>kinds of clip: text, link, image, file</dt><dd data-count="4">4</dd></div>
       <div><dt>tests in the Windows core</dt><dd data-count="54">54</dd></div>
