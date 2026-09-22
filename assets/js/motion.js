@@ -540,10 +540,21 @@
     var read = d.getElementById("reticleRead");
     if (!el || !fine || reduced) { if (el) el.remove(); if (read) read.remove(); return; }
     var tx = -100, ty = -100, cx = tx, cy = ty, seen = false, running = false, big = false;
+    /* the label's own size, measured only when its text changes */
+    var rw = 0, rh = 0;
     function place() {
       var tf = "translate3d(" + cx.toFixed(1) + "px," + cy.toFixed(1) + "px,0)";
       el.style.transform = tf;
-      if (read) read.style.transform = tf;
+      /* the label sits below and to the right of the cursor, and flips to the
+         other side rather than running off the edge: the marks at the right of
+         the field are the ones worth reading */
+      if (read) {
+        var px = cx + (cx + 24 + rw > VW - 10 ? -(rw + 24) : 24);
+        var py = cy + (cy + 12 + rh > VH - 10 ? -(rh + 12) : 12);
+        px = clamp(px, 8, Math.max(8, VW - rw - 8));
+        py = clamp(py, 8, Math.max(8, VH - rh - 8));
+        read.style.transform = "translate3d(" + px.toFixed(1) + "px," + py.toFixed(1) + "px,0)";
+      }
     }
     function loop() {
       cx += (tx - cx) * 0.24;
@@ -558,7 +569,7 @@
       var v = w.rpFieldRead ? w.rpFieldRead(tx, ty) : null;
       if (v && read) {
         var s = v.x + "  /  " + v.y;
-        if (read.textContent !== s) read.textContent = s;
+        if (read.textContent !== s) { read.textContent = s; rw = read.offsetWidth; rh = read.offsetHeight; }
         if (!readOn) { read.classList.add("is-on"); readOn = true; }
       } else if (readOn && read) { read.classList.remove("is-on"); readOn = false; }
     }

@@ -2209,7 +2209,7 @@ html { overflow-anchor: none; }
 .reticle b { display: none; }
 .reticle__read {
   position: fixed; top: 0; left: 0; z-index: 501;
-  margin: 12px 0 0 24px;
+  /* motion.js places it: beside the cursor, flipped away from the screen's edge */
   pointer-events: none;
   white-space: nowrap;
   font-size: 0.68rem; font-weight: 650; font-stretch: 80%; letter-spacing: 0.04em;

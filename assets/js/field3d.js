@@ -316,12 +316,14 @@
       /* the flat chart is framed into the right of the screen, leaving the header
          above it and the caption to its left */
       var tanH = Math.tan(fov / 2);
-      var needH = 1.15 / 0.64, needW = 1.72 / (0.54 * aspect);
+      var needH = 1.15 / 0.64, needW = 1.88 / (0.54 * aspect);
       var dFlat = Math.max(needH, needW) / tanH;
       var dist = lerp(wide ? 6.2 : 6.8, dFlat, f);
       var eye = [Math.sin(ang) * Math.cos(pitch) * dist, Math.sin(pitch) * dist, Math.cos(ang) * Math.cos(pitch) * dist];
       var target = [lerp(0.15, 0, f), lerp(-0.1, 0.05, f), 0];
-      shift = wide ? lerp(0.44, 0.38, f) : 0;
+      /* the folded chart keeps a margin at the right: the best marks live there,
+         and a ring on the screen's edge reads as cut off */
+      shift = wide ? lerp(0.44, 0.35, f) : 0;
       shiftY = wide ? lerp(-0.04, -0.02, f) : 0;
       mvp = mul(perspective(fov, aspect, 0.1, 60), lookAt(eye, target, [0, 1, 0]));
     }
