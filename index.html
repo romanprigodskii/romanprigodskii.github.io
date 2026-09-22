@@ -188,7 +188,7 @@
           <p class="panel__line">Vertex on professional boxing, and the thesis it refuted</p>
           <dl class="panel__nums">
             <div><dt>blended into the price</dt><dd>+0.0043</dd></div>
-            <div><dt>post-bell leak</dt><dd>caught</dd></div>
+            <div><dt>held-out bouts</dt><dd>89,087</dd></div>
           </dl>
           <span class="panel__cta" aria-hidden="true"><span class="roll">Open the case</span></span>
         </div>
@@ -214,8 +214,8 @@
           <h3 class="panel__name"><a class="panel__open" href="#case-zacks" aria-haspopup="dialog">Zacks to IBKR</a></h3>
           <p class="panel__line">Commissioned execution pipeline from Zacks screens to Interactive Brokers, on a schedule</p>
           <dl class="panel__nums">
-            <div><dt>client</dt><dd>paid</dd></div>
-            <div><dt>default mode</dt><dd>dry run</dd></div>
+            <div><dt>stocks in one day's screen</dt><dd>4,369</dd></div>
+            <div><dt>positions it targets</dt><dd>25</dd></div>
           </dl>
           <span class="panel__cta" aria-hidden="true"><span class="roll">Open the case</span></span>
         </div>
@@ -230,8 +230,8 @@
           <h3 class="panel__name"><a class="panel__open" href="#case-clipwell" aria-haspopup="dialog">Clipwell</a></h3>
           <p class="panel__line">Native clipboard history for macOS and Windows, free, MIT, on Homebrew</p>
           <dl class="panel__nums">
-            <div><dt>platforms</dt><dd>macOS, Windows</dd></div>
-            <div><dt>licence</dt><dd>MIT</dd></div>
+            <div><dt>releases</dt><dd>7</dd></div>
+            <div><dt>network calls</dt><dd>0</dd></div>
           </dl>
           <span class="panel__cta" aria-hidden="true"><span class="roll">Open the case</span></span>
         </div>
@@ -248,8 +248,8 @@
           <h3 class="panel__name"><a class="panel__open" href="#case-alfaromeo" aria-haspopup="dialog">Alfa-Romeo</a></h3>
           <p class="panel__line">Built on an internship at Alfa-Bank: the bank of 2035, nine years early</p>
           <dl class="panel__nums">
-            <div><dt>app and backend</dt><dd>SwiftUI, NestJS</dd></div>
-            <div><dt>rouble and crypto rates</dt><dd>live</dd></div>
+            <div><dt>screens in the app</dt><dd>93</dd></div>
+            <div><dt>cryptocurrencies, priced live</dt><dd>5</dd></div>
           </dl>
           <span class="panel__cta" aria-hidden="true"><span class="roll">Open the case</span></span>
         </div>
@@ -426,19 +426,19 @@
       <p class="case__line">A commissioned execution pipeline that turns a published rank into Interactive Brokers orders, on a schedule, dry run by default.</p>
     </header>
     <dl class="case__nums">
-      <div><dt>role</dt><dd>sole developer</dd></div>
-      <div><dt>client</dt><dd>paid</dd></div>
-      <div><dt>default mode</dt><dd>dry run</dd></div>
-      <div><dt>hosting</dt><dd>VPS, scheduled</dd></div>
+      <div><dt>stocks in one day's screen</dt><dd data-count="4369" data-sep>4,369</dd></div>
+      <div><dt>positions it targets</dt><dd data-count="25">25</dd></div>
+      <div><dt>largest single order, of the book</dt><dd data-count="10" data-suffix="%">10%</dd></div>
+      <div><dt>sells that stop a run, of the book</dt><dd data-count="80" data-suffix="%">80%</dd></div>
     </dl>
     <div class="case__body">
       <section>
         <h3>What it does</h3>
-        <p>The only project here that somebody else specified and paid for. It ingests screen exports from Zacks, turns them into target positions, reconciles those against what the Interactive Brokers account actually holds, and places the orders that close the gap. Collection runs on a schedule on a VPS.</p>
+        <p>The only project here that somebody else specified and paid for. It ingests screen exports from Zacks, turns them into an equal-weight book of 25 positions, and works out the orders that close the gap to what the Interactive Brokers account holds. Collection runs every trading day on a VPS. So far it runs in dry run; the connection to a live account is next, on a paper account first.</p>
       </section>
       <section>
         <h3>Why dry run is the default</h3>
-        <p>A mistake here costs real money, so the pipeline does nothing to the account unless it is told to, every run reconciles before and after, and a malformed export or a surprising position stops the run rather than guessing its way through it.</p>
+        <p>A mistake here costs real money, so the pipeline does nothing to the account unless it is told to, and a malformed export or a surprising position stops the run rather than guessing its way through it. No single order may exceed 10% of the book, and a run that would sell more than 80% of what is held stops before it starts.</p>
       </section>
     </div>
   </article>
@@ -455,10 +455,10 @@
       <figcaption>&#8984;&#8679;V brings the bar up over whatever is open, the arrow keys walk the history, and it goes away again. The items in it were staged for the recording.</figcaption>
     </figure>
     <dl class="case__nums">
-      <div><dt>macOS</dt><dd>Swift, SwiftUI</dd></div>
-      <div><dt>Windows</dt><dd>C#, WPF</dd></div>
-      <div><dt>install</dt><dd>Homebrew cask</dd></div>
-      <div><dt>account needed</dt><dd>none</dd></div>
+      <div><dt>releases, June to July 2026</dt><dd data-count="7">7</dd></div>
+      <div><dt>network calls</dt><dd>0</dd></div>
+      <div><dt>kinds of clip: text, link, image, file</dt><dd data-count="4">4</dd></div>
+      <div><dt>tests in the Windows core</dt><dd data-count="54">54</dd></div>
     </dl>
     <div class="case__body">
       <section>
@@ -515,9 +515,9 @@
     </div>
     <p class="case__phones-note">The demo as it runs. Every name, balance and date on these screens is demo data.</p>
     <dl class="case__nums">
-      <div><dt>rouble and crypto rates</dt><dd>live</dd></div>
-      <div><dt>the iOS app and its backend</dt><dd>SwiftUI, NestJS</dd></div>
-      <div><dt>signatures on a large business payment</dt><dd>2 of N</dd></div>
+      <div><dt>screens in the app</dt><dd data-count="93">93</dd></div>
+      <div><dt>a business payment over this needs two signatures</dt><dd>&#8381;500,000</dd></div>
+      <div><dt>largest action the copilot may carry out</dt><dd>&#8381;100,000</dd></div>
       <div><dt>AI accountant's cash-flow forecast</dt><dd>90 days</dd></div>
     </dl>
     <div class="case__body">
@@ -535,7 +535,7 @@
       </section>
       <section>
         <h3>The business half</h3>
-        <p>Romeo Business lives in the same app: accounts with crypto treasuries, acquiring by payment link, QR, NFC and terminal, stablecoins converted to roubles on arrival, a team where a large payment waits for a second signature, and an AI accountant that draws the next ninety days of cash flow and points at the gap two weeks before it opens.</p>
+        <p>Romeo Business lives in the same app: accounts with crypto treasuries, acquiring by payment link, QR, NFC and terminal, stablecoins converted to roubles on arrival, a team where any payment over &#8381;500,000 waits for a second signature, and an AI accountant that draws the next ninety days of cash flow and points at the gap two weeks before it opens.</p>
       </section>
     </div>
   </article>
