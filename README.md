@@ -44,6 +44,7 @@ papers/                     the three submitted PDFs
 tools/build_data.py         regenerates assets/data/audit.json
 tools/palettes.py           the three palettes, with a contrast check for every pair
 tools/deploy.sh             publishes HEAD to prigodskii.dev
+tools/og.html               the social card, screenshotted at 1200x630 into assets/img/og.png
 server/                     the nginx container and its Traefik routing, as it runs on the server
 DESIGN.md                   the design system and why it looks like this
 ```
