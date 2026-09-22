@@ -243,7 +243,6 @@
     }
   }
   all("[data-split]").forEach(split);
-  all("[data-lit]").forEach(split);
 
   /* ---------------------------------------------------------------
      Odometers
@@ -471,28 +470,6 @@
         w.scrollTo(0, clamp(w.scrollY + step, strip.top, strip.end));
       }, { passive: false });
     }
-  })();
-
-  /* ---------------------------------------------------------------
-     Scroll-lit statement
-     --------------------------------------------------------------- */
-  (function lit() {
-    var el = d.querySelector("[data-lit]");
-    if (!el) return;
-    var words = all(".w", el);
-    if (!words.length) return;
-    if (reduced) { words.forEach(function (n) { n.classList.add("is-lit"); }); return; }
-    var top = 0, h = 0, prev = 0;
-    w.rpOnMeasure(function () { top = docTop(el); h = el.offsetHeight; });
-    w.rpOnScroll(function (y, vh) {
-      var start = vh * 0.82, end = vh * 0.34;
-      var p = clamp((start - (top - y)) / Math.max(1, h + (start - end)), 0, 1);
-      var k = Math.round(p * words.length);
-      if (k === prev) return;
-      if (k > prev) for (var i = prev; i < k; i++) words[i].classList.add("is-lit");
-      else for (var j = prev - 1; j >= k; j--) words[j].classList.remove("is-lit");
-      prev = k;
-    });
   })();
 
   /* ---------------------------------------------------------------

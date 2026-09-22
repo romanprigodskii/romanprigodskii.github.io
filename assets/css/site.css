@@ -630,7 +630,6 @@ code {
 .file__k { font-size: var(--t-xs); color: var(--ink-3); }
 .file__k span { padding-inline: 0.25em; }
 
-.paper__note { margin-top: 1.1rem; font-size: var(--t-xs); color: var(--ink-3); max-width: 60ch; }
 
 /* The two papers share a header and nothing else: each opens on the one
    number it is about, drawn as a measurement, and lays its findings out the
@@ -956,26 +955,6 @@ code {
 }
 
 /* ============================================================
-   TOOLKIT
-   ============================================================ */
-.kit {
-  width: var(--shell); margin-inline: auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
-  gap: clamp(1.4rem, 3vw, 2.6rem);
-}
-.kit__g { border-top: 2px solid var(--ink); padding-top: 0.9rem; }
-.kit__g h3 {
-  font-stretch: 70%;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: var(--t-xs);
-  font-weight: 700;
-  margin-bottom: 0.55rem;
-}
-.kit__g p { color: var(--ink-2); font-size: var(--t-sm); line-height: 1.55; }
-
-/* ============================================================
    CONTACT
    ============================================================ */
 .sec--contact { padding-block: clamp(6rem, 14vw, 12rem); }
@@ -1073,7 +1052,7 @@ html:not(.js) .bar { background: var(--bg); border-bottom-color: var(--rule); }
   .work__body { grid-template-rows: 1fr !important; opacity: 1 !important; }
   .work__inner { visibility: visible !important; }
   .reveal, .stagger { opacity: 1 !important; transform: none !important; }
-  .sec__title, .paper__title, .work__name, .ledger__h, .kit__g h3 { break-after: avoid; }
+  .sec__title, .paper__title, .work__name, .ledger__h { break-after: avoid; }
   @page { margin: 16mm; }
 }
 
@@ -1331,38 +1310,6 @@ html.wipe-out .wipe {
 @media (max-width: 899px), (orientation: portrait) {
   .hero__caption { grid-column: 1 / -1; justify-self: start; text-align: left; max-width: 52ch; }
 }
-
-/* ============================================================
-   STATEMENT
-   ============================================================ */
-.stmt {
-  padding: var(--sp-sec) var(--gut-safe);
-  background: var(--bg);
-}
-.stmt__lead {
-  width: var(--shell);
-  margin-inline: auto;
-  max-width: 24ch;
-  font-size: clamp(1.55rem, 4.2vw, 3.3rem);
-  font-stretch: 104%;
-  font-weight: 520;
-  line-height: 1.16;
-  letter-spacing: -0.028em;
-}
-[data-lit] .w { color: var(--ink-3); transition: color 520ms var(--ease-quart); }
-[data-lit] .w.is-lit { color: var(--ink); }
-html:not(.js) [data-lit] { color: var(--ink); }
-.stmt__foot {
-  width: var(--shell);
-  margin-inline: auto;
-  margin-top: clamp(2.5rem, 6vw, 4.5rem);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 23rem), 1fr));
-  gap: clamp(1.4rem, 3vw, 3rem);
-  color: var(--ink-2);
-  font-size: var(--t-sm);
-}
-.stmt__foot p { max-width: 48ch; }
 
 /* ============================================================
    FILMSTRIP
@@ -2100,17 +2047,10 @@ html.has-cases .cases { display: none; }
   font-size: clamp(1.1rem, 1.8vw, 1.4rem); font-weight: 680; font-stretch: 104%;
   letter-spacing: -0.02em; line-height: 1.2;
 }
-.case__body section > p, .case__body section > .case__list,
+.case__body section > p,
 .case__body section > .case__table, .case__body section > .chart { grid-column: 2; }
 .case__body p { color: var(--ink-2); max-width: 60ch; }
 .case__body p + p { margin-top: 0.9rem; }
-.case__list { display: grid; gap: 0.8rem; }
-.case__list li { color: var(--ink-2); font-size: var(--t-sm); line-height: 1.6; padding-left: 1.3rem; position: relative; max-width: 62ch; }
-.case__list li::before {
-  content: ""; position: absolute; left: 0; top: 0.6em; width: 7px; height: 7px;
-  background: var(--accent); clip-path: polygon(0 0, 100% 50%, 0 100%);
-}
-.case__list b { color: var(--ink); font-weight: 650; }
 .case__table { overflow-x: auto; margin-top: 1.2rem; }
 .case__table table { width: 100%; border-collapse: collapse; font-size: var(--t-sm); font-variant-numeric: tabular-nums; }
 .case__table th, .case__table td { padding: 0.65rem 0.8rem; text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
@@ -2173,31 +2113,7 @@ html.case-open .caselayer__slot .case__head > *:nth-child(4) { transition-delay:
 .caselayer__next { width: var(--shell); margin: clamp(3rem, 8vw, 5rem) auto 0; }
 .caselayer__next .bigcta { width: 100%; background: none; color: inherit; font: inherit; font-size: clamp(1.15rem, 2.6vw, 1.9rem); font-weight: 700; cursor: pointer; }
 
-/* ---------- toolkit rows ---------- */
-.kit2 { width: var(--shell); margin-inline: auto; border-top: 1px solid var(--rule); }
-.kit2__row {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: 0.5rem clamp(1.5rem, 4vw, 3.5rem);
-  align-items: baseline;
-  padding: clamp(1rem, 2.4vw, 1.6rem) 0;
-  border-bottom: 1px solid var(--rule);
-  transition: padding 520ms var(--ease-expo), background-color 320ms;
-}
-.kit2__row h3 {
-  font-size: clamp(1.6rem, 4.4vw, 3.4rem);
-  font-stretch: 110%; font-weight: 740; letter-spacing: -0.035em; line-height: 1;
-  color: var(--ink-3);
-  transition: color 320ms, font-stretch 520ms var(--ease-expo);
-}
-.kit2__row p { color: var(--ink-2); font-size: var(--t-sm); max-width: 50ch; }
-@media (hover: hover) and (pointer: fine) {
-  .kit2__row p { opacity: 0.72; transition: opacity 320ms, transform 520ms var(--ease-expo); transform: translateX(-8px); }
-  .kit2__row:hover { padding-left: 0.8rem; }
-  .kit2__row:hover h3 { color: var(--ink); font-stretch: 118%; }
-  .kit2__row:hover p { opacity: 1; transform: none; }
-}
-@media (max-width: 700px) { .kit2__row { grid-template-columns: 1fr; } .kit2__row h3 { color: var(--ink); } }
+
 
 
 /* ---------- toast ---------- */
@@ -2399,9 +2315,6 @@ html.front, html.front body { overscroll-behavior-x: none; }
    FIX BATCH 3: speed, the theme switch, the workshops' clocks
    and Alfa-Romeo
    ============================================================ */
-
-/* the statement's lead lines up with the columns under it */
-.stmt__lead { margin-left: calc((100% - var(--shell)) / 2); max-width: 26ch; }
 
 /* a theme switch is one cut, not a dozen transitions landing at different times */
 html.theme-cut, html.theme-cut *, html.theme-cut *::before, html.theme-cut *::after { transition: none !important; }

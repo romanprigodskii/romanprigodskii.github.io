@@ -100,9 +100,9 @@
         <span data-split data-letters data-d="140" aria-hidden="true">Prigodskii</span>
       </h1>
       <p class="hero__lede" data-split data-d="320">
-        Seventeen. I build forecasting systems, score them against the sharpest baseline
-        the market has, and publish the statistics that let a stranger check every claim
-        without asking me anything.
+        Seventeen, final year at Letovo School. I build forecasting models for UFC and boxing
+        and test them against the bookmaker's closing line. I'm also a co-founder and Head of AI
+        at Gluline, a messenger.
       </p>
       <div class="hero__acts rise" style="--d:560">
         <a class="btn btn--solid magnet" href="#work"><span class="roll">See the work</span></a>
@@ -110,7 +110,7 @@
       </div>
     </div>
     <div class="hero__base rise" style="--d:700">
-      <a class="hero__cue" href="#position"><span>Scroll</span><i aria-hidden="true"></i></a>
+      <a class="hero__cue" href="#work"><span>Scroll</span><i aria-hidden="true"></i></a>
       <p class="hero__caption">Behind the type: the 84 pre-registered hypotheses of the e-value audit, each at
         its e-value at fair odds and after the book's margin.<span class="only-pin"> Keep scrolling and they turn into the chart.</span></p>
     </div>
@@ -118,27 +118,8 @@
       <p class="hero__flat-k">The audit, flattened</p>
       <p class="hero__flat-t">At fair odds six clear e = 20, the bar for a single hypothesis, and one still
         clears it after the book's margin, on its best seed. Charged for asking 84 questions of one pool the bar
-        is e = 1,680, and the best of them stops at 151. The paper says so in its abstract.</p>
+        is e = 1,680, and the best of them stops at 151.</p>
     </div>
-  </div>
-</section>
-
-<!-- ═══ 03 STATEMENT ═══ -->
-<section class="stmt" id="position" data-nav="Position">
-  <p class="stmt__lead" data-lit>
-    One question runs through all of it. A model produces a number. A market produces a
-    number. Only one of them is priced, and deciding which to believe is a statistical
-    question with a real answer. I build the systems that produce the numbers, then the
-    instruments that measure how much of the difference is signal.
-  </p>
-  <div class="stmt__foot">
-    <p class="reveal">Final year at Letovo School in Moscow, advanced mathematics track. Won the Grade 10
-      division of the Moscow Olympiad in Economics, first on score. Co-founder and Head of AI at Gluline,
-      four production systems shipped, a fifth, Vertex Boxing, concluded as research, and two sole-authored papers
-      under review at NeurIPS 2026 workshops.</p>
-    <p class="reveal">Everything here is traceable to a committed artifact, a published competition
-      protocol, or an official document. Where a diploma and a protocol both exist, this page cites
-      the protocol, because a stranger can check a protocol without me.</p>
   </div>
 </section>
 
@@ -204,7 +185,7 @@
         <div class="panel__meta">
           <p class="panel__idx" aria-hidden="true">03</p>
           <h3 class="panel__name"><a class="panel__open" href="#case-boxing" aria-haspopup="dialog">Vertex Boxing</a></h3>
-          <p class="panel__line">The method on professional boxing, and the thesis it refuted</p>
+          <p class="panel__line">Vertex on professional boxing, and the thesis it refuted</p>
           <dl class="panel__nums">
             <div><dt>blended into the price</dt><dd>+0.0043</dd></div>
             <div><dt>post-bell leak</dt><dd>caught</dd></div>
@@ -287,7 +268,7 @@
     <header class="case__head">
       <p class="case__idx">01 <span aria-hidden="true">/</span> Live product</p>
       <h2 class="case__title" id="case-vertex-t">Vertex MMA</h2>
-      <p class="case__line">A nine-model UFC forecasting stack, graded against the bookmaker's closing line on every basis, including the ones where the line wins.</p>
+      <p class="case__line">A nine-model UFC forecasting stack, graded against the bookmaker's closing line.</p>
       <p class="case__links"><a href="https://vertexmma.com" rel="noopener">vertexmma.com</a> <span aria-hidden="true">/</span> <a href="https://github.com/romanprigodskii/vertex-mma" rel="noopener">Source on GitHub</a></p>
     </header>
     <figure class="case__shot">
@@ -302,11 +283,11 @@
     <div class="case__body">
       <section>
         <h3>The system</h3>
-        <p>Not one model. A winner ensemble over 118 features (LightGBM, CatBoost and logistic regression, blended on a validation window and order-averaged over both fighter orderings, then a single post-blend age coefficient), a debut specialist, a method model, a debut method model, a cause-specific Poisson finish hazard, a no-intercept logistic decision model, and a ten-thousand-run Monte Carlo simulator. Live in English and Russian: 35 routes in two locales, 1,533 translation keys each, on Next.js 16, React 19, TypeScript 5.9 strict, Tailwind 4, Postgres and Python 3.12. Virtual currency only.</p>
+        <p>A winner ensemble over 118 features (LightGBM, CatBoost and logistic regression, blended on a validation window and order-averaged over both fighter orderings, then a single post-blend age coefficient), a debut specialist, a method model, a debut method model, a cause-specific Poisson finish hazard, a no-intercept logistic decision model, and a ten-thousand-run Monte Carlo simulator. Live in English and Russian: 35 routes in two locales, 1,533 translation keys each, on Next.js 16, React 19, TypeScript 5.9 strict, Tailwind 4, Postgres and Python 3.12. Virtual currency only.</p>
       </section>
       <section>
         <h3>Measured against the market</h3>
-        <p>Held out from January 2025, read directly from committed artifacts. The comparison is reported on every basis, including the ones where the closing line wins, because that is the comparison worth having: the model is better calibrated than the line and less sharp, so what remains is resolution, which needs information the public record does not contain.</p>
+        <p>Held out from January 2025. On the 582 bouts with a price, the closing line is ahead on all three scores. The model is better calibrated than the line and less sharp; the rest of the gap is resolution, which needs information the public record does not contain.</p>
         <div class="case__table" role="region" aria-label="Held-out performance" tabindex="0">
           <table>
             <thead><tr><th scope="col"></th><th scope="col">Accuracy</th><th scope="col">Log-loss</th><th scope="col">Brier</th><th scope="col">AUC</th></tr></thead>
@@ -322,15 +303,6 @@
           <div class="bars" id="bars-vertex"></div>
           <p class="chart__note">Each metric has its own truncated axis, printed under it, and every row is oriented so that a longer bar is the better score.</p>
         </figure>
-      </section>
-      <section>
-        <h3>Discipline</h3>
-        <ul role="list" class="case__list">
-          <li><b>Point in time, five ways.</b> Snapshot-then-apply history, strictly-earlier rating lookups, a separate chronological ratings replay, a date-bounded pre-UFC career walk, and a frozen percentile-clipping anchor.</li>
-          <li><b>The market is never an input.</b> Odds are stored, shown and used for scoring, and never enter the feature matrix. Removing them cost 1.5 points of test accuracy. They stayed removed.</li>
-          <li><b>A measured detection floor.</b> Five seeds on a 3,087-bout walk-forward pool put the minimum detectable effect at 0.0036 nats; the one lever ever shipped to the winner leg is worth 0.0026 and shipped only because three independent legs agreed on its sign. The repository says exactly that.</li>
-          <li><b>A written record of failure.</b> Two dozen ideas built, gated and rejected, documented beside the ones that shipped. One shipped feature was later identified as a leak and removed.</li>
-        </ul>
       </section>
       <figure class="case__shot case__shot--2">
         <img src="assets/img/work/vertex-sim-1600.webp" width="1600" height="1000" alt="Vertex MMA simulation page: calibrated probabilities and recently graded picks" loading="lazy" decoding="async">
@@ -384,8 +356,8 @@
         <p>Switched on, it answers questions about the chat you are in, keeps a memory of you that you can read and clear, and any answer it gives can be reported. Voice messages can be transcribed where they sit.</p>
       </section>
       <section>
-        <h3>Encryption, stated plainly</h3>
-        <p>Chat content is encrypted on the device with a key for each chat, and the server keeps that key only wrapped to each member's public key: while the assistant is off in a chat, the company holds nothing that opens it. One-to-one calls are encrypted between the two devices. Group calls pass through a media server that decrypts them to forward them, so the store listing says they are not end-to-end encrypted, and it claims no forward secrecy. The same rule as the research on this site: claim what it does, not what would sound better.</p>
+        <h3>Encryption</h3>
+        <p>Chat content is encrypted on the device with a key for each chat, and the server keeps that key only wrapped to each member's public key: while the assistant is off in a chat, the company holds nothing that opens it. One-to-one calls are encrypted between the two devices. Group calls pass through a media server that decrypts them to forward them, so the store listing says they are not end-to-end encrypted, and it claims no forward secrecy.</p>
       </section>
       <section>
         <h3>How it shipped</h3>
@@ -399,9 +371,8 @@
     <header class="case__head">
       <p class="case__idx">03 <span aria-hidden="true">/</span> Concluded research</p>
       <h2 class="case__title" id="case-boxing-t">Vertex Boxing</h2>
-      <p class="case__line">The Vertex method on professional boxing, built to test one thesis: that regional and
-        undercard markets are priced softly enough to leave room. The data said the opposite, and the project
-        records it as a finding.</p>
+      <p class="case__line">The Vertex MMA models moved to professional boxing, to test whether regional and
+        undercard lines are soft enough to beat. The data said the opposite.</p>
       <p class="case__links"><a href="https://github.com/romanprigodskii/vertex-boxing/blob/main/docs/REPORT.md" rel="noopener">The report</a> <span aria-hidden="true">/</span> <a href="https://github.com/romanprigodskii/vertex-boxing" rel="noopener">Source on GitHub</a></p>
     </header>
     <dl class="case__nums">
@@ -419,7 +390,7 @@
           fights to +0.0180 on twelve-round title fights, and at a fixed 2% edge threshold the club fights return
           &minus;14.9% while the title fights return +13.1%. The belt on the line agrees, rising to +0.0152 on
           continental and world titles.</p>
-        <p>The mechanism is the useful part. The model reads records and ratings, and a rating is only as good as
+        <p>The model reads records and ratings, and a rating is only as good as
           the record under it. At world level both fighters have thirty bouts behind them; on a club card the
           market knows which of the two is being managed, and the model is reading two thin records.</p>
       </section>
@@ -450,7 +421,7 @@
           or world title fights, 803 backtest bets show closing-line value of +0.0143 [+0.0104, +0.0182] and +8.7%
           [&minus;0.0%, +18.0%]. The margin paid at the open is larger than that value under either way of taking
           it out, so priced at the close the strategy returns &minus;6.1% under the reading that calibrates the
-          closing price, and &minus;0.6% under the other. The project says exactly that, first.</p>
+          closing price, and &minus;0.6% under the other.</p>
         <p>Scored as two-outcome log-loss: adding draws to the target was measured, and moved nothing.</p>
       </section>
     </div>
@@ -475,7 +446,7 @@
       </section>
       <section>
         <h3>Why dry run is the default</h3>
-        <p>The failure mode is money. So the pipeline does nothing to the account unless it is told to, every run reconciles before and after, and a malformed export or a surprising position stops the run rather than guessing its way through it.</p>
+        <p>A mistake here costs real money, so the pipeline does nothing to the account unless it is told to, every run reconciles before and after, and a malformed export or a surprising position stops the run rather than guessing its way through it.</p>
       </section>
     </div>
   </article>
@@ -503,8 +474,8 @@
         <p>The same bar, the same cards, the same keys and the same history format, implemented natively on both platforms rather than once in Electron. No account and no subscription. Installing it is <code>brew install --cask romanprigodskii/tap/clipwell</code>, which meant shipping a cask, a release pipeline and a product site alongside the app itself.</p>
       </section>
       <section>
-        <h3>The detail nobody sees</h3>
-        <p>Content that a password manager marks as concealed or transient is never written to disk. Clipboard managers are a quiet way to leak secrets, and this one declines to.</p>
+        <h3>Passwords stay out</h3>
+        <p>Content that a password manager marks as concealed or transient is never written to disk, so copied passwords do not end up in the history.</p>
       </section>
     </div>
   </article>
@@ -585,8 +556,8 @@
     <div class="tease__head">
       <div class="sec__row"><h2 class="sec__title" data-split>Research</h2></div>
       <p class="tease__lead reveal">Two sole-authored papers, three submissions, all under review at
-        NeurIPS 2026 workshops. Both grew out of Vertex, and both are about one discomfort: an
-        evaluation that reports what it found and not what it could have found.</p>
+        NeurIPS 2026 workshops. Both came out of Vertex MMA: one audits its market-efficiency
+        hypotheses with e-values, the other measures the smallest improvement its evaluation can detect.</p>
     </div>
 
     <ol role="list" class="tease__list">
@@ -629,8 +600,8 @@
 <section class="sec sec--record" id="record" data-nav="Record">
   <div class="sec__head">
     <div class="sec__row"><h2 class="sec__title" data-split>The record</h2></div>
-    <p class="sec__sub reveal">Evidenced against published competition protocols wherever a protocol
-      exists, on the principle that a protocol can be checked by a stranger. Links to each on request.</p>
+    <p class="sec__sub reveal">Checked against the published competition protocols where they exist.
+      Links to each on request.</p>
   </div>
 
   <div class="ledger">
@@ -638,12 +609,12 @@
     <ul role="list" class="ledger__rows">
       <li class="ledger__row is-top">
         <span class="ledger__rank" data-count="1" data-suffix="st">1st</span>
-        <span class="ledger__what"><b>Moscow Olympiad in Economics</b>, winner, first place by score in the Grade 10 division. One of the largest regional economics olympiads in Russia, and this is its top individual result.</span>
+        <span class="ledger__what"><b>Moscow Olympiad in Economics</b>, winner, first place by score in the Grade 10 division. It is one of the largest regional economics olympiads in Russia.</span>
         <span class="ledger__ev">Verified</span>
       </li>
       <li class="ledger__row">
         <span class="ledger__rank" data-count="2" data-prefix="&times;">&times;2</span>
-        <span class="ledger__what"><b>All-Russian Olympiad in Economics</b>, national finalist in two separate years. The All-Russian Olympiad is the national academic competition system; reaching its final twice puts me in the national cohort in the subject.</span>
+        <span class="ledger__what"><b>All-Russian Olympiad in Economics</b>, national finalist in two separate years. The All-Russian Olympiad is Russia's national school olympiad system.</span>
         <span class="ledger__ev">Verified</span>
       </li>
     </ul>
@@ -657,7 +628,7 @@
       </li>
       <li class="ledger__row">
         <span class="ledger__rank">Gr 8</span>
-        <span class="ledger__what"><b>Leonhard Euler Olympiad</b>, regional prize-winner, third degree. The Euler Olympiad <i>is</i> the All-Russian mathematics olympiad at Year 8: same regional dates, problems set by the same central methodological commission. Read with the row above, that is a regional prize in two consecutive years.</span>
+        <span class="ledger__what"><b>Leonhard Euler Olympiad</b>, regional prize-winner, third degree. The Euler Olympiad is the All-Russian mathematics olympiad for Grade 8, held on the same regional dates with problems from the same central commission.</span>
         <span class="ledger__ev">Protocol</span>
       </li>
       <li class="ledger__row">
@@ -675,23 +646,10 @@
   </div>
 </section>
 
-<!-- ═══ 07 TOOLKIT ═══ -->
-<section class="sec sec--kit" id="toolkit" data-nav="Toolkit">
-  <div class="sec__head"><div class="sec__row"><h2 class="sec__title" data-split>Toolkit</h2></div></div>
-  <ul role="list" class="kit2">
-    <li class="kit2__row"><h3>Modelling</h3><p>Python, LightGBM, CatBoost, scikit-learn, NumPy, pandas, statsmodels, Monte Carlo simulation</p></li>
-    <li class="kit2__row"><h3>Statistics</h3><p>E-values and test martingales, anytime-valid inference, walk-forward validation, calibration and sharpness, detection floors</p></li>
-    <li class="kit2__row"><h3>Web</h3><p>TypeScript, Next.js, React, Tailwind, Postgres, Supabase, Drizzle, internationalisation</p></li>
-    <li class="kit2__row"><h3>Native</h3><p>Kotlin and Jetpack Compose, Swift and SwiftUI, C# and WPF</p></li>
-    <li class="kit2__row"><h3>Backend</h3><p>Python and FastAPI, NestJS, Docker, Linux, Caddy, SOPS, VPS operations</p></li>
-    <li class="kit2__row"><h3>Writing</h3><p>LaTeX, bilingual technical writing in Russian and English</p></li>
-  </ul>
-</section>
-
 <!-- ═══ 08 CONTACT ═══ -->
 <section class="sec sec--contact" id="contact" data-surface="signal" data-nav="Contact">
   <div class="contact">
-    <h2 class="contact__title" data-split>Research, internships, or a problem with a real baseline in it.</h2>
+    <h2 class="contact__title" data-split>Open to research and internships. Write to me.</h2>
     <div class="contact__acts reveal">
       <a class="mailbtn magnet" href="mailto:lioneldassy@gmail.com" data-copy="lioneldassy@gmail.com" aria-label="Email lioneldassy@gmail.com. Clicking also copies the address.">
         <span class="mailbtn__k" aria-hidden="true">Email, copies on click</span>
@@ -730,7 +688,7 @@
 </nav>
 
 <footer class="foot">
-  <p>Roman Prigodskii, Moscow. Figures as measured on the dates given.</p>
+  <p>Roman Prigodskii, Moscow.</p>
   <p><a href="research/">Research</a> <span aria-hidden="true">/</span> <a href="plain/">Plain version</a> <span aria-hidden="true">/</span> <a href="https://github.com/romanprigodskii/romanprigodskii.github.io" rel="noopener">Source of this page</a></p>
 </footer>
 

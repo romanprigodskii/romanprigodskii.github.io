@@ -81,8 +81,8 @@
   <p class="rhero__back"><a href="../">Roman Prigodskii</a> <span aria-hidden="true">/</span> Research</p>
   <h1 class="rhero__title"><span data-split>Testing</span> <span data-split data-d="80">by betting</span></h1>
   <p class="rhero__lede" data-split data-d="260">Two sole-authored papers, three submissions, all under
-    review at NeurIPS 2026 workshops. Both grew out of Vertex MMA, and both are about the same
-    discomfort: an evaluation that reports what it found, and not what it could have found.</p>
+    review at NeurIPS 2026 workshops. Both came out of Vertex MMA: one audits its market-efficiency
+    hypotheses with e-values, the other measures the smallest improvement its evaluation can detect.</p>
   <dl class="rhero__facts rise" style="--d:520">
     <div><dt>Author</dt><dd>Sole, on both</dd></div>
     <div><dt>Status</dt><dd>Under review</dd></div>
@@ -155,8 +155,7 @@
           <p>A segment the fixed-<i>n</i> analysis wrote off at <i>p</i> = 0.30 is still growing on the
               wealth scale: +0.0143 nats per bout against +0.0174 in the window that selected it, an
               e-value of 4.81 against a threshold of 20. It is not refuted. It is 100 bouts short at
-              fair odds and 253 at the book's, which is seventeen months, or three and a half years.
-              Optional continuation turns a refutation into a schedule.</p>
+              fair odds and 253 at the book's, which is seventeen months, or three and a half years.</p>
         </div>
       </li>
       <li class="claim reveal">
@@ -166,8 +165,7 @@
           <p>A threshold rule chosen after the shape was visible, paid for by a mixture martingale over
               the 21 cuts it searched, clears the threshold at 31.28. Widen the mixture to the 21 cuts it
               could have searched in the opposite direction and it falls to 15.64. Add the other
-              disagreement statistic it could have used and it falls to 10.43. The ladder is the result,
-              not any rung of it.</p>
+              disagreement statistic it could have used and it falls to 10.43.</p>
         </div>
       </li>
     </ol>
@@ -182,11 +180,10 @@
     <p class="paper__abs reveal">
       Before any of it was used, the instrument was validated. Under a true null with prices and
       stakes held and only outcomes resampled, 40,000 replications give an expected e-value of
-      0.985 plus or minus 0.018 per segment, with none of the 84 above its own alpha. And the
-      headline result is negative, stated as negative in the abstract: betting the model against
+      0.985 plus or minus 0.018 per segment, with none of the 84 above its own alpha. The
+      headline result is negative: betting the model against
       the book across the whole priced pool gives e = 3.6 x 10<sup>-4</sup> at fair odds and
-      3.1 x 10<sup>-8</sup> at real ones. The paper is not about beating a market. It is about what
-      can be honestly claimed inside a search that mostly failed.
+      3.1 x 10<sup>-8</sup> at real ones.
     </p>
 
     <div class="paper__files reveal">
@@ -199,8 +196,6 @@
         <span class="file__k">Extended version, double-blind submission <span>/</span> PDF, 284 KB</span>
       </a>
     </div>
-    <p class="paper__note reveal">The workshop's organisers include Grunwald and Ramdas, who built the
-      machinery the paper uses.</p>
   </div>
 </article>
 
@@ -254,14 +249,13 @@
         <h3>A floor belongs to the instrument that measured the effect</h3>
         <p>Recomputed on the 793-row pool where this project's one large win was actually measured,
             the floor is 0.0119 rather than 0.00362. The win is 4x its own floor, not 13x another
-            pool's. The paper corrects that error in its own earlier draft, in print.</p>
+            pool's.</p>
       </li>
       <li class="step reveal">
         <p class="step__fig">2.9 <small>points</small></p>
         <h3>The protocol transplants</h3>
         <p>On a deployed LLM classifier, two identical reruns disagree on 5.6% of items, and twenty
-            of them move measured agreement by 2.6 points. The floor is 2.9 points. Same recipe,
-            different instrument.</p>
+            of them move measured agreement by 2.6 points. The floor is 2.9 points.</p>
       </li>
     </ol>
 
@@ -387,7 +381,7 @@
 <!-- ═══ OUT ═══ -->
 <section class="sec sec--out" data-surface="signal">
   <div class="contact">
-    <h2 class="contact__title" data-split>Questions, or a reason to build the next one.</h2>
+    <h2 class="contact__title" data-split>Questions about the papers? Write to me.</h2>
     <div class="contact__acts reveal">
       <a class="mailbtn magnet" href="mailto:lioneldassy@gmail.com" data-copy="lioneldassy@gmail.com" aria-label="Email lioneldassy@gmail.com. Clicking also copies the address.">
         <span class="mailbtn__k" aria-hidden="true">Email, copies on click</span>
@@ -406,7 +400,7 @@
 </main>
 
 <footer class="foot">
-  <p>Roman Prigodskii, Moscow. Submitted means submitted, not published.</p>
+  <p>Roman Prigodskii, Moscow.</p>
   <p><a href="../">Home</a> <span aria-hidden="true">/</span> <a href="../plain/">Plain version</a></p>
 </footer>
 
