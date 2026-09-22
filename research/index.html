@@ -86,7 +86,7 @@
   <dl class="rhero__facts rise" style="--d:520">
     <div><dt>Author</dt><dd>Sole, on both</dd></div>
     <div><dt>Status</dt><dd>Under review</dd></div>
-    <div><dt>Subject</dt><dd>A deployed forecaster and its own instrument</dd></div>
+    <div><dt>Subject</dt><dd>Vertex MMA and how it is evaluated</dd></div>
     <div><dt>Data</dt><dd>4,141 walk-forward bouts, 1,787 of them priced</dd></div>
   </dl>
 </section>
@@ -104,7 +104,7 @@
     <div class="paper__read rise">
       <a class="btn btn--solid magnet" href="../papers/evalues.pdf"><span class="roll">Read the paper</span></a>
       <a class="btn magnet" href="../papers/newinml.pdf"><span class="roll">Extended version</span></a>
-      <span class="paper__read-k">PDF, 258 and 284 KB</span>
+      <span class="paper__read-k">PDF, 258 and 285 KB</span>
     </div>
 
     <!-- the whole audit on one log scale from 1 to 1,680. Positions are
@@ -144,7 +144,7 @@
       <li class="claim reveal">
         <p class="claim__fig">4 <span class="claim__op">&rarr;</span> 0 <small>rejections under BH, then under the corrections that hold here</small></p>
         <div class="claim__txt">
-          <h3>A multiplicity correction that was not licensed</h3>
+          <h3>The standard correction did not apply</h3>
           <p>The 84 slices are overlapping subsets of one pool. Membership correlations across the
               3,486 segment pairs run from &minus;0.49 to +0.84, half of them negative, and 83 pairs share no
               bouts at all. Benjamini-Hochberg needs independence or PRDS; neither is established. On
@@ -156,7 +156,7 @@
       <li class="claim reveal">
         <p class="claim__fig">4.81 <span class="claim__op">/</span> 20 <small>the e-value so far, against the bar it still has time to reach</small></p>
         <div class="claim__txt">
-          <h3>"Failed to replicate" and "not yet" are different findings</h3>
+          <h3>A segment written off too early</h3>
           <p>A segment the fixed-<i>n</i> analysis wrote off at <i>p</i> = 0.30 is still growing on the
               wealth scale: +0.0143 nats per bout against +0.0174 in the window that selected it, an
               e-value of 4.81 against a threshold of 20. It is not refuted. It is 100 bouts short at
@@ -164,9 +164,9 @@
         </div>
       </li>
       <li class="claim reveal">
-        <p class="claim__fig">31.28 <span class="claim__op">&rarr;</span> 10.43 <small>one post-hoc rule, charged for every freedom it had</small></p>
+        <p class="claim__fig">31.28 <span class="claim__op">&rarr;</span> 10.43 <small>a rule chosen after the fact, as its search is paid for</small></p>
         <div class="claim__txt">
-          <h3>Pricing the freedom a post-hoc rule used</h3>
+          <h3>What a rule chosen after the fact is worth</h3>
           <p>A threshold rule chosen after the shape was visible, paid for by a mixture martingale over
               the 21 cuts it searched, clears the threshold at 31.28. Widen the mixture to the 21 cuts it
               could have searched in the opposite direction and it falls to 15.64. Add the other
@@ -198,7 +198,7 @@
       </a>
       <a class="file" href="../papers/newinml.pdf">
         <span class="file__v">NewInML</span>
-        <span class="file__k">Extended version, double-blind submission <span>/</span> PDF, 284 KB</span>
+        <span class="file__k">Extended version, preprint <span>/</span> PDF, 285 KB</span>
       </a>
     </div>
   </div>
@@ -216,7 +216,7 @@
     <p class="paper__sub">Detection floors for model selection and for LLM judges</p>
     <div class="paper__read rise">
       <a class="btn btn--solid magnet" href="../papers/tae.pdf"><span class="roll">Read the paper</span></a>
-      <span class="paper__read-k">PDF, 126 KB</span>
+      <span class="paper__read-k">PDF, 123 KB</span>
     </div>
 
     <!-- 0.00207 / 0.0026 = 0.796: the largest null effect against the one shipped lever -->
@@ -240,14 +240,14 @@
     <ol role="list" class="steps">
       <li class="step reveal">
         <p class="step__fig">0.00207 <small>nats</small></p>
-        <h3>The noise floor is measurable, and it is not small</h3>
+        <h3>The noise floor, measured</h3>
         <p>On a 3,087-row walk-forward pool under five seeds, ten null comparisons manufacture
             effects up to 0.00207 nats. Re-seeding alone reproduces 80% of the only lever this leg
             ever shipped, and the pipeline had 56% power against its own shipped result.</p>
       </li>
       <li class="step reveal">
         <p class="step__fig">0.00288 <small>nats</small></p>
-        <h3>Buying seeds walks to a floor, not past it</h3>
+        <h3>More seeds help, up to a point</h3>
         <p>The floor is an asymptote at 0.00288 nats. Fifteen seeds gets within 2% of it and no
             budget gets past it, because 63% of the paired noise lives beyond any seed budget. On four
             degrees of freedom that share is bounded only to [17%, 83%], so it is reported as an
@@ -255,14 +255,14 @@
       </li>
       <li class="step reveal">
         <p class="step__fig">4&times; <small>not 13&times;</small></p>
-        <h3>A floor belongs to the instrument that measured the effect</h3>
+        <h3>Each result needs its own floor</h3>
         <p>Recomputed on the 793-row pool where this project's one large win was actually measured,
             the floor is 0.0119 rather than 0.00362. The win is 4x its own floor, not 13x another
             pool's.</p>
       </li>
       <li class="step reveal">
         <p class="step__fig">2.9 <small>points</small></p>
-        <h3>The protocol transplants</h3>
+        <h3>The same test on an LLM classifier</h3>
         <p>On a deployed LLM classifier, two identical reruns disagree on 5.6% of items, and twenty
             of them move measured agreement by 2.6 points. The floor is 2.9 points.</p>
       </li>
@@ -279,7 +279,7 @@
     <div class="paper__files reveal">
       <a class="file" href="../papers/tae.pdf">
         <span class="file__v">TAE: Can We Trust AI Evaluation?</span>
-        <span class="file__k">NeurIPS 2026 workshop, double-blind <span>/</span> PDF, 126 KB</span>
+        <span class="file__k">NeurIPS 2026 workshop, preprint <span>/</span> PDF, 123 KB</span>
       </a>
     </div>
   </div>

@@ -111,14 +111,14 @@
     </div>
     <div class="hero__base rise" style="--d:700">
       <a class="hero__cue" href="#work"><span>Scroll</span><i aria-hidden="true"></i></a>
-      <p class="hero__caption">Behind the type: the 84 pre-registered hypotheses of the e-value audit, each at
-        its e-value at fair odds and after the book's margin.<span class="only-pin"> Keep scrolling and they turn into the chart.</span></p>
+      <p class="hero__caption">Each ball is one of the 84 hypotheses in my first paper, placed by how far a bet
+        on it would have grown, at fair odds and after the bookmaker's cut.<span class="only-pin"> Keep scrolling and they turn into a chart.</span></p>
     </div>
     <div class="hero__flat">
-      <p class="hero__flat-k">The audit, flattened</p>
-      <p class="hero__flat-t">At fair odds six clear e = 20, the bar for a single hypothesis, and one still
-        clears it after the book's margin, on its best seed. Charged for asking 84 questions of one pool the bar
-        is e = 1,680, and the best of them stops at 151.</p>
+      <p class="hero__flat-k">The same 84, as a chart</p>
+      <p class="hero__flat-t">A bet that grows twentyfold is the usual bar for one hypothesis. Six clear it at
+        fair odds, and one still does after the bookmaker's cut, on its luckiest seed. Testing 84 at once raises
+        the bar to 1,680, and the best of them stops at 151.</p>
     </div>
   </div>
 </section>
@@ -283,7 +283,7 @@
     <div class="case__body">
       <section>
         <h3>The system</h3>
-        <p>A winner ensemble over 118 features (LightGBM, CatBoost and logistic regression, blended on a validation window and order-averaged over both fighter orderings, then a single post-blend age coefficient), a debut specialist, a method model, a debut method model, a cause-specific Poisson finish hazard, a no-intercept logistic decision model, and a ten-thousand-run Monte Carlo simulator. Live in English and Russian: 35 routes in two locales, 1,533 translation keys each, on Next.js 16, React 19, TypeScript 5.9 strict, Tailwind 4, Postgres and Python 3.12. Virtual currency only.</p>
+        <p>The main model picks the winner from 118 features, blending LightGBM, CatBoost and logistic regression. Others handle debuts and how and when a fight ends, and a simulator plays each bout out ten thousand times. The site runs in English and Russian, with virtual currency only, on Next.js and Postgres, with the models in Python.</p>
       </section>
       <section>
         <h3>Measured against the market</h3>
@@ -361,7 +361,7 @@
       </section>
       <section>
         <h3>How it shipped</h3>
-        <p>Nothing reached a store without clearing a written gate: compile green, 309 unit tests passing, lintVital clean on the release build, and R8 keep-rules checked against the 15 wire fields that have to survive minification.</p>
+        <p>Nothing reached a store without clearing a written release checklist: a clean build, 309 unit tests passing, and a check that minification had not broken any of the 15 fields the app sends over the wire.</p>
         <p>Two formal audits are on record. April's raised about 58 findings. August's, before release, raised 74 candidates and put each through an adversarial second pass: 42 confirmed, and 32 refuted and written down as refuted, so the next audit does not spend time on them again.</p>
       </section>
     </div>
@@ -385,44 +385,36 @@
       <section>
         <h3>The thesis, and what happened to it</h3>
         <p>The project began from a claim: the UFC closing line is sharp, but regional and club boxing lines are
-          soft, so that is where a fundamentals model would find room. Cut by level, the priced test set says the
-          reverse. Closing-line value rises with the scheduled distance, from +0.0044 on four-to-six-round club
-          fights to +0.0180 on twelve-round title fights, and at a fixed 2% edge threshold the club fights return
-          &minus;14.9% while the title fights return +13.1%. The belt on the line agrees, rising to +0.0152 on
-          continental and world titles.</p>
+          soft, so that is where a model built on records would find room. The test set says the reverse. The model
+          does best against the market on twelve-round title fights and worst on four-to-six-round club fights:
+          betting a fixed 2% edge returns +13.1% on the first and &minus;14.9% on the second.</p>
         <p>The model reads records and ratings, and a rating is only as good as
           the record under it. At world level both fighters have thirty bouts behind them; on a club card the
           market knows which of the two is being managed, and the model is reading two thin records.</p>
       </section>
       <section>
         <h3>Checked on a window the rule never saw</h3>
-        <p>The model was refit up to June 2021 and the rule copied, unedited, onto June 2021 to June 2023. The
-          direction held: the top of the market gave 2.0 times the closing-line value of the bottom,
-          +0.0276 against +0.0136, and the two intervals do not overlap. The money did not follow:
-          +9.5% with zero inside the interval, and priced at the close &minus;3.2% or
-          +2.8%, depending on how the margin is taken out.</p>
+        <p>Refit on data up to June 2021 and run unchanged on the two years after, the pattern held: the top of
+          the market gave twice the closing-line value of the bottom. The money did not follow. The return was
+          +9.5% with zero inside its interval, and &minus;3.2% or +2.8% at closing prices, depending on how the
+          margin is taken out.</p>
       </section>
       <section>
         <h3>The leak it caught</h3>
         <p>Judges' scorecards are published only for fights that went the distance, so the mere presence of judge
           fields told the model how a fight had ended, a fact nobody has before the bell. Where judges were
-          recorded, 9.7% of fights ended early; where they were not, 74.3% did. A control on 5,673 events, same
-          page and same crawl, confirmed it was the outcome and not the crawler. Put back into the final model,
-          the leak is worth +0.0038 [+0.0031, +0.0044] on the confirmation half. It is gone, and so is a subtler defect: two
-          identical runs of the bench disagreed by 0.0002. Re-run seven weeks later, the published scoreboard
-          came back identical to sixteen significant digits.</p>
+          recorded, 9.7% of fights ended early; where they were not, 74.3% did. A control on 5,673 events confirmed it was
+          the outcome and not the crawler. The leak is gone, and so is a smaller bug that made two identical runs
+          disagree: re-run seven weeks later, the published results came back identical to sixteen significant
+          digits.</p>
       </section>
       <section>
         <h3>Where it stands</h3>
-        <p>Concluded in September 2026, and all of it backtest. On its own the model does not beat the closing
-          line: the gap is &minus;0.0211, or &minus;0.0198 with a yearly refit, and against the opening price it is
-          &minus;0.0089 with zero inside the interval. Blending it into the market price improves that price by
-          +0.0043 [+0.0024, +0.0062]: it carries information the price does not. On twelve-round and continental
-          or world title fights, 803 backtest bets show closing-line value of +0.0143 [+0.0104, +0.0182] and +8.7%
-          [&minus;0.0%, +18.0%]. The margin paid at the open is larger than that value under either way of taking
-          it out, so priced at the close the strategy returns &minus;6.1% under the reading that calibrates the
-          closing price, and &minus;0.6% under the other.</p>
-        <p>Scored as two-outcome log-loss: adding draws to the target was measured, and moved nothing.</p>
+        <p>Concluded in September 2026, all of it backtest. On its own the model does not beat the closing line.
+          Blended into the market price it improves it by +0.0043, so it carries information the price does not.
+          On title fights, 803 backtest bets show positive closing-line value, but the margin paid at the open is
+          larger than that value, so at closing prices the strategy loses: &minus;6.1% or &minus;0.6%, depending
+          on how the margin is taken out.</p>
       </section>
     </div>
   </article>
@@ -564,9 +556,9 @@
       <li class="reveal">
         <span class="tease__n" aria-hidden="true">01</span>
         <h3>Testing by betting when the bets are real</h3>
-        <p>The null is a bookmaker's posted price, the stake is a stake, and the wealth process
-          <em>is</em> the e-process. 84 pre-registered hypotheses, 1,787 priced bouts, re-audited
-          as bets.</p>
+        <p>E-values test a hypothesis by betting against it. Here the other side of the bet is a real
+          bookmaker: 84 pre-registered ideas about where Vertex MMA beats the market, each re-tested as a
+          bet at the posted prices, over 1,787 fights.</p>
         <p class="tease__venue">E-Values: From Statistics to ML <span aria-hidden="true">/</span><span class="u-sr"> and</span> NewInML</p>
         <p class="cd" data-countdown="2026-09-30T11:59:00Z" data-live="Decisions in" title="Counted to the end of 29 September, anywhere on earth">
           <span class="cd__k">Decisions due</span> <span class="cd__t">29 September</span>
@@ -576,8 +568,9 @@
       <li class="reveal">
         <span class="tease__n" aria-hidden="true">02</span>
         <h3>Measure the instrument first</h3>
-        <p>An evaluation reports that a candidate improved a metric. It almost never reports the
-          smallest improvement it could have detected, and those are different claims.</p>
+        <p>How small an improvement can a model evaluation actually see? Retraining the same model with a
+          different random seed changes nothing real, yet it reproduces 80% of the only improvement Vertex MMA's
+          winner model ever shipped.</p>
         <p class="tease__venue">TAE: Can We Trust AI Evaluation?</p>
         <p class="cd" data-countdown="2026-09-23T11:59:00Z" data-live="Decision in" title="Counted to the end of 22 September, anywhere on earth">
           <span class="cd__k">Decision due</span> <span class="cd__t">22 September</span>
@@ -585,11 +578,6 @@
         <a class="btn btn--solid magnet tease__read" href="papers/tae.pdf" aria-label="Read the paper: Measure the instrument first, PDF"><span class="roll">Read the paper</span></a>
       </li>
     </ol>
-
-    <figure class="chart chart--ladder reveal">
-      <figcaption>One post-hoc rule, charged for everything it was free to do</figcaption>
-      <div class="ladder" id="ladder"></div>
-    </figure>
 
     <a class="bigcta" href="research/">
       <span class="roll">Both papers, chart by chart</span>
