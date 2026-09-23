@@ -381,7 +381,8 @@
       <p class="case__idx">03 <span aria-hidden="true">/</span> Concluded research</p>
       <h2 class="case__title" id="case-boxing-t">Vertex Boxing</h2>
       <p class="case__line">The Vertex MMA models moved to professional boxing, to test whether regional and
-        undercard lines are soft enough to beat. The data said the opposite.</p>
+        undercard lines are soft enough to beat. They are not. What the model turned out to read is where the
+        line is going.</p>
       <p class="case__links"><a href="https://github.com/romanprigodskii/vertex-boxing/blob/main/docs/REPORT.md" rel="noopener">The report</a> <span aria-hidden="true">/</span> <a href="https://github.com/romanprigodskii/vertex-boxing" rel="noopener">Source on GitHub</a></p>
     </header>
     <dl class="case__nums">
@@ -427,12 +428,27 @@
           on. The model already in use was the best of the 200. <a href="https://github.com/romanprigodskii/vertex-boxing/blob/main/docs/REPORT.md#8-a-large-random-search-under-a-protocol-written-first" rel="noopener">Section 8 of the report</a> has the table.</p>
       </section>
       <section>
+        <h3>The opening line, and a test fixed in public first</h3>
+        <p>Everything above measures the model against the closing price. Scored instead against how the fights
+          ended, the picture splits in two. Bets at Bet365's closing price made nothing, and the one result that
+          looked like money there turned out to come from stale prices. Bets at the opening price, about three
+          days before the fight, with the model blended into that price, returned +10.9% over 2023&ndash;2025.
+          On its own the model forecasts worse than the opening line. Blended in, it moves that line most of the
+          way to where it closes.</p>
+        <p>Those fights had been looked at before, so the test was run again on 2016&ndash;2020, where the model
+          had never been scored against an opening price. The rules were hashed into the Bitcoin blockchain and
+          pushed to GitHub before the model was even trained. It passed: +18% to +24% at ProBoxingOdds' opening
+          prices, an e-value of seven million against a bar of 20. On 2021&ndash;2023 at Bet365 it fell short.
+          <a href="https://github.com/romanprigodskii/vertex-boxing/blob/main/docs/REPORT.md#9-the-opening-price-tested-by-betting" rel="noopener">Section 9 of the report</a> has both tests and every check that could have
+          killed them.</p>
+      </section>
+      <section>
         <h3>Where it stands</h3>
         <p>Concluded in September 2026, all of it backtest. On its own the model does not beat the closing line.
           Blended into the market price it improves it by +0.0043, so it carries information the price does not.
-          On title fights, 803 backtest bets show positive closing-line value, but the margin paid at the open is
-          larger than that value, so at closing prices the strategy loses: &minus;6.1% or &minus;0.6%, depending
-          on how the margin is taken out.</p>
+          At the closing price that is worth nothing in money. At the opening price it was worth money in two
+          windows out of three, one of them fixed in public before it ran. Whether it still is can only be shown
+          live: bookmakers limit accounts that win at the open, and no real bet has been placed.</p>
       </section>
     </div>
   </article>
