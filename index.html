@@ -428,7 +428,7 @@
           on. The model already in use was the best of the 200. <a href="https://github.com/romanprigodskii/vertex-boxing/blob/main/docs/REPORT.md#8-a-large-random-search-under-a-protocol-written-first" rel="noopener">Section 8 of the report</a> has the table.</p>
       </section>
       <section>
-        <h3>The opening line, and a test fixed in public first</h3>
+        <h3>The opening line, and tests fixed in public first</h3>
         <p>Everything above measures the model against the closing price. Scored instead against how the fights
           ended, the picture splits in two. Bets at Bet365's closing price made nothing, and the one result that
           looked like money there turned out to come from stale prices. Bets at the opening price, about three
@@ -439,6 +439,9 @@
           had never been scored against an opening price. The rules were hashed into the Bitcoin blockchain and
           pushed to GitHub before the model was even trained. It passed: +18% to +24% at ProBoxingOdds' opening
           prices, an e-value of seven million against a bar of 20. On 2021&ndash;2023 at Bet365 it fell short.
+          A third test decided in advance which fights to bet. Leaving out the club fights looked like the obvious
+          improvement, and it lost on every past window, so the rule stayed as it was. It was then run once on
+          the first seven months of 2026, which nobody had bet on, and passed again: 41.8 against the same bar.
           <a href="https://github.com/romanprigodskii/vertex-boxing/blob/main/docs/REPORT.md#9-the-opening-price-tested-by-betting" rel="noopener">Section 9 of the report</a> has both tests and every check that could have
           killed them.</p>
       </section>
@@ -446,8 +449,8 @@
         <h3>Where it stands</h3>
         <p>Concluded in September 2026, all of it backtest. On its own the model does not beat the closing line.
           Blended into the market price it improves it by +0.0043, so it carries information the price does not.
-          At the closing price that is worth nothing in money. At the opening price it was worth money in two
-          windows out of three, one of them fixed in public before it ran. Whether it still is can only be shown
+          At the closing price that is worth nothing in money. At the opening price it was worth money in three
+          windows out of four, two of them fixed in public before they ran. Whether it still is can only be shown
           live: bookmakers limit accounts that win at the open, and no real bet has been placed.</p>
       </section>
     </div>
