@@ -1,0 +1,190 @@
+/* ==========================================================================
+   Vertex MMA, the case page.
+   Vertex is black, with an amber V and violet score rings. Its recordings
+   stand on light taken from those two: a dark stage for the lead, a bout
+   window that floats on the page with a warm edge to its shadow, and an
+   amber stage for the score chart.
+   ========================================================================== */
+
+/* a dark window should never flash white before its poster arrives */
+.vxm-hero .win.is-dark, .vxm-bout .win.is-dark, .vxm-rate .win.is-dark { background: oklch(0.1 0.004 265); }
+
+/* the title bar's height, from site.css's .win-bar */
+.vxm-win, .vxm-bout-win, .vxm-rate-win { --wb: clamp(30px, 2.6vw, 38px); }
+/* the address sits in the middle of the bar, as it does in a browser, clear
+   of the dots on the left and the pause on the right */
+.vxm-win .win-bar, .vxm-bout-win .win-bar, .vxm-rate-win .win-bar { position: relative; }
+.vxm-win .win-url, .vxm-bout-win .win-url, .vxm-rate-win .win-url {
+  position: absolute;
+  left: 50%;
+  top: calc((var(--wb) - 22px) / 2);
+  width: min(360px, 100% - 148px);
+  max-width: none;
+  margin: 0;
+  transform: translateX(-50%);
+}
+/* on a dark window the pause lives in the title bar, the size and colour of
+   the address pill, where it covers nothing the recording shows */
+.vxm-win .vid-toggle, .vxm-bout-win .vid-toggle, .vxm-rate-win .vid-toggle {
+  top: calc((var(--wb) - 22px) / 2);
+  bottom: auto;
+  right: 10px;
+  height: 22px;
+  min-width: 52px;
+  padding: 0 10px;
+  border-radius: 6px;
+  background: oklch(0.26 0.01 265);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  color: oklch(0.8 0.01 262);
+  font: 500 0.71875rem/22px var(--f-sans);
+  opacity: 1;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+.vxm-win .vid-toggle:hover, .vxm-bout-win .vid-toggle:hover, .vxm-rate-win .vid-toggle:hover { background: oklch(0.32 0.01 265); color: oklch(0.96 0.004 262); }
+.vxm-win .vid-toggle:focus-visible, .vxm-bout-win .vid-toggle:focus-visible, .vxm-rate-win .vid-toggle:focus-visible { outline: 2px solid oklch(0.9 0.005 262); outline-offset: 1px; }
+
+/* ------------------------------------------------------------ the lead */
+.stage.vxm-stage {
+  padding: clamp(18px, 3.6vw, 56px);
+  background:
+    radial-gradient(52% 62% at 6% 106%, oklch(0.62 0.15 62 / 0.46), transparent 70%),
+    radial-gradient(44% 56% at 97% -8%, oklch(0.5 0.14 302 / 0.36), transparent 72%),
+    radial-gradient(70% 70% at 50% 45%, oklch(0.2 0.012 275), transparent 100%),
+    oklch(0.135 0.008 272);
+  box-shadow: 0 40px 80px -52px oklch(0.2 0.03 262 / 0.6);
+}
+/* the window and the phone stand side by side at one height */
+.vxm-devs { display: flex; align-items: flex-end; gap: clamp(14px, 2.2vw, 36px); }
+.vxm-win { flex: 1 1 0; min-width: 0; }
+.vxm-phone { flex: 0 0 22.8%; }
+.vxm-stage .win { box-shadow: 0 0 0 1px oklch(1 0 0 / 0.1), 0 2px 4px oklch(0 0 0 / 0.25), 0 40px 70px -30px oklch(0 0 0 / 0.75); }
+.vxm-stage .phone { box-shadow: 0 0 0 1px oklch(1 0 0 / 0.14), 0 2px 4px oklch(0 0 0 / 0.25), 0 40px 70px -30px oklch(0 0 0 / 0.8); }
+/* the phone's pause sits clear of its rounded corners, as dark glass on a dark screen */
+.vxm-phone .vid-toggle {
+  right: auto;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  background: oklch(0.22 0.01 265 / 0.72);
+  color: oklch(0.9 0.005 262);
+  box-shadow: 0 0 0 0.5px oklch(1 0 0 / 0.16), 0 4px 12px -4px oklch(0 0 0 / 0.5);
+}
+.vxm-phone .vid-toggle:focus-visible { outline: 2px solid oklch(0.9 0.005 262); outline-offset: 2px; }
+
+/* the stage arrives, then the window, then the phone */
+html.js .vxm-stage .vxm-win,
+html.js .vxm-stage .vxm-phone { opacity: 0; translate: 0 28px; transition: opacity 900ms var(--eo), translate 1300ms var(--eo); }
+html.js .vxm-stage .vxm-win { transition-delay: 140ms; }
+html.js .vxm-stage .vxm-phone { transition-delay: 300ms; }
+html.js .vxm-stage.in .vxm-win,
+html.js .vxm-stage.in .vxm-phone { opacity: 1; translate: 0 0; }
+
+/* ------------------------------------------------------------ one bout */
+/* the window floats on the page in Vertex's amber light; the list in the
+   first column follows what the recording shows */
+.vxm-bout { margin-top: clamp(64px, 7vw, 124px); display: grid; grid-template-columns: var(--z) 1fr; }
+.vxm-bout-cap { display: flex; flex-direction: column; padding-right: var(--gut); min-width: 0; }
+.vxm-k { font-weight: 600; font-size: 1rem; line-height: 1.3; letter-spacing: -0.02em; color: var(--ink); max-width: 18ch; text-wrap: balance; }
+.vxm-note { margin-top: auto; padding-top: 24px; font-size: var(--fs-fine); line-height: 1.5; color: var(--ink-3); text-wrap: pretty; }
+/* a neutral lift with a thin warm edge to it: a darker amber would turn
+   brown on the white page */
+.vxm-bout-win {
+  align-self: start;
+  box-shadow:
+    0 0 0 1px oklch(0.2 0.02 262 / 0.14),
+    0 2px 4px oklch(0.2 0.02 262 / 0.06),
+    0 44px 80px -46px oklch(0.2 0.03 262 / 0.5),
+    0 56px 120px -64px oklch(0.84 0.16 70 / 0.4);
+}
+
+.vxm-ch { list-style: none; margin: clamp(20px, 2.4vw, 36px) 0 0; padding: 0; display: grid; gap: 6px; }
+.vxm-ch li { position: relative; padding: 12px 0 14px 18px; }
+/* the track, and the part of it this chapter has played */
+.vxm-ch li::before, .vxm-ch li::after { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 2px; border-radius: 1px; }
+.vxm-ch li::before { background: var(--line-2); }
+.vxm-ch li::after { background: var(--ink); transform: scaleY(0); transform-origin: top; }
+.vxm-bout.is-live .vxm-ch li.is-on::after { transform: scaleY(var(--p, 0)); }
+.vxm-ch b { display: block; font-weight: 600; font-size: 1.0625rem; line-height: 1.25; letter-spacing: -0.02em; color: var(--ink); transition: color 360ms var(--eo); }
+.vxm-ch b + span { display: block; margin-top: 5px; font-size: 0.875rem; line-height: 1.45; color: var(--ink-2); transition: color 360ms var(--eo); text-wrap: pretty; }
+.vxm-bout.is-live .vxm-ch li:not(.is-on) b,
+.vxm-bout.is-live .vxm-ch li:not(.is-on) b + span { color: var(--ink-3); }
+
+/* each item is a button once the script runs; the whole row is its target */
+.vxm-go { display: block; width: 100%; padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.vxm-go::before { content: ""; position: absolute; inset: 0; border-radius: 10px; }
+.vxm-go:focus-visible { outline: 0; }
+.vxm-go:focus-visible::before { outline: 2px solid var(--ink); outline-offset: 2px; }
+.vxm-bout.is-live .vxm-ch li:not(.is-on) .vxm-go:hover b { color: var(--ink); }
+.vxm-bout.is-live .vxm-ch li:not(.is-on) .vxm-go:hover b + span { color: var(--ink-2); }
+
+/* ------------------------------------------------------------ the score, fight by fight */
+.stage.vxm-amber {
+  padding: clamp(14px, 2.4vw, 36px) clamp(14px, 2.4vw, 36px) clamp(18px, 2.2vw, 30px);
+  background:
+    radial-gradient(90% 80% at 100% 112%, oklch(0.76 0.15 58 / 0.9), transparent 70%),
+    radial-gradient(80% 70% at 0% -10%, oklch(0.985 0.02 88), transparent 70%),
+    linear-gradient(165deg, oklch(0.955 0.045 80), oklch(0.87 0.105 62));
+}
+.vxm-amber .win { box-shadow: 0 0 0 1px oklch(0.3 0.06 50 / 0.2), 0 2px 4px oklch(0.3 0.06 50 / 0.12), 0 34px 60px -30px oklch(0.35 0.1 45 / 0.6); }
+
+.vxm-steps { list-style: none; margin: clamp(18px, 2vw, 28px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px clamp(12px, 1.6vw, 24px); }
+.vxm-steps li { position: relative; padding-top: 14px; }
+.vxm-steps li::before, .vxm-steps li::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; border-radius: 1px; }
+.vxm-steps li::before { background: oklch(0.35 0.07 50 / 0.2); }
+.vxm-steps li::after { background: var(--ink); transform: scaleX(0); transform-origin: left; transition: transform 700ms var(--eo); }
+.vxm-rate.is-live .vxm-steps li.is-on::after { transform: scaleX(1); }
+.vxm-steps b { display: block; font-weight: 300; font-size: clamp(2.125rem, 1.3rem + 1.5vw, 2.875rem); line-height: 1; letter-spacing: -0.05em; margin-left: -0.04em; color: var(--ink); transition: color 360ms var(--eo); }
+.vxm-steps b + span { display: block; margin-top: 8px; font-size: 0.875rem; font-weight: 500; line-height: 1.3; letter-spacing: -0.01em; color: var(--ink); transition: color 360ms var(--eo); }
+.vxm-steps small { display: block; margin-top: 3px; font-size: 0.78125rem; line-height: 1.35; color: oklch(0.4 0.045 52); }
+.vxm-rate.is-live .vxm-steps li:not(.is-on) b,
+.vxm-rate.is-live .vxm-steps li:not(.is-on) b + span { color: oklch(0.42 0.05 52); }
+.vxm-rate.is-live .vxm-steps li:not(.is-on) .vxm-go:hover b { color: var(--ink); }
+
+/* four steps side by side need about 600px; in a narrower column they pair up */
+.vxm-rate { container-type: inline-size; }
+@container (max-width: 600px) {
+  .vxm-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; }
+}
+
+.vxm-stack { margin-top: 22px; }
+
+/* the floor's dashed edges run behind the row labels; a wider halo cuts them
+   cleanly, and the widest keeps the edge off the minus of -0.0026, which the
+   line would otherwise turn into a plus */
+.fl .fl-lab, .fl .fl-cap, .fl .fl-ann { stroke-width: 7px; }
+.fl .fl-ann.is-r { stroke-width: 13px; }
+
+/* ------------------------------------------------------------ widths */
+@media (max-width: 1100px) {
+  .vxm-bout { grid-template-columns: minmax(0, 1fr); }
+  .vxm-bout-win { order: -1; }
+  .vxm-bout-cap { margin-top: clamp(22px, 3vw, 32px); padding-right: 0; }
+  .vxm-k { max-width: none; }
+  .vxm-ch { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 var(--gut); margin-top: 16px; }
+  .vxm-ch li { padding: 16px 0 4px; }
+  .vxm-ch li::before, .vxm-ch li::after { top: 0; bottom: auto; right: 0; width: auto; height: 2px; }
+  .vxm-ch li::after { transform: scaleX(0); transform-origin: left; }
+  .vxm-bout.is-live .vxm-ch li.is-on::after { transform: scaleX(var(--p, 0)); }
+  .vxm-note { margin-top: 18px; padding-top: 0; max-width: 70ch; }
+}
+
+@media (max-width: 760px) {
+  .vxm-devs { flex-direction: column; align-items: center; gap: 22px; }
+  .vxm-win { flex: none; width: 100%; }
+  .vxm-phone { flex: none; width: 62%; }
+  .vxm-ch { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .vxm-ch li { padding: 14px 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .vxm-stage .vxm-win,
+  html.js .vxm-stage .vxm-phone { opacity: 1; translate: none; transition: none; }
+  .vxm-ch b, .vxm-ch b + span, .vxm-steps b, .vxm-steps b + span, .vxm-steps li::after { transition: none; }
+}
+
+@media print {
+  .stage.vxm-stage, .stage.vxm-amber { background: none !important; box-shadow: none !important; }
+  .vxm-bout-win { box-shadow: none; }
+}

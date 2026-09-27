@@ -1,68 +1,114 @@
 /* ==========================================================================
-   Alfa-Romeo (/work/alfa-romeo/)
+   Alfa-Romeo (/work/alfa-romeo/), in the clean light theme
 
-   The lead is a loupe and the storyboard it reads: eight of the 93 screens
-   in sequence, and one of them large enough to read. The signature figure
-   puts the copilot's two limits on the page's own lines, read in thousands of
-   roubles, so its ticks land on the paper behind it. Everything here is laid
-   out on the five decades of site.css; only tokens from there are used.
+   The lead is the app itself: both sides of it running on one red stage,
+   each phone with an index of its screens that follows the loop and stops
+   on any screen picked from it. The screens stand on red stages tinted from
+   Alfa's own palette; the copilot's limits sit on a neutral tile. Tokens and
+   components come from site.css.
    ========================================================================== */
 
-/* ------------------------------------------------------------ the lead */
-.ar-lead {
-  --lp-h: min(calc(100vh - var(--bar-h) - 76px), 860px, calc((var(--frame) * 0.382753 - var(--gut)) * 1.42));
-  margin-top: clamp(44px, 4.8vw, 80px);
-  align-items: start;
+/* ------------------------------------------------------------ the lead: two phones, two indexes */
+.ar-duo { margin-top: clamp(48px, 5vw, 88px); }
+.ar-stage {
+  --ph-w: clamp(200px, min((100vh - 250px) * 0.46, 22vw), 330px);
+  --off: clamp(24px, 3vw, 52px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--ph-w) var(--ph-w) minmax(0, 1fr);
+  column-gap: clamp(20px, 2.4vw, 40px);
+  align-items: center;
+  padding: clamp(40px, 4vw, 64px) clamp(20px, 2.8vw, 48px);
 }
-.ar-loupe { grid-column: 1 / 3; align-self: start; position: sticky; top: calc(var(--bar-h) + 24px); display: flex; align-items: flex-end; gap: clamp(16px, 1.8vw, 28px); }
-.ar-lp { flex: none; height: var(--lp-h); width: auto; }
-@supports (height: 100svh) { .ar-lead { --lp-h: min(calc(100svh - var(--bar-h) - 76px), 860px, calc((var(--frame) * 0.382753 - var(--gut)) * 1.42)); } }
-.ar-lp img { position: absolute; inset: 0; }
-.ar-lp img.is-a { position: relative; }
-.ar-lp-cap { flex: 1; min-width: 0; padding-bottom: 4px; border-top: 1.5px solid var(--ink); padding-top: 10px; }
-.ar-lp-k { display: block; font-family: var(--f-cond); font-weight: 600; font-size: clamp(1.3125rem, 0.95rem + 0.8vw, 1.875rem); line-height: 1.04; letter-spacing: -0.004em; text-wrap: balance; }
-.ar-hint { display: none; margin-top: 10px; font-size: var(--fs-fine); line-height: 1.4; color: var(--ink-2); }
-html.js .ar-hint { display: block; }
-
-.ar-sb { grid-column: 3 / 6; padding-right: 0; }
-.ar-sheet { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: clamp(14px, 1.8vw, 30px); row-gap: clamp(30px, 3.2vw, 52px); }
-.ar-t { display: block; text-decoration: none; color: inherit; -webkit-tap-highlight-color: transparent; }
-.ar-t:focus-visible { outline: none; }
-.ar-t:focus-visible span { text-decoration: underline; text-decoration-thickness: 1.5px; }
-.ar-t img { width: 100%; height: auto; aspect-ratio: 400 / 870; object-fit: cover; border-radius: 12.5% / 5.75%; background: #fff; box-shadow: 0 0 0 1px rgba(21, 20, 18, 0.14), 0 24px 42px -30px rgba(21, 20, 18, 0.55); transition: transform 420ms var(--eo); }
-.ar-t span { display: block; margin-top: 12px; font-size: 0.8125rem; line-height: 1.32; color: var(--ink-2); padding-right: 4px; transition: color 240ms ease; }
-html.js .ar-t { cursor: pointer; }
-html.js .ar-t[aria-pressed="true"] span { color: var(--ink); font-weight: 600; }
-@media (hover: hover) and (pointer: fine) {
-  html.js .ar-t:hover img { transform: translateY(-6px); }
-  html.js .ar-t[aria-pressed="true"]:hover img { transform: none; }
+@supports (height: 100svh) { .ar-stage { --ph-w: clamp(200px, min((100svh - 250px) * 0.46, 22vw), 330px); } }
+.ar-dev { display: contents; }
+.ar-ph {
+  width: var(--ph-w);
+  background: #fff;
+  box-shadow:
+    0 0 0 1px oklch(0.35 0.06 22 / 0.09),
+    0 2px 4px oklch(0.35 0.08 22 / 0.06),
+    0 36px 64px -34px oklch(0.36 0.12 22 / 0.55);
 }
-/* the loupe's mark on the sheet: a frame that travels to the screen being read */
-.ar-sel { position: absolute; left: 0; top: 0; display: none; border: 1.5px solid var(--ink); pointer-events: none; transition: transform 620ms var(--eo), width 620ms var(--eo), height 620ms var(--eo), opacity 500ms ease; }
-html.js .ar-sel { display: block; opacity: 0; }
-html.js .ar-sheet.in .ar-sel { opacity: 1; transition-delay: 0ms, 0ms, 0ms, 1000ms; }
-.ar-note { margin-top: clamp(22px, 2.4vw, 34px); }
+.is-p .ar-ph { grid-column: 2; grid-row: 1; margin-bottom: var(--off); }
+.is-b .ar-ph { grid-column: 3; grid-row: 1; margin-top: var(--off); }
+.is-p .ar-idx { grid-column: 1; grid-row: 1; justify-self: end; text-align: right; margin-bottom: var(--off); }
+.is-b .ar-idx { grid-column: 4; grid-row: 1; justify-self: start; margin-top: var(--off); }
 
-/* entrance: the loupe's screen lights top to bottom, the sheet rises frame by frame */
-html.js .ar-lp img.is-a { clip-path: inset(0 0 100% 0); transition: clip-path 1300ms var(--eio) 200ms; }
-html.js .ar-lead.in .ar-lp img.is-a { clip-path: inset(0 0 0 0); }
-html.js .ar-sheet li { opacity: 0; transform: translateY(36px); transition: opacity 800ms var(--eo), transform 1000ms var(--eo); transition-delay: calc(120ms + var(--i) * 70ms); }
-html.js .ar-sheet.in li { opacity: 1; transform: none; }
-html.js .ar-lp-cap { opacity: 0; transition: opacity 700ms ease 900ms; }
-html.js .ar-lead.in .ar-lp-cap { opacity: 1; }
+/* the index: the screens of one loop, in order; the one on screen is inked,
+   and its track fills for as long as it is held */
+.ar-idx { width: 100%; max-width: 300px; }
+.ar-idx-h { display: flex; align-items: center; justify-content: flex-start; gap: 14px; min-height: 30px; margin-bottom: 10px; }
+.is-p .ar-idx-h { flex-direction: row-reverse; }
+.ar-idx-k { font-weight: 600; font-size: 1.1875rem; line-height: 1.1; letter-spacing: -0.025em; }
+.ar-steps li {
+  --p: 0;
+  position: relative;
+  padding: 7px 0 7px 18px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+  color: oklch(0.42 0.045 22);
+  text-wrap: balance;
+  transition: color 280ms ease;
+}
+.is-p .ar-steps li { padding: 7px 18px 7px 0; }
+.ar-steps li::before, .ar-steps li::after { content: ""; position: absolute; left: 0; top: 7px; bottom: 7px; width: 2px; border-radius: 1px; }
+.is-p .ar-steps li::before, .is-p .ar-steps li::after { left: auto; right: 0; }
+.ar-steps li::before { background: oklch(0.4 0.08 22 / 0.14); }
+.ar-steps li::after { background: var(--ink); transform: scaleY(var(--p)); transform-origin: top; }
+.ar-steps li.is-on { color: var(--ink); }
+.ar-step {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  color: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ar-step:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 4px; }
+@media (hover: hover) and (pointer: fine) { .ar-steps li:hover { color: var(--ink); } }
+
+/* each loop's pause sits in its own index head, not over the screen */
+.ar-idx-h .vid-toggle {
+  position: static;
+  flex: none;
+  background: oklch(1 0 0 / 0.62);
+  box-shadow: 0 0 0 0.5px oklch(0.35 0.06 22 / 0.16), 0 1px 3px oklch(0.35 0.06 22 / 0.1);
+  opacity: 1;
+}
+.ar-idx-h .vid-toggle:hover { background: oklch(1 0 0 / 0.9); }
+
+.ar-duo-cap .ar-hint { display: none; }
+html.js .ar-duo-cap .ar-hint { display: inline; color: var(--ink-2); font-weight: 600; }
+
+/* entrance: the stage rises whole (site.css), the phones a beat later, then the indexes */
+html.js .ar-stage .ar-ph { opacity: 0; translate: 0 40px; transition: opacity 900ms var(--eo), translate 1300ms var(--eo); transition-delay: calc(180ms + var(--i) * 120ms); }
+html.js .ar-stage.in .ar-ph { opacity: 1; translate: 0 0; }
+html.js .ar-stage .ar-idx-h, html.js .ar-stage .ar-steps li { opacity: 0; translate: 0 8px; transition: opacity 600ms ease, translate 800ms var(--eo), color 280ms ease; }
+html.js .ar-stage .ar-idx-h { transition-delay: 520ms, 520ms, 0ms; }
+html.js .ar-stage .ar-steps li { transition-delay: calc(600ms + var(--i) * 60ms), calc(600ms + var(--i) * 60ms), 0ms; }
+html.js .ar-stage.in .ar-idx-h, html.js .ar-stage.in .ar-steps li { opacity: 1; translate: 0 0; }
 
 /* ------------------------------------------------------------ one passport, one balance */
 .ar-fans { margin-top: clamp(30px, 3.2vw, 48px); display: grid; grid-template-columns: 31.005% minmax(56px, 13%) 1fr; row-gap: clamp(26px, 2.8vw, 40px); align-items: center; }
 .ar-fan { display: contents; }
-.ar-fan-a { font-family: var(--f-cond); font-weight: 700; font-size: clamp(1.25rem, 0.95rem + 0.7vw, 1.625rem); line-height: 1; letter-spacing: -0.004em; white-space: nowrap; }
+.ar-fan-a { font-weight: 600; font-size: clamp(1.25rem, 0.95rem + 0.7vw, 1.625rem); line-height: 1; letter-spacing: -0.03em; white-space: nowrap; }
 .ar-fan.is-out .ar-fan-a { justify-self: end; padding-right: 12px; }
 .ar-fan.is-in .ar-fan-a { padding-left: 12px; }
-.ar-fan-b li { height: 32px; display: flex; align-items: center; font-family: var(--f-cond); font-weight: 500; font-size: 1.125rem; line-height: 1; color: var(--ink); white-space: nowrap; }
+.ar-fan-b li { height: 32px; display: flex; align-items: center; font-weight: 400; font-size: 1.0625rem; line-height: 1; letter-spacing: -0.012em; color: var(--ink-2); white-space: nowrap; }
 .ar-fan.is-out .ar-fan-b li { padding-left: 12px; }
 .ar-fan.is-in .ar-fan-b { justify-self: end; text-align: right; }
 .ar-fan.is-in .ar-fan-b li { justify-content: flex-end; padding-right: 12px; }
 .ar-fan-s { width: 100%; overflow: visible; }
-.ar-fan-s path { fill: none; stroke: var(--ink); stroke-width: 1.25; vector-effect: non-scaling-stroke; }
+.ar-fan-s path { fill: none; stroke: var(--ink-3); stroke-width: 1.25; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 /* one opens out into many; many close in on one */
 html.js .ar-fan-s path { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 900ms var(--eio); }
 html.js .ar-fans.in .ar-fan-s path { stroke-dashoffset: 0; }
@@ -75,70 +121,91 @@ html.js .ar-fan.is-in .ar-fan-b li { transform: translateX(-8px); transition-del
 html.js .ar-fan.is-in .ar-fan-a { transition-delay: 2100ms; }
 html.js .ar-fans.in .ar-fan-b li, html.js .ar-fans.in .ar-fan-a { opacity: 1; transform: none; }
 
-/* ------------------------------------------------------------ the copilot's limits */
-.ar-lim { --ax: 226px; margin-top: clamp(72px, 7vw, 120px); }
-.ar-lim-h { align-items: end; }
-.ar-lim-h > div { grid-column: 1 / 4; }
-.ar-lim-h .fig-s { max-width: 60ch; }
-.ar-sc { position: relative; margin-top: clamp(14px, 1.6vw, 24px); user-select: none; -webkit-user-select: none; touch-action: pan-y; }
+/* ------------------------------------------------------------ the copilot's limits, on a tile */
+.ar-lim {
+  --ax: 264px;
+  margin-top: clamp(80px, 8vw, 140px);
+  padding: clamp(24px, 3vw, 48px) clamp(20px, 3.4vw, 56px) clamp(20px, 2.4vw, 32px);
+  background: var(--tile);
+  border-radius: var(--r-stage);
+}
+.ar-lim-k { font-weight: 600; font-size: clamp(1.5rem, 1rem + 1.1vw, 2.25rem); line-height: 1.08; letter-spacing: -0.035em; }
+.ar-lim-s { margin-top: 10px; max-width: 58ch; font-size: var(--fs-small); line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
+.ar-sc { position: relative; margin-top: clamp(22px, 2.6vw, 40px); user-select: none; -webkit-user-select: none; touch-action: pan-y; }
 html.js .ar-sc { cursor: ew-resize; }
 .ar-wide, .ar-narrow { position: relative; z-index: 1; pointer-events: none; }
 .ar-narrow { display: none; }
-.ar-sc-svg { overflow: visible; font-family: var(--f-cond); font-variant-numeric: tabular-nums lining-nums; }
-.ar-p { stroke-width: 1; shape-rendering: crispEdges; }
-.ar-p.gn { stroke: var(--g-n); }
-.ar-p.gh { stroke: var(--g-h); }
-.ar-p.gd, .ar-p.gb, .ar-p.ge { stroke: var(--g-d); }
-.ar-p.g1 { stroke: var(--g-1); }
-.ar-rule { stroke: var(--ink); stroke-width: 1.5; }
-.ar-lt { font-size: 18px; font-weight: 700; fill: var(--ink); }
-.ar-lt.is-n { font-size: 16px; }
-.ar-ls { font-family: var(--f-sans); font-size: 13px; fill: var(--ink-2); }
+.ar-sc-svg { overflow: visible; font-family: var(--f-sans); }
+.ar-g { stroke: var(--line-2); stroke-width: 1; shape-rendering: crispEdges; }
+.ar-rule { stroke: var(--ink); stroke-width: 1.25; }
+.ar-lt { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; fill: var(--ink); }
+.ar-lt.is-n { font-size: 15px; }
+.ar-ls { font-size: 13px; fill: var(--ink-3); }
 .ar-ls.is-n { font-size: 12px; }
-.ar-lt, .ar-ls, .ar-in { paint-order: stroke; stroke: var(--paper); stroke-width: 5px; stroke-linejoin: round; }
-.ar-bar, .ar-stop { fill: var(--ink); }
-.ar-past { stroke: var(--ink-3); stroke-width: 1.5; stroke-dasharray: 3 4; }
-.ar-sig { stroke: var(--ink); stroke-width: 2; }
-.ar-in { font-size: 14px; font-weight: 600; fill: var(--ink-2); transition: fill 260ms ease; }
+.ar-lt, .ar-ls, .ar-in, .ar-nm { paint-order: stroke; stroke: var(--tile); stroke-width: 5px; stroke-linejoin: round; }
+.ar-track { fill: var(--tile-2); }
+.ar-bar { fill: var(--ink); }
+.ar-one { fill: var(--ink); }
+.ar-two { fill: var(--ink); }
+.ar-in { font-size: 13px; font-weight: 500; letter-spacing: -0.005em; fill: var(--ink-2); transition: fill 260ms ease; }
 .ar-in.is-end { text-anchor: end; }
 html.js .ar-sc.is-live .ar-in { fill: var(--ink-3); }
-html.js .ar-sc.is-live .ar-in.is-on { fill: var(--ink); }
-.ar-ax { stroke: var(--ink); stroke-width: 1.5; }
-.ar-tk { stroke: var(--ink); stroke-width: 1; shape-rendering: crispEdges; }
-text.ar-nm { font-size: 13px; fill: var(--ink-2); text-anchor: middle; }
+html.js .ar-sc.is-live .ar-in.is-on { fill: var(--ink); font-weight: 600; }
+.ar-ax { stroke: var(--ink-3); stroke-width: 1; shape-rendering: crispEdges; }
+.ar-tk { stroke: var(--ink-3); stroke-width: 1; shape-rendering: crispEdges; }
+.ar-tk.is-d { stroke: var(--ink-2); }
+text.ar-nm { font-size: 12.5px; font-weight: 500; fill: var(--ink-3); text-anchor: middle; }
 text.ar-nm.is-first { text-anchor: start; }
-text.ar-nm.is-bar { font-size: 15px; font-weight: 700; fill: var(--ink); }
+text.ar-nm.is-bar { font-size: 13.5px; font-weight: 600; fill: var(--ink); }
 
-/* the cursor: a needle that reads an amount off the scale */
-.ar-cur { position: absolute; z-index: 0; top: 0; left: var(--cx, 76.551%); width: 0; height: calc(var(--ax) + 2px); display: none; outline: none; }
+/* the cursor: a playhead that reads an amount off the scale */
+.ar-cur { position: absolute; z-index: 0; top: 0; left: var(--cx, 69.75%); width: 0; height: calc(var(--ax) + 1px); display: none; outline: none; }
 html.js .ar-cur { display: block; }
-.ar-cur-l { position: absolute; left: -0.75px; top: 30px; bottom: 0; width: 1.5px; background: var(--ink); }
-.ar-cur-l::before { content: ""; position: absolute; top: 0; left: -5.25px; border: 6px solid transparent; border-top: 8px solid var(--ink); border-bottom: 0; }
-.ar-cur-t { position: absolute; top: 0; left: 0; transform: translateX(calc(-50% + var(--tx, 0px))); padding: 5px 8px 6px; border-radius: 2px; background: var(--ink); color: var(--paper); font-family: var(--f-cond); font-weight: 600; font-size: 0.9375rem; line-height: 1; letter-spacing: 0.005em; font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+.ar-cur-l { position: absolute; left: -1px; top: 26px; bottom: 0; width: 2px; border-radius: 1px; background: var(--ink); }
+.ar-cur-l::after { content: ""; position: absolute; left: -5px; bottom: -6px; width: 12px; height: 12px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 3px var(--tile); transition: transform 260ms var(--eo), box-shadow 260ms var(--eo); }
+.ar-cur-t {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(calc(-50% + var(--tx, 0px)));
+  padding: 6px 9px 7px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--bg);
+  font: 600 0.8125rem/1 var(--f-sans);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px -8px oklch(0.2 0.02 262 / 0.5);
+}
+.ar-sc:hover .ar-cur-l::after, .ar-sc.is-drag .ar-cur-l::after, .ar-cur:focus-visible .ar-cur-l::after { transform: scale(1.2); box-shadow: 0 0 0 3px var(--tile), 0 0 0 9px oklch(0.2 0.02 262 / 0.08); }
 .ar-cur:focus-visible .ar-cur-t { outline: 2px solid var(--ink); outline-offset: 3px; }
-/* the paper develops, then the lanes are drawn by the sweep */
-html.js .ar-p { transform: scaleY(0); transform-box: fill-box; transform-origin: bottom; transition: transform 800ms var(--eo) calc(var(--i) * 12ms); }
-html.js .ar-sc.in .ar-p { transform: none; }
+/* the decades develop, then the lanes are drawn by the sweep */
+html.js .ar-g { transform: scaleY(0); transform-box: fill-box; transform-origin: bottom; transition: transform 900ms var(--eo) calc(var(--i) * 70ms); }
+html.js .ar-sc.in .ar-g { transform: none; }
 html.js .ar-cur { opacity: 0; transition: opacity 400ms ease 300ms; }
 html.js .ar-sc.in .ar-cur { opacity: 1; }
-.ar-lim-f { margin-top: 16px; font-size: var(--fs-fine); line-height: 1.45; color: var(--ink-2); }
-.ar-lim-f > :first-child { grid-column: 1 / 3; }
-.ar-lim-f > :last-child { grid-column: 3 / 6; padding-right: 0; max-width: 62ch; }
-.ar-lim-f .ar-hint { margin-top: 0; color: var(--ink); font-weight: 600; }
+.ar-lim-f { display: flex; flex-wrap: wrap; gap: 6px 24px; margin-top: 18px; font-size: var(--fs-fine); line-height: 1.45; color: var(--ink-3); }
+.ar-lim-f .ar-hint { display: none; color: var(--ink); font-weight: 600; }
+html.js .ar-lim-f .ar-hint { display: inline; }
 
-/* ------------------------------------------------------------ the credit screen, read */
-.ar-cr { position: relative; display: grid; grid-template-columns: minmax(0, 36%) minmax(0, 1fr); align-items: stretch; }
-.ar-cr-ph { position: relative; }
+/* ------------------------------------------------------------ the credit screen, read, on its stage */
+.ar-cr { display: grid; grid-template-columns: minmax(0, 40%) minmax(0, 1fr); align-items: stretch; padding: clamp(28px, 3.4vw, 56px) clamp(22px, 3vw, 48px); }
+.ar-cr-ph {
+  background: #fff;
+  box-shadow:
+    0 0 0 1px oklch(0.35 0.06 22 / 0.09),
+    0 2px 4px oklch(0.35 0.08 22 / 0.06),
+    0 30px 54px -30px oklch(0.36 0.12 22 / 0.5);
+}
 .ar-cr-l { position: relative; }
 .ar-cr-l li { position: absolute; left: 0; right: 0; top: var(--t); height: var(--h); padding-left: clamp(30px, 2.8vw, 44px); outline: none; }
-.ar-cr-l li::before { content: ""; position: absolute; left: clamp(10px, 1vw, 16px); top: 3px; bottom: 3px; width: 9px; border: 1.5px solid var(--ink); border-left: 0; }
-.ar-cr-l b { display: block; font-family: var(--f-cond); font-weight: 700; font-size: clamp(1.125rem, 0.9rem + 0.5vw, 1.375rem); line-height: 1.05; }
-.ar-cr-l span { display: block; margin-top: 4px; font-size: var(--fs-small); line-height: 1.38; color: var(--ink-2); max-width: 30ch; }
-.ar-cr-l li.is-on b { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 0.18em; }
+.ar-cr-l li::before { content: ""; position: absolute; left: clamp(10px, 1vw, 16px); top: 3px; bottom: 3px; width: 9px; border: 1.25px solid var(--ink); border-left: 0; border-radius: 0 5px 5px 0; }
+.ar-cr-l b { display: block; font-weight: 600; font-size: clamp(1.125rem, 0.9rem + 0.5vw, 1.375rem); line-height: 1.1; letter-spacing: -0.025em; }
+.ar-cr-l span { display: block; margin-top: 5px; font-size: var(--fs-small); line-height: 1.4; color: oklch(0.4 0.04 22); max-width: 30ch; text-wrap: pretty; }
+.ar-cr-l li.is-on b { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 0.2em; }
 html.js .ar-cr-l li { cursor: default; }
-.ar-cr .fig-cap { grid-column: 1 / 3; }
 /* a window that walks the screen with the brackets; the rest of the screen falls back */
-.ar-spot { position: absolute; left: 2.5%; right: 2.5%; top: 0; height: 0; border-radius: 9px; box-shadow: 0 0 0 200vmax rgba(243, 242, 238, 0.8), inset 0 0 0 1.5px var(--ink); opacity: 0; pointer-events: none; transition: opacity 320ms ease, top 560ms var(--eo), height 560ms var(--eo); }
+.ar-spot { position: absolute; left: 2.5%; right: 2.5%; top: 0; height: 0; border-radius: 10px; box-shadow: 0 0 0 200vmax oklch(0.985 0.006 30 / 0.8), inset 0 0 0 1.5px var(--ink); opacity: 0; pointer-events: none; transition: opacity 320ms ease, top 560ms var(--eo), height 560ms var(--eo); }
 .ar-cr[data-on] .ar-spot { opacity: 1; }
 html.js .ar-cr-l li::before { transform: scaleY(0); transform-origin: top; transition: transform 700ms var(--eio) calc(350ms + var(--k) * 1100ms); }
 html.js .ar-cr-l li > * { opacity: 0; transform: translateX(-6px); transition: opacity 500ms ease calc(650ms + var(--k) * 1100ms), transform 700ms var(--eo) calc(650ms + var(--k) * 1100ms); }
@@ -146,12 +213,12 @@ html.js .ar-cr.in .ar-cr-l li::before { transform: none; }
 html.js .ar-cr.in .ar-cr-l li > * { opacity: 1; transform: none; }
 
 /* ------------------------------------------------------------ the business half */
-.ar-biz { margin-top: clamp(22px, 2.4vw, 34px); border-top: 1.5px solid var(--ink); }
-.ar-biz > div { position: relative; display: grid; grid-template-columns: 31.005% 1fr; align-items: baseline; padding: 11px 0 13px; }
-.ar-biz > div::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--g-d); transform-origin: left; }
-.ar-biz dt { font-family: var(--f-cond); font-weight: 600; font-size: clamp(1.25rem, 0.95rem + 0.7vw, 1.625rem); line-height: 1.05; letter-spacing: -0.004em; padding-right: var(--gut); }
+.ar-biz { margin-top: clamp(22px, 2.4vw, 34px); border-top: 1px solid var(--line-2); }
+.ar-biz > div { position: relative; display: grid; grid-template-columns: 31.005% 1fr; align-items: baseline; padding: 14px 0 15px; }
+.ar-biz > div::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--line); transform-origin: left; }
+.ar-biz dt { font-weight: 600; font-size: clamp(1.125rem, 0.95rem + 0.5vw, 1.375rem); line-height: 1.15; letter-spacing: -0.025em; padding-right: var(--gut); }
 .ar-biz dd { margin: 0; font-size: 1rem; line-height: 1.45; color: var(--ink-2); max-width: 44ch; text-wrap: pretty; }
-.ar-num { font-family: var(--f-cond); font-weight: 700; font-size: 1.1875em; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums lining-nums; }
+.ar-num { font-weight: 600; color: var(--ink); }
 /* each entry is ruled off as it is written */
 html.js .ar-biz > div::after { transform: scaleX(0); transition: transform 800ms var(--eio) calc(200ms + var(--i) * 140ms); }
 html.js .ar-biz > div > * { opacity: 0; transition: opacity 600ms ease calc(500ms + var(--i) * 140ms); }
@@ -162,46 +229,52 @@ html.js .ar-biz.in > div > * { opacity: 1; }
    Widths
    ========================================================================== */
 @media (max-width: 1100px) {
-  /* the column is too narrow to hold the caption beside the loupe: it goes under it */
-  .ar-lead { --lp-h: min(calc(100vh - var(--bar-h) - 190px), calc((var(--frame) * 0.382753 - var(--gut)) * 2.17375)); }
-  .ar-loupe { flex-direction: column; align-items: flex-start; gap: 16px; }
-  .ar-lp-cap { width: 100%; }
-  .ar-lp-k { font-size: 1.25rem; }
+  /* the indexes go under their phones */
+  .ar-stage { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(12px, 3vw, 40px); align-items: start; padding: clamp(28px, 4vw, 48px) clamp(16px, 3vw, 40px); }
+  .ar-dev { display: flex; flex-direction: column; align-items: center; }
+  .is-b { padding-top: var(--off); }
+  .ar-ph { width: min(100%, 280px); margin: 0 !important; }
+  .ar-idx { width: min(100%, 280px); max-width: none; margin: clamp(18px, 2.4vw, 26px) 0 0 !important; text-align: left !important; }
+  .is-p .ar-idx-h { flex-direction: row; }
+  .is-p .ar-steps li { padding: 7px 0 7px 18px; }
+  .is-p .ar-steps li::before, .is-p .ar-steps li::after { left: 0; right: auto; }
   .ar-fans { grid-template-columns: 38% minmax(48px, 12%) 1fr; }
 }
 @media (max-width: 1000px) {
-  .ar-lim { --ax: 204px; }
+  .ar-lim { --ax: 232px; }
   .ar-wide { display: none; }
   .ar-narrow { display: block; }
 }
 @media (max-width: 760px) {
-  .ar-lead { --lp-h: auto; }
-  .ar-loupe { position: static; flex-direction: row; align-items: flex-end; margin-bottom: 26px; gap: 16px; }
-  .ar-lp-cap { width: auto; }
-  .ar-lp { height: auto; width: 54%; }
-  .ar-lp-k { font-size: 1.25rem; }
-  .ar-sheet { column-gap: 10px; row-gap: 18px; }
-  html.js .ar-t span { display: none; }
-  .ar-t span { font-size: 0.75rem; margin-top: 8px; }
-  .ar-note { margin-top: 18px; }
+  .ar-stage { --off: 22px; padding: 22px 14px 18px; column-gap: 12px; }
+  .ar-idx { margin-top: 16px !important; }
+  .ar-idx-h { gap: 6px; margin-bottom: 4px; min-height: 28px; }
+  .ar-idx-k { font-size: 1rem; }
+  .ar-idx-h .vid-toggle { padding: 6px 8px; }
+  .ar-steps li { padding: 6px 0 6px 12px !important; font-size: 0.8125rem; line-height: 1.28; }
+  .ar-steps li::before, .ar-steps li::after { top: 6px; bottom: 6px; }
 
-  .ar-fans { grid-template-columns: 34% 44px 1fr; row-gap: 26px; }
-  .ar-fan-a { font-size: 1.1875rem; }
+  /* each fan on its own columns, and the one-word ends set on two lines */
+  .ar-fans { display: block; }
+  .ar-fan { display: grid; align-items: center; }
+  .ar-fan.is-out { grid-template-columns: 27% 36px minmax(0, 1fr); }
+  .ar-fan.is-in { grid-template-columns: minmax(0, 1fr) 36px 30%; margin-top: 28px; }
+  .ar-fan-a { font-size: 1.125rem; line-height: 1.08; white-space: normal; }
+  .ar-fan.is-out .ar-fan-a { text-align: right; }
   .ar-fan-b li { font-size: 0.9375rem; height: 30px; }
   .ar-fan.is-out .ar-fan-a { padding-right: 8px; }
   .ar-fan.is-in .ar-fan-a { padding-left: 8px; }
   .ar-fan.is-out .ar-fan-b li { padding-left: 8px; }
   .ar-fan.is-in .ar-fan-b li { padding-right: 8px; }
 
-  .ar-lim-h .fig-s { max-width: none; }
-  .ar-lim-f > * { display: block; }
-  .ar-lim-f > :last-child { margin-top: 8px; }
+  .ar-lim { padding: 22px 14px 18px; }
+  .ar-lim-f { flex-direction: column; }
 
-  .ar-cr { grid-template-columns: minmax(0, 50%) minmax(0, 1fr); }
-  .ar-cr-l li { padding-left: 28px; }
-  .ar-cr-l li::before { left: 9px; width: 8px; }
-  .ar-cr-l b { font-size: 1.0625rem; }
-  .ar-cr-l span { font-size: 0.8125rem; }
+  .ar-cr { grid-template-columns: minmax(0, 48%) minmax(0, 1fr); padding: 22px 12px 22px 18px; }
+  .ar-cr-l li { padding-left: 24px; }
+  .ar-cr-l li::before { left: 8px; width: 8px; }
+  .ar-cr-l b { font-size: 1rem; }
+  .ar-cr-l span { font-size: 0.78125rem; }
 
   .ar-biz > div { grid-template-columns: 1fr; row-gap: 3px; }
   .ar-biz dd { font-size: 0.9375rem; }
@@ -211,24 +284,19 @@ html.js .ar-biz.in > div > * { opacity: 1; }
    Motion off: every figure in its final state
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  html.js .ar-lp img.is-a { clip-path: none; transition: none; }
-  html.js .ar-sheet li { opacity: 1; transform: none; transition: none; }
-  html.js .ar-lp-cap { opacity: 1; transition: none; }
-  html.js .ar-sel { transition: none; }
-  html.js .ar-sheet .ar-sel { opacity: 1; }
-  html.js .ar-t img, html.js .ar-t span { transition: none; }
+  html.js .ar-stage .ar-ph, html.js .ar-stage .ar-idx-h, html.js .ar-stage .ar-steps li { opacity: 1; translate: 0 0; transition: none; }
   html.js .ar-fan-s path { stroke-dashoffset: 0; transition: none; }
   html.js .ar-fan-b li, html.js .ar-fan-a { opacity: 1; transform: none; transition: none; }
-  html.js .ar-p { transform: none; transition: none; }
+  html.js .ar-g { transform: none; transition: none; }
   html.js .ar-cur { opacity: 1; transition: none; }
-  html.js .ar-in { transition: none; }
+  html.js .ar-in, .ar-cur-l::after { transition: none; }
   html.js .ar-cr-l li::before, html.js .ar-cr-l li > * { opacity: 1; transform: none; transition: none; }
   .ar-spot { transition: none; }
   html.js .ar-biz > div::after, html.js .ar-biz > div > * { opacity: 1; transform: none; transition: none; }
 }
 
 @media print {
-  .ar-loupe { position: static; }
-  .ar-cur, .ar-hint, .ar-spot { display: none !important; }
-  html.js .ar-sheet li, html.js .ar-fan-b li, html.js .ar-fan-a, html.js .ar-cr-l li > *, html.js .ar-biz > div > * { opacity: 1 !important; transform: none !important; }
+  .ar-cur, .ar-hint, .ar-spot, .ar-idx-h .vid-toggle { display: none !important; }
+  .ar-stage, .ar-cr, .ar-lim { background: none !important; box-shadow: none !important; }
+  html.js .ar-stage .ar-ph, html.js .ar-stage .ar-steps li, html.js .ar-stage .ar-idx-h, html.js .ar-fan-b li, html.js .ar-fan-a, html.js .ar-cr-l li > *, html.js .ar-biz > div > * { opacity: 1 !important; translate: 0 0 !important; transform: none !important; }
 }

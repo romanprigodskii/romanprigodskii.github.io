@@ -59,12 +59,13 @@
     return s;
   }
 
-  /* a card: a header band that names the kind, a body that shows it */
+  /* a card: a header band that names the kind (in the kind's own colour, as
+     the app draws it), a body that shows it */
   function card(x, y, w, h, kind, o) {
     o = o || {};
     var hd = o.hd || 12, r = o.r || 3, s = "";
     s += rect("cw-cb" + (o.ghost ? " is-ghost" : ""), x, y, w, h, r);
-    if (!o.ghost) s += path("cw-ch", "M" + f(x) + "," + f(y + hd) + " V" + f(y + r) + " Q" + f(x) + "," + f(y) + " " + f(x + r) + "," + f(y) + " H" + f(x + w - r) + " Q" + f(x + w) + "," + f(y) + " " + f(x + w) + "," + f(y + r) + " V" + f(y + hd) + " Z");
+    if (!o.ghost) s += path("cw-ch k-" + kind.toLowerCase(), "M" + f(x) + "," + f(y + hd) + " V" + f(y + r) + " Q" + f(x) + "," + f(y) + " " + f(x + r) + "," + f(y) + " H" + f(x + w - r) + " Q" + f(x + w) + "," + f(y) + " " + f(x + w) + "," + f(y + r) + " V" + f(y + hd) + " Z");
     else s += line("cw-co is-ghost", x, y + hd, x + w, y + hd);
     if (o.label) s += text("cw-ck", x + 7, y + hd * 0.7, kind);
     var foot = o.foot ? 14 : 0;
@@ -81,23 +82,23 @@
 
   function bar() {
     var W = 400, H = 86, s = "";
-    s += rect("cw-panel", 0.75, 0.75, W - 1.5, H - 1.5, 7);
+    s += rect("cw-panel", 0.75, 0.75, W - 1.5, H - 1.5, 10);
     s += rect("cw-pill", 168, 6, 64, 10, 5);
     s += '<circle class="cw-gl is-thin" cx="176" cy="11" r="2.2"/>';
-    BAR.forEach(function (k, i) { s += card(8 + i * STEP, 22, 59, 56, k, { hd: 11, r: 3, foot: true }); });
-    s += '<g class="tw-sel">' + rect("cw-sel", 4.5, 18.5, 66, 63, 5) + "</g>";
+    BAR.forEach(function (k, i) { s += card(8 + i * STEP, 22, 59, 56, k, { hd: 11, r: 4.5, foot: true }); });
+    s += '<g class="tw-sel">' + rect("cw-sel", 4.5, 18.5, 66, 63, 7.5) + "</g>";
     return svg("tw-svg is-bar", W, H, s);
   }
 
   var KINDS = ["Text", "Link", "Image", "File"];
   function cardsWide() {
     var s = "";
-    KINDS.forEach(function (k, i) { s += card(1 + i * 104, 1, 86, 110, k, { hd: 22, r: 4, label: true, foot: true }); });
+    KINDS.forEach(function (k, i) { s += card(1 + i * 104, 1, 86, 110, k, { hd: 22, r: 7, label: true, foot: true }); });
     return svg("tw-svg v-w", 400, 112, s);
   }
   function cardsNarrow() {
     var s = "";
-    KINDS.forEach(function (k, i) { s += card(1 + (i % 2) * 94, 1 + Math.floor(i / 2) * 106, 84, 98, k, { hd: 22, r: 4, label: true, foot: true }); });
+    KINDS.forEach(function (k, i) { s += card(1 + (i % 2) * 94, 1 + Math.floor(i / 2) * 106, 84, 98, k, { hd: 22, r: 7, label: true, foot: true }); });
     return svg("tw-svg v-n", 180, 206, s);
   }
 
@@ -145,7 +146,7 @@
   function pass(G) {
     var s = "", cw = G.cw, ch = G.ch, yT = G.yT, hd = G.hd;
     // where things come from
-    s += rect("pw-board", G.bx, G.by, G.bw, G.bh, 3);
+    s += rect("pw-board", G.bx, G.by, G.bw, G.bh, 5);
     s += rect("pw-bclip", G.bx + G.bw * 0.26, G.by - 5, G.bw * 0.48, 9, 2);
     for (var i = 0; i < 3; i++) s += line("pw-bl", G.bx + G.bw * 0.22, G.by + 14 + i * 8, G.bx + G.bw * (i === 2 ? 0.56 : 0.78), G.by + 14 + i * 8);
     s += text("pw-lab is-mid", G.bx + G.bw / 2, G.by + G.bh + 20, "copied");
@@ -168,7 +169,7 @@
     s += text("pw-lab" + (G.histMid ? " is-mid" : ""), G.histLab[0], G.histLab[1], "the history, on disk");
     // the one that went past
     var gx = G.xE - 4 - cw, gy = yT - ch / 2;
-    s += '<g class="pw-ghost">' + card(gx, gy, cw, ch, "Concealed", { hd: hd, r: 3, ghost: true }) + "</g>";
+    s += '<g class="pw-ghost">' + card(gx, gy, cw, ch, "Concealed", { hd: hd, r: 5, ghost: true }) + "</g>";
     s += '<g class="pw-end">' + text("pw-lab is-end", G.xE + 3, G.lab1, "marked concealed or transient") +
       text("pw-lab is-end", G.xE + 3, G.lab1 + 15, "by a password manager") +
       text("pw-say is-end", G.xE + 3, yT + 38, "never written to disk") + "</g>";
@@ -178,7 +179,7 @@
       var by = c[0] === "Concealed";
       var dx = by ? gx - sx : G.xJ - cw / 2 - sx, dy = G.py + G.ph * 0.45 - yT;
       s += '<g class="pw-mv' + (by ? " is-by" : "") + '" style="--dx:' + f(dx) + "px;--dy:" + f(dy) + "px;--t:" + G.mvT[c[1]] + 'ms">' +
-        card(sx, sy, cw, ch, c[0], { hd: hd, r: 3 }) + "</g>";
+        card(sx, sy, cw, ch, c[0], { hd: hd, r: 5 }) + "</g>";
     });
     return svg("pw-svg", G.W, G.H, s);
   }

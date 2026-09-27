@@ -87,25 +87,6 @@
     $$("section[id]").forEach(function (s) { spy.observe(s); });
   }
 
-  /* ------------------------------------------------ the name, machined to the frame */
-  var nameT = $(".name-t"), nameB = $(".name-b");
-  function textWidth(el) { var r = document.createRange(); r.selectNodeContents(el); return r.getBoundingClientRect().width; }
-  function fitName() {
-    if (!nameEl) return;
-    nameEl.style.fontSize = "";
-    var frame = nameEl.parentElement.getBoundingClientRect().width;
-    var narrow = window.innerWidth <= 760;
-    var w = textWidth(narrow ? nameB : nameT);
-    if (!w) return;
-    var fs = parseFloat(getComputedStyle(nameEl).fontSize);
-    var next = fs * (frame + fs * 0.035) / w;
-    nameEl.style.fontSize = Math.floor(next * 10) / 10 + "px";
-  }
-  if (nameEl) {
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitName);
-    fitName();
-  }
-
   /* ------------------------------------------------ the slide rule */
   var body = $("[data-rule-body]");
   if (body && F) (function () {
@@ -541,5 +522,4 @@
     });
   });
 
-  window.addEventListener("resize", fitName);
 })();

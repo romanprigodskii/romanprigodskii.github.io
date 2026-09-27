@@ -6,7 +6,7 @@
 <title>Vertex MMA, Roman Prigodskii</title>
 <meta name="description" content="Vertex MMA: a nine-model UFC forecasting stack, graded against the bookmaker's closing line. AUC 0.7244 on 664 held-out bouts. By Roman Prigodskii.">
 <meta name="author" content="Roman Prigodskii">
-<meta name="theme-color" content="#F3F2EE">
+<meta name="theme-color" content="#FBFCFE">
 <link rel="canonical" href="https://prigodskii.dev/work/vertex-mma/">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Vertex MMA, Roman Prigodskii">
@@ -16,9 +16,9 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../../assets/img/mark.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../../assets/img/mark-180.png">
-<link rel="preload" href="../../assets/fonts/barlow-condensed-800-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="../../assets/fonts/barlow-400-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../assets/fonts/mona-sans-200-900-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="../../assets/css/vertex-mma.css">
 <script>
   document.documentElement.classList.add("js");
   setTimeout(function () { if (!window.__rp) document.documentElement.classList.remove("js"); }, 2500);
@@ -27,9 +27,6 @@
 </head>
 <body data-base="../../">
 <a class="skip" href="#main">Skip to the case</a>
-
-<div class="gp" aria-hidden="true"><div class="gp-frame"><!--@grid--><svg class="gp-svg" width="100%" height="100%" preserveAspectRatio="none" focusable="false" aria-hidden="true"><line class="gd" x1="0%" x2="0%" y1="0" y2="100%"/><line class="gh" x1="5.761%" x2="5.761%" y1="0" y2="100%"/><line class="gn" x1="9.131%" x2="9.131%" y1="0" y2="100%"/><line class="gn" x1="11.522%" x2="11.522%" y1="0" y2="100%"/><line class="gh" x1="13.377%" x2="13.377%" y1="0" y2="100%"/><line class="gn" x1="14.892%" x2="14.892%" y1="0" y2="100%"/><line class="gn" x1="16.173%" x2="16.173%" y1="0" y2="100%"/><line class="gn" x1="17.283%" x2="17.283%" y1="0" y2="100%"/><line class="gn" x1="18.262%" x2="18.262%" y1="0" y2="100%"/><line class="gd" x1="19.138%" x2="19.138%" y1="0" y2="100%"/><line class="gh" x1="24.899%" x2="24.899%" y1="0" y2="100%"/><line class="gn" x1="28.269%" x2="28.269%" y1="0" y2="100%"/><line class="gn" x1="30.66%" x2="30.66%" y1="0" y2="100%"/><line class="gh" x1="32.514%" x2="32.514%" y1="0" y2="100%"/><line class="gn" x1="34.03%" x2="34.03%" y1="0" y2="100%"/><line class="gn" x1="35.311%" x2="35.311%" y1="0" y2="100%"/><line class="gn" x1="36.421%" x2="36.421%" y1="0" y2="100%"/><line class="gn" x1="37.4%" x2="37.4%" y1="0" y2="100%"/><line class="g1" x1="38.275%" x2="38.275%" y1="0" y2="100%"/><line class="gh" x1="44.036%" x2="44.036%" y1="0" y2="100%"/><line class="gn" x1="47.406%" x2="47.406%" y1="0" y2="100%"/><line class="gn" x1="49.797%" x2="49.797%" y1="0" y2="100%"/><line class="gh" x1="51.652%" x2="51.652%" y1="0" y2="100%"/><line class="gn" x1="53.167%" x2="53.167%" y1="0" y2="100%"/><line class="gn" x1="54.448%" x2="54.448%" y1="0" y2="100%"/><line class="gn" x1="55.558%" x2="55.558%" y1="0" y2="100%"/><line class="gn" x1="56.537%" x2="56.537%" y1="0" y2="100%"/><line class="gd" x1="57.413%" x2="57.413%" y1="0" y2="100%"/><line class="gb" x1="63.174%" x2="63.174%" y1="0" y2="100%"/><line class="gn" x1="66.544%" x2="66.544%" y1="0" y2="100%"/><line class="gn" x1="68.935%" x2="68.935%" y1="0" y2="100%"/><line class="gh" x1="70.789%" x2="70.789%" y1="0" y2="100%"/><line class="gn" x1="72.305%" x2="72.305%" y1="0" y2="100%"/><line class="gn" x1="73.586%" x2="73.586%" y1="0" y2="100%"/><line class="gn" x1="74.696%" x2="74.696%" y1="0" y2="100%"/><line class="gn" x1="75.675%" x2="75.675%" y1="0" y2="100%"/><line class="gd" x1="76.55%" x2="76.55%" y1="0" y2="100%"/><line class="gh" x1="82.311%" x2="82.311%" y1="0" y2="100%"/><line class="gn" x1="85.681%" x2="85.681%" y1="0" y2="100%"/><line class="gn" x1="88.072%" x2="88.072%" y1="0" y2="100%"/><line class="gh" x1="89.927%" x2="89.927%" y1="0" y2="100%"/><line class="gn" x1="91.442%" x2="91.442%" y1="0" y2="100%"/><line class="gn" x1="92.724%" x2="92.724%" y1="0" y2="100%"/><line class="gn" x1="93.833%" x2="93.833%" y1="0" y2="100%"/><line class="gn" x1="94.812%" x2="94.812%" y1="0" y2="100%"/><line class="gd" x1="95.688%" x2="95.688%" y1="0" y2="100%"/><line class="ge" x1="100%" x2="100%" y1="0" y2="100%"/></svg><!--/@grid--></div></div>
-<div class="gp-fine" aria-hidden="true"><!--@grid--><svg class="gp-svg" width="100%" height="100%" preserveAspectRatio="none" focusable="false" aria-hidden="true"><line class="gd" x1="0%" x2="0%" y1="0" y2="100%"/><line class="gh" x1="5.761%" x2="5.761%" y1="0" y2="100%"/><line class="gn" x1="9.131%" x2="9.131%" y1="0" y2="100%"/><line class="gn" x1="11.522%" x2="11.522%" y1="0" y2="100%"/><line class="gh" x1="13.377%" x2="13.377%" y1="0" y2="100%"/><line class="gn" x1="14.892%" x2="14.892%" y1="0" y2="100%"/><line class="gn" x1="16.173%" x2="16.173%" y1="0" y2="100%"/><line class="gn" x1="17.283%" x2="17.283%" y1="0" y2="100%"/><line class="gn" x1="18.262%" x2="18.262%" y1="0" y2="100%"/><line class="gd" x1="19.138%" x2="19.138%" y1="0" y2="100%"/><line class="gh" x1="24.899%" x2="24.899%" y1="0" y2="100%"/><line class="gn" x1="28.269%" x2="28.269%" y1="0" y2="100%"/><line class="gn" x1="30.66%" x2="30.66%" y1="0" y2="100%"/><line class="gh" x1="32.514%" x2="32.514%" y1="0" y2="100%"/><line class="gn" x1="34.03%" x2="34.03%" y1="0" y2="100%"/><line class="gn" x1="35.311%" x2="35.311%" y1="0" y2="100%"/><line class="gn" x1="36.421%" x2="36.421%" y1="0" y2="100%"/><line class="gn" x1="37.4%" x2="37.4%" y1="0" y2="100%"/><line class="g1" x1="38.275%" x2="38.275%" y1="0" y2="100%"/><line class="gh" x1="44.036%" x2="44.036%" y1="0" y2="100%"/><line class="gn" x1="47.406%" x2="47.406%" y1="0" y2="100%"/><line class="gn" x1="49.797%" x2="49.797%" y1="0" y2="100%"/><line class="gh" x1="51.652%" x2="51.652%" y1="0" y2="100%"/><line class="gn" x1="53.167%" x2="53.167%" y1="0" y2="100%"/><line class="gn" x1="54.448%" x2="54.448%" y1="0" y2="100%"/><line class="gn" x1="55.558%" x2="55.558%" y1="0" y2="100%"/><line class="gn" x1="56.537%" x2="56.537%" y1="0" y2="100%"/><line class="gd" x1="57.413%" x2="57.413%" y1="0" y2="100%"/><line class="gb" x1="63.174%" x2="63.174%" y1="0" y2="100%"/><line class="gn" x1="66.544%" x2="66.544%" y1="0" y2="100%"/><line class="gn" x1="68.935%" x2="68.935%" y1="0" y2="100%"/><line class="gh" x1="70.789%" x2="70.789%" y1="0" y2="100%"/><line class="gn" x1="72.305%" x2="72.305%" y1="0" y2="100%"/><line class="gn" x1="73.586%" x2="73.586%" y1="0" y2="100%"/><line class="gn" x1="74.696%" x2="74.696%" y1="0" y2="100%"/><line class="gn" x1="75.675%" x2="75.675%" y1="0" y2="100%"/><line class="gd" x1="76.55%" x2="76.55%" y1="0" y2="100%"/><line class="gh" x1="82.311%" x2="82.311%" y1="0" y2="100%"/><line class="gn" x1="85.681%" x2="85.681%" y1="0" y2="100%"/><line class="gn" x1="88.072%" x2="88.072%" y1="0" y2="100%"/><line class="gh" x1="89.927%" x2="89.927%" y1="0" y2="100%"/><line class="gn" x1="91.442%" x2="91.442%" y1="0" y2="100%"/><line class="gn" x1="92.724%" x2="92.724%" y1="0" y2="100%"/><line class="gn" x1="93.833%" x2="93.833%" y1="0" y2="100%"/><line class="gn" x1="94.812%" x2="94.812%" y1="0" y2="100%"/><line class="gd" x1="95.688%" x2="95.688%" y1="0" y2="100%"/><line class="ge" x1="100%" x2="100%" y1="0" y2="100%"/></svg><!--/@grid--></div>
 
 <header class="bar" data-bar>
   <div class="frame bar-in">
@@ -68,9 +65,18 @@
   </header>
 
   <div class="frame">
-    <figure class="case-media" data-shot>
-      <div class="bezel"><img src="../../assets/img/work/vertex-markets-1600.webp" srcset="../../assets/img/work/vertex-markets-900.webp 900w, ../../assets/img/work/vertex-markets-1600.webp 1600w" sizes="(min-width: 1680px) 1680px, 100vw" width="1600" height="1000" alt="Vertex MMA's markets page: each bout on a UFC card priced at the model's odds beside the market's, with the gap marked." decoding="async"></div>
-      <figcaption>The markets page: the model&rsquo;s price for each bout beside the market&rsquo;s.</figcaption>
+    <!-- the lead: one fighter's profile, on a desktop and on a phone -->
+    <figure class="case-media vxm-hero">
+      <div class="stage vxm-stage" data-shot>
+        <div class="vxm-devs">
+          <div class="win is-dark vxm-win">
+            <div class="win-bar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-url">vertexmma.com</span></div>
+            <video data-play muted loop playsinline preload="none" poster="../../assets/img/work/vertex-mma-fighter.webp" width="2400" height="1500" aria-label="Vertex MMA&rsquo;s profile of Islam Makhachev. It starts on the header with his 29-1 record and Vertex Scores of 95 current and 91 all-time, then scrolls to his career timeline. There, hovering two title fights opens their stat cards, UFC 280 against Charles Oliveira and UFC 294 against Alexander Volkanovski, above a six-attribute radar chart."><source src="../../assets/video/vertex-mma-fighter.mp4" type="video/mp4"></video>
+          </div>
+          <div class="phone vxm-phone"><video data-play muted loop playsinline preload="none" poster="../../assets/img/work/vertex-mma-fighter-mobile.webp" width="780" height="1688" aria-label="Vertex MMA on a phone: Islam Makhachev&rsquo;s profile scrolls from his photo and 29-1 record to his Vertex Score rings, his peak score of 99, his career timeline and a six-attribute radar chart."><source src="../../assets/video/vertex-mma-fighter-mobile.mp4" type="video/mp4"></video></div>
+        </div>
+      </div>
+      <figcaption class="stage-cap">A fighter profile: the Vertex Score, every UFC bout on a timeline with its stats on hover, and six attributes on a radar chart. Beside it, the same profile at phone width. Recorded from the live site on 27 September 2026.</figcaption>
     </figure>
 
     <section class="cols chapter" aria-labelledby="c1">
@@ -80,6 +86,23 @@
         <p>Underneath sit 243,000 score-history rows, 49,000 official ranking snapshots, 86,000 career bouts, 41,000 round-stat rows and 31,000 judge scorecards. The site runs on Next.js and Postgres, with the models in Python.</p>
       </div>
     </section>
+
+    <!-- one scheduled bout, as the site shows it; the list beside the window follows the recording -->
+    <figure class="vxm-bout" data-vxm-ch data-dur="9.2">
+      <figcaption class="vxm-bout-cap">
+        <p class="vxm-k" data-rv>UFC 332, Natalia Silva against Wang Cong</p>
+        <ol class="vxm-ch">
+          <li data-rv style="--d:80ms" data-at="0" data-seek="0"><b>The probability</b><span>Silva at 62%, 2.7 points below the market&rsquo;s 64.7%, and the four features behind the call.</span></li>
+          <li data-rv style="--d:160ms" data-at="2.4" data-seek="3.6"><b>10,000 simulations</b><span>How it ends: a decision 60%, KO or TKO 25%, submission 16%, and the chance of a finish in each round.</span></li>
+          <li data-rv style="--d:240ms" data-at="6.35" data-seek="7.1"><b>The odds</b><span>The model&rsquo;s prices, 1.55 and 2.53, beside the market&rsquo;s, 1.49 and 2.75, and a price for each method.</span></li>
+        </ol>
+        <p class="vxm-note" data-rv style="--d:320ms">The page for one scheduled bout: the model&rsquo;s probability beside the market&rsquo;s, the features behind it, and 10,000 simulated fights. Recorded before UFC 332.</p>
+      </figcaption>
+      <div class="win is-dark vxm-bout-win" data-shot>
+        <div class="win-bar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-url">vertexmma.com</span></div>
+        <video data-play muted loop playsinline preload="none" poster="../../assets/img/work/vertex-mma-bout.webp" width="2400" height="1500" aria-label="Vertex MMA&rsquo;s page for the UFC 332 main event, Natalia Silva against Wang Cong. It opens on the model&rsquo;s 62% win probability for Silva, 2.7 points below the market&rsquo;s 64.7%, with the four features behind the call. It then scrolls to a 10,000-run simulation of how and in which round the fight ends, and on to the model&rsquo;s odds beside the market&rsquo;s."><source src="../../assets/video/vertex-mma-bout.mp4" type="video/mp4"></video>
+      </div>
+    </figure>
 
     <section class="cols chapter" aria-labelledby="c2">
       <h2 class="chapter-h" id="c2">Measured against the market</h2>
@@ -106,6 +129,7 @@
           </div>
           <p class="auc-ends" aria-hidden="true"><span>0.5, a coin flip</span><span>0.7</span><span>0.8</span><span>0.9</span><span>1.0</span></p>
         </figure>
+        <p>The site&rsquo;s simulation page grades its own recent picks in public, misses included.</p>
       </div>
     </section>
 
@@ -113,6 +137,21 @@
       <h2 class="chapter-h" id="c3">What never enters the model</h2>
       <div class="chapter-b prose">
         <p>Five separate mechanisms keep future information out of the features: history is snapshotted before it is applied, rating lookups stop strictly before the fight, ratings are replayed in date order on their own, a fighter&rsquo;s career before the UFC is walked only up to the fight date, and the percentile-clipping anchor is frozen.</p>
+        <figure class="vxm-rate" data-vxm-ch data-dur="9.2">
+          <div class="stage vxm-amber" data-shot>
+            <div class="win is-dark vxm-rate-win">
+              <div class="win-bar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-url">vertexmma.com</span></div>
+              <video data-play muted loop playsinline preload="none" poster="../../assets/img/work/vertex-mma-rating.webp" width="2400" height="1500" aria-label="A chart on vertexmma.com of Islam Makhachev&rsquo;s current Vertex Score from September 2016 to September 2026. A cursor traces the line and a tooltip names the bout behind each step: 53 after Thiago Moises, 92 after Charles Oliveira, 99 after Alexander Volkanovski and 95 after Ian Machado Garry."><source src="../../assets/video/vertex-mma-rating.mp4" type="video/mp4"></video>
+            </div>
+            <ol class="vxm-steps" aria-label="The steps the cursor stops on">
+              <li data-at="3.55" data-seek="3.8"><b>53</b><span>after Thiago Moises</span><small>17 July 2021</small></li>
+              <li data-at="4.75" data-seek="5"><b>92</b><span>after Charles Oliveira</span><small>22 October 2022</small></li>
+              <li data-at="6.1" data-seek="6.35"><b>99</b><span>after Alexander Volkanovski</span><small>21 October 2023</small></li>
+              <li data-at="7.65" data-to="8.85" data-seek="7.9"><b>95</b><span>after Ian Machado Garry</span><small>15 August 2026</small></li>
+            </ol>
+          </div>
+          <figcaption class="stage-cap">Islam Makhachev&rsquo;s Vertex Score replayed fight by fight: each step on the line belongs to the bout that produced it.</figcaption>
+        </figure>
         <p>Bookmaker odds are stored, shown and used to grade the model, but they never enter it: a closing line would be a near-leak in a backtest. Taking them out cost 1.5 points of test accuracy, and they stayed out.</p>
       </div>
     </section>
@@ -153,11 +192,7 @@
       <div class="chapter-b">
         <p>Both of my papers grew out of evaluating this model. The first re-tests 84 hypotheses about where it might beat the market, written down before any of them was scored, as bets at the bookmaker&rsquo;s own prices. It is under review at a NeurIPS 2026 workshop. The second measures the smallest improvement the model-selection pipeline can detect, and finds that retraining under another random seed reproduces 80% of the only improvement the winner model ever shipped. It is a working paper.</p>
         <p class="links" style="margin-top:22px"><a class="go" href="../../research/">Both papers, figure by figure</a><a href="../../papers/evalues.pdf">Paper one, PDF</a><a href="../../papers/floors.pdf">Paper two, PDF</a></p>
-        <figure class="case-sub" data-shot>
-          <div class="bezel"><img src="../../assets/img/work/vertex-sim-1600.webp" srcset="../../assets/img/work/vertex-sim-900.webp 900w, ../../assets/img/work/vertex-sim-1600.webp 1600w" sizes="(min-width: 760px) 62vw, 100vw" width="1600" height="1000" alt="Vertex MMA's simulation page: calibrated probabilities for an upcoming bout, and recently graded picks." loading="lazy" decoding="async"></div>
-          <figcaption class="fig-cap">The simulation page grades its own recent picks in public, misses included.</figcaption>
-        </figure>
-        <p class="fine" style="margin-top:22px">Next.js 16, React 19, TypeScript 5.9 in strict mode, Tailwind 4, Postgres, Python 3.12, LightGBM and CatBoost. 35 routes in two languages, 1,533 translation keys each.</p>
+        <p class="fine vxm-stack">Next.js 16, React 19, TypeScript 5.9 in strict mode, Tailwind 4, Postgres, Python 3.12, LightGBM and CatBoost. 35 routes in two languages, 1,533 translation keys each.</p>
       </div>
     </section>
 
@@ -176,8 +211,61 @@
   <div class="frame foot-in">
     <p>&copy; 2026 Roman Prigodskii</p>
     <p class="foot-links"><a href="../../">Home</a><a href="../../research/">Research</a><a href="../../plain/">Plain version</a></p>
-    <p>Set in Barlow. The lines behind every page are an e-value axis from 0.01 to 1,680, on a log scale.</p>
+    <p>Set in Mona Sans.</p>
   </div>
 </footer>
+<script>
+/* The lists beside the bout and rating recordings follow them: the item for
+   what is on screen lights up, and each item moves the recording to its part.
+   Without this script the lists read as plain captions. */
+(function () {
+  "use strict";
+  Array.prototype.forEach.call(document.querySelectorAll("[data-vxm-ch]"), function (fig) {
+    var v = fig.querySelector("video");
+    var items = Array.prototype.slice.call(fig.querySelectorAll("li[data-at]"));
+    if (!v || !items.length) return;
+    var dur = parseFloat(fig.getAttribute("data-dur")) || 0;
+    var at = items.map(function (li) { return parseFloat(li.getAttribute("data-at")); });
+    var to = items.map(function (li, i) {
+      var t = li.getAttribute("data-to");
+      return t ? parseFloat(t) : (i + 1 < items.length ? at[i + 1] : dur);
+    });
+    var cur = -2, raf = 0;
+    function paint() {
+      var t = v.currentTime, k = -1;
+      for (var i = 0; i < items.length; i++) if (t >= at[i] && t < to[i]) k = i;
+      if (k !== cur) {
+        items.forEach(function (li, i) { li.classList.toggle("is-on", i === k); });
+        cur = k;
+      }
+      if (k >= 0) items[k].style.setProperty("--p", Math.min(1, Math.max(0, (t - at[k]) / (to[k] - at[k]))).toFixed(4));
+    }
+    function loop() { paint(); raf = v.paused ? 0 : requestAnimationFrame(loop); }
+    function live() { fig.classList.add("is-live"); }
+    v.addEventListener("play", function () { live(); if (!raf) raf = requestAnimationFrame(loop); });
+    v.addEventListener("seeked", paint);
+    v.addEventListener("pause", paint);
+    items.forEach(function (li) {
+      var b = document.createElement("button"), sr = document.createElement("span");
+      b.type = "button";
+      b.className = "vxm-go";
+      sr.className = "sr";
+      sr.textContent = "Show in the recording: ";
+      b.appendChild(sr);
+      while (li.firstChild) b.appendChild(li.firstChild);
+      li.appendChild(b);
+      b.addEventListener("click", function () {
+        var s = parseFloat(li.getAttribute("data-seek")) || 0;
+        live();
+        if (v.readyState < 1) {
+          v.preload = "auto";
+          v.addEventListener("loadedmetadata", function once() { v.removeEventListener("loadedmetadata", once); v.currentTime = s; });
+          v.load();
+        } else v.currentTime = s;
+      });
+    });
+  });
+})();
+</script>
 </body>
 </html>

@@ -1,92 +1,104 @@
-/* Alfa-Romeo: the copilot's limits, on the page's own lines.
+/* Alfa-Romeo: the copilot's limits, on a rouble scale.
 
-   The lines behind every page sit at m x 10^k on an e-value axis from 0.01
-   to 1,680. Read in thousands of roubles, the same lines run from 10 roubles
-   at the frame's left edge to 1,680,000 at its right, so the decade at 100
-   is 100,000 roubles and the line at 500 is 500,000. The figure spans the
-   whole frame and every tick it draws lands on a line of the paper.
-
-   Two rules from the project, and nothing else, are drawn on it:
+   A logarithmic scale of roubles from 100 to 2,000,000. Two rules from the
+   project, and nothing else, are drawn on it:
      100,000  the largest action the copilot may carry out, after a yes
      500,000  a business payment over this waits for a second signature
 
-   Loaded by tools/figures.mjs (node) through markers(); in the browser the
-   page script only moves a cursor over the pre-rendered SVG. */
+   Loaded by tools/figures.mjs (node) through markers(), which pre-renders the
+   SVG into the page; in the browser the same file hands the page script the
+   scale (fx, rAt, stops), so the cursor reads the drawing it moves over. */
 (function (root) {
   "use strict";
 
-  var COPILOT = 100000, SECOND = 500000, UNIT = 1000;
+  var COPILOT = 100000, SECOND = 500000, LO = 100, HI = 2000000;
+  var L0 = Math.log(LO), SPAN = Math.log(HI) - L0;
 
-  function build(F, wide) {
-    var pc = F.pc;
-    function X(r) { return F.gx(r / UNIT); }
-    var x1 = pc(X(COPILOT)), x2 = pc(X(SECOND));
+  /* amount -> fraction of the width, and back */
+  function fx(r) { return (Math.log(r) - L0) / SPAN; }
+  function rAt(f) { return Math.exp(L0 + f * SPAN); }
+  function pc(f) { return +(f * 100).toFixed(3) + "%"; }
+  function fmt(r) { return String(Math.round(r)).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+
+  /* the detents: 1 to 9 x 10^k, from 100 roubles to 2,000,000 */
+  function stops() {
+    var s = [];
+    for (var k = 2; k <= 6; k++) for (var m = 1; m <= 9; m++) { var v = m * Math.pow(10, k); if (v <= HI) s.push(v); }
+    return s;
+  }
+
+  function build(wide) {
+    var x1 = pc(fx(COPILOT)), x2 = pc(fx(SECOND)), k = wide ? "w" : "n";
     var L = wide
-      ? { t1: 66, s1: 84, b1: 108, l1: 95, t2: 150, s2: 168, b2: 192, l2: 179, top: 38, ax: 226, H: 262, tf: "", sub: "" }
-      : { t1: 62, s1: 78, b1: 100, l1: 88, t2: 136, s2: 152, b2: 174, l2: 162, top: 38, ax: 204, H: 238, tf: " is-n", sub: " is-n" };
-    var s = '<svg class="ar-sc-svg' + (wide ? "" : " is-n") + '" width="100%" height="' + L.H + '" data-ax="' + L.ax + '" role="img" aria-labelledby="ar-sc-t' + (wide ? "w" : "n") + ' ar-sc-d' + (wide ? "w" : "n") + '">' +
-      '<title id="ar-sc-t' + (wide ? "w" : "n") + '">What the copilot may carry out, and when a business payment waits for a second signature, by amount</title>' +
-      '<desc id="ar-sc-d' + (wide ? "w" : "n") + '">A logarithmic scale of roubles from 10 to 1,680,000, drawn on the lines of the page. The copilot drafts an action and carries it out after a yes, up to 100,000 roubles, the largest action it may carry out. A business payment over 500,000 roubles waits for a second signature.</desc>';
+      ? { top: 40, t1: 64, s1: 84, l1: 112, b1: 126, t2: 170, s2: 190, l2: 218, b2: 232, ax: 264, H: 300 }
+      : { top: 40, t1: 60, s1: 77, l1: 102, b1: 114, t2: 150, s2: 167, l2: 192, b2: 204, ax: 232, H: 264 };
+    var n = wide ? "" : " is-n";
+    var s = '<svg class="ar-sc-svg' + n + '" width="100%" height="' + L.H + '" data-ax="' + L.ax + '" role="img" aria-labelledby="ar-sc-t' + k + ' ar-sc-d' + k + '">' +
+      '<title id="ar-sc-t' + k + '">What the copilot may carry out, and when a business payment waits for a second signature, by amount</title>' +
+      '<desc id="ar-sc-d' + k + '">A logarithmic scale of roubles from 100 to 2,000,000. The copilot drafts an action and carries it out after a yes, up to 100,000 roubles, the largest action it may carry out. A business payment over 500,000 roubles waits for a second signature.</desc>';
 
-    /* the paper, fully graduated where it is being read */
-    s += '<g class="ar-sc-paper">';
-    F.gridValues().forEach(function (g, i) {
-      var c = F.gridClass(g);
-      s += '<line class="ar-p ' + c + '" style="--i:' + i + '" x1="' + pc(F.gx(g.v)) + '" x2="' + pc(F.gx(g.v)) + '" y1="' + L.top + '" y2="' + L.ax + '"/>';
+    /* one hairline per decade */
+    s += '<g class="ar-sc-g">';
+    [100, 1000, 10000, 100000, 1000000].forEach(function (v, i) {
+      if (v === COPILOT) return;
+      s += '<line class="ar-g" style="--i:' + i + '" x1="' + pc(fx(v)) + '" x2="' + pc(fx(v)) + '" y1="' + L.top + '" y2="' + L.ax + '"/>';
     });
     s += "</g>";
 
     /* the two rules */
-    s += '<line class="ar-rule" x1="' + x1 + '" x2="' + x1 + '" y1="' + (L.top - 6) + '" y2="' + (L.ax + 14) + '"/>';
-    s += '<line class="ar-rule" x1="' + x2 + '" x2="' + x2 + '" y1="' + (L.top - 6) + '" y2="' + (L.ax + 14) + '"/>';
+    s += '<line class="ar-rule" x1="' + x1 + '" x2="' + x1 + '" y1="' + L.top + '" y2="' + (L.ax + 10) + '"/>';
+    s += '<line class="ar-rule" x1="' + x2 + '" x2="' + x2 + '" y1="' + L.top + '" y2="' + (L.ax + 10) + '"/>';
 
     /* lane titles */
-    s += '<text class="ar-lt' + L.tf + '" x="0" y="' + L.t1 + '">The copilot</text>';
-    s += '<text class="ar-ls' + L.sub + '" x="0" y="' + L.s1 + '">drafts the action and waits for a yes</text>';
-    s += '<text class="ar-lt' + L.tf + '" x="0" y="' + L.t2 + '">A business payment</text>';
-    s += '<text class="ar-ls' + L.sub + '" x="0" y="' + L.s2 + '">in Romeo Business</text>';
+    s += '<text class="ar-lt' + n + '" x="0" y="' + L.t1 + '">The copilot</text>';
+    s += '<text class="ar-ls' + n + '" x="0" y="' + L.s1 + '">drafts the action and waits for a yes</text>';
+    s += '<text class="ar-lt' + n + '" x="0" y="' + L.t2 + '">A business payment</text>';
+    s += '<text class="ar-ls' + n + '" x="0" y="' + L.s2 + '">in Romeo Business</text>';
 
-    /* the lanes and what they mean, revealed up to the cursor as it sweeps */
-    s += '<defs><clipPath id="ar-clip-' + (wide ? "w" : "n") + '"><rect class="ar-clip" x="0" y="0" width="100%" height="' + L.H + '"/></clipPath></defs>';
-    s += '<g class="ar-lanes" clip-path="url(#ar-clip-' + (wide ? "w" : "n") + ')">';
-    // lane 1: the copilot carries an action out after a yes, up to 100,000
-    s += '<rect class="ar-bar" x="0" y="' + (L.b1 - 5) + '" width="' + x1 + '" height="10"/>';
-    s += '<svg x="' + x1 + '" y="' + L.b1 + '" overflow="visible"><rect class="ar-stop" x="-1.5" y="-13" width="4" height="26"/></svg>';
-    s += '<line class="ar-past" x1="' + x1 + '" x2="100%" y1="' + L.b1 + '" y2="' + L.b1 + '"/>';
-    // lane 2: one signature up to 500,000, then a second
-    s += '<line class="ar-sig" x1="0" x2="' + x2 + '" y1="' + L.b2 + '" y2="' + L.b2 + '"/>';
-    s += '<line class="ar-sig is-2" x1="' + x2 + '" x2="100%" y1="' + (L.b2 - 3) + '" y2="' + (L.b2 - 3) + '"/>';
-    s += '<line class="ar-sig is-2" x1="' + x2 + '" x2="100%" y1="' + (L.b2 + 3) + '" y2="' + (L.b2 + 3) + '"/>';
+    /* the lanes, revealed up to the cursor as it sweeps */
+    s += '<defs><clipPath id="ar-clip-' + k + '"><rect class="ar-clip" x="0" y="0" width="100%" height="' + L.H + '"/></clipPath></defs>';
+    s += '<g class="ar-lanes" clip-path="url(#ar-clip-' + k + ')">';
+    // lane 1: carried out after a yes up to 100,000; past it, an empty track
+    s += '<rect class="ar-track" x="0" y="' + (L.b1 - 4) + '" width="100%" height="8" rx="4"/>';
+    s += '<rect class="ar-bar" x="0" y="' + (L.b1 - 4) + '" width="' + x1 + '" height="8" rx="4"/>';
+    // lane 2: one line, one signature, up to 500,000; past it the line splits in two
+    s += '<rect class="ar-one" x="0" y="' + (L.b2 - 1.5) + '" width="' + x2 + '" height="3" rx="1.5"/>';
+    var w2 = pc(1 - fx(SECOND));
+    s += '<rect class="ar-two" x="' + x2 + '" y="' + (L.b2 - 4) + '" width="' + w2 + '" height="3" rx="1.5"/>';
+    s += '<rect class="ar-two" x="' + x2 + '" y="' + (L.b2 + 1) + '" width="' + w2 + '" height="3" rx="1.5"/>';
 
     /* what each stretch of a lane means; the cursor lights the one it stands in */
     s += '<text class="ar-in is-end" data-ar-l="1a" x="' + x1 + '" dx="' + (wide ? -12 : -8) + '" y="' + L.l1 + '">' + (wide ? "carries it out after a yes" : "after a yes") + "</text>";
+    // on a narrow frame the stretch between the rules is too short for it: the empty track says it alone
     if (wide) s += '<text class="ar-in" data-ar-l="1b" x="' + x1 + '" dx="12" y="' + L.l1 + '">over its limit</text>';
-    // on a narrow frame the stretch between the rules is too short for it, so it sits left of 100,000
+    // narrow, the stretch between the rules is too short for it too, so it sits left of 100,000, over the same line
     s += '<text class="ar-in is-end" data-ar-l="2a" x="' + (wide ? x2 : x1) + '" dx="' + (wide ? -12 : -8) + '" y="' + L.l2 + '">one signature</text>';
-    s += '<text class="ar-in" data-ar-l="2b" x="' + x2 + '" dx="' + (wide ? 10 : 6) + '" y="' + L.l2 + '">' + (wide ? "two signatures" : "two") + "</text>";
+    s += '<text class="ar-in" data-ar-l="2b" x="' + x2 + '" dx="' + (wide ? 12 : 8) + '" y="' + L.l2 + '">' + (wide ? "two signatures" : "two") + "</text>";
     s += "</g>";
 
     /* the axis */
     s += '<line class="ar-ax" x1="0" x2="100%" y1="' + L.ax + '" y2="' + L.ax + '"/>';
-    F.gridValues().forEach(function (g) {
-      var c = F.gridClass(g), len = (c === "gd" || c === "g1" || c === "ge") ? 11 : (c === "gh" || c === "gb") ? 7 : 4;
-      s += '<line class="ar-tk" x1="' + pc(F.gx(g.v)) + '" x2="' + pc(F.gx(g.v)) + '" y1="' + L.ax + '" y2="' + (L.ax + len) + '"/>';
+    stops().forEach(function (v) {
+      var m = Math.round(v / Math.pow(10, Math.floor(Math.log(v) / Math.LN10 + 1e-9)));
+      var len = m === 1 ? 8 : m === 5 ? 5 : 3;
+      s += '<line class="ar-tk' + (m === 1 ? " is-d" : "") + '" x1="' + pc(fx(v)) + '" x2="' + pc(fx(v)) + '" y1="' + L.ax + '" y2="' + (L.ax + len) + '"/>';
     });
     var labels = wide
-      ? [[10, "₽10"], [100, "₽100"], [1000, "₽1,000"], [10000, "₽10,000"], [COPILOT, "₽100,000", 1], [SECOND, "₽500,000", 1], [1000000, "₽1,000,000"]]
-      : [[10, "₽10"], [100, "₽100"], [1000, "₽1k"], [10000, "₽10k"], [COPILOT, "₽100k", 1], [SECOND, "₽500k", 1]];
+      ? [[100, "₽100"], [1000, "₽1,000"], [10000, "₽10,000"], [COPILOT, "₽100,000", 1], [SECOND, "₽500,000", 1], [1000000, "₽1,000,000"]]
+      : [[100, "₽100"], [1000, "₽1k"], [10000, "₽10k"], [COPILOT, "₽100k", 1], [SECOND, "₽500k", 1]];
     labels.forEach(function (l) {
-      s += '<text class="ar-nm' + (l[2] ? " is-bar" : "") + (l[0] === 10 ? " is-first" : "") + '" x="' + pc(X(l[0])) + '" y="' + (L.ax + (l[2] ? 30 : 28)) + '">' + l[1] + "</text>";
+      s += '<text class="ar-nm' + (l[2] ? " is-bar" : "") + (l[0] === LO ? " is-first" : "") + '" x="' + pc(fx(l[0])) + '" y="' + (L.ax + 26) + '">' + l[1] + "</text>";
     });
     return s + "</svg>";
   }
 
   var api = {
-    COPILOT: COPILOT, SECOND: SECOND, UNIT: UNIT,
-    markers: function (F) {
+    COPILOT: COPILOT, SECOND: SECOND, LO: LO, HI: HI,
+    fx: fx, rAt: rAt, stops: stops, fmt: fmt,
+    markers: function () {
       return {
-        arScaleWide: function () { return build(F, true); },
-        arScaleNarrow: function () { return build(F, false); }
+        arScaleWide: function () { return build(true); },
+        arScaleNarrow: function () { return build(false); }
       };
     }
   };

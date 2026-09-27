@@ -1,10 +1,11 @@
-/* Alfa-Romeo: the loupe, the rouble scale and the credit screen.
-   Enhances markup that is complete without it: with JavaScript off the loupe
-   shows the first screen and the sheet links each screen at full size, the
-   scale is drawn whole, and the brackets stand beside the credit screen. */
+/* Alfa-Romeo: the two loops and their indexes, the rouble scale and the
+   credit screen. Enhances markup that is complete without it: with
+   JavaScript off each phone shows its first screen and its index is a plain
+   list, the scale is drawn whole, and the brackets stand beside the credit
+   screen. */
 (function () {
   "use strict";
-  var RP = window.RP, F = window.Fig;
+  var RP = window.RP, A = window.ArFig;
   if (!RP) return;
   var still = RP.still, tween = RP.tween, EO = RP.EO, EIO = RP.EIO;
   function $(s, r) { return (r || document).querySelector(s); }
@@ -13,98 +14,89 @@
   /* run fn once el is in view; site.js may already have seen it */
   function onIn(el, fn) { if (el.classList.contains("in")) fn(); else RP.watch(el, fn); }
 
-  /* ------------------------------------------------ 1. the loupe and the sheet */
-  var lead = $("[data-ar-lead]");
-  if (lead) (function () {
-    var lp = $("[data-ar-lp]", lead), cap = $("[data-ar-cap]", lead), sheet = $("[data-ar-sheet]", lead);
-    var thumbs = $$("[data-ar-t]", lead);
-    if (!lp || !sheet || !thumbs.length) return;
-    var sel = document.createElement("i");
-    sel.className = "ar-sel";
-    sel.setAttribute("aria-hidden", "true");
-    sheet.appendChild(sel);
-    var cur = 0, warmed = {};
+  /* ------------------------------------------------ 1. each loop's index follows it, and stops it on a pick */
+  $$("[data-ar-idx]").forEach(function (idx) {
+    var v = document.getElementById(idx.getAttribute("data-v"));
+    var lis = $$(".ar-steps li", idx);
+    if (!v || !lis.length) return;
+    var len = parseFloat(idx.getAttribute("data-len"));
+    var at = lis.map(function (li) { return parseFloat(li.getAttribute("data-at")); });
+    var go = lis.map(function (li) { return parseFloat(li.getAttribute("data-go")); });
+    var first = Math.min.apply(null, at);
+    var tog = null, cur = -1, raf = 0;
 
-    function place(anim) {
-      var img = $("img", thumbs[cur]);
-      var pad = window.innerWidth <= 760 ? 4 : 7;
-      var w = img.offsetWidth, h = img.offsetHeight;
-      var x = img.offsetLeft, y = img.offsetTop, p = img.offsetParent;
-      while (p && p !== sheet) { x += p.offsetLeft; y += p.offsetTop; p = p.offsetParent; }
-      if (!anim || still()) sel.style.transition = "none";
-      sel.style.width = (w + 2 * pad) + "px";
-      sel.style.height = (h + 2 * pad) + "px";
-      sel.style.borderRadius = (w * 0.125 + pad) + "px / " + (h * 0.0575 + pad) + "px";
-      sel.style.transform = "translate(" + (x - pad) + "px," + (y - pad) + "px)";
-      if (!anim || still()) { void sel.offsetWidth; sel.style.transition = ""; }
+    // the screen on at time t: the latest start at or before it, wrapping round the loop
+    function segOf(t) {
+      var best = -1, bt = -Infinity;
+      at.forEach(function (a, i) { if (a <= t && a > bt) { bt = a; best = i; } });
+      if (best < 0) at.forEach(function (a, i) { if (a > bt) { bt = a; best = i; } });
+      return best;
     }
-    function warm(i) {
-      if (warmed[i]) return;
-      warmed[i] = new Image();
-      warmed[i].src = thumbs[i].getAttribute("href");
+    function span(i) {
+      var a = at[i], nxt = Infinity;
+      at.forEach(function (b) { if (b > a && b < nxt) nxt = b; });
+      if (nxt === Infinity) nxt = first + len;
+      return [a, nxt - a];
     }
+    function paint() {
+      var t = v.currentTime || 0, i = segOf(t), p = 1;
+      if (!v.paused) {
+        var sp = span(i), d = t - sp[0];
+        if (d < 0) d += len;
+        p = Math.max(0, Math.min(1, d / sp[1]));
+      }
+      if (i !== cur) {
+        lis.forEach(function (li, j) {
+          li.classList.toggle("is-on", j === i);
+          if (j !== i) li.style.setProperty("--p", "0");
+          var b = li.firstElementChild;
+          if (b) { if (j === i) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); }
+        });
+        cur = i;
+      }
+      lis[i].style.setProperty("--p", p.toFixed(4));
+    }
+    function loop() { paint(); raf = v.paused ? 0 : requestAnimationFrame(loop); }
     function pick(i) {
-      if (i === cur) return;
-      var dir = i > cur ? 1 : -1;
-      cur = i;
-      thumbs.forEach(function (a, j) { a.setAttribute("aria-pressed", j === i ? "true" : "false"); });
-      place(true);
-      var t = $("img", thumbs[i]);
-      var next = document.createElement("img");
-      next.width = 800; next.height = 1739;
-      next.alt = t.alt;
-      next.decoding = "async";
-      next.src = thumbs[i].getAttribute("href");
-      cap.textContent = $("span", thumbs[i]).textContent;
-      if (!still() && cap.animate) cap.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 560, easing: "cubic-bezier(0.16, 1, 0.3, 1)" });
-      function finish() {
-        next.style.clipPath = "";
-        // everything under the newest screen can go
-        while (next.previousElementSibling && next.previousElementSibling.tagName === "IMG") lp.removeChild(next.previousElementSibling);
-      }
-      function go() {
-        if (still()) { lp.appendChild(next); finish(); return; }
-        next.style.clipPath = dir > 0 ? "inset(0 0 100% 0)" : "inset(100% 0 0 0)";
-        lp.appendChild(next);
-        tween(760, EIO, function (e) {
-          var r = ((1 - e) * 100).toFixed(2) + "%";
-          next.style.clipPath = dir > 0 ? "inset(0 0 " + r + " 0)" : "inset(" + r + " 0 0 0)";
-        }, finish);
-      }
-      var d = next.decode ? next.decode() : null;
-      if (d && d.then) d.then(go, go); else go();
+      v.dataset.held = "1";
+      v.pause();
+      if (tog) { tog.textContent = "Play"; tog.setAttribute("aria-label", "Play the video"); }
+      if (v.preload !== "auto") v.preload = "auto";
+      try { v.currentTime = go[i]; } catch (e) {}
+      paint();
     }
-    thumbs.forEach(function (a, i) {
-      a.setAttribute("role", "button");
-      a.setAttribute("aria-pressed", i === 0 ? "true" : "false");
-      a.setAttribute("aria-controls", "ar-loupe");
-      a.addEventListener("click", function (ev) { ev.preventDefault(); pick(i); });
-      a.addEventListener("keydown", function (ev) { if (ev.key === " ") { ev.preventDefault(); pick(i); } });
-      a.addEventListener("pointerenter", function () { warm(i); });
-      a.addEventListener("focus", function () { warm(i); });
-    });
-    place(false);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { place(false); });
-    window.addEventListener("load", function () { place(false); });
-    var rt = null;
-    window.addEventListener("resize", function () { clearTimeout(rt); rt = later(120, function () { place(false); }); });
-  })();
 
-  /* ------------------------------------------------ 2. the copilot's limits, on the page's lines */
+    lis.forEach(function (li, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "ar-step";
+      b.textContent = li.textContent;
+      b.setAttribute("aria-controls", v.id);
+      li.textContent = "";
+      li.appendChild(b);
+      b.addEventListener("click", function () { pick(i); });
+    });
+    // the loop's own pause goes into the head of its index, beside its name
+    tog = v.parentElement.querySelector(".vid-toggle");
+    var head = $(".ar-idx-h", idx);
+    if (tog && head) head.appendChild(tog);
+
+    v.addEventListener("play", function () { if (!raf) raf = requestAnimationFrame(loop); });
+    ["pause", "seeked", "loadeddata"].forEach(function (e) { v.addEventListener(e, paint); });
+    paint();
+  });
+
+  /* ------------------------------------------------ 2. the copilot's limits, on a rouble scale */
   var sc = $("[data-ar-sc]");
-  if (sc && F) (function () {
+  if (sc && A) (function () {
     var curEl = $("[data-ar-cur]", sc), tag = $("[data-ar-tag]", sc);
-    var UNIT = 1000, COPILOT = 100000, SECOND = 500000, MIN = 10, MAX = 1000000, REST = COPILOT;
-    var LN = Math.log(10), SPAN = Math.log(1680) / LN + 2;
-    function fx(r) { return F.gx(r / UNIT); }
-    function rAt(f) { return UNIT * Math.pow(10, f * SPAN - 2); }
-    // the detents are the page's own lines: m x 10^k, from 10 roubles to 1,000,000
-    var stops = F.gridValues().filter(function (g) { return !g.end; }).map(function (g) { return Math.round(g.v * UNIT); });
+    var COPILOT = A.COPILOT, SECOND = A.SECOND, MIN = A.LO, MAX = A.HI, REST = COPILOT;
+    var fx = A.fx, rAt = A.rAt, stops = A.stops(), LN = Math.log(10);
     var st = { r: REST, f: fx(REST), stop: null, busy: false, cancel: false };
     var labels = {};
     ["1a", "1b", "2a", "2b"].forEach(function (k) { labels[k] = $$('[data-ar-l="' + k + '"]', sc); });
 
-    function money(r) { return "₽" + F.fmtInt(r); }
+    function money(r) { return "₽" + A.fmt(r); }
     function nice(r) { var p = Math.pow(10, Math.floor(Math.log(r) / LN) - 1); return Math.round(r / p) * p; }
     function words(r) {
       var a = r <= COPILOT, b = r <= SECOND;
@@ -153,7 +145,7 @@
        are drawn, pausing at each rule, then back to the copilot's own limit */
     function sweep() {
       st.busy = true;
-      var legs = [[MIN, COPILOT, 1300, EIO, 360], [COPILOT, SECOND, 700, EIO, 360], [SECOND, MAX, 520, EO, 520], [MAX, REST, 950, EIO, 0]];
+      var legs = [[MIN, COPILOT, 1300, EIO, 360], [COPILOT, SECOND, 700, EIO, 360], [SECOND, MAX, 520, EO, 420], [MAX, REST, 950, EIO, 0]];
       function leg(k) {
         if (st.cancel) return;
         if (k >= legs.length) { st.busy = false; st.stop = null; return; }
@@ -166,14 +158,7 @@
           var r = e >= 1 ? b : nice(rAt(f));
           st.r = r;
           read(r);
-        }, function () {
-          if (k === 2) {
-            // the last stretch of the lanes, past the end of the cursor's travel
-            var c0 = fb;
-            tween(legs[k][4], EO, function (e) { clip(c0 + (1 - c0) * e); });
-          }
-          later(legs[k][4], function () { leg(k + 1); });
-        });
+        }, function () { later(legs[k][4], function () { leg(k + 1); }); });
       }
       leg(0);
     }
@@ -188,8 +173,7 @@
     curEl.setAttribute("aria-valuemin", MIN);
     curEl.setAttribute("aria-valuemax", MAX);
     sc.classList.add("is-live");
-    if (still()) { clip(1); setR(REST, false); }
-    else if (sc.classList.contains("in")) { clip(1); setR(REST, false); }
+    if (still() || sc.classList.contains("in")) { clip(1); setR(REST, false); }
     else {
       clip(0);
       setR(MIN, false);
@@ -205,6 +189,7 @@
       if (ev.button !== 0) return;
       interrupt();
       dragging = true;
+      sc.classList.add("is-drag");
       try { sc.setPointerCapture(ev.pointerId); } catch (e) {}
       setR(rFromEvent(ev), true);
     });
@@ -213,7 +198,7 @@
       var r = rFromEvent(ev);
       if (r !== st.r) setR(r, true);
     });
-    function end() { dragging = false; }
+    function end() { dragging = false; sc.classList.remove("is-drag"); }
     sc.addEventListener("pointerup", end);
     sc.addEventListener("pointercancel", end);
     curEl.addEventListener("keydown", function (ev) {

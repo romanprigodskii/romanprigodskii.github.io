@@ -5,61 +5,76 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Not found, Roman Prigodskii</title>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#F3F2EE">
+<meta name="theme-color" content="#FBFCFE">
 <link rel="icon" href="/assets/img/mark.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/img/mark-180.png">
-<link rel="preload" href="/assets/fonts/barlow-condensed-700-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/barlow-400-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/mona-sans-200-900-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/css/site.css">
 <style>
 /* 404: served at whatever address was asked for, so every URL on this page
-   is root-absolute. No scripts. The slide rule from the home page, with its
-   cursor run past the right-hand end, beyond 1,680: off the scale. */
-/* the fine graduation fades out down the page it is on, and never makes it scroll */
-.gp-fine { height: 100%; }
+   is root-absolute. No scripts. The rule tile from the home page, with its
+   cursor thrown past the right-hand end of the scale, beyond 1,680. */
 /* with no script to give it a ground on scroll, the bar stays at the top of the page */
 .bar { position: absolute; }
-.nf { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; padding: calc(var(--bar-h) + 48px) 0 72px; }
-.nf-row { align-items: end; }
-.nf-side { grid-column: 1 / 3; padding-bottom: 2px; }
-.nf-code { font-family: var(--f-cond); font-weight: 300; font-size: clamp(2.125rem, 1.4rem + 1.9vw, 3.25rem); line-height: 1; letter-spacing: -0.005em; font-variant-numeric: tabular-nums lining-nums; color: var(--ink-3); }
-.nf-t { margin-top: clamp(14px, 1.4vw, 22px); font-family: var(--f-cond); font-weight: 700; font-size: clamp(2.25rem, 1.35rem + 2.4vw, 3.5rem); line-height: 0.98; letter-spacing: -0.008em; text-wrap: balance; }
-.nf-links { margin-top: clamp(20px, 2vw, 30px); }
+.nf { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; padding: calc(var(--bar-h) + 40px) 0 64px; }
 
-/* the cursor parks 26px past 1,680; where the page margin is too narrow to
-   hold it, the rule gives up that much of its length */
-.nf-rule { --park: 26px; margin-right: max(0px, 46px - var(--m)); }
-.nf-rule .rule-body { cursor: default; container-type: inline-size; }
+/* the tile */
+.nf-b { margin-top: 0; padding-top: clamp(26px, 3vw, 48px); padding-bottom: clamp(26px, 3vw, 48px); }
+.nf-side { justify-content: center; }
+.nf-code {
+  font-family: var(--f-sans);
+  font-weight: 300;
+  font-size: clamp(4.5rem, 1.6rem + 6.4vw, 8.5rem);
+  line-height: 0.86;
+  letter-spacing: -0.05em;
+  margin-left: -0.05em;
+}
+.nf-t {
+  margin-top: clamp(16px, 1.6vw, 24px);
+  font-family: var(--f-sans);
+  font-weight: 600;
+  font-size: clamp(1.25rem, 1.05rem + 0.5vw, 1.5625rem);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.nf-links { margin-top: clamp(16px, 1.6vw, 22px); font-size: 0.96875rem; }
+
+/* the cursor parks 26px past 1,680; the scale gives up that much of its
+   length so the cursor stays on the tile */
+.nf-rule { --park: 26px; }
+.nf-rule .rule-body { margin-right: var(--park); cursor: default; container-type: inline-size; }
 .nf-rule .cursor { left: calc(100% + var(--park)); cursor: default; }
 
-/* the paper is drawn, the rule is set down, and its cursor runs the length
-   of the scale, 1 to 1,680, and off the end */
+/* the tile arrives as one piece; then the cursor is thrown the length of the
+   scale, from 1 past 1,680, and slows to a stop off the end */
 @media (prefers-reduced-motion: no-preference) {
-  .gp-frame, .gp-fine { animation: gp-in 1500ms var(--eo) both; }
-  .nf-side { animation: nf-rise 900ms var(--eo) 150ms backwards; }
-  .nf-rule { animation: nf-rise 900ms var(--eo) 300ms backwards; }
-  .nf-rule .cursor { animation: nf-off 2100ms var(--eio) 1100ms backwards; }
+  .nf-b { animation: nf-arrive 1400ms var(--eo) 60ms backwards; }
+  .nf-code { animation: nf-rise 1200ms var(--eo) 240ms backwards; }
+  .nf-t { animation: nf-up 1000ms var(--eo) 420ms backwards; }
+  .nf-links { animation: nf-up 1000ms var(--eo) 520ms backwards; }
+  .nf-rule .cursor { animation: nf-off 2600ms cubic-bezier(0.19, 1, 0.22, 1) 900ms backwards; }
 }
-@keyframes nf-rise { from { opacity: 0; transform: translateY(14px); } }
+@keyframes nf-arrive { from { opacity: 0; transform: translateY(36px) scale(0.985); } }
+@keyframes nf-rise { from { opacity: 0; transform: translateY(0.16em); filter: blur(10px); } }
+@keyframes nf-up { from { opacity: 0; transform: translateY(16px); } }
 @keyframes nf-off { from { transform: translateX(calc(-100cqw - var(--park))); } }
 
-/* below 1,100px the rule would be too short to read, so it takes the full
-   width under the line */
+/* below 1,100px the rule takes the full width of the tile under the line */
 @media (max-width: 1100px) {
-  .nf-row { display: block; }
-  .nf-rule { margin-top: clamp(40px, 6vw, 64px); }
+  .nf-rule { margin-top: clamp(28px, 4vw, 44px); }
 }
 @media (max-width: 760px) {
-  .nf { padding: calc(var(--bar-h) + 32px) 0 48px; }
-  .nf-rule { --park: 21px; width: auto; margin: 56px 36px 0 0; }
+  .nf { padding: calc(var(--bar-h) + 28px) 0 40px; }
+  .nf-b { flex-direction: column; padding: 24px 16px 20px; }
+  .nf-code { font-size: 5.25rem; }
+  .nf-t { margin-top: 14px; font-size: 1.3125rem; }
+  .nf-rule { --park: 19px; margin-top: 30px; }
 }
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to the page</a>
-
-<div class="gp" aria-hidden="true"><div class="gp-frame"><!--@grid--><svg class="gp-svg" width="100%" height="100%" preserveAspectRatio="none" focusable="false" aria-hidden="true"><line class="gd" x1="0%" x2="0%" y1="0" y2="100%"/><line class="gh" x1="5.761%" x2="5.761%" y1="0" y2="100%"/><line class="gn" x1="9.131%" x2="9.131%" y1="0" y2="100%"/><line class="gn" x1="11.522%" x2="11.522%" y1="0" y2="100%"/><line class="gh" x1="13.377%" x2="13.377%" y1="0" y2="100%"/><line class="gn" x1="14.892%" x2="14.892%" y1="0" y2="100%"/><line class="gn" x1="16.173%" x2="16.173%" y1="0" y2="100%"/><line class="gn" x1="17.283%" x2="17.283%" y1="0" y2="100%"/><line class="gn" x1="18.262%" x2="18.262%" y1="0" y2="100%"/><line class="gd" x1="19.138%" x2="19.138%" y1="0" y2="100%"/><line class="gh" x1="24.899%" x2="24.899%" y1="0" y2="100%"/><line class="gn" x1="28.269%" x2="28.269%" y1="0" y2="100%"/><line class="gn" x1="30.66%" x2="30.66%" y1="0" y2="100%"/><line class="gh" x1="32.514%" x2="32.514%" y1="0" y2="100%"/><line class="gn" x1="34.03%" x2="34.03%" y1="0" y2="100%"/><line class="gn" x1="35.311%" x2="35.311%" y1="0" y2="100%"/><line class="gn" x1="36.421%" x2="36.421%" y1="0" y2="100%"/><line class="gn" x1="37.4%" x2="37.4%" y1="0" y2="100%"/><line class="g1" x1="38.275%" x2="38.275%" y1="0" y2="100%"/><line class="gh" x1="44.036%" x2="44.036%" y1="0" y2="100%"/><line class="gn" x1="47.406%" x2="47.406%" y1="0" y2="100%"/><line class="gn" x1="49.797%" x2="49.797%" y1="0" y2="100%"/><line class="gh" x1="51.652%" x2="51.652%" y1="0" y2="100%"/><line class="gn" x1="53.167%" x2="53.167%" y1="0" y2="100%"/><line class="gn" x1="54.448%" x2="54.448%" y1="0" y2="100%"/><line class="gn" x1="55.558%" x2="55.558%" y1="0" y2="100%"/><line class="gn" x1="56.537%" x2="56.537%" y1="0" y2="100%"/><line class="gd" x1="57.413%" x2="57.413%" y1="0" y2="100%"/><line class="gb" x1="63.174%" x2="63.174%" y1="0" y2="100%"/><line class="gn" x1="66.544%" x2="66.544%" y1="0" y2="100%"/><line class="gn" x1="68.935%" x2="68.935%" y1="0" y2="100%"/><line class="gh" x1="70.789%" x2="70.789%" y1="0" y2="100%"/><line class="gn" x1="72.305%" x2="72.305%" y1="0" y2="100%"/><line class="gn" x1="73.586%" x2="73.586%" y1="0" y2="100%"/><line class="gn" x1="74.696%" x2="74.696%" y1="0" y2="100%"/><line class="gn" x1="75.675%" x2="75.675%" y1="0" y2="100%"/><line class="gd" x1="76.55%" x2="76.55%" y1="0" y2="100%"/><line class="gh" x1="82.311%" x2="82.311%" y1="0" y2="100%"/><line class="gn" x1="85.681%" x2="85.681%" y1="0" y2="100%"/><line class="gn" x1="88.072%" x2="88.072%" y1="0" y2="100%"/><line class="gh" x1="89.927%" x2="89.927%" y1="0" y2="100%"/><line class="gn" x1="91.442%" x2="91.442%" y1="0" y2="100%"/><line class="gn" x1="92.724%" x2="92.724%" y1="0" y2="100%"/><line class="gn" x1="93.833%" x2="93.833%" y1="0" y2="100%"/><line class="gn" x1="94.812%" x2="94.812%" y1="0" y2="100%"/><line class="gd" x1="95.688%" x2="95.688%" y1="0" y2="100%"/><line class="ge" x1="100%" x2="100%" y1="0" y2="100%"/></svg><!--/@grid--></div></div>
-<div class="gp-fine" aria-hidden="true"><!--@grid--><svg class="gp-svg" width="100%" height="100%" preserveAspectRatio="none" focusable="false" aria-hidden="true"><line class="gd" x1="0%" x2="0%" y1="0" y2="100%"/><line class="gh" x1="5.761%" x2="5.761%" y1="0" y2="100%"/><line class="gn" x1="9.131%" x2="9.131%" y1="0" y2="100%"/><line class="gn" x1="11.522%" x2="11.522%" y1="0" y2="100%"/><line class="gh" x1="13.377%" x2="13.377%" y1="0" y2="100%"/><line class="gn" x1="14.892%" x2="14.892%" y1="0" y2="100%"/><line class="gn" x1="16.173%" x2="16.173%" y1="0" y2="100%"/><line class="gn" x1="17.283%" x2="17.283%" y1="0" y2="100%"/><line class="gn" x1="18.262%" x2="18.262%" y1="0" y2="100%"/><line class="gd" x1="19.138%" x2="19.138%" y1="0" y2="100%"/><line class="gh" x1="24.899%" x2="24.899%" y1="0" y2="100%"/><line class="gn" x1="28.269%" x2="28.269%" y1="0" y2="100%"/><line class="gn" x1="30.66%" x2="30.66%" y1="0" y2="100%"/><line class="gh" x1="32.514%" x2="32.514%" y1="0" y2="100%"/><line class="gn" x1="34.03%" x2="34.03%" y1="0" y2="100%"/><line class="gn" x1="35.311%" x2="35.311%" y1="0" y2="100%"/><line class="gn" x1="36.421%" x2="36.421%" y1="0" y2="100%"/><line class="gn" x1="37.4%" x2="37.4%" y1="0" y2="100%"/><line class="g1" x1="38.275%" x2="38.275%" y1="0" y2="100%"/><line class="gh" x1="44.036%" x2="44.036%" y1="0" y2="100%"/><line class="gn" x1="47.406%" x2="47.406%" y1="0" y2="100%"/><line class="gn" x1="49.797%" x2="49.797%" y1="0" y2="100%"/><line class="gh" x1="51.652%" x2="51.652%" y1="0" y2="100%"/><line class="gn" x1="53.167%" x2="53.167%" y1="0" y2="100%"/><line class="gn" x1="54.448%" x2="54.448%" y1="0" y2="100%"/><line class="gn" x1="55.558%" x2="55.558%" y1="0" y2="100%"/><line class="gn" x1="56.537%" x2="56.537%" y1="0" y2="100%"/><line class="gd" x1="57.413%" x2="57.413%" y1="0" y2="100%"/><line class="gb" x1="63.174%" x2="63.174%" y1="0" y2="100%"/><line class="gn" x1="66.544%" x2="66.544%" y1="0" y2="100%"/><line class="gn" x1="68.935%" x2="68.935%" y1="0" y2="100%"/><line class="gh" x1="70.789%" x2="70.789%" y1="0" y2="100%"/><line class="gn" x1="72.305%" x2="72.305%" y1="0" y2="100%"/><line class="gn" x1="73.586%" x2="73.586%" y1="0" y2="100%"/><line class="gn" x1="74.696%" x2="74.696%" y1="0" y2="100%"/><line class="gn" x1="75.675%" x2="75.675%" y1="0" y2="100%"/><line class="gd" x1="76.55%" x2="76.55%" y1="0" y2="100%"/><line class="gh" x1="82.311%" x2="82.311%" y1="0" y2="100%"/><line class="gn" x1="85.681%" x2="85.681%" y1="0" y2="100%"/><line class="gn" x1="88.072%" x2="88.072%" y1="0" y2="100%"/><line class="gh" x1="89.927%" x2="89.927%" y1="0" y2="100%"/><line class="gn" x1="91.442%" x2="91.442%" y1="0" y2="100%"/><line class="gn" x1="92.724%" x2="92.724%" y1="0" y2="100%"/><line class="gn" x1="93.833%" x2="93.833%" y1="0" y2="100%"/><line class="gn" x1="94.812%" x2="94.812%" y1="0" y2="100%"/><line class="gd" x1="95.688%" x2="95.688%" y1="0" y2="100%"/><line class="ge" x1="100%" x2="100%" y1="0" y2="100%"/></svg><!--/@grid--></div>
 
 <header class="bar">
   <div class="frame bar-in">
@@ -75,10 +90,10 @@
 
 <main id="main" class="nf">
   <div class="frame">
-    <div class="cols nf-row">
-      <div class="nf-side">
-        <p class="nf-code">404</p>
-        <h1 class="nf-t">There is nothing at this address.</h1>
+    <div class="cols hero-b nf-b">
+      <div class="rule-side nf-side">
+        <p class="nf-code" aria-hidden="true">404</p>
+        <h1 class="nf-t"><span class="sr">404: </span>There is nothing at this address.</h1>
         <p class="links nf-links"><a class="go" href="/">Home page</a><a href="/research/">Research</a><a href="/plain/">Plain version</a></p>
       </div>
       <figure class="rule nf-rule">

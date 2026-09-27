@@ -33,11 +33,11 @@
   function width(el) { return el.getBoundingClientRect().width; }
 
   /* ------------------------------------------------------------ the 84
-     x is the page's own e-axis, so the vertical lines behind the plot are
-     its graduations. Pointing, tapping or the arrow keys select a mark; the
-     readout names it. On arrival every mark starts where it would sit with
-     no margin, at its fair-odds e-value on both axes, and drops to what the
-     same bet made after the bookmaker's margin. */
+     x is the site's e-axis, from 0.01 to 1,680. Pointing, tapping, the
+     arrow keys or a family chip select a mark, and the readout names it.
+     On arrival every mark starts where it would sit with no margin, at its
+     fair-odds e-value on both axes, and drops to what the same bet made
+     after the bookmaker's margin. */
   (function scatter() {
     var fig = $("[data-sc]"), src = $("#rs-rows");
     if (!fig || !src) return;
@@ -272,7 +272,7 @@
 
   /* ------------------------------------------------------------ the ladder
      The three mixtures sweep up from e = 1; only the first crosses 20 and
-     turns red. Then each is charged the margin and slides back. */
+     turns blue. Then each is charged the margin and slides back. */
   (function ladder() {
     var fig = $("[data-ld]");
     if (!fig || still()) return;
@@ -351,9 +351,9 @@
       txt.textContent = k + (k === 1 ? " seed: " : " seeds: ") + d.getAttribute("data-v") + " nats";
       ro.setAttribute("visibility", "visible");
       var W = width(svg), cx = pct(d.getAttribute("cx")) * W, cy = +d.getAttribute("cy");
-      var tw = txt.getComputedTextLength() + 18, x = clamp(cx - tw / 2, 0, W - tw);
-      box.setAttribute("x", x.toFixed(1)); box.setAttribute("y", (cy - 40).toFixed(1)); box.setAttribute("width", tw.toFixed(1));
-      txt.setAttribute("x", (x + 9).toFixed(1)); txt.setAttribute("y", (cy - 23.5).toFixed(1));
+      var tw = txt.getComputedTextLength() + 22, x = clamp(cx - tw / 2, 0, W - tw);
+      box.setAttribute("x", x.toFixed(1)); box.setAttribute("y", (cy - 42).toFixed(1)); box.setAttribute("width", tw.toFixed(1));
+      txt.setAttribute("x", (x + 11).toFixed(1)); txt.setAttribute("y", (cy - 24.5).toFixed(1));
     }
     function off() {
       ro.setAttribute("visibility", "hidden");
@@ -469,6 +469,8 @@
       g.textContent = "";
       g.appendChild(frag);
       range.value = String(k);
+      /* the filled part of the track, up to the thumb's centre */
+      range.style.setProperty("--p", (k / (STEPS.length - 1)).toFixed(4));
       range.setAttribute("aria-valuetext", n + " discs, " + v.toFixed(1) + " cubic centimetres");
       out.textContent = n;
       sum.textContent = v.toFixed(1);

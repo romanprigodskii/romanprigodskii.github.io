@@ -2,10 +2,11 @@
    tools/figures.mjs (markers named rs*).
 
    Same rules as figures.js: pure functions that return SVG strings, x
-   positions as percentages of the frame so every figure is fluid without
+   positions as percentages of the figure so every figure is fluid without
    a re-render, and nothing drawn that is not in assets/data/audit.json or
-   in the paper's own numbers. Where a figure is drawn on the page's e-value
-   axis it uses Fig.gx, so its ticks land on the lines behind the page. */
+   in the paper's own numbers. Every e-value axis is the site's one axis,
+   Fig.gx: 0.01 to 1,680 on a log scale, so 20 and 1,680 sit in the same
+   place on every figure. */
 (function (root) {
   "use strict";
 
@@ -31,10 +32,10 @@
     var pc = F.pc, r2 = F.r2;
 
     /* ------------------------------------------------------------ the 84
-       x: e at fair odds on the page's own axis (0.01 at the frame's left
+       x: e at fair odds on the site's e-axis (0.01 at the plot's left
        edge, 1,680 at its right). y: e after the margin, log, 100 down to
-       0.001. Marks under 0.01 at fair odds are off the page's scale; they
-       stack in the margin, hollow, as on the verdict chart. */
+       0.001. Marks under 0.01 at fair odds are off the scale; they stack in
+       the margin, hollow, as on the verdict chart. */
     var SC_N = 688;
     function scGeo(wide) {
       var g = wide ? { T: 62, DH: 76, rmax: 9, ro: 3.6, wide: true } : { T: 46, DH: 52, rmax: 5.6, ro: 2.5, wide: false };
@@ -66,25 +67,16 @@
       var pos = scPos(rows, g), best = bestIndex(rows);
       var s = '<svg class="rs-sc-svg" width="100%" height="' + r2(H) + '" data-t="' + T + '" data-y0="' + r2(Y0) + '" data-y20="' + r2(g.y(20)) + '" overflow="visible" role="img" aria-labelledby="sc-t' + sfx + ' sc-d' + sfx + '">' +
         '<title id="sc-t' + sfx + '">All 84 hypotheses, at the wealth each one earned</title>' +
-        '<desc id="sc-d' + sfx + '">Each mark is one pre-registered hypothesis. Horizontally, its e-value at fair odds on the page\'s own logarithmic axis from 0.01 to 1,680; vertically, the same bet charged the bookmaker\'s margin, on a logarithmic axis from 0.001 to 100. Mark size grows with the number of bouts. Six marks clear 20 at fair odds; one also clears 20 after the margin, at 21.2, on the most favourable of five seeds. None comes near 1,680. Ten marks are under 0.01 at fair odds and sit in the margin.</desc>';
-      // log-log paper: the page's verticals show through; the plot adds its minor lines and the horizontals
-      F.gridValues().forEach(function (v) {
-        var c = F.gridClass(v);
-        if (c !== "gn" && c !== "gh") return;
-        if (c === "gn" && !wide) return;
-        var x = pc(F.gx(v.v));
-        s += '<line class="rs-gv ' + c + '" x1="' + x + '" x2="' + x + '" y1="' + T + '" y2="' + r2(Y0) + '"/>';
+        '<desc id="sc-d' + sfx + '">Each mark is one pre-registered hypothesis. Horizontally, its e-value at fair odds on a logarithmic axis from 0.01 to 1,680; vertically, the same bet charged the bookmaker\'s margin, on a logarithmic axis from 0.001 to 100. Mark size grows with the number of bouts. Six marks clear 20 at fair odds; one also clears 20 after the margin, at 21.2, on the most favourable of five seeds. None comes near 1,680. Ten marks are under 0.01 at fair odds and sit in the margin.</desc>';
+      // decades only, both ways; e = 1, a bet that broke even, a shade darker
+      [0.01, 0.1, 1, 10, 100, 1000].forEach(function (v) {
+        var x = pc(F.gx(v));
+        s += '<line class="rs-gv' + (v === 1 ? " is-1" : "") + '" x1="' + x + '" x2="' + x + '" y1="' + T + '" y2="' + r2(Y0) + '"/>';
       });
-      for (var k = -3; k <= 2; k++) {
-        for (var m = 1; m <= 9; m++) {
-          var v = m * Math.pow(10, k);
-          if (v > 100.0001) break;
-          var c = m === 1 ? (k === 0 ? "g1" : "gd") : (m === 2 || m === 5) ? "gh" : "gn";
-          if (c === "gn" && !wide) continue;
-          var y = r2(g.y(v));
-          s += '<line class="rs-gh ' + c + '" x1="0" x2="100%" y1="' + y + '" y2="' + y + '"/>';
-        }
-      }
+      [0.001, 0.01, 0.1, 1, 10, 100].forEach(function (v) {
+        var y = r2(g.y(v));
+        s += '<line class="rs-gh' + (v === 1 ? " is-1" : "") + '" x1="0" x2="100%" y1="' + y + '" y2="' + y + '"/>';
+      });
       // the bars: 20 both ways, 1,680 at the right edge
       var x20 = pc(F.gx(20)), y20 = r2(g.y(20));
       s += '<line class="rs-b20" x1="' + x20 + '" x2="' + x20 + '" y1="' + (T - 4) + '" y2="' + r2(Y0) + '"/>';
@@ -157,7 +149,7 @@
     }
 
     /* ------------------------------------------------------------ 4.81 against 20
-       Row A is the page's e-axis: the segment's e-value so far, and the gap to
+       Row A is the site's e-axis: the segment's e-value so far, and the gap to
        the bar. Rows B are a bout count, linear: how many more bouts each price
        needs, from the paper (100 at fair odds, 253 at the book's). */
     function narrowX(v) { return 0.02 + L(v) / 2 * 0.96; }
@@ -227,8 +219,8 @@
 
     /* ------------------------------------------------------------ the ladder
        Three mixtures, each paying for more of the search, as needles on the
-       page's e-axis: filled at fair odds, hollow at the prices the book
-       offered. Red only where a needle clears 20. */
+       site's e-axis: filled at fair odds, hollow at the prices the book
+       offered. Blue only where a needle clears 20. */
     function ladder(ld, wide, sfx) {
       var X = wide ? F.gx : narrowX;
       var top = wide ? 46 : 36, rowH = wide ? 64 : 84;
@@ -315,7 +307,7 @@
       pts.forEach(function (p) {
         s += '<rect class="rs-bhit" data-k="' + p.k + '" x="' + pc(fx(p.k) - step / 2) + '" y="' + top + '" width="' + pc(step) + '" height="' + (axisY - top) + '"/>';
       });
-      s += '<g class="rs-bro" data-bu-ro visibility="hidden"><rect class="rs-bro-b" x="0" y="0" width="10" height="24" rx="2"/><text class="rs-bro-t" x="0" y="0"></text></g>';
+      s += '<g class="rs-bro" data-bu-ro visibility="hidden"><rect class="rs-bro-b" x="0" y="0" width="10" height="26" rx="8"/><text class="rs-bro-t" x="0" y="0"></text></g>';
       return s + "</svg>";
     }
 

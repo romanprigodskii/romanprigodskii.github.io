@@ -191,7 +191,8 @@
       var s = '<svg class="bx-svg ko-svg" width="100%" height="' + H + '" role="img" aria-labelledby="kno-t' + sfx + ' kno-d' + sfx + '">' +
         '<title id="kno-t' + sfx + '">Blended into the opening price, the model moves it 87% of the way to the close</title>' +
         '<desc id="kno-d' + sfx + '">A scale from the opening price, a median three days before the fight, to the closing price. Blended with the model, the opening price moves 87% of the way to where it closes. On its own the model forecasts worse than the opening price.</desc>';
-      s += '<text class="bx-k" x="' + pc(fx(0)) + '" y="12">against the opening price, a median three days before the fight</text>';
+      if (wide) s += '<text class="bx-k" x="' + pc(fx(0)) + '" y="12">against the opening price, a median three days before the fight</text>';
+      else s += '<text class="bx-k" x="' + pc(fx(0)) + '" y="12">against the opening price,</text><text class="bx-k" x="' + pc(fx(0)) + '" y="27">a median three days before the fight</text>';
       if (wide) {
         s += '<text class="bx-lab is-s" x="0" y="' + (y - 2) + '">Blended into the open</text>';
         s += '<text class="bx-sub" x="0" y="' + (y + 13) + '">alone, the model is worse</text>';
@@ -246,10 +247,10 @@
       return s + "</svg>";
     }
 
-    /* ------------------------------------------------ 5. the checks, on the page's own axis
-       Drawn across the whole frame, so 0.01 is its left edge, 1 is the main
-       content edge and 1,680 its right edge: every mark sits on the grid
-       behind the page. Each e-value starts where a bet starts, at 1. */
+    /* ------------------------------------------------ 5. the checks, on one log axis
+       An e-value axis from 0.01 at the figure's left edge to 1,680 at its
+       right, graduated at m x 10^k, with the bar at 20. Each e-value starts
+       where a bet starts, at 1. */
     function checks(W, sfx) {
       var wide = W > 620, gx = F.gx, x1 = gx(1);
       var rows = [
@@ -264,8 +265,8 @@
       var axisY = top + rows.length * rowH + 6, H = axisY + 28;
       var xb = gx(20);
       var s = '<svg class="bx-svg ck-svg" width="100%" height="' + H + '" role="img" aria-labelledby="ck-t' + sfx + ' ck-d' + sfx + '">' +
-        '<title id="ck-t' + sfx + '">The checks built to kill the opening-price result, as e-values on the page\'s own scale</title>' +
-        '<desc id="ck-d' + sfx + '">A logarithmic e-value axis from 0.01 to 1,680, the grid behind this page, with the bar at 20. The result at Bet365\'s open over 2023 to 2025, e = 3.9 times 10 to the 8, and the same retrained without anything settled in fight week, 1.2 times 10 to the 8, are both off the scale to the right. Price-only controls with no model in them score 0.25 and 1.2. A simulated null averages 0.20. None of sixteen classic price biases, tested at Bet365\'s close, reached 20.</desc>';
+        '<title id="ck-t' + sfx + '">The checks built to kill the opening-price result, as e-values on a log scale</title>' +
+        '<desc id="ck-d' + sfx + '">A logarithmic e-value axis from 0.01 to 1,680, with the bar at 20. The result at Bet365\'s open over 2023 to 2025, e = 3.9 times 10 to the 8, and the same retrained without anything settled in fight week, 1.2 times 10 to the 8, are both off the scale to the right. Price-only controls with no model in them score 0.25 and 1.2. A simulated null averages 0.20. None of sixteen classic price biases, tested at Bet365\'s close, reached 20.</desc>';
       // the bar
       s += '<line class="ck-bar" x1="' + pc(xb) + '" x2="' + pc(xb) + '" y1="' + (top - 22) + '" y2="' + axisY + '"/>';
       s += '<text class="bx-k is-b is-mid" x="' + pc(xb) + '" y="' + (top - 28) + '">the bar, 20</text>';
@@ -290,7 +291,7 @@
           s += '<text class="ck-v" style="--i:' + i + '" x="' + pc(xb) + '" dx="' + (wide ? -52 : -8) + '" y="' + (wide ? y + 5 : y + 21) + '" text-anchor="end">none reached 20</text>';
         }
       });
-      // the axis: the page's own graduation
+      // the axis, graduated at m x 10^k
       s += '<line class="ck-axis" x1="0" x2="100%" y1="' + axisY + '" y2="' + axisY + '"/>';
       F.gridValues().forEach(function (g) {
         var c = F.gridClass(g), len = (c === "gd" || c === "g1" || c === "ge" || g.v === 0.01) ? 9 : (c === "gb" || c === "gh") ? 6 : 3;

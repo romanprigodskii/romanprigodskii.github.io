@@ -1,4 +1,7 @@
 /* /work/clipwell/: behaviour for this case only.
+   - The lead: when the stage arrives, the chord above the bar is pressed and
+     the bar comes up from the stage's bottom edge. The chord is a button that
+     does it again: the bar drops, the keys go down, the bar comes back.
    - "Written twice": the arrow keys drawn in the figure work. One index drives
      the selection on both sides, so pressing a key on either platform moves
      both. After the figure has been written out it presses the right arrow
@@ -11,6 +14,39 @@
   var RP = window.RP;
   if (!RP) return;
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+
+  /* ------------------------------------------------ the lead: the chord brings the bar up */
+  var stage = document.querySelector("[data-cw-stage]");
+  if (stage && !RP.still() && "IntersectionObserver" in window) (function () {
+    var chord = stage.querySelector("[data-chord]"), timers = [], busy = false;
+    stage.setAttribute("data-armed", "");
+    function clear() { timers.forEach(clearTimeout); timers = []; }
+    function press(first) {
+      clear();
+      busy = true;
+      var down = first ? 0 : 380;
+      stage.classList.remove("is-up", "is-press");
+      timers.push(setTimeout(function () {
+        void stage.offsetWidth;
+        stage.classList.add("is-press");
+      }, down + (first ? 560 : 0)));
+      timers.push(setTimeout(function () {
+        stage.classList.add("is-up");
+        busy = false;
+      }, down + (first ? 560 : 0) + 440));
+    }
+    RP.watch(stage, function () { press(true); });
+    if (stage.classList.contains("in")) press(true);
+
+    if (!chord) return;
+    chord.removeAttribute("aria-hidden");
+    chord.setAttribute("role", "button");
+    chord.setAttribute("tabindex", "0");
+    chord.setAttribute("aria-label", "Press ⌘⇧V again");
+    function go(ev) { if (ev) ev.preventDefault(); if (!busy) press(false); }
+    chord.addEventListener("click", go);
+    chord.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") go(ev); });
+  })();
 
   /* ------------------------------------------------ written twice */
   var tw = document.querySelector("[data-tw]");

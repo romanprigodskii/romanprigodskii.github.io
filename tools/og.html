@@ -1,8 +1,9 @@
 <!doctype html>
-<!-- The social card, assets/img/og.png, 1200 x 630.
-     Drawn on the page's own paper: every vertical line is at m x 10^k on the
-     e-value axis from 0.01 (the frame's left edge) to 1,680 (its right edge),
-     decades darker, 20 and 1,680 marked on the scale beneath.
+<!-- The social card, assets/img/og.png, 1200 x 630, in the site's clean light theme:
+     the name, one factual line, the address with the mark, and two of the products
+     on Gluline's mist stage (Vertex MMA in a browser window, Gluline on a phone).
+     The stage runs from 40 to 590; the name's cap height starts on its top edge and
+     the mark sits on its bottom edge.
      To render: serve the repo root (python3 -m http.server 8777) and screenshot
      http://localhost:8777/tools/og.html with Playwright, channel "chrome",
      viewport 1200 x 630, deviceScaleFactor 1. -->
@@ -12,139 +13,89 @@
 <title>Social card</title>
 <link rel="icon" href="data:,">
 <style>
-@font-face { font-family: "Barlow Condensed"; font-weight: 800; src: url("../assets/fonts/barlow-condensed-800-normal-latin.woff2") format("woff2"); }
-@font-face { font-family: "Barlow Condensed"; font-weight: 700; src: url("../assets/fonts/barlow-condensed-700-normal-latin.woff2") format("woff2"); }
-@font-face { font-family: "Barlow Condensed"; font-weight: 500; src: url("../assets/fonts/barlow-condensed-500-normal-latin.woff2") format("woff2"); }
-@font-face { font-family: "Barlow"; font-weight: 400; src: url("../assets/fonts/barlow-400-normal-latin.woff2") format("woff2"); }
+@font-face { font-family: "Mona Sans"; font-style: normal; font-weight: 200 900; font-stretch: 75% 125%; src: url("../assets/fonts/mona-sans-200-900-normal-latin.woff2") format("woff2"); }
 
 :root {
-  --paper: #F3F2EE;
-  --ink: #151412;
-  --ink-2: #4B4944;
-  --ink-3: #6B6861;
-  --g-n: #E7E5DF;
-  --g-h: #DDDBD4;
-  --g-d: #CBC8C0;
-  --g-1: #ABA89F;
-
-  --m: 64px;            /* side margin; the frame is 1,072 wide */
-  --w: 1072px;
-  --f-cond: "Barlow Condensed", "Arial Narrow", sans-serif;
-  --f-sans: "Barlow", "Helvetica Neue", Arial, sans-serif;
+  --bg: oklch(0.992 0.002 250);
+  --ink: oklch(0.2 0.012 262);
+  --ink-2: oklch(0.43 0.014 262);
+  --f-sans: "Mona Sans", ui-sans-serif, system-ui, sans-serif;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body {
   position: relative; width: 1200px; height: 630px; overflow: hidden;
-  background: var(--paper); color: var(--ink);
+  background: var(--bg); color: var(--ink);
   font-family: var(--f-sans);
+  font-variant-numeric: lining-nums proportional-nums;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
+p, h1 { margin: 0; }
 
-/* the paper */
-.gp { position: absolute; top: 0; bottom: 0; left: var(--m); width: var(--w); }
-.gp svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; shape-rendering: crispEdges; }
-.gp line { stroke-width: 1; }
-.coarse .gn, .coarse .gh { stroke: none; }
-.coarse .gd { stroke: var(--g-d); }
-.coarse .g1 { stroke: var(--g-1); }
-.coarse .gb, .coarse .ge { stroke: var(--g-1); }   /* 20 and 1,680 */
-.fine { -webkit-mask-image: linear-gradient(to bottom, #000 30%, transparent 78%); mask-image: linear-gradient(to bottom, #000 30%, transparent 78%); }
-.fine .gn { stroke: var(--g-n); }
-.fine .gh { stroke: var(--g-h); }
-.fine .gd, .fine .g1, .fine .gb, .fine .ge { stroke: none; }
-
-.frame { position: absolute; left: var(--m); width: var(--w); }
-
-/* the name, set as in the hero: it spans the frame, 0.01 to 1,680 */
+/* the text column, 64 to 584 */
 .name {
-  top: 42px; margin: 0;
-  font-family: var(--f-cond); font-weight: 800;
-  font-size: calc(var(--w) / 6.24); line-height: 0.86; letter-spacing: -0.01em;
-  white-space: nowrap; margin-left: -0.035em;
+  position: absolute; left: 64px; top: 26px;
+  font-weight: 600; font-size: 120px; line-height: 0.92;
+  letter-spacing: -0.052em; margin-left: -0.055em;
 }
-
-/* beneath it, the hero's two-part row: the address on the left, the line from e = 1 */
-.row { top: 284px; display: grid; grid-template-columns: 38.2753% 1fr; }
-.url {
-  font-family: var(--f-cond); font-weight: 700; font-size: 34px; line-height: 1;
-  letter-spacing: 0.004em; padding-top: 18px;
-}
+.name span { display: block; }
 .line {
-  border-top: 2px solid var(--ink); padding-top: 16px;
-  font-size: 32px; line-height: 1.28; letter-spacing: -0.004em;
+  position: absolute; left: 64px; top: 306px; width: 520px;
+  font-size: 28px; line-height: 1.32; letter-spacing: -0.016em; color: var(--ink-2);
 }
 .line span { display: block; }
+.url {
+  position: absolute; left: 66px; bottom: 40px; height: 30px;
+  display: flex; align-items: center; gap: 12px;
+  font-weight: 600; font-size: 24px; line-height: 1; letter-spacing: -0.02em;
+}
+.url img { display: block; width: 30px; height: 30px; }
+.url span { padding-bottom: 2px; }
 
-/* the scale: the page's own axis, graduated as in each section's edge */
-.scale { top: 526px; height: 64px; }
-.scale svg { width: 100%; height: 100%; overflow: visible; font-family: var(--f-cond); font-variant-numeric: tabular-nums lining-nums; }
-.scale .base { stroke: var(--ink); stroke-width: 1.5; shape-rendering: crispEdges; }
-.scale .t { stroke: var(--ink); stroke-width: 1; shape-rendering: crispEdges; }
-.scale .t.gn { stroke: var(--ink-3); }
-.scale .t.gb, .scale .t.ge { stroke-width: 2; }
-.scale text { fill: var(--ink-2); font-size: 19px; font-weight: 500; text-anchor: middle; }
-.scale text.is-bar { fill: var(--ink); font-weight: 700; }
-.scale text.is-first { text-anchor: start; }
-.scale text.is-end { text-anchor: end; }
+/* the stage, tinted as Gluline's is on the site */
+.stage {
+  position: absolute; left: 616px; top: 40px; right: 40px; bottom: 40px;
+  border-radius: 30px; overflow: hidden;
+  background:
+    radial-gradient(70% 60% at 8% 12%, oklch(0.9 0.07 188 / 0.95), transparent 70%),
+    radial-gradient(60% 70% at 96% 92%, oklch(0.84 0.085 298 / 0.9), transparent 72%),
+    radial-gradient(50% 50% at 60% 40%, oklch(0.95 0.03 230 / 0.9), transparent 80%),
+    linear-gradient(140deg, oklch(0.93 0.045 196), oklch(0.9 0.055 285));
+}
+
+/* Vertex MMA, in a browser window that runs off the stage */
+.win {
+  position: absolute; left: 40px; top: 56px; width: 780px;
+  border-radius: 12px; overflow: hidden; background: #000;
+  box-shadow: 0 0 0 1px oklch(0.2 0.02 262 / 0.12), 0 2px 4px oklch(0.2 0.02 262 / 0.06), 0 30px 60px -28px oklch(0.2 0.03 262 / 0.55);
+}
+.win-bar { display: flex; align-items: center; height: 30px; padding: 0 12px; background: oklch(0.2 0.008 265); border-bottom: 1px solid oklch(0.3 0.01 265); }
+.win-dots { display: flex; gap: 6px; }
+.win-dots i { width: 9px; height: 9px; border-radius: 50%; background: oklch(0.36 0.01 265); }
+.win-url { margin-left: 80px; width: 220px; height: 19px; display: flex; align-items: center; justify-content: center; border-radius: 5px; background: oklch(0.26 0.01 265); font: 500 11px/1 var(--f-sans); color: oklch(0.72 0.01 262); letter-spacing: -0.005em; }
+.win img { display: block; width: 100%; height: auto; }
+
+/* Gluline, on a phone rising from the stage's lower edge */
+.phone {
+  position: absolute; left: 272px; top: 160px; width: 232px; aspect-ratio: 800 / 1739;
+  border-radius: 12.5% / 5.75%; overflow: hidden; background: oklch(0.14 0.01 265);
+  box-shadow: 0 0 0 1px oklch(0.25 0.03 260 / 0.14), 0 2px 4px oklch(0.25 0.04 260 / 0.08), 0 30px 50px -18px oklch(0 0 0 / 0.55);
+}
+.phone img { display: block; width: 100%; height: 100%; object-fit: cover; }
 </style>
 </head>
 <body>
-  <div class="gp" aria-hidden="true">
-    <svg class="coarse" id="coarse"></svg>
-    <svg class="fine" id="fine"></svg>
+  <h1 class="name"><span>Roman</span> <span>Prigodskii</span></h1>
+  <p class="line"><span>Forecasting models graded against</span> <span>the bookmaker&rsquo;s closing line.</span> <span>Co-founder and Head of AI at Gluline.</span></p>
+  <p class="url"><img src="../assets/img/mark.svg" width="30" height="30" alt=""><span>prigodskii.dev</span></p>
+
+  <div class="stage" aria-hidden="true">
+    <div class="win">
+      <div class="win-bar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-url">vertexmma.com</span></div>
+      <img src="../assets/img/work/vertex-markets-1600.webp" width="1600" height="1000" alt="">
+    </div>
+    <div class="phone"><img src="../assets/img/work/gluline-chats-800.webp" width="800" height="1739" alt=""></div>
   </div>
-
-  <h1 class="frame name">Roman Prigodskii</h1>
-
-  <div class="frame row">
-    <p class="url">prigodskii.dev</p>
-    <p class="line"><span>Forecasting models graded against</span> <span>the bookmaker&rsquo;s closing line.</span> <span>Co-founder and Head of AI at Gluline.</span></p>
-  </div>
-
-  <div class="frame scale"><svg id="scale"></svg></div>
-
-<script>
-/* the same axis as assets/js/figures.js: m x 10^k from 0.01 to 1,680 */
-var LO = 0.01, HI = 1680, SPAN = Math.log10(HI) - Math.log10(LO);
-function gx(v) { return (Math.log10(v) - Math.log10(LO)) / SPAN; }
-function pc(f) { return (Math.round(f * 1e5) / 1e3) + "%"; }
-function values() {
-  var out = [];
-  for (var k = -2; k <= 3; k++) for (var m = 1; m <= 9; m++) {
-    var v = +(m * Math.pow(10, k)).toPrecision(3);
-    if (v > HI) break;
-    out.push({ v: v, m: m });
-  }
-  out.push({ v: HI, m: 0, end: true });
-  return out;
-}
-function cls(g) {
-  if (g.end) return "ge";
-  if (g.v === 20) return "gb";
-  if (g.v === 1) return "g1";
-  if (g.m === 1) return "gd";
-  if (g.m === 2 || g.m === 5) return "gh";
-  return "gn";
-}
-var lines = "";
-values().forEach(function (g) {
-  lines += '<line class="' + cls(g) + '" x1="' + pc(gx(g.v)) + '" x2="' + pc(gx(g.v)) + '" y1="0" y2="100%"/>';
-});
-document.getElementById("coarse").innerHTML = lines;
-document.getElementById("fine").innerHTML = lines;
-
-var s = '<line class="base" x1="0" x2="100%" y1="0.75" y2="0.75"/>';
-values().forEach(function (g) {
-  var c = cls(g);
-  var len = (c === "gd" || c === "g1" || c === "gb" || c === "ge") ? 16 : c === "gh" ? 9 : 5;
-  var x = pc(gx(g.v));
-  s += '<line class="t ' + c + '" x1="' + x + '" x2="' + x + '" y1="0" y2="' + len + '"/>';
-});
-[[0.01, "0.01", "is-first"], [0.1, "0.1", ""], [1, "1", ""], [10, "10", ""], [20, "20", "is-bar"], [100, "100", ""], [1680, "1,680", "is-bar is-end"]].forEach(function (l) {
-  s += '<text class="' + l[2] + '" x="' + pc(gx(l[0])) + '" y="42">' + l[1] + "</text>";
-});
-document.getElementById("scale").innerHTML = s;
-</script>
 </body>
 </html>

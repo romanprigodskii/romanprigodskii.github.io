@@ -1,13 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-<!-- prigodskii.dev. The page's own paper in miniature: hairlines at m x 10^k on the
-     e-value axis from 1 to 1,680, the bar at 20 in ink, and one reading past it in
-     the signal colour. The ink and vermilion edges sit on the 16px pixel grid.
-     assets/img/mark-180.png is this file drawn at 160px on a 180px paper square. -->
+<!-- prigodskii.dev. An R in Mona Sans 700, the site's ground colour on its ink.
+     The cap height is 20 units and the stem about 4, so at 16px the stem is two
+     whole pixels and the cap sits on whole-pixel edges.
+     assets/img/mark-180.png is the same R, full bleed, for the home screen. -->
 <title>Roman Prigodskii</title>
-<rect width="32" height="32" rx="6" fill="#F3F2EE"/>
-<path fill="#DDDBD4" d="M7.3 6h0.5v18h-0.5zM8.23 6h0.5v18h-0.5zM9.54 6h0.5v18h-0.5zM10.04 6h0.5v18h-0.5zM10.47 6h0.5v18h-0.5zM10.85 6h0.5v18h-0.5zM14.74 6h0.5v18h-0.5zM15.67 6h0.5v18h-0.5zM16.98 6h0.5v18h-0.5zM17.48 6h0.5v18h-0.5zM17.91 6h0.5v18h-0.5zM18.29 6h0.5v18h-0.5zM22.18 6h0.5v18h-0.5zM23.11 6h0.5v18h-0.5zM24.42 6h0.5v18h-0.5zM24.92 6h0.5v18h-0.5zM25.35 6h0.5v18h-0.5zM25.73 6h0.5v18h-0.5z"/>
-<path fill="#CBC8C0" d="M5.99 6h0.5v18h-0.5zM8.95 6h0.5v18h-0.5zM16.39 6h0.5v18h-0.5zM20.87 6h0.5v18h-0.5zM23.83 6h0.5v18h-0.5z"/>
-<path fill="#ABA89F" d="M4 6h0.5v18h-0.5zM11.19 6h0.5v18h-0.5zM18.63 6h0.5v18h-0.5zM26.07 6h0.5v18h-0.5zM27.5 6h0.5v18h-0.5z"/>
-<path fill="#151412" d="M4 24h24v2H4zM12 6h4v18h-4z"/>
-<path fill="#E0401C" d="M22 13h2v11h-2zM19 10h8l-4 6z"/>
+<rect width="32" height="32" rx="7" fill="#13161C"/>
+<path fill="#FBFCFE" d="M8 26V6H18.19Q19.41 6 20.42 6.22Q21.44 6.44 22.25 6.88Q23.06 7.32 23.62 7.98Q24.18 8.64 24.48 9.52Q24.78 10.39 24.78 11.5Q24.78 13.34 23.8 14.62Q22.82 15.9 21.11 16.36V16.53Q22.27 16.73 22.99 17.23Q23.71 17.73 24.04 18.52Q24.37 19.31 24.37 20.44V23.72Q24.37 24.27 24.41 24.84Q24.45 25.41 24.71 26H20.41Q20.24 25.63 20.16 25.04Q20.09 24.45 20.09 23.71V21.18Q20.09 20.33 19.83 19.75Q19.57 19.17 18.91 18.86Q18.25 18.55 17.03 18.55H11.89V15.16H17.18Q18.92 15.16 19.66 14.33Q20.4 13.51 20.4 12.27Q20.4 11.52 20.17 11.01Q19.94 10.49 19.5 10.16Q19.06 9.83 18.48 9.68Q17.9 9.54 17.18 9.54H12.28V26Z"/>
 </svg>

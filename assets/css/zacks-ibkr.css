@@ -1,109 +1,201 @@
-/* /work/zacks-ibkr/: the screen-to-book instrument at case scale, and the
-   daily run drawn as a schematic. Tokens and components from site.css. */
+/* /work/zacks-ibkr/: the screen-to-book figure at case scale, and the daily
+   run drawn as a schematic, both on neutral tiles. Tokens and components
+   from site.css (the clean light theme). */
 
-/* ------------------------------------------------------------ the instrument, larger */
-.zi-zk { --bh: clamp(30px, 3vw, 46px); margin-top: clamp(40px, 4.4vw, 72px); }
-.zi-zk .zk-f { padding-top: clamp(14px, 1.5vw, 22px); }
-.zi-zk .zk-flow { height: clamp(72px, 8.4vw, 136px); }
-.zi-zk .zk-flow path { stroke: var(--ink-2); }
-.zi-zk .book { padding-bottom: 64px; }
-.zi-zk .book-bar { height: var(--bh); }
-.zi-zk .book-bar i { position: relative; }
-/* every position is the same 4%: the book is its own ledger */
-.zi-zk .book-bar i::after { content: "4%"; position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f-cond); font-weight: 600; font-size: clamp(0.75rem, 0.55rem + 0.3vw, 0.875rem); line-height: 1; color: var(--paper); font-variant-numeric: tabular-nums lining-nums; }
-.zi-zk .book-lim { font-size: var(--fs-small); color: var(--ink); }
+/* ------------------------------------------------------------ the screen and the book, larger */
+.zi-zk { --bh: clamp(28px, 2.7vw, 40px); margin-top: clamp(48px, 5vw, 88px); }
+.zi-zk .zk-f { padding-top: 0; }
+.zi-zk .zk-flow { height: clamp(72px, 8vw, 128px); }
+.zi-zk .book { padding-bottom: 60px; }
+.zi-zk .book-bar { height: var(--bh); gap: clamp(3px, 0.3vw, 5px); margin-top: 6px; }
+.zi-zk .book-bar i { position: relative; border-radius: clamp(5px, 0.5vw, 8px); }
+/* every position is the same 4%: the book is its own ledger (an <i>, so set upright) */
+.zi-zk .book-bar i::after { content: "4%"; position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f-sans); font-style: normal; font-weight: 500; font-size: clamp(0.6875rem, 0.5rem + 0.28vw, 0.8125rem); letter-spacing: -0.01em; line-height: 1; color: oklch(1 0 0 / 0.86); }
+.zi-zk .book-lim { font-size: var(--fs-fine); color: var(--ink-2); }
 .zi-zk .lim-10 { top: var(--bh); height: 44px; }
-.zi-zk .lim-10 i { top: 7px; height: 10px; }
-.zi-zk .lim-10 span { top: 24px; }
-.zi-zk .lim-80 { top: -12px; height: calc(var(--bh) + 40px); }
-.zi-zk .lim-80 span { left: auto; right: 12px; bottom: -3px; }
-.zi-zk .lim-80 i::after { left: -9px; width: 10px; }
-.zi-zk .zk-cap { margin-top: 18px; }
-html.js .zi-zk .book-bar i::after { opacity: 0; transition: opacity 400ms ease calc(2450ms + var(--i) * 30ms); }
+.zi-zk .lim-10 i { top: 8px; height: 9px; }
+.zi-zk .lim-10 span { top: 26px; }
+.zi-zk .lim-80 { top: -8px; height: calc(var(--bh) + 26px); }
+.zi-zk .lim-80 i { border-radius: 1px; }
+.zi-zk .lim-80 i::after { display: none; }
+.zi-zk .lim-80 span { left: auto; right: 12px; top: calc(var(--bh) + 34px); }
+.zi-zk .zk-cap { margin-top: 20px; }
+html.js .zi-zk .book-bar i::after { opacity: 0; transition: opacity 500ms ease calc(2350ms + var(--i) * 26ms); }
 html.js .zi-zk.in .book-bar i::after { opacity: 1; }
 
 /* ------------------------------------------------------------ status line */
 .zi .case-facts dt { text-wrap: pretty; }
-.zi-now { font-weight: 600; }
+.chapter-b > p.zi-now { color: var(--ink); font-weight: 500; }
 
-/* ------------------------------------------------------------ the daily run */
-.zi-run { margin-top: clamp(64px, 6.4vw, 112px); }
-.zi-run-head { align-items: end; margin-bottom: 16px; }
-.zi-run-head .fig-k { grid-column: 1 / 3; }
-.zi-run-head .fig-s { grid-column: 3 / 6; padding-right: 0; margin-top: 0; max-width: 62ch; }
-.zi-plate { padding: clamp(20px, 2.2vw, 32px) clamp(18px, 2vw, 30px) clamp(16px, 1.8vw, 26px); }
+/* ------------------------------------------------------------ the daily run, on its tile */
+.zi-run {
+  --pad: clamp(22px, 2.6vw, 40px);
+  position: relative;
+  margin-top: clamp(80px, 8vw, 140px);
+  padding: var(--pad);
+  background: var(--tile);
+  border-radius: var(--r-stage);
+}
+.zi-run-head { max-width: 62ch; padding-right: 180px; }
+.zi-run-k { font-weight: 600; font-size: clamp(1.5rem, 1rem + 1.1vw, 2.25rem); line-height: 1.08; letter-spacing: -0.035em; }
+.zi-run-s { margin-top: 10px; color: var(--ink-2); font-size: var(--fs-small); line-height: 1.5; max-width: 52ch; text-wrap: pretty; }
+.zi-draw { margin-top: clamp(12px, 1.4vw, 24px); }
 .zr-narrow { display: none; }
 
-.zr-svg { overflow: visible; font-family: var(--f-cond); font-variant-numeric: tabular-nums lining-nums; }
-.zr-b { fill: var(--enamel); stroke: var(--ink); stroke-width: 1.5; transition: stroke-width 200ms ease; }
-.zr-b.is-acct { stroke: var(--ink-3); stroke-width: 1.2; stroke-dasharray: 5 4; }
-.zr-k { font-size: 16.5px; font-weight: 600; fill: var(--ink); letter-spacing: 0.002em; }
-.zr-n, .zr-x, .zr-r, .zr-o { font-family: var(--f-sans); font-size: 12.5px; }
+/* replay: a quiet pill in the corner, shown once the first run has ended */
+.zi-replay {
+  position: absolute;
+  top: var(--pad);
+  right: var(--pad);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 13px 8px 11px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink);
+  font: 500 0.8125rem/1 var(--f-sans);
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  box-shadow: 0 0 0 0.5px oklch(0.2 0.02 262 / 0.12), 0 1px 3px oklch(0.2 0.02 262 / 0.1);
+  transition: box-shadow 220ms var(--eo), transform 220ms var(--eo), opacity 400ms ease;
+}
+.zi-replay[hidden] { display: none; }
+.zi-replay::before {
+  content: "";
+  width: 13px;
+  height: 13px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M13.2 8.6A5.3 5.3 0 1 1 11.6 4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3Cpath d='M12.6 1.2v3.6H9' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M13.2 8.6A5.3 5.3 0 1 1 11.6 4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3Cpath d='M12.6 1.2v3.6H9' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.zi-replay:hover { box-shadow: 0 0 0 0.5px oklch(0.2 0.02 262 / 0.16), 0 4px 12px -4px oklch(0.2 0.02 262 / 0.22); }
+.zi-replay:active { transform: scale(0.97); }
+.zi-replay:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 999px; }
+.zi-replay.is-away { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 300ms ease, visibility 0s linear 300ms; }
+
+/* the drawing */
+.zr-svg { display: block; overflow: visible; font-family: var(--f-sans); }
+.zr-b { fill: var(--bg); stroke: var(--line-2); stroke-width: 1; transition: stroke 240ms ease; }
+.zr-ring { fill: none; stroke: var(--ink); stroke-opacity: 0; stroke-width: 9; transition: stroke-opacity 260ms ease; }
+.zr-acct { fill: none; stroke: var(--ink-3); stroke-width: 1.25; stroke-dasharray: 4 5; stroke-linecap: round; }
+.zr-k { font-size: 15px; font-weight: 600; fill: var(--ink); letter-spacing: -0.012em; }
+.zr-k.is-next { fill: var(--ink-2); }
+.zr-n, .zr-x, .zr-r, .zr-o { font-size: 12.5px; letter-spacing: -0.003em; }
 .zr-n { fill: var(--ink-2); }
 .zr-x { fill: var(--ink-3); }
 .zr-r { fill: var(--ink); }
 .zr-o { fill: var(--ink); font-weight: 600; }
-.zr-tk { font-size: 15px; font-weight: 600; fill: var(--ink-2); }
-.zr-n, .zr-x, .zr-o { paint-order: stroke; stroke: var(--enamel); stroke-width: 4px; stroke-linejoin: round; }
-.zr-w { stroke: var(--g-d); stroke-width: 1.5; }
-.zr-tr { stroke: var(--ink); stroke-width: 1.5; }
-.zr-dl { stroke: var(--ink-3); stroke-width: 1.2; stroke-dasharray: 5 4; }
-.zr-xl { stroke: var(--ink-3); stroke-width: 1.2; }
-.zr-jn { fill: var(--ink-3); }
-.zr-as, .zr-ad { fill: var(--ink-3); }
-.zr-term { fill: var(--enamel); stroke: var(--ink-3); stroke-width: 1.2; }
-.zr-rule { stroke: var(--g-d); stroke-width: 1; shape-rendering: crispEdges; }
-.zr-clock circle { fill: var(--enamel); stroke: var(--ink); stroke-width: 1.5; }
+.zr-tk { font-size: 13.5px; font-weight: 600; fill: var(--ink-2); letter-spacing: -0.01em; }
+.zr-n, .zr-x, .zr-o { paint-order: stroke; stroke: var(--tile); stroke-width: 5px; stroke-linejoin: round; }
+.zr-w { stroke: var(--line-2); stroke-width: 2; stroke-linecap: round; }
+.zr-tr { stroke: var(--ink); stroke-width: 2; stroke-linecap: round; }
+.zr-dl { stroke: var(--ink-3); stroke-width: 1.25; stroke-dasharray: 4 5; stroke-linecap: round; }
+.zr-xl { stroke: color-mix(in oklab, var(--ink-3) 70%, var(--tile)); stroke-width: 1.25; }
+.zr-jn { fill: var(--tile); stroke: color-mix(in oklab, var(--ink-3) 70%, var(--tile)); stroke-width: 1.25; }
+.zr-as, .zr-ad { fill: none; stroke: var(--ink-3); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.zr-term { fill: var(--tile-2); }
+.zr-rule { stroke: var(--line); stroke-width: 1; shape-rendering: crispEdges; }
+.zr-clock circle { fill: var(--bg); stroke: var(--line-2); stroke-width: 1; }
 .zr-clock path { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-.zr-in path { fill: var(--ink); }
-.zr-lamp { fill: var(--ink); stroke: var(--ink); stroke-width: 1.5; transition: fill 220ms ease; }
-.zr-ct { fill: var(--enamel); stroke: var(--ink); stroke-width: 1.5; }
-.zr-ct.is-pivot { fill: var(--ink); }
-.zr-blade { stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; }
-.zr-tok rect { fill: var(--ink); stroke: var(--enamel); stroke-width: 2; }
+/* a lamp is ticked in the drawing as served (the state after a run); the script unticks it before a run */
+.zr-lamp circle { fill: var(--ink); stroke: var(--ink); stroke-width: 1.25; transition: fill 260ms var(--eo), stroke 260ms var(--eo); }
+.zr-lamp path { fill: none; stroke: var(--bg); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.zr-tg-t { fill: var(--ink); }
+.zr-tg-k { fill: var(--bg); filter: drop-shadow(0 1px 1.5px oklch(0.2 0.02 262 / 0.3)); }
+.zr-tok circle { fill: var(--ink); stroke: var(--tile); stroke-width: 3; }
 
-/* the sheet's foot: a key, and a title strip as on a drawing */
-.zi-sheet { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--g-d); }
-.zi-key { margin-top: 0; gap: 6px 28px; }
-.zi-key i { width: 24px; height: 0; border-top: 1.5px solid var(--ink); }
-.zi-key .k-next { border-top: 1.2px dashed var(--ink-3); }
-.zi-key .k-stop { border-top: 1.2px solid var(--ink-3); position: relative; }
-.zi-key .k-stop::after { content: ""; position: absolute; right: -1px; top: -4.6px; border: 4px solid transparent; border-left: 7px solid var(--ink-3); border-right: 0; }
-.zi-tb { display: grid; grid-template-columns: 1fr 1.1fr 0.8fr 2fr; margin-top: 16px; border: 1.5px solid var(--ink); background: var(--enamel); }
-.zi-tb > div { padding: 7px 14px 9px; border-left: 1px solid var(--ink); min-width: 0; }
-.zi-tb > div:first-child { border-left: 0; }
-.zi-tb dt { font-size: 0.75rem; line-height: 1.2; color: var(--ink-3); }
-.zi-tb dd { margin: 2px 0 0; font-size: 0.9375rem; font-weight: 600; line-height: 1.3; }
-.zi-tb > div:first-child dd { font-family: var(--f-cond); font-weight: 700; font-size: 1.1875rem; line-height: 1.1; }
-
-/* one run, on reveal: the stages stand in pencil until the run reaches them (set by zacks-ibkr.js) */
-.zr-st { transition: opacity 320ms ease; }
-.zr-st.is-on .zr-b { stroke-width: 2.75; }
+/* one run, on reveal: the stages wait, faint, until the run reaches them (set by zacks-ibkr.js).
+   The cards stay opaque, so the line runs behind them and never through their words. */
+.zr-st text, .zr-st .zr-lamp, .zr-st .zr-rule { transition: opacity 360ms ease; }
+.zr-b { transition: stroke 240ms ease, fill 360ms ease; }
+.zr-tg-t { transition: fill 360ms ease; }
+.zr-st.is-on .zr-b { stroke: var(--ink); }
+.zr-st.is-on .zr-ring { stroke-opacity: 0.07; }
 .zr-out, .zr-next, .zr-stop { transition: opacity 700ms ease; }
-html.js .zi-run.is-armed .zr-st:not(.is-done) { opacity: 0.26; }
-html.js .zi-run.is-armed .zr-lamp:not(.is-lit) { fill: var(--enamel); }
+html.js .zi-run.is-armed .zr-st:not(.is-done) :is(text, .zr-lamp, .zr-rule) { opacity: 0.32; }
+html.js .zi-run.is-armed .zr-st:not(.is-done) .zr-b { fill: color-mix(in oklab, var(--bg) 45%, var(--tile)); stroke: var(--line); }
+html.js .zi-run.is-armed .zr-st:not(.is-done) .zr-tg-t { fill: var(--line-2); }
+html.js .zi-run.is-armed .zr-lamp:not(.is-lit) circle { fill: var(--bg); stroke: var(--line-2); }
 html.js .zi-run.is-armed:not(.is-end) .zr-out { opacity: 0; }
-html.js .zi-run.is-armed:not(.is-end) .zr-next, html.js .zi-run.is-armed:not(.is-end) .zr-stop { opacity: 0.55; }
+html.js .zi-run.is-armed:not(.is-end) .zr-next, html.js .zi-run.is-armed:not(.is-end) .zr-stop { opacity: 0.5; }
 html.js .zi-run.is-armed:not(.is-going) .zr-tok { opacity: 0; }
+.zr-tok { transition: opacity 300ms ease; }
+
+/* the tile's foot: the key, and where the work stands */
+.zi-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 28px 48px;
+  margin-top: clamp(28px, 3vw, 44px);
+  padding-top: clamp(20px, 2vw, 28px);
+  border-top: 1px solid var(--line-2);
+}
+.zi-key { flex-direction: column; margin-top: 0; gap: 10px; color: var(--ink-2); }
+.zi-key span { gap: 12px; }
+.zi-key i { width: 24px; height: 0; border-top: 2px solid var(--ink); border-radius: 1px; }
+.zi-key .k-next { border-top: 1.5px dashed var(--ink-3); border-radius: 0; }
+.zi-key .k-stop { border-top: 1.25px solid color-mix(in oklab, var(--ink-3) 70%, var(--tile)); position: relative; }
+.zi-key .k-stop::after { content: ""; position: absolute; right: 0; top: -4.6px; width: 6px; height: 6px; border: solid var(--ink-3); border-width: 1.4px 1.4px 0 0; transform: translateY(-0.5px) rotate(45deg); border-radius: 0 1px 0 0; }
+
+.zi-mode { flex: none; width: min(100%, 460px); }
+.zi-mode-k { font-size: 0.8125rem; color: var(--ink-3); margin-bottom: 14px; }
+.zi-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; }
+.zi-steps li { position: relative; padding: 24px 12px 0 0; }
+.zi-steps li::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--tile);
+  box-shadow: inset 0 0 0 1.5px var(--line-2);
+}
+.zi-steps li::after { content: ""; position: absolute; left: 18px; right: 6px; top: 5.5px; height: 1px; background: var(--line-2); }
+.zi-steps li:last-child::after { display: none; }
+.zi-steps .is-now::before { background: var(--ink); box-shadow: 0 0 0 0 oklch(0.2 0.012 262 / 0.22); animation: zi-live 2.4s var(--eo) infinite; }
+.zi-when { display: block; font-size: 0.8125rem; line-height: 1.3; color: var(--ink-3); }
+.zi-steps b { display: block; margin-top: 2px; font-weight: 600; font-size: 1.0625rem; line-height: 1.25; letter-spacing: -0.02em; color: var(--ink-2); }
+.zi-steps .is-now b { color: var(--ink); }
+@keyframes zi-live {
+  0% { box-shadow: 0 0 0 0 oklch(0.2 0.012 262 / 0.24); }
+  70%, 100% { box-shadow: 0 0 0 9px oklch(0.2 0.012 262 / 0); }
+}
 
 /* ------------------------------------------------------------ widths */
-@media (max-width: 1100px) {
-  .zi-zk .book { padding-bottom: 88px; }
-  .zi-zk .lim-80 { height: calc(var(--bh) + 64px); }
-  .zi-zk .lim-80 span { width: 17em; white-space: normal; text-align: right; text-wrap: balance; }
+/* the two limits' labels share a line until the frame is too narrow for both */
+@media (max-width: 880px) {
+  .zi-zk .book { padding-bottom: 84px; }
+  .zi-zk .lim-80 { height: calc(var(--bh) + 50px); }
+  .zi-zk .lim-80 span { top: calc(var(--bh) + 58px); }
 }
-@media (max-width: 1179px) {
+@media (max-width: 1239px) {
   .zr-wide { display: none; }
-  .zr-narrow { display: block; }
-  .zi-run-head .fig-k, .zi-run-head .fig-s { grid-column: 3 / 6; }
-  .zi-run-head .fig-s { margin-top: 6px; }
-  .zi-run-head { display: block; margin-left: var(--x1); max-width: 560px; }
-  .zi-plate { margin-left: var(--x1); max-width: 560px; }
-  .zi-tb { grid-template-columns: 1fr 1fr; }
-  .zi-tb > div { border-left: 0; border-top: 1px solid var(--ink); padding: 6px 12px 8px; }
-  .zi-tb > div:first-child { border-top: 0; }
-  .zi-tb > .is-wide { grid-column: 1 / 3; }
-  .zi-tb > div:not(.is-wide) + div:not(.is-wide) { border-left: 1px solid var(--ink); }
+  .zr-narrow { display: block; max-width: 600px; margin-inline: auto; }
+  .zi-foot { flex-direction: column; align-items: stretch; }
+  .zi-mode { width: 100%; max-width: 520px; }
+}
+/* laptop widths: the run goes down the tile, and the key and the status stand beside it */
+@media (min-width: 1000px) and (max-width: 1239px) {
+  .zi-run { display: grid; grid-template-columns: minmax(0, 560px) minmax(0, 1fr); column-gap: clamp(40px, 5vw, 72px); align-items: start; }
+  .zi-run-head { grid-column: 1 / -1; }
+  .zi-draw { grid-column: 1; margin-top: clamp(24px, 2.4vw, 36px); }
+  .zr-narrow { margin-inline: 0; }
+  .zi-foot { grid-column: 2; position: sticky; top: calc(var(--bar-h) + 32px); gap: 40px; margin-top: clamp(24px, 2.4vw, 36px); padding-top: 0; border-top: 0; }
+  .zi-mode { order: -1; }
+}
+/* where the frame is narrow, the status reads down rather than across */
+@media (max-width: 760px), (min-width: 1000px) and (max-width: 1239px) {
+  .zi-steps { grid-template-columns: minmax(0, 1fr); }
+  .zi-steps li { padding: 0 0 20px 30px; }
+  .zi-steps li:last-child { padding-bottom: 0; }
+  .zi-steps li::before { top: 3px; }
+  .zi-steps li::after { left: 5.5px; right: auto; top: 22px; bottom: 5px; width: 1px; height: auto; }
 }
 
 @media (max-width: 760px) {
@@ -111,17 +203,29 @@ html.js .zi-run.is-armed:not(.is-going) .zr-tok { opacity: 0; }
   .zi .case-facts > div:last-child { grid-column: 1 / 3; }
   .zi-zk { --bh: 22px; }
   .zi-zk .zk-flow { height: 56px; }
-  .zi-zk .book { padding-bottom: 112px; }
+  .zi-zk .book-bar { gap: 2px; }
+  .zi-zk .book-bar i { border-radius: 3px; }
+  .zi-zk .book { padding-bottom: 80px; }
+  .zi-zk .zk-cap span + span { margin-top: 8px; }
   .zi-zk .book-bar i::after { display: none; }
   .zi-zk .book-lim { font-size: 0.8125rem; }
-  .zi-zk .lim-80 { left: 80%; right: auto; height: calc(var(--bh) + 102px); }
-  .zi-zk .lim-80 span { right: 12px; left: auto; width: 60vw; white-space: normal; text-align: right; text-wrap: balance; bottom: -3px; }
-  .zi-run-head, .zi-plate { margin-left: 0; max-width: none; }
-  .zi-plate { padding: 18px 14px 16px; }
-  .zi-key { flex-direction: column; gap: 6px; }
+  .zi-zk .lim-80 { height: calc(var(--bh) + 48px); }
+  .zi-zk .lim-80 span { top: calc(var(--bh) + 52px); width: 58vw; white-space: normal; text-align: right; text-wrap: balance; }
+  .zi-run { --pad: 18px; padding: 22px 14px 18px; }
+  .zi-run-head { padding: 0 4px; }
+  .zi-replay { position: static; margin: 16px 4px 0; }
+  .zi-draw { margin-top: 26px; }
+  .zi-foot { padding-inline: 4px; }
+  .zi-steps b { font-size: 1rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html.js .zi-zk .book-bar i::after { opacity: 1; transition: none; }
-  .zr-st, .zr-b, .zr-lamp, .zr-out, .zr-next, .zr-stop { transition: none; }
+  .zr-st text, .zr-st .zr-lamp, .zr-st .zr-rule, .zr-b, .zr-ring, .zr-tg-t, .zr-lamp circle, .zr-out, .zr-next, .zr-stop, .zr-tok, .zi-replay { transition: none; }
+  .zi-steps .is-now::before { animation: none; box-shadow: 0 0 0 4px oklch(0.2 0.012 262 / 0.1); }
+}
+
+@media print {
+  .zi-run { background: none; padding: 0; }
+  .zi-replay { display: none; }
 }
