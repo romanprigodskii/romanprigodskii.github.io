@@ -9,41 +9,6 @@
 /* a dark window should never flash white before its poster arrives */
 .vxm-hero .win.is-dark, .vxm-bout .win.is-dark, .vxm-rate .win.is-dark { background: oklch(0.1 0.004 265); }
 
-/* the title bar's height, from site.css's .win-bar */
-.vxm-win, .vxm-bout-win, .vxm-rate-win { --wb: clamp(30px, 2.6vw, 38px); }
-/* the address sits in the middle of the bar, as it does in a browser, clear
-   of the dots on the left and the pause on the right */
-.vxm-win .win-bar, .vxm-bout-win .win-bar, .vxm-rate-win .win-bar { position: relative; }
-.vxm-win .win-url, .vxm-bout-win .win-url, .vxm-rate-win .win-url {
-  position: absolute;
-  left: 50%;
-  top: calc((var(--wb) - 22px) / 2);
-  width: min(360px, 100% - 148px);
-  max-width: none;
-  margin: 0;
-  transform: translateX(-50%);
-}
-/* on a dark window the pause lives in the title bar, the size and colour of
-   the address pill, where it covers nothing the recording shows */
-.vxm-win .vid-toggle, .vxm-bout-win .vid-toggle, .vxm-rate-win .vid-toggle {
-  top: calc((var(--wb) - 22px) / 2);
-  bottom: auto;
-  right: 10px;
-  height: 22px;
-  min-width: 52px;
-  padding: 0 10px;
-  border-radius: 6px;
-  background: oklch(0.26 0.01 265);
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  box-shadow: none;
-  color: oklch(0.8 0.01 262);
-  font: 500 0.71875rem/22px var(--f-sans);
-  opacity: 1;
-  transition: background-color 200ms ease, color 200ms ease;
-}
-.vxm-win .vid-toggle:hover, .vxm-bout-win .vid-toggle:hover, .vxm-rate-win .vid-toggle:hover { background: oklch(0.32 0.01 265); color: oklch(0.96 0.004 262); }
-.vxm-win .vid-toggle:focus-visible, .vxm-bout-win .vid-toggle:focus-visible, .vxm-rate-win .vid-toggle:focus-visible { outline: 2px solid oklch(0.9 0.005 262); outline-offset: 1px; }
 
 /* ------------------------------------------------------------ the lead */
 .stage.vxm-stage {
@@ -61,17 +26,6 @@
 .vxm-phone { flex: 0 0 22.8%; }
 .vxm-stage .win { box-shadow: 0 0 0 1px oklch(1 0 0 / 0.1), 0 2px 4px oklch(0 0 0 / 0.25), 0 40px 70px -30px oklch(0 0 0 / 0.75); }
 .vxm-stage .phone { box-shadow: 0 0 0 1px oklch(1 0 0 / 0.14), 0 2px 4px oklch(0 0 0 / 0.25), 0 40px 70px -30px oklch(0 0 0 / 0.8); }
-/* the phone's pause sits clear of its rounded corners, as dark glass on a dark screen */
-.vxm-phone .vid-toggle {
-  right: auto;
-  left: 50%;
-  bottom: 16px;
-  transform: translateX(-50%);
-  background: oklch(0.22 0.01 265 / 0.72);
-  color: oklch(0.9 0.005 262);
-  box-shadow: 0 0 0 0.5px oklch(1 0 0 / 0.16), 0 4px 12px -4px oklch(0 0 0 / 0.5);
-}
-.vxm-phone .vid-toggle:focus-visible { outline: 2px solid oklch(0.9 0.005 262); outline-offset: 2px; }
 
 /* the stage arrives, then the window, then the phone */
 html.js .vxm-stage .vxm-win,

@@ -200,7 +200,6 @@ html.js .zi-run.is-armed:not(.is-going) .zr-tok { opacity: 0; }
 
 @media (max-width: 760px) {
   .case-line { margin-top: 20px; }
-  .zi .case-facts > div:last-child { grid-column: 1 / 3; }
   .zi-zk { --bh: 22px; }
   .zi-zk .zk-flow { height: 56px; }
   .zi-zk .book-bar { gap: 2px; }

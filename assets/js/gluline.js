@@ -4,15 +4,15 @@
    - The timeline: once the graduation is in, the track fills from the
      oldest files to the release, its knob riding the front, and the readout
      counts the span in half months as it goes, settling on 4½ months.
-   - The card figure: the switches work. Nothing switches the assistant on
-     by itself; the reveal only draws the wires the current settings allow.
-   - The release checklist: the test count runs up to 309 before its box is
-     ticked (the rest of the checklist and the audit bar are CSS). */
+   - Which chats the assistant reads: the switches work. Nothing switches the
+     assistant on by itself; the reveal only draws the wires the current
+     settings allow.
+   The release checklist and the audit bar are CSS alone. */
 (function () {
   "use strict";
   var RP = window.RP, G = window.GlFig;
   if (!RP) return;
-  var still = RP.still, tween = RP.tween, EO = RP.EO, EIO = RP.EIO, watch = RP.watch;
+  var still = RP.still, tween = RP.tween, EIO = RP.EIO, watch = RP.watch;
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
   function pc(f) { return (Math.round(f * 1e5) / 1e3) + "%"; }
@@ -51,7 +51,7 @@
     });
   })();
 
-  /* ------------------------------------------------ the card every chat carries */
+  /* ------------------------------------------------ which chats the assistant reads */
   var sw = $("[data-sw]");
   if (sw) (function () {
     var all = $("[data-sw-all]", sw), allV = $("[data-sw-all-v]", sw), out = $("[data-sw-read]", sw);
@@ -82,18 +82,5 @@
       b.addEventListener("click", function () { st[k] = !st[k]; render(); });
     });
     watch(sw);
-  })();
-
-  /* ------------------------------------------------ the release checklist */
-  var gate = $("[data-gate]");
-  if (gate) (function () {
-    var n = $("[data-gate-n]", gate);
-    if (!still()) n.textContent = "0";
-    watch(gate, function () {
-      if (still()) { n.textContent = "309"; return; }
-      setTimeout(function () {
-        tween(1300, EO, function (e) { n.textContent = String(Math.round(309 * e)); });
-      }, 500);
-    });
   })();
 })();

@@ -76,16 +76,6 @@
 .ar-step:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 4px; }
 @media (hover: hover) and (pointer: fine) { .ar-steps li:hover { color: var(--ink); } }
 
-/* each loop's pause sits in its own index head, not over the screen */
-.ar-idx-h .vid-toggle {
-  position: static;
-  flex: none;
-  background: oklch(1 0 0 / 0.62);
-  box-shadow: 0 0 0 0.5px oklch(0.35 0.06 22 / 0.16), 0 1px 3px oklch(0.35 0.06 22 / 0.1);
-  opacity: 1;
-}
-.ar-idx-h .vid-toggle:hover { background: oklch(1 0 0 / 0.9); }
-
 .ar-duo-cap .ar-hint { display: none; }
 html.js .ar-duo-cap .ar-hint { display: inline; color: var(--ink-2); font-weight: 600; }
 
@@ -250,7 +240,6 @@ html.js .ar-biz.in > div > * { opacity: 1; }
   .ar-idx { margin-top: 16px !important; }
   .ar-idx-h { gap: 6px; margin-bottom: 4px; min-height: 28px; }
   .ar-idx-k { font-size: 1rem; }
-  .ar-idx-h .vid-toggle { padding: 6px 8px; }
   .ar-steps li { padding: 6px 0 6px 12px !important; font-size: 0.8125rem; line-height: 1.28; }
   .ar-steps li::before, .ar-steps li::after { top: 6px; bottom: 6px; }
 
@@ -296,7 +285,7 @@ html.js .ar-biz.in > div > * { opacity: 1; }
 }
 
 @media print {
-  .ar-cur, .ar-hint, .ar-spot, .ar-idx-h .vid-toggle { display: none !important; }
+  .ar-cur, .ar-hint, .ar-spot { display: none !important; }
   .ar-stage, .ar-cr, .ar-lim { background: none !important; box-shadow: none !important; }
   html.js .ar-stage .ar-ph, html.js .ar-stage .ar-steps li, html.js .ar-stage .ar-idx-h, html.js .ar-fan-b li, html.js .ar-fan-a, html.js .ar-cr-l li > *, html.js .ar-biz > div > * { opacity: 1 !important; translate: 0 0 !important; transform: none !important; }
 }

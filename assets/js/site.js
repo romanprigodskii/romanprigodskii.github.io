@@ -61,6 +61,13 @@
     if (fn) el.__onIn = fn;
     if (io) io.observe(el); else { el.classList.add("in"); if (fn) fn(); }
   }
+  /* the hero is the first view: its items arrive on load, in their --d order,
+     not when the observer's trimmed margin happens to reach them (at 1280x720
+     the rule's tile sits under that margin) */
+  var heroRv = $$(".hero [data-rv]");
+  if (heroRv.length) requestAnimationFrame(function () {
+    requestAnimationFrame(function () { heroRv.forEach(function (el) { el.classList.add("in"); }); });
+  });
   $$("[data-rv], .edge, .sec-t, [data-shot], .ar-strip, .gl-phones, [data-fl], [data-lv], [data-zk], .thesis, .vs, .contact, [data-watch]").forEach(function (el) { watch(el); });
   $$(".vs td.is-won").forEach(function (td, i) { td.style.setProperty("--r", i); });
 
@@ -91,6 +98,8 @@
   var body = $("[data-rule-body]");
   if (body && F) (function () {
     var slide = $("[data-slide]"), cur = $("[data-cursor]");
+    /* the handle is inert in the markup; it becomes a slider only here */
+    cur.removeAttribute("aria-hidden");
     cur.setAttribute("role", "slider");
     cur.tabIndex = 0;
     cur.setAttribute("aria-label", "Hypotheses tested at once");
@@ -232,34 +241,70 @@
   })();
 
   /* ------------------------------------------------ videos play only while they are seen,
-     and each has its own pause */
+     and every loop can be paused: one round button in the bottom-right corner of its
+     media, or one for a whole group of loops on one stage ([data-play-group]). A loop
+     the visitor pauses stays paused ("held") until they play it again. */
+  var GLYPH = '<svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" focusable="false">' +
+    '<rect class="vt-pause" x="2" y="1.5" width="2.75" height="9" rx="0.6"/><rect class="vt-pause" x="7.25" y="1.5" width="2.75" height="9" rx="0.6"/>' +
+    '<path class="vt-play" d="M3.25 1.9v8.2c0 .5.55.8.97.54l6.5-4.1a.64.64 0 0 0 0-1.08l-6.5-4.1a.64.64 0 0 0-.97.54z"/></svg>';
+  /* what the button controls: data-title, or the first clause of the video's own label */
+  function vidTitle(el) {
+    var t = el.getAttribute("data-title");
+    if (!t) {
+      t = (el.getAttribute("aria-label") || "").split(/[,:;.](?:\s|$)/)[0].trim();
+      if (t.length > 52) t = t.slice(0, 52).replace(/\s+\S*$/, "");
+      t = t.replace(/^(The|A|An) /, function (m) { return m.toLowerCase(); });
+    }
+    return t || "the recording";
+  }
+  function vidPlay(v) {
+    if (v.preload !== "auto") v.preload = "auto";
+    var p = v.play();
+    if (p && p.catch) p.catch(function () {});
+  }
   $$("video[data-play]").forEach(function (v) {
-    var b = document.createElement("button");
+    if (v.__vt) return;
+    var grp = v.closest("[data-play-group]");
+    var vs = grp ? $$("video[data-play]", grp) : [v];
+    var b = document.createElement("button"), title = vidTitle(grp || v);
     b.type = "button";
     b.className = "vid-toggle";
-    function set(held) {
-      v.dataset.held = held ? "1" : "";
-      b.textContent = held ? "Play" : "Pause";
-      b.setAttribute("aria-label", (held ? "Play" : "Pause") + " the video");
+    b.innerHTML = GLYPH;
+    function held() { return vs.every(function (x) { return x.dataset.held === "1"; }); }
+    function sync() {
+      var h = held();
+      b.classList.toggle("is-held", h);
+      b.setAttribute("aria-label", (h ? "Play " : "Pause ") + title);
     }
     function toggle() {
-      if (v.paused) { set(false); var p = v.play(); if (p && p.catch) p.catch(function () {}); }
-      else { set(true); v.pause(); }
+      var h = !held();
+      vs.forEach(function (x) {
+        x.dataset.held = h ? "1" : "";
+        if (h) x.pause();
+        else { x.__asked = true; if (x.__seen || !io) vidPlay(x); }
+      });
+      sync();
     }
-    set(still());
-    v.insertAdjacentElement("afterend", b);
+    vs.forEach(function (x) {
+      x.__vt = sync;
+      x.dataset.held = still() ? "1" : "";
+      x.addEventListener("click", toggle);
+      /* a loop set playing by another script is no longer held */
+      x.addEventListener("play", function () { if (x.dataset.held && !x.paused) x.dataset.held = ""; sync(); });
+      x.addEventListener("pause", sync);
+    });
+    sync();
+    if (grp) grp.appendChild(b);
+    else v.insertAdjacentElement("afterend", b);
     b.addEventListener("click", toggle);
-    v.addEventListener("click", toggle);
   });
   if (io) {
     var vio = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
         var v = e.target;
-        if (e.isIntersecting && !still() && !v.dataset.held) {
-          if (v.preload !== "auto") v.preload = "auto";
-          var p = v.play();
-          if (p && p.catch) p.catch(function () {});
-        } else v.pause();
+        v.__seen = e.isIntersecting;
+        if (e.isIntersecting && !v.dataset.held && (!still() || v.__asked)) vidPlay(v);
+        else if (!v.paused) v.pause();
       });
     }, { threshold: 0.25 });
     $$("video[data-play]").forEach(function (v) { vio.observe(v); });
@@ -303,7 +348,9 @@
       recQ = false;
       if (window.innerWidth <= 760 || still()) { entries.forEach(function (e) { e.classList.add("is-inked"); }); return; }
       var r = rec.getBoundingClientRect(), vh = window.innerHeight;
-      var p = Math.max(recMax, Math.min(1, (vh * 0.9 - r.top) / (vh * 0.55)));
+      /* the pen starts as the Record's top enters and has crossed every year
+         by the time that top is 60% of the way down the screen */
+      var p = Math.max(recMax, Math.min(1, (vh - r.top) / (vh * 0.4)));
       recMax = p;
       var W = r.width, x0 = W * 0.191377, x = x0 + (W - x0) * p;
       pen.style.setProperty("--pen", x + "px");
@@ -315,9 +362,6 @@
     window.addEventListener("resize", recQueue);
     recFrame();
   }
-
-  /* ------------------------------------------------ contact: the title block */
-  $$("[data-tblock] .tb-rows > div").forEach(function (d, i) { d.style.setProperty("--r", i); });
 
   /* ------------------------------------------------ the 84 on the page's own axis */
   var FAM = { form_momentum: "Form and momentum", style_matchups: "Style matchups", physical_durability: "Physical durability", market_microstructure: "Market microstructure", gap: "Gap", experience_pedigree: "Experience and pedigree", division_context: "Division context", style_and_age: "Style and age", activity_layoff: "Activity and layoff" };

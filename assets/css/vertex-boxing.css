@@ -77,17 +77,13 @@ html.js .bx-thesis:not(.in) .thesis-s { background-size: 0 max(2px, 0.035em); co
 .bx-row { stroke: var(--line-2); stroke-width: 1; shape-rendering: crispEdges; }
 .bx-svg .sup { font-size: 10.5px; }
 
-/* ------------------------------------------------------------ 1. the report's own figure
-   The figure is the report's, byte for byte, lifted on the tile like a sheet;
-   the page adds only the realised return, set under each of its columns. */
+/* ------------------------------------------------------------ 1. the report's figure
+   The report's figure from section 4.2, its geometry and numbers unchanged,
+   redrawn in the site's ink and Mona Sans (embedded in the file, since an
+   <img> cannot use the page's fonts) and set straight on the tile; the page
+   adds only the realised return, under each of its columns. */
 .bx-rf-t { background: var(--tile); border-radius: var(--r-tile); padding: clamp(16px, 2vw, 30px) clamp(16px, 2vw, 30px) clamp(10px, 1.2vw, 18px); }
-.bx-rf-img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 1.667% / 2.857%;
-  box-shadow: 0 0 0 1px oklch(0.2 0.02 262 / 0.06), 0 1px 2px oklch(0.2 0.02 262 / 0.05), 0 22px 40px -26px oklch(0.2 0.02 262 / 0.38);
-}
+.bx-rf-img { display: block; width: 100%; height: auto; }
 .bx-rf-ret { position: relative; height: 56px; }
 .bx-rf-ret ol { list-style: none; margin: 0; padding: 0; }
 .bx-rf-k { position: absolute; left: 0; top: 22px; font-size: 12px; line-height: 20px; color: var(--ink-3); }
@@ -289,10 +285,17 @@ html.js .bx-lt.in .lt-never, html.js .bx-lt.in .lt-na, html.js .bx-lt.in .lt-say
 @media (max-width: 1100px) {
   .bx .chapter-b .bx-fig .fl-wide, .bx .chapter-b .bx-strip .fl-wide { display: none; }
   .bx .chapter-b .bx-fig .fl-narrow, .bx .chapter-b .bx-strip .fl-narrow { display: block; }
+  /* the live test's wide drawing needs about 900px of column for its labels */
+  .bx-lt .fl-wide { display: none; }
+  .bx-lt .fl-narrow { display: block; }
   .bx-rf-w, .bx-rf-cw { display: none; }
   .bx-rf-n { display: block; padding: 4px 0 6px; }
   .bx-rf-cn { display: inline; }
   .bx-rf-t { padding: 20px 20px 16px; }
+}
+/* beside the text the search figure gets one column, under 270px below
+   about 1400px, too narrow for its two headings; so it goes under the text */
+@media (max-width: 1400px) {
   .bx-se-t { grid-column: 3 / 6; }
   .bx-se-f { grid-column: 3 / 6; margin-top: 30px; max-width: 420px; }
 }
@@ -303,8 +306,6 @@ html.js .bx-lt.in .lt-never, html.js .bx-lt.in .lt-na, html.js .bx-lt.in .lt-say
   .bx-hero .case-line { margin-top: 22px; }
   .bx-media { margin-top: 40px; }
   .bx-stage { padding: 22px 14px; }
-  /* on a phone the window shows the report's own column, not its file tree */
-  .bx-win video { aspect-ratio: 1650 / 1350; object-fit: cover; object-position: 100% 0; }
   .bx-win .win-bar { gap: 10px; padding: 0 10px; }
   .bx-win .win-dots + .win-url { margin-right: 0; padding-inline: 8px; font-size: 0.6875rem; }
   .bx-rf-t { padding: 16px 14px 12px; }
@@ -322,7 +323,7 @@ html.js .bx-lt.in .lt-never, html.js .bx-lt.in .lt-na, html.js .bx-lt.in .lt-say
   .bx-ck { padding: 20px 14px 16px; }
   .bx-fav { margin-top: 52px; }
   .bx-fav-q .thesis-s { font-size: 2rem; }
-  .bx-se-f { margin-top: 28px; max-width: none; }
+  .bx-se-f { margin-top: 28px; max-width: 440px; }
   .bx-lt { padding: 18px 14px 14px; }
   .bx-lt-go { padding-left: 0; }
 }

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   /research/: both papers, figure by figure, and the two school projects.
+   /research/: both papers, figure by figure, and the three school projects.
 
    Built on site.css, in its clean light theme: every figure stands on a
    neutral tile, the one blue marks a result that clears its bar, and the
@@ -167,10 +167,6 @@ html:not(.js) .rs-hint { display: none; }
 .legend .l-sz.is-l { width: 18px; height: 18px; }
 
 /* ------------------------------------------------------------ the findings */
-.rs-find-h { max-width: none; }
-.rs-fn { display: block; margin: 0 0 14px -0.05em; font-weight: 300; font-size: clamp(3rem, 1.4rem + 3.6vw, 5.5rem); line-height: 0.92; letter-spacing: -0.055em; white-space: nowrap; }
-.rs-fn i { font-style: normal; font-weight: 200; color: var(--ink-3); }
-.rs-fn small { font-size: 0.3em; font-weight: 500; letter-spacing: -0.01em; color: var(--ink-3); margin-left: 0.12em; }
 .rs-find .chapter-b > p { max-width: 62ch; }
 .rs-find .chapter-b > p i { font-style: italic; }
 
@@ -373,7 +369,7 @@ html.js .rs-p4:not(.in) .rs-p4-n, html.js .rs-p4:not(.in) .rs-p4-v { opacity: 0;
 }
 .rs-wave-pick { margin-bottom: clamp(22px, 2.6vw, 38px); }
 html:not(.js) .rs-wave-pick { display: none; }
-.rs-wave .seg-b i { font-style: normal; font-weight: 500; color: var(--ink-3); margin-left: 4px; }
+.rs-wave .seg-b i { font-style: normal; font-weight: 500; color: var(--ink-2); margin-left: 4px; }
 .rs-wave svg { display: block; width: 100%; height: auto; overflow: visible; }
 .wave__paper { fill: var(--bg); }
 .wave__edge { fill: none; stroke: var(--ink); stroke-width: 1.75px; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
@@ -496,7 +492,6 @@ html.js .rs-out-in.in .rs-mail { opacity: 1; transform: none; }
   .rs-ro { min-height: 0; margin-top: 22px; padding: 16px 16px 16px; }
   .rs-ro-e b { font-size: 1.3125rem; }
   .rs-sc-foot { margin-top: 20px; }
-  .rs-fn { font-size: clamp(2.75rem, 14vw, 3.5rem); margin-bottom: 8px; }
   .rs-rt th { font-size: 0.9375rem; }
   .rs-rt-m { width: 70px; }
   .rs-rt-m i { width: 11px; height: 10px; margin-right: 4px; }
@@ -565,3 +560,13 @@ html.js .rs-out-in.in .rs-mail { opacity: 1; transform: none; }
 .cz-pk { font-size: 14px; font-weight: 600; fill: var(--ink); }
 .is-collatz .rs-file span a { color: inherit; }
 @media (max-width: 1100px) { .rs-cz { grid-column: 1 / 6; margin-top: 28px; } }
+/* two drawings for readers without JavaScript, a laptop's and a phone's, so
+   the labels stay near their 13px; collatz.js keeps the first and redraws it
+   at the figure's own width in pixels */
+.cz-n { display: none; }
+.cz-n .rs-cz-svg { max-width: 440px; }
+@media (max-width: 760px) {
+  .rs-cz:not(.is-live) .cz-w { display: none; }
+  .rs-cz:not(.is-live) .cz-n { display: block; }
+}
+.rs-cz.is-live .cz-n { display: none; }

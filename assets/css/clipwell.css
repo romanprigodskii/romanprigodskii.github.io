@@ -54,8 +54,6 @@
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 8%);
   mask-image: linear-gradient(to bottom, transparent 0, #000 8%);
 }
-/* the pause sits on the desktop, clear of the cards */
-.cwc-stage .vid-toggle { top: 16px; right: 16px; bottom: auto; }
 
 /* the chord is pressed, and the bar comes up from the bottom edge */
 html.js .cwc-stage[data-armed] .cwc-v { transform: translateY(104%); transition: transform 360ms cubic-bezier(0.55, 0, 1, 0.45); }
@@ -120,10 +118,12 @@ html.js .cwc-stage.is-press .cwc-chord kbd { animation: cwc-press 820ms var(--eo
 .cw-panel { fill: var(--tile-2); stroke: oklch(0.2 0.02 262 / 0.08); stroke-width: 1; }
 .cw-pill { fill: var(--bg); stroke: oklch(0.2 0.02 262 / 0.1); stroke-width: 1; }
 .cw-cb { fill: var(--bg); }
-.cw-ch { fill: #727781; }
-.cw-ch.k-link { fill: #EA463B; }
+.cw-ch { fill: #70757F; }
+/* link and file sit a step darker than the app's own red and blue (same hue
+   and chroma) so their white labels reach 4.5:1 */
+.cw-ch.k-link { fill: #DA352D; }
 .cw-ch.k-image { fill: #815CD3; }
-.cw-ch.k-file { fill: #3B80F8; }
+.cw-ch.k-file { fill: #2B6FE6; }
 .cw-ch.k-concealed { fill: var(--ink-2); }
 .cw-co { fill: none; stroke: oklch(0.2 0.02 262 / 0.13); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .cw-ck { fill: #fff; font-family: var(--f-sans); font-size: 12.5px; font-weight: 600; letter-spacing: -0.005em; }
@@ -289,7 +289,6 @@ html.js .pw.in .pw-end { animation: pw-show 700ms ease 3700ms both; }
 @media (max-width: 760px) {
   /* the bar keeps its height and scrolls sideways, as the real one does */
   .cwc-chord { height: 84px; }
-  .cwc-stage .vid-toggle { top: 12px; right: 12px; }
   .cwc-bar { overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none; }
   .cwc-bar::-webkit-scrollbar { display: none; }
   .cwc-v { width: auto; max-width: none; height: 180px; }
@@ -304,6 +303,7 @@ html.js .pw.in .pw-end { animation: pw-show 700ms ease 3700ms both; }
   .tw-d { width: 100%; }
   .tw-svg.v-n { max-width: none; }
   .tw-svg.is-hist .cw-hi { font-size: 14px; }
+  .tw-svg.v-n .cw-ck { font-size: 15px; }
   .tw-keys { gap: 8px; }
   .tw-key { width: 52px; height: 44px; border-radius: 10px; }
   .tw-cap { text-align: left; }
@@ -317,8 +317,7 @@ html.js .pw.in .pw-end { animation: pw-show 700ms ease 3700ms both; }
   .cwc-site .win-dots { gap: 4px; }
   .cwc-site .win-dots i { width: 7px; height: 7px; }
   .cwc-site .win-dots + .win-url { margin-right: 0; }
-  .cwc-site .win-url { height: 18px; font-size: 0.6875rem; }
-  .cwc-site .vid-toggle { right: 8px; bottom: 8px; padding: 5px 8px; font-size: 0.6875rem; border-radius: 6px; }
+  .cwc-site .win-url { height: 18px; line-height: 18px; font-size: 0.6875rem; }
   .pw { padding: 18px 12px 14px; }
 }
 

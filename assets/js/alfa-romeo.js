@@ -23,7 +23,7 @@
     var at = lis.map(function (li) { return parseFloat(li.getAttribute("data-at")); });
     var go = lis.map(function (li) { return parseFloat(li.getAttribute("data-go")); });
     var first = Math.min.apply(null, at);
-    var tog = null, cur = -1, raf = 0;
+    var cur = -1, raf = 0;
 
     // the screen on at time t: the latest start at or before it, wrapping round the loop
     function segOf(t) {
@@ -60,7 +60,8 @@
     function pick(i) {
       v.dataset.held = "1";
       v.pause();
-      if (tog) { tog.textContent = "Play"; tog.setAttribute("aria-label", "Play the video"); }
+      // the loop's pause (site.js) now offers Play
+      if (v.__vt) v.__vt();
       if (v.preload !== "auto") v.preload = "auto";
       try { v.currentTime = go[i]; } catch (e) {}
       paint();
@@ -76,11 +77,6 @@
       li.appendChild(b);
       b.addEventListener("click", function () { pick(i); });
     });
-    // the loop's own pause goes into the head of its index, beside its name
-    tog = v.parentElement.querySelector(".vid-toggle");
-    var head = $(".ar-idx-h", idx);
-    if (tog && head) head.appendChild(tog);
-
     v.addEventListener("play", function () { if (!raf) raf = requestAnimationFrame(loop); });
     ["pause", "seeked", "loadeddata"].forEach(function (e) { v.addEventListener(e, paint); });
     paint();
