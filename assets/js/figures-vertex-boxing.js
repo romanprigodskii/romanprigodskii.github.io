@@ -46,7 +46,7 @@
       [0, 0.01, 0.02, 0.03, 0.04].forEach(function (v) {
         var x = pc(fx(v));
         s += '<line class="bx-g' + (v === 0 ? " is-0" : "") + '" x1="' + x + '" x2="' + x + '" y1="' + (top - 4) + '" y2="' + axisY + '"/>';
-        s += '<text class="bx-n" x="' + x + '" y="' + (axisY + 17) + '">' + (v === 0 ? "0" : "+" + v.toFixed(2)) + "</text>";
+        s += '<text class="bx-n' + (v === 0 && !wide ? " is-first" : "") + '" x="' + x + '" y="' + (axisY + 17) + '">' + (v === 0 ? "0" : "+" + v.toFixed(2)) + "</text>";
       });
       var yL = rowY(0), yU = rowY(1);
       // the gap between the intervals: lower's upper end to upper's lower end
@@ -80,7 +80,9 @@
       s += '<g class="uw-rod">';
       s += '<rect class="uw-r uw-r1" style="--dy:' + (yL - yU) + 'px" x="' + pc(fx(0)) + '" y="' + ry + '" width="' + pc(w) + '" height="6"/>';
       s += '<rect class="uw-r uw-r2" x="' + pc(fx(0) + w) + '" y="' + ry + '" width="' + pc(w) + '" height="6"/>';
-      s += '<text class="bx-ann uw-rl" x="' + pc(fx(0) + 2 * w) + '" dx="8" y="' + (ry + 7) + '">' + (wide ? "the lower tier, twice: " : "") + u.ratio.toFixed(1) + " times</text>";
+      // wide: under the rod, ending where it ends, clear of the value column; narrow: beside it
+      if (wide) s += '<text class="bx-ann uw-rl" x="' + pc(fx(0) + 2 * w) + '" y="' + (ry + 20) + '" text-anchor="end">the lower tier, twice: ' + u.ratio.toFixed(1) + " times</text>";
+      else s += '<text class="bx-ann uw-rl" x="' + pc(fx(0) + 2 * w) + '" dx="8" y="' + (ry + 7) + '">' + u.ratio.toFixed(1) + " times</text>";
       s += "</g>";
       return s + "</svg>";
     }
@@ -106,7 +108,7 @@
       [-0.1, 0, 0.1, 0.2].forEach(function (v) {
         var x = pc(fx(v));
         s += '<line class="bx-g' + (v === 0 ? " is-0" : "") + '" x1="' + x + '" x2="' + x + '" y1="' + (top - 4) + '" y2="' + axisY + '"/>';
-        s += '<text class="bx-n" x="' + x + '" y="' + (axisY + 17) + '">' + (v === 0 ? "0" : pct(v, 0)) + "</text>";
+        s += '<text class="bx-n' + (v === lo && !wide ? " is-first" : "") + '" x="' + x + '" y="' + (axisY + 17) + '">' + (v === 0 ? "0" : pct(v, 0)) + "</text>";
       });
       s += '<text class="bx-dir" x="' + pc(fx(lo)) + '" y="' + (axisY + 34) + '">← lost</text>';
       s += '<text class="bx-dir is-r" x="' + pc(fx(hi)) + '" y="' + (axisY + 34) + '">made money →</text>';
@@ -248,11 +250,13 @@
     }
 
     /* ------------------------------------------------ 5. the checks, on one log axis
-       An e-value axis from 0.01 at the figure's left edge to 1,680 at its
-       right, graduated at m x 10^k, with the bar at 20. Each e-value starts
-       where a bet starts, at 1. */
+       An e-value axis from 0.01 at the figure's left edge to 1,000 at its
+       right (the four-window gauge's top of scale), graduated at m x 10^k,
+       with the bar at 20. Each e-value starts where a bet starts, at 1. */
     function checks(W, sfx) {
-      var wide = W > 620, gx = F.gx, x1 = gx(1);
+      var HI = F.GAUGE_HI || 1000, L0 = Math.log10(0.01);
+      function gx(v) { return (Math.log10(Math.min(v, HI)) - L0) / (Math.log10(HI) - L0); }
+      var wide = W > 620, x1 = gx(1);
       var rows = [
         { name: "The result, at Bet365’s open over 2023–2025", off: "3.9 × 10<tspan class=\"sup\" dy=\"-6\">8</tspan>" },
         { name: "Retrained without anything settled in fight week", off: "1.2 × 10<tspan class=\"sup\" dy=\"-6\">8</tspan>" },
@@ -266,7 +270,7 @@
       var xb = gx(20);
       var s = '<svg class="bx-svg ck-svg" width="100%" height="' + H + '" role="img" aria-labelledby="ck-t' + sfx + ' ck-d' + sfx + '">' +
         '<title id="ck-t' + sfx + '">The checks built to kill the opening-price result, as e-values on a log scale</title>' +
-        '<desc id="ck-d' + sfx + '">A logarithmic e-value axis from 0.01 to 1,680, with the bar at 20. The result at Bet365\'s open over 2023 to 2025, e = 3.9 times 10 to the 8, and the same retrained without anything settled in fight week, 1.2 times 10 to the 8, are both off the scale to the right. Price-only controls with no model in them score 0.25 and 1.2. A simulated null averages 0.20. None of sixteen classic price biases, tested at Bet365\'s close, reached 20.</desc>';
+        '<desc id="ck-d' + sfx + '">A logarithmic e-value axis from 0.01 to 1,000, with the bar at 20. The result at Bet365\'s open over 2023 to 2025, e = 3.9 times 10 to the 8, and the same retrained without anything settled in fight week, 1.2 times 10 to the 8, are both off the scale to the right. Price-only controls with no model in them score 0.25 and 1.2. A simulated null averages 0.20. None of sixteen classic price biases, tested at Bet365\'s close, reached 20.</desc>';
       // the bar
       s += '<line class="ck-bar" x1="' + pc(xb) + '" x2="' + pc(xb) + '" y1="' + (top - 22) + '" y2="' + axisY + '"/>';
       s += '<text class="bx-k is-b is-mid" x="' + pc(xb) + '" y="' + (top - 28) + '">the bar, 20</text>';
@@ -277,7 +281,7 @@
         if (r.off) {
           s += '<line class="ck-trail" style="--i:' + i + '" x1="' + pc(x1) + '" x2="100%" y1="' + y + '" y2="' + y + '"/>';
           s += '<g class="ck-m ck-off" style="--i:' + i + '"' + mv(x1, 1) + '><svg x="100%" y="' + y + '" overflow="visible"><path class="ck-stop" d="M-13 -6 L0 0 L-13 6 Z"/></svg></g>';
-          s += '<text class="ck-v is-hit" style="--i:' + i + '" x="100%" dx="-20" y="' + (wide ? y - 9 : y + 19) + '" text-anchor="end">e = ' + r.off + "</text>";
+          s += '<text class="ck-v is-hit" style="--i:' + i + '" x="100%" dx="' + (wide ? -20 : 0) + '" y="' + (wide ? y - 9 : y + 19) + '" text-anchor="end">e = ' + r.off + "</text>";
           if (wide) s += '<text class="ck-off-t" style="--i:' + i + '" x="100%" dx="-20" y="' + (y + 17) + '" text-anchor="end">off this scale</text>';
         } else if (r.marks) {
           r.marks.forEach(function (v, j) {
@@ -294,6 +298,7 @@
       // the axis, graduated at m x 10^k
       s += '<line class="ck-axis" x1="0" x2="100%" y1="' + axisY + '" y2="' + axisY + '"/>';
       F.gridValues().forEach(function (g) {
+        if (g.v > HI) return;
         var c = F.gridClass(g), len = (c === "gd" || c === "g1" || c === "ge" || g.v === 0.01) ? 9 : (c === "gb" || c === "gh") ? 6 : 3;
         s += '<line class="ck-tk" x1="' + pc(gx(g.v)) + '" x2="' + pc(gx(g.v)) + '" y1="' + axisY + '" y2="' + (axisY + len) + '"/>';
       });
@@ -301,22 +306,25 @@
         s += '<text class="bx-n' + (v === 0.01 ? " is-first" : "") + '" x="' + pc(gx(v)) + '" y="' + (axisY + 24) + '">' + v + "</text>";
       });
       s += '<text class="bx-n is-b" x="' + pc(xb) + '" y="' + (axisY + 24) + '">20</text>';
-      s += '<text class="bx-n is-b is-end" x="100%" y="' + (axisY + 24) + '">1,680</text>';
+      s += '<text class="bx-n is-end" x="100%" y="' + (axisY + 24) + '">1,000</text>';
       return s + "</svg>";
     }
 
-    /* ------------------------------------------------ 6. the random search: the best of 200, where it was chosen and where it was not */
+    /* ------------------------------------------------ 6. the random search: the best of 200, where it was chosen and where it was not
+       Drawn for a narrow tile (270 to 420px): each column's heading is set
+       from its own edge of the figure, so the two never meet, and the
+       columns sit 27% in, which leaves room for the values beside the dots. */
     function search(W, sfx) {
-      var xa = 0.24, xb = 0.76, yTop = 62, per = 46;             // 46px per 0.001
+      var xa = 0.27, xb = 0.73, yTop = 62, per = 46;             // 46px per 0.001
       function y(v) { return r2(yTop + (0.002 - v) / 0.001 * per); }
       var y0 = y(0), ya = y(0.0017), yb = y(-0.0004), H = y(-0.001) + 30;
       var s = '<svg class="bx-svg se-svg" width="100%" height="' + H + '" role="img" aria-labelledby="se-t' + sfx + ' se-d' + sfx + '">' +
         '<title id="se-t' + sfx + '">The best of 200 random configurations, against the model already in use</title>' +
         '<desc id="se-d' + sfx + '">Ranked on 2021 to 2023, where it was chosen, it led the model already in use by 0.0017. Scored once on 2023 to 2026, which the search never saw, it trailed by 0.0004.</desc>';
-      s += '<text class="bx-lab is-s is-mid" x="' + pc(xa) + '" y="16">where it was chosen</text>';
-      s += '<text class="bx-sub is-mid" x="' + pc(xa) + '" y="32">ranked on 2021–2023</text>';
-      s += '<text class="bx-lab is-s is-mid" x="' + pc(xb) + '" y="16">where it was not</text>';
-      s += '<text class="bx-sub is-mid" x="' + pc(xb) + '" y="32">scored once, 2023–2026</text>';
+      s += '<text class="bx-lab is-s is-first" x="0" y="16">where it was chosen</text>';
+      s += '<text class="bx-sub is-first" x="0" y="32">ranked on 2021–2023</text>';
+      s += '<text class="bx-lab is-s is-end" x="100%" y="16">where it was not</text>';
+      s += '<text class="bx-sub is-end" x="100%" y="32">scored once, 2023–2026</text>';
       [xa, xb].forEach(function (x) {
         s += '<line class="se-ax" x1="' + pc(x) + '" x2="' + pc(x) + '" y1="' + (yTop - 8) + '" y2="' + y(-0.001) + '"/>';
         [0.002, 0.001, 0, -0.001].forEach(function (v) {
@@ -355,7 +363,7 @@
       var yB = rowY(rows.length - 1) + 30, H = yB + 44;
       var s = '<svg class="bx-svg lv2-svg" width="100%" height="' + H + '" role="img" aria-labelledby="lt-t' + sfx + ' lt-d' + sfx + '">' +
         '<title id="lt-t' + sfx + '">The live test, from its freeze to its close</title>' +
-        '<desc id="lt-d' + sfx + '">Frozen and pushed on 24 September 2026; it closes on 25 September 2029. At 60 to 90 bets a year, a true return of +19%, the rule\'s 2016 to 2026 average, would pass one to two years after the freeze; +10% would take three to four; no edge would never pass.</desc>' +
+        '<desc id="lt-d' + sfx + '">Frozen and pushed on 24 September 2026; it closes on 25 September 2029. At 60 to 90 bets a year, a true return of +19%, the rule\'s 2016 to 2026 average, would pass one to two years after the freeze, before the close; +10% would take three to four, so the test would probably close before it passed; with no edge it would never pass.</desc>' +
         "<defs>" + hatch("lt-h" + sfx) + "</defs>";
       var xf = tx(t0), xc = tx(tc);
       // freeze and close
@@ -398,7 +406,8 @@
           s += '<text class="bx-lab" x="0" y="' + (r.sub ? y - 2 : y + 5) + '">' + r.name + "</text>";
           if (r.sub) s += '<text class="bx-sub" x="0" y="' + (y + 13) + '">' + r.sub + "</text>";
         } else {
-          s += '<text class="bx-lab is-s" x="0" y="' + (y - 16) + '">' + r.name + (r.sub ? ' <tspan class="bx-sub">' + r.sub + "</tspan>" : "") + "</text>";
+          // set off the freeze line, which on a phone runs down the figure's left edge
+          s += '<text class="bx-lab is-s" x="0" dx="8" y="' + (y - 16) + '">' + r.name + (r.sub ? ' <tspan class="bx-sub">' + r.sub + "</tspan>" : "") + "</text>";
         }
         s += '<line class="lt-row" x1="' + pc(xf) + '" x2="' + pc(tx(t4)) + '" y1="' + y + '" y2="' + y + '"/>';
         if (r.never) {
@@ -408,8 +417,9 @@
         } else {
           var a = tx(yrs(r.a)), b = tx(yrs(r.b));
           s += '<rect class="lt-band" style="--i:' + i + '" x="' + pc(a) + '" y="' + (y - 8) + '" width="' + pc(b - a) + '" height="16" fill="url(#lt-h' + sfx + ')"/>';
-          var right = b < 0.8;
-          s += '<text class="lt-say" style="--i:' + i + '" x="' + pc(right ? b : a) + '" dx="' + (right ? 10 : -10) + '" y="' + (y + 5) + '"' + (right ? "" : ' text-anchor="end"') + ">" + r.say + "</text>";
+          // beside the band; on a phone a label right of it would run into the close, so it goes under the band
+          var right = b < 0.8, under = !wide && right;
+          s += '<text class="lt-say" style="--i:' + i + '" x="' + pc(under ? a : right ? b : a) + '" dx="' + (under ? 0 : right ? 10 : -10) + '" y="' + (y + (under ? 25 : 5)) + '"' + (right ? "" : ' text-anchor="end"') + ">" + r.say + "</text>";
         }
       });
       // years since the freeze

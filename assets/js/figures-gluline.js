@@ -92,7 +92,7 @@
     s += '<g class="gr-endl" data-gr-endl>' + (wide
       ? T(pc(xE), y1, "19 August 2026", "gr-lab", ' text-anchor="end"') +
         T(pc(xE), y1 + 18, "live on the App Store", "gr-sub", ' text-anchor="end"') +
-        T(pc(xE), A - 14, "then Google Play", "gr-sub is-then", ' dx="20"')
+        T("100%", A - 14, "then Google Play", "gr-sub is-then", ' text-anchor="end"')
       : T("100%", y1, "19 August 2026", "gr-lab", ' text-anchor="end"') +
         T("100%", y1 + 18, "the App Store, then Google Play", "gr-sub", ' text-anchor="end"')) +
       "</g>";

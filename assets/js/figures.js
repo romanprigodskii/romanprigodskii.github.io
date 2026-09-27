@@ -8,8 +8,9 @@
    The page grid is a logarithmic e-value axis from 0.01 to 1,680: every
    vertical line behind every page sits at m x 10^k on that axis. 20 is the bar
    for one pre-registered hypothesis, 1,680 the bar for all 84 at once. Every
-   e-value figure on the site is drawn on that same axis, so its ticks land on
-   the page's own lines.
+   e-value figure from the papers is drawn on that same axis, so its ticks land
+   on the page's own lines. The Vertex Boxing figures end at 1,000 instead
+   (GAUGE_HI), since 1,680 is paper one's bar and means nothing there.
 
    Data comes from assets/data/audit.json (generated from the papers by
    tools/build_data.py) and assets/data/boxing.json (copied from the Vertex
@@ -92,7 +93,8 @@
   var RULE = { dHi: 1680, cHi: 84 };
   function dx(v) { return L(v) / L(RULE.dHi); }
   function cx(k) { return L(k) / L(RULE.cHi); }
-  var TLEN = { tD: 26, tM: 19, th: 13, tn: 8, tu: 5, tE: 30 };
+  /* the end tick rises beside its 1,680 label, so the label reads as its own and not the 1,000 tick's */
+  var TLEN = { tD: 26, tM: 19, th: 13, tn: 8, tu: 5, tE: 46 };
 
   function dTicks() {
     var t = [];
@@ -128,11 +130,13 @@
       var dec = v === 1 || v === 10 || v === 100;
       var major = /^[25]/.test(String(v));
       var cls = dec ? "nD" : v === 20 ? "nB" : major ? "nM" : "nS";
-      var label = v >= 10 && !dec ? String(v).charAt(0) : fmtAxis(v);
+      /* 20 is the bar the rule is about, so it is written out in full */
+      var label = v >= 10 && !dec && v !== 20 ? String(v).charAt(0) : fmtAxis(v);
       s += '<text class="' + cls + (v === 1 ? " is-first" : "") + '" x="' + pc(dx(v)) + '" y="' + (H - (dec ? 31 : 24)) + '">' + label + "</text>";
     });
     s += '<line class="tE" x1="100%" x2="100%" y1="' + (H - TLEN.tE) + '" y2="' + H + '"/>';
-    s += '<text class="nE" x="100%" dx="-36" y="' + (H - 34) + '">1,680</text>';
+    /* the end labels sit against their own ticks, clear of the cursor's hairline */
+    s += '<text class="nE" x="100%" dx="-6" y="' + (H - 34) + '">1,680</text>';
     return s + "</svg>";
   }
 
@@ -153,7 +157,7 @@
     [1.5, 2.5].forEach(function (h) { s += '<line class="tu" x1="' + pc(cx(h)) + '" x2="' + pc(cx(h)) + '" y1="0" y2="' + TLEN.tu + '"/>'; });
     [1, 2, 3, 4, 5, 6, 7, 8, 10, 15, 20, 30, 40, 84].forEach(function (k) {
       var cls = k === 1 || k === 10 ? "nD" : k === 84 ? "nE" : [2, 5, 20].indexOf(k) >= 0 ? "nM" : "nS";
-      s += '<text class="' + cls + (k === 1 ? " is-first" : "") + '" x="' + pc(cx(k)) + '"' + (k === 84 ? ' dx="-34"' : "") + ' y="' + (k === 1 || k === 10 || k === 84 ? 44 : 38) + '">' + k + "</text>";
+      s += '<text class="' + cls + (k === 1 ? " is-first" : "") + '" x="' + pc(cx(k)) + '"' + (k === 84 ? ' dx="-6"' : "") + ' y="' + (k === 1 || k === 10 || k === 84 ? 44 : 38) + '">' + k + "</text>";
     });
     return s + "</svg>";
   }
@@ -228,7 +232,8 @@
       var x = r2(gx(g.v) * W);
       s += '<line class="vd-tk" x1="' + x + '" x2="' + x + '" y1="' + y0 + '" y2="' + (y0 + (c === "gn" ? 4 : 7)) + '"/>';
     });
-    (wide ? [0.01, 0.1, 1, 10, 100] : [0.1, 1, 10, 100]).forEach(function (v) {
+    /* with the pile drawn, its own "under 0.01" labels the axis's left end */
+    (wide && !lay.pile ? [0.01, 0.1, 1, 10, 100] : [0.1, 1, 10, 100]).forEach(function (v) {
       s += '<text class="vd-n' + (v === 0.01 ? " is-first" : "") + '" x="' + r2(gx(v) * W) + '" y="' + (y0 + 28) + '">' + fmtAxis(v) + "</text>";
     });
     s += '<text class="vd-n is-bar" x="' + x20 + '" y="' + (y0 + 28) + '">20</text>';
@@ -279,7 +284,16 @@
       '<defs><pattern id="fl-h' + sfx + '" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" class="fl-hl"/></pattern></defs>';
     var b0 = fx(-F.mde), b1 = fx(F.mde);
     s += '<rect class="fl-band" fill="url(#fl-h' + sfx + ')" x="' + pc(b0) + '" y="' + (top - 18) + '" width="' + pc(b1 - b0) + '" height="' + (axisY - top + 18) + '"/>';
-    s += '<line class="fl-edge" x1="' + pc(b0) + '" x2="' + pc(b0) + '" y1="' + (top - 18) + '" y2="' + (axisY + 8) + '"/>';
+    /* narrow: the row labels sit on their own line above each row and cross
+       the floor's left edge, so that edge pauses for each label line instead
+       of being cut up by the letters' halo */
+    var y = top - 18;
+    if (!wide) rows.forEach(function (row, ri) {
+      var yr = top + ri * rowH + rowH / 2;
+      s += '<line class="fl-edge" x1="' + pc(b0) + '" x2="' + pc(b0) + '" y1="' + y + '" y2="' + (yr - 31) + '"/>';
+      y = yr - 11;
+    });
+    s += '<line class="fl-edge" x1="' + pc(b0) + '" x2="' + pc(b0) + '" y1="' + y + '" y2="' + (axisY + 8) + '"/>';
     s += '<line class="fl-edge" x1="' + pc(b1) + '" x2="' + pc(b1) + '" y1="' + (top - 18) + '" y2="' + (axisY + 8) + '"/>';
     var mde = F.mde.toFixed(5);
     if (wide) {
@@ -301,7 +315,8 @@
       var y = top + ri * rowH + rowH / 2;
       s += '<line class="fl-row" x1="' + pc(fx(lo)) + '" x2="' + pc(fx(hi)) + '" y1="' + y + '" y2="' + y + '"/>';
       if (wide) s += '<text class="fl-lab" x="0" y="' + (y + 4) + '">' + row.label + "</text>";
-      else s += '<text class="fl-lab is-top" x="' + pc(fx(lo)) + '" y="' + (y - 17) + '">' + row.label + "</text>";
+      // narrow: the shipped change's value goes on its label line; beside the diamond it would cross the floor's edge
+      else s += '<text class="fl-lab is-top" x="' + pc(fx(lo)) + '" y="' + (y - 17) + '">' + row.label + (row.key === "ship" && ship.length ? ': <tspan class="fl-v">' + minus(ship[0].effect, 4) + "</tspan>" : "") + "</text>";
       var items = row.key === "null" ? F.nulls.map(function (v) { return { effect: v, name: "A re-seed" }; })
         : row.key === "lever" ? levers : row.key === "base" ? bases : ship;
       items.forEach(function (it, j) {
@@ -322,7 +337,7 @@
     var yB = wide ? yS - 17 : yS + 15;
     s += '<line class="fl-brk" x1="' + pc(fx(shipV)) + '" x2="' + pc(fx(-F.largest_null)) + '" y1="' + yB + '" y2="' + yB + '"/>';
     s += '<text class="fl-ann' + (wide ? "" : " is-l") + '" x="' + pc(wide ? (fx(shipV) + fx(-F.largest_null)) / 2 : fx(-F.largest_null)) + '" y="' + (wide ? yS - 23 : yS + 19) + '"' + (wide ? "" : ' dx="6"') + '>' + (wide ? "a re-seed, 80% of it" : "a re-seed: 80% of it") + "</text>";
-    s += '<text class="fl-ann is-r" x="' + pc(fx(shipV)) + '" y="' + (yS + 4) + '" dx="-14" text-anchor="end">' + minus(shipV, 4) + "</text>";
+    if (wide || !ship.length) s += '<text class="fl-ann is-r" x="' + pc(fx(shipV)) + '" y="' + (yS + 4) + '" dx="-14" text-anchor="end">' + minus(shipV, 4) + "</text>";
     s += '<text class="fl-dir" x="' + pc(fx(lo)) + '" y="' + (axisY + 44) + '">← better</text>';
     s += '<text class="fl-dir is-r" x="' + pc(fx(hi)) + '" y="' + (axisY + 44) + '">worse →</text>';
     return s + "</svg>";
@@ -330,10 +345,10 @@
 
   /* ------------------------------------------------------------ 6. Vertex Boxing
      (a) closing-line value by the level of the fight, with 95% intervals;
-     (b) four betting windows on the page's own e-value scale, from 1 to
-     1,680. How each test was fixed is the needle's head: filled for a test
+     (b) four betting windows as e-values on a log scale from 1 to 1,000.
+     How each test was fixed is the needle's head: filled for a test
      published before it ran, hollow for one committed locally, none for a
-     window declared in advance as already seen. Red means it cleared 20. */
+     window declared in advance as already seen. Blue means it cleared 20. */
   function levelBars(level, W, sfx) {
     var rows = level.rows, wide = W > 620;
     sfx = sfx || (wide ? "-w" : "-n");
@@ -368,21 +383,25 @@
     return s + "</svg>";
   }
 
-  function gaugeX(v, W) { var f0 = gx(1), lab = W > 620 ? 0.27 : 0; return lab + ((gx(Math.min(v, GRID.hi)) - f0) / (1 - f0)) * (1 - lab); }
+  /* the boxing gauge has its own top of scale, 1,000: the smallest round
+     decade above every e-value it draws on the scale (41.8). 1,680 is paper
+     one's bar for 84 hypotheses and means nothing for boxing. */
+  var GAUGE_HI = 1000;
+  function gaugeF(v) { var f0 = gx(1); return (gx(Math.min(v, GAUGE_HI)) - f0) / (gx(GAUGE_HI) - f0); }
+  function gaugeX(v, W) { var lab = W > 620 ? 0.27 : 0; return lab + gaugeF(v) * (1 - lab); }
   function windowsGauge(win, W, sfx) {
     var rows = win.rows, bar = win.bar, wide = W > 620;
     sfx = sfx || (wide ? "-w" : "-n");
-    var f0 = gx(1);
-    function bx(v) { return (gx(Math.min(v, GRID.hi)) - f0) / (1 - f0); }
+    var bx = gaugeF;
     var lab = wide ? 0.27 : 0;
     function X(v) { return lab + bx(v) * (1 - lab); }
     var rowH = wide ? 58 : 76, top = 30, H = top + rows.length * rowH + 34;
     var s = '<svg class="wg-svg" width="100%" height="' + H + '" role="img" aria-labelledby="wg-t' + sfx + ' wg-d' + sfx + '">' +
       '<title id="wg-t' + sfx + '">Four betting windows at the opening price, scored as e-values</title>' +
       '<desc id="wg-d' + sfx + '">' + rows.map(function (r) { return r.when + ", " + fmtInt(r.bouts) + " bouts, " + r.how + ": e = " + r.label.replace("^", " to the ") + (r.e >= bar ? ", past the bar of 20" : ", short of the bar of 20") + (r.fixed === "local" ? " (registered as one of four hypotheses, with a bar of 80)" : ""); }).join(". ") + ".</desc>";
-    // the scale: 1 .. 1,680 of the page grid
+    // the scale: 1 .. 1,000, graduated at m x 10^k
     gridValues().forEach(function (g) {
-      if (g.v < 1) return;
+      if (g.v < 1 || g.v > GAUGE_HI) return;
       var c = gridClass(g);
       if (c === "gn" && !wide) return;
       s += '<line class="wg-g ' + c + '" x1="' + pc(X(g.v)) + '" x2="' + pc(X(g.v)) + '" y1="' + (top - 6) + '" y2="' + (H - 28) + '"/>';
@@ -391,9 +410,9 @@
     s += '<text class="wg-barcap" x="' + pc(X(bar)) + '" y="' + (top - 20) + '">the bar, 20</text>';
     [1, 10, 100].forEach(function (v) { s += '<text class="wg-n' + (v === 1 ? " is-first" : "") + '" x="' + pc(X(v)) + '" y="' + (H - 8) + '">' + v + "</text>"; });
     s += '<text class="wg-n is-bar" x="' + pc(X(bar)) + '" y="' + (H - 8) + '">20</text>';
-    s += '<text class="wg-n is-end" x="100%" y="' + (H - 8) + '">1,680</text>';
+    s += '<text class="wg-n is-end" x="100%" y="' + (H - 8) + '">1,000</text>';
     rows.forEach(function (r, i) {
-      var y = top + i * rowH + rowH - 14, off = r.e > GRID.hi, hit = r.e >= bar;
+      var y = top + i * rowH + rowH - 14, off = r.e > GAUGE_HI, hit = r.e >= bar;
       var fx = off ? 1 : X(r.e);
       if (wide) {
         s += '<text class="wg-lab" x="0" y="' + (y - 16) + '">' + r.when + "</text>";
@@ -456,7 +475,7 @@
     gridValues: gridValues, gridClass: gridClass,
     grid: grid, edge: edge, RULE: RULE, dx: dx, cx: cx, ruleD: ruleD, ruleC: ruleC,
     verdictLayout: verdictLayout, verdict: verdict, floor: floor,
-    levelBars: levelBars, windowsGauge: windowsGauge, gaugeX: gaugeX, zacksField: zacksField, zacksFan: zacksFan, aucScale: aucScale
+    levelBars: levelBars, windowsGauge: windowsGauge, gaugeX: gaugeX, GAUGE_HI: GAUGE_HI, zacksField: zacksField, zacksFan: zacksFan, aucScale: aucScale
   };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.Fig = api;

@@ -157,7 +157,7 @@
       var XA = wide ? F.gx : narrowX;
       var x0 = wide ? F.gx(1) : 0.02, span = wide ? 1 - x0 : 0.96, BMAX = 280;
       function XB(b) { return x0 + b / BMAX * span; }
-      var yA = wide ? 78 : 92, y1 = yA + (wide ? 84 : 98), y2 = y1 + (wide ? 46 : 58), yAx = y2 + 16, H = yAx + (wide ? 30 : 48);
+      var yA = wide ? 78 : 104, y1 = yA + (wide ? 84 : 110), y2 = y1 + (wide ? 46 : 74), yAx = y2 + 16, H = yAx + (wide ? 30 : 48);
       var s = '<svg class="rs-wt-svg" width="100%" height="' + H + '" overflow="visible" role="img" aria-labelledby="wt-t' + sfx + ' wt-d' + sfx + '">' +
         '<title id="wt-t' + sfx + '">A segment written off too early: its e-value so far, and the bouts it still needs</title>' +
         '<desc id="wt-d' + sfx + '">On the e-value axis the segment stands at 4.81, growing by 0.0143 nats a bout, against a threshold of 20. At fair odds it is 100 bouts short, seventeen months; at the book\'s prices, 253 bouts, three and a half years.</desc>' +
@@ -204,7 +204,8 @@
           if (i === 0) s += '<text class="rs-wt-t" data-wt-t="0" x="' + pc(XB(r.b)) + '" dx="12" y="' + (r.y + 5) + '">' + r.t + "</text>";
           else s += '<text class="rs-wt-t" data-wt-t="1" x="' + pc(XB(r.b)) + '" y="' + (r.y - 14) + '" text-anchor="end">' + r.t + "</text>";
         } else {
-          s += '<text class="rs-lab is-s" x="' + pc(XB(0)) + '" y="' + (r.y - 16) + '">' + r.k + ' <tspan class="rs-wt-t" data-wt-t="' + i + '">' + r.t + "</tspan></text>";
+          // the price on one line, the wait under it: on one line they run past a 360px phone
+          s += '<text class="rs-lab is-s" x="' + pc(XB(0)) + '" y="' + (r.y - 33) + '">' + r.k + '<tspan class="rs-wt-t" data-wt-t="' + i + '" x="' + pc(XB(0)) + '" dy="17">' + r.t + "</tspan></text>";
         }
       });
       s += '<line class="rs-axis is-thin" x1="' + pc(XB(0)) + '" x2="' + pc(XB(BMAX)) + '" y1="' + yAx + '" y2="' + yAx + '"/>';
@@ -332,7 +333,11 @@
         rsLadderWide: function () { return R.ladder(data.audit.ladder, true, "-w"); },
         rsLadderNarrow: function () { return R.ladder(data.audit.ladder, false, "-n"); },
         rsBudgetWide: function () { return R.budget(data.audit.budget, true, "-w"); },
-        rsBudgetNarrow: function () { return R.budget(data.audit.budget, false, "-n"); }
+        rsBudgetNarrow: function () { return R.budget(data.audit.budget, false, "-n"); },
+        /* the Collatz path of 27, drawn at a laptop's width and a phone's, for
+           readers without JavaScript; assets/js/collatz.js redraws it in real pixels */
+        czWide: function () { return require("./collatz.js").svg(27, 760, "-w"); },
+        czNarrow: function () { return require("./collatz.js").svg(27, 330, "-n"); }
       };
     }
   };
