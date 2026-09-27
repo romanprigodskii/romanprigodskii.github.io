@@ -1,0 +1,127 @@
+/* /work/zacks-ibkr/: the screen-to-book instrument at case scale, and the
+   daily run drawn as a schematic. Tokens and components from site.css. */
+
+/* ------------------------------------------------------------ the instrument, larger */
+.zi-zk { --bh: clamp(30px, 3vw, 46px); margin-top: clamp(40px, 4.4vw, 72px); }
+.zi-zk .zk-f { padding-top: clamp(14px, 1.5vw, 22px); }
+.zi-zk .zk-flow { height: clamp(72px, 8.4vw, 136px); }
+.zi-zk .zk-flow path { stroke: var(--ink-2); }
+.zi-zk .book { padding-bottom: 64px; }
+.zi-zk .book-bar { height: var(--bh); }
+.zi-zk .book-bar i { position: relative; }
+/* every position is the same 4%: the book is its own ledger */
+.zi-zk .book-bar i::after { content: "4%"; position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f-cond); font-weight: 600; font-size: clamp(0.75rem, 0.55rem + 0.3vw, 0.875rem); line-height: 1; color: var(--paper); font-variant-numeric: tabular-nums lining-nums; }
+.zi-zk .book-lim { font-size: var(--fs-small); color: var(--ink); }
+.zi-zk .lim-10 { top: var(--bh); height: 44px; }
+.zi-zk .lim-10 i { top: 7px; height: 10px; }
+.zi-zk .lim-10 span { top: 24px; }
+.zi-zk .lim-80 { top: -12px; height: calc(var(--bh) + 40px); }
+.zi-zk .lim-80 span { left: auto; right: 12px; bottom: -3px; }
+.zi-zk .lim-80 i::after { left: -9px; width: 10px; }
+.zi-zk .zk-cap { margin-top: 18px; }
+html.js .zi-zk .book-bar i::after { opacity: 0; transition: opacity 400ms ease calc(2450ms + var(--i) * 30ms); }
+html.js .zi-zk.in .book-bar i::after { opacity: 1; }
+
+/* ------------------------------------------------------------ status line */
+.zi .case-facts dt { text-wrap: pretty; }
+.zi-now { font-weight: 600; }
+
+/* ------------------------------------------------------------ the daily run */
+.zi-run { margin-top: clamp(64px, 6.4vw, 112px); }
+.zi-run-head { align-items: end; margin-bottom: 16px; }
+.zi-run-head .fig-k { grid-column: 1 / 3; }
+.zi-run-head .fig-s { grid-column: 3 / 6; padding-right: 0; margin-top: 0; max-width: 62ch; }
+.zi-plate { padding: clamp(20px, 2.2vw, 32px) clamp(18px, 2vw, 30px) clamp(16px, 1.8vw, 26px); }
+.zr-narrow { display: none; }
+
+.zr-svg { overflow: visible; font-family: var(--f-cond); font-variant-numeric: tabular-nums lining-nums; }
+.zr-b { fill: var(--enamel); stroke: var(--ink); stroke-width: 1.5; transition: stroke-width 200ms ease; }
+.zr-b.is-acct { stroke: var(--ink-3); stroke-width: 1.2; stroke-dasharray: 5 4; }
+.zr-k { font-size: 16.5px; font-weight: 600; fill: var(--ink); letter-spacing: 0.002em; }
+.zr-n, .zr-x, .zr-r, .zr-o { font-family: var(--f-sans); font-size: 12.5px; }
+.zr-n { fill: var(--ink-2); }
+.zr-x { fill: var(--ink-3); }
+.zr-r { fill: var(--ink); }
+.zr-o { fill: var(--ink); font-weight: 600; }
+.zr-tk { font-size: 15px; font-weight: 600; fill: var(--ink-2); }
+.zr-n, .zr-x, .zr-o { paint-order: stroke; stroke: var(--enamel); stroke-width: 4px; stroke-linejoin: round; }
+.zr-w { stroke: var(--g-d); stroke-width: 1.5; }
+.zr-tr { stroke: var(--ink); stroke-width: 1.5; }
+.zr-dl { stroke: var(--ink-3); stroke-width: 1.2; stroke-dasharray: 5 4; }
+.zr-xl { stroke: var(--ink-3); stroke-width: 1.2; }
+.zr-jn { fill: var(--ink-3); }
+.zr-as, .zr-ad { fill: var(--ink-3); }
+.zr-term { fill: var(--enamel); stroke: var(--ink-3); stroke-width: 1.2; }
+.zr-rule { stroke: var(--g-d); stroke-width: 1; shape-rendering: crispEdges; }
+.zr-clock circle { fill: var(--enamel); stroke: var(--ink); stroke-width: 1.5; }
+.zr-clock path { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.zr-in path { fill: var(--ink); }
+.zr-lamp { fill: var(--ink); stroke: var(--ink); stroke-width: 1.5; transition: fill 220ms ease; }
+.zr-ct { fill: var(--enamel); stroke: var(--ink); stroke-width: 1.5; }
+.zr-ct.is-pivot { fill: var(--ink); }
+.zr-blade { stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; }
+.zr-tok rect { fill: var(--ink); stroke: var(--enamel); stroke-width: 2; }
+
+/* the sheet's foot: a key, and a title strip as on a drawing */
+.zi-sheet { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--g-d); }
+.zi-key { margin-top: 0; gap: 6px 28px; }
+.zi-key i { width: 24px; height: 0; border-top: 1.5px solid var(--ink); }
+.zi-key .k-next { border-top: 1.2px dashed var(--ink-3); }
+.zi-key .k-stop { border-top: 1.2px solid var(--ink-3); position: relative; }
+.zi-key .k-stop::after { content: ""; position: absolute; right: -1px; top: -4.6px; border: 4px solid transparent; border-left: 7px solid var(--ink-3); border-right: 0; }
+.zi-tb { display: grid; grid-template-columns: 1fr 1.1fr 0.8fr 2fr; margin-top: 16px; border: 1.5px solid var(--ink); background: var(--enamel); }
+.zi-tb > div { padding: 7px 14px 9px; border-left: 1px solid var(--ink); min-width: 0; }
+.zi-tb > div:first-child { border-left: 0; }
+.zi-tb dt { font-size: 0.75rem; line-height: 1.2; color: var(--ink-3); }
+.zi-tb dd { margin: 2px 0 0; font-size: 0.9375rem; font-weight: 600; line-height: 1.3; }
+.zi-tb > div:first-child dd { font-family: var(--f-cond); font-weight: 700; font-size: 1.1875rem; line-height: 1.1; }
+
+/* one run, on reveal: the stages stand in pencil until the run reaches them (set by zacks-ibkr.js) */
+.zr-st { transition: opacity 320ms ease; }
+.zr-st.is-on .zr-b { stroke-width: 2.75; }
+.zr-out, .zr-next, .zr-stop { transition: opacity 700ms ease; }
+html.js .zi-run.is-armed .zr-st:not(.is-done) { opacity: 0.26; }
+html.js .zi-run.is-armed .zr-lamp:not(.is-lit) { fill: var(--enamel); }
+html.js .zi-run.is-armed:not(.is-end) .zr-out { opacity: 0; }
+html.js .zi-run.is-armed:not(.is-end) .zr-next, html.js .zi-run.is-armed:not(.is-end) .zr-stop { opacity: 0.55; }
+html.js .zi-run.is-armed:not(.is-going) .zr-tok { opacity: 0; }
+
+/* ------------------------------------------------------------ widths */
+@media (max-width: 1100px) {
+  .zi-zk .book { padding-bottom: 88px; }
+  .zi-zk .lim-80 { height: calc(var(--bh) + 64px); }
+  .zi-zk .lim-80 span { width: 17em; white-space: normal; text-align: right; text-wrap: balance; }
+}
+@media (max-width: 1179px) {
+  .zr-wide { display: none; }
+  .zr-narrow { display: block; }
+  .zi-run-head .fig-k, .zi-run-head .fig-s { grid-column: 3 / 6; }
+  .zi-run-head .fig-s { margin-top: 6px; }
+  .zi-run-head { display: block; margin-left: var(--x1); max-width: 560px; }
+  .zi-plate { margin-left: var(--x1); max-width: 560px; }
+  .zi-tb { grid-template-columns: 1fr 1fr; }
+  .zi-tb > div { border-left: 0; border-top: 1px solid var(--ink); padding: 6px 12px 8px; }
+  .zi-tb > div:first-child { border-top: 0; }
+  .zi-tb > .is-wide { grid-column: 1 / 3; }
+  .zi-tb > div:not(.is-wide) + div:not(.is-wide) { border-left: 1px solid var(--ink); }
+}
+
+@media (max-width: 760px) {
+  .case-line { margin-top: 20px; }
+  .zi .case-facts > div:last-child { grid-column: 1 / 3; }
+  .zi-zk { --bh: 22px; }
+  .zi-zk .zk-flow { height: 56px; }
+  .zi-zk .book { padding-bottom: 112px; }
+  .zi-zk .book-bar i::after { display: none; }
+  .zi-zk .book-lim { font-size: 0.8125rem; }
+  .zi-zk .lim-80 { left: 80%; right: auto; height: calc(var(--bh) + 102px); }
+  .zi-zk .lim-80 span { right: 12px; left: auto; width: 60vw; white-space: normal; text-align: right; text-wrap: balance; bottom: -3px; }
+  .zi-run-head, .zi-plate { margin-left: 0; max-width: none; }
+  .zi-plate { padding: 18px 14px 16px; }
+  .zi-key { flex-direction: column; gap: 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .zi-zk .book-bar i::after { opacity: 1; transition: none; }
+  .zr-st, .zr-b, .zr-lamp, .zr-out, .zr-next, .zr-stop { transition: none; }
+}

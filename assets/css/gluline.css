@@ -1,0 +1,259 @@
+/* ==========================================================================
+   /work/gluline/: page styles, on top of site.css
+
+   The phones stand on a ground line with their left edges on the page's own
+   decade lines (0.01, 1 and 100), so the middle one is centred on the frame.
+   The time ruler is a calendar with a dimension line over it; the card
+   figure is a schematic of what the assistant is allowed to read; the audit
+   is one bar of 74 candidates. Ink only: nothing on this page is a
+   measurement that clears an e-value bar, so the signal colour stays unused.
+   ========================================================================== */
+
+/* four facts: the last one runs to the frame's edge, so the strip's rules close */
+
+/* ------------------------------------------------------------ the phones */
+.gl-shelf { margin-top: clamp(44px, 4.8vw, 80px); container-type: inline-size; }
+.gl-devs {
+  position: relative;
+  display: grid;
+  grid-template-columns: calc(100% - var(--x100)) 1fr calc(100% - var(--x100)) 1fr calc(100% - var(--x100));
+}
+.gl-dev { position: relative; min-width: 0; }
+.gl-dev:nth-child(1) { grid-column: 1; }
+.gl-dev:nth-child(2) { grid-column: 3; }
+.gl-dev:nth-child(3) { grid-column: 5; }
+/* the ground line, at the phones' feet: a phone is (100% - x100) wide and 1739/800 as tall */
+.gl-devs::before { content: ""; position: absolute; left: 0; right: 0; top: calc((100cqw - 76.5506cqw) * 2.17375); height: 1.5px; margin-top: -0.75px; background: var(--ink); transform-origin: left; }
+.gl-dev::before { content: ""; position: absolute; left: 0; top: calc((100cqw - 76.5506cqw) * 2.17375); width: 1.5px; height: 12px; background: var(--ink); }
+.gl-slot { clip-path: inset(-80px -80px 0 -80px); }
+.gl-slot .phone { box-shadow: 0 0 0 1px rgba(21, 20, 18, 0.16), 0 30px 60px -26px rgba(21, 20, 18, 0.34); }
+.gl-cap { margin-top: 20px; padding-left: 12px; font-size: var(--fs-small); line-height: 1.4; color: var(--ink-2); max-width: 30ch; text-wrap: pretty; }
+.gl-shelf > .note { margin-top: clamp(22px, 2.2vw, 34px); }
+
+html.js .gl-devs::before { transform: scaleX(0); transition: transform 1100ms var(--eo); }
+html.js .gl-shelf.in .gl-devs::before { transform: none; }
+html.js .gl-slot .phone { transform: translateY(101%); transition: transform 1500ms var(--eo) calc(250ms + var(--i, 0) * 150ms); }
+html.js .gl-shelf.in .gl-slot .phone { transform: none; }
+html.js .gl-cap, html.js .gl-dev::before { opacity: 0; transition: opacity 600ms ease 1100ms; }
+html.js .gl-shelf.in .gl-cap, html.js .gl-shelf.in .gl-dev::before { opacity: 1; }
+
+/* ------------------------------------------------------------ the web */
+.gl-web { margin-top: clamp(64px, 6.4vw, 112px); align-items: end; }
+.gl-web-cap { grid-column: 1 / 3; font-size: var(--fs-small); color: var(--ink-2); padding-bottom: 4px; }
+.gl-web .bezel { grid-column: 3 / 6; }
+
+/* ------------------------------------------------------------ the time ruler */
+.gl-ruler { margin-top: clamp(40px, 4vw, 64px); padding: clamp(18px, 1.8vw, 26px) clamp(16px, 2vw, 28px) 16px; }
+.gl-ruler-h { margin-bottom: clamp(14px, 1.6vw, 24px); }
+.gr-svg { overflow: visible; font-family: var(--f-cond); font-variant-numeric: tabular-nums lining-nums; }
+.gr-t { stroke: var(--ink); stroke-width: 1; shape-rendering: crispEdges; }
+.gr-d { stroke: var(--ink-3); }
+.gr-m { stroke-width: 1.5; shape-rendering: auto; }
+.gr-ax { stroke: var(--ink); stroke-width: 1.5; }
+.gr-dash { stroke: var(--ink-2); stroke-width: 1.5; stroke-dasharray: 3 4; }
+.gr-ext { stroke: var(--ink); stroke-width: 1; shape-rendering: crispEdges; }
+.gr-end { stroke: var(--ink); stroke-width: 2.5; }
+.gr-dim { stroke: var(--ink); stroke-width: 1.5; }
+.gr-arr { fill: var(--ink); transition: opacity 200ms ease; }
+.gr-svg.is-short .gr-arr { opacity: 0; }
+.gr-read { font-size: 26px; font-weight: 600; fill: var(--ink); letter-spacing: -0.004em; }
+.gr-mo { font-size: 15px; font-weight: 600; fill: var(--ink); }
+.gr-lab { font-size: 15px; font-weight: 700; fill: var(--ink); }
+.gr-sub { font-family: var(--f-sans); font-size: 12.5px; fill: var(--ink-2); }
+.gr-sub.is-then { fill: var(--ink-2); }
+.gr-br { stroke: var(--ink-2); stroke-width: 1; shape-rendering: crispEdges; }
+.gr-au-t { font-family: var(--f-sans); font-size: 12.5px; fill: var(--ink-2); }
+.fl-narrow .gr-read { font-size: 20px; }
+.fl-narrow .gr-mo { font-size: 13.5px; }
+.fl-narrow .gr-lab { font-size: 14px; }
+.fl-narrow .gr-sub, .fl-narrow .gr-au-t { font-size: 12px; }
+
+/* the graduation drops in; then gluline.js opens the dimension line to the release */
+html.js .gr-t { transform: scaleY(0); transform-box: fill-box; transform-origin: top; transition: transform 500ms var(--eo) calc(var(--i) * 3ms); }
+html.js .gl-ruler.in .gr-t { transform: none; }
+html.js .gl-ruler.is-pre .gr-endg, html.js .gl-ruler.is-pre .gr-endl, html.js .gl-ruler.is-pre .gr-au:not(.on) { opacity: 0; }
+html.js .gr-endg, html.js .gr-endl, html.js .gr-au { transition: opacity 500ms ease; }
+html.js .gr-endl { transition-delay: 150ms; }
+html.js .gr-dash { transition: stroke-dashoffset 900ms var(--eo) 350ms; }
+html.js .gl-ruler.is-pre .gr-dash { stroke-dashoffset: 400; }
+
+/* ------------------------------------------------------------ the card every chat carries */
+.gl-sw { container-type: inline-size; padding: clamp(16px, 1.8vw, 24px) clamp(16px, 1.8vw, 24px) clamp(18px, 2vw, 26px); }
+.gl-sw figcaption { margin-bottom: clamp(18px, 2vw, 26px); }
+.gl-js { display: none; }
+html.js .gl-js { display: inline; }
+.gl-sw-body { display: grid; grid-template-columns: minmax(0, 1fr) 96px minmax(200px, 236px); align-items: center; }
+.gl-cards { display: grid; row-gap: 12px; }
+.gl-card { height: 88px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 16px; background: var(--paper); border: 1px solid var(--g-d); border-radius: 2px; transition: border-color 300ms ease; }
+.gl-card-x { min-width: 0; }
+.gl-card-n { display: block; font-size: 0.8125rem; line-height: 1.3; color: var(--ink-2); }
+.gl-card-t { display: block; margin-top: 3px; font-family: var(--f-cond); font-weight: 600; font-size: 1.3125rem; line-height: 1.08; letter-spacing: -0.003em; color: var(--ink-3); transition: color 300ms ease; text-wrap: balance; }
+.gl-card .t-on { display: none; }
+.gl-card.is-read { border-color: var(--ink); }
+.gl-card.is-read .gl-card-t { color: var(--ink); }
+.gl-card.is-read .t-on { display: inline; }
+.gl-card.is-read .t-off { display: none; }
+
+.sw { position: relative; flex: none; width: 44px; height: 24px; padding: 0; border: 1.5px solid var(--ink); border-radius: 3px; background: var(--enamel); cursor: pointer; transition: background-color 260ms ease; }
+.sw i { position: absolute; top: 3px; left: 3px; width: 15px; height: 15px; border-radius: 1.5px; background: var(--ink); transition: transform 360ms var(--eo), background-color 260ms ease; }
+.sw[aria-checked="true"] { background: var(--ink); }
+.sw[aria-checked="true"] i { transform: translateX(20px); background: var(--enamel); }
+.sw:disabled { cursor: default; }
+.sw:active:not(:disabled) i { width: 17px; }
+.sw[aria-checked="true"]:active:not(:disabled) i { transform: translateX(18px); }
+.gl-sw:not(.is-all) .gl-card .sw { border-color: var(--ink-3); }
+.gl-sw:not(.is-all) .gl-card .sw[aria-checked="true"] { background: var(--ink-3); }
+.gl-sw:not(.is-all) .gl-card .sw i { background: var(--ink-3); }
+.gl-sw:not(.is-all) .gl-card .sw[aria-checked="true"] i { background: var(--enamel); }
+
+.gl-wires { position: relative; height: 188px; }
+.gl-wires svg { position: absolute; left: 0; top: 0; overflow: visible; }
+.gl-wires .wn { display: none; }
+.wire { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 240px 240px; stroke-dashoffset: 0; transition: stroke-dashoffset 900ms var(--eo); }
+.term { stroke: var(--ink); stroke-width: 2; opacity: 0; transition: opacity 240ms ease; }
+.gl-sw:not(.a-read) .wire-a, .gl-sw:not(.b-read) .wire-b { stroke-dashoffset: 228px; transition-duration: 600ms; }
+.gl-sw:not(.a-read) .term-a, .gl-sw:not(.b-read) .term-b { opacity: 1; transition-delay: 380ms; }
+.gl-sw:not(.a-read) .wn .wire-a, .gl-sw:not(.b-read) .wn .wire-b { stroke-dashoffset: 234px; }
+
+.gl-node { padding: 14px 16px 15px; background: var(--enamel); border: 1.5px solid var(--ink); border-radius: 2px; transition: border-color 300ms ease; }
+.gl-node-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.gl-node-h b { font-family: var(--f-cond); font-weight: 700; font-size: 1.3125rem; line-height: 1; transition: color 300ms ease; }
+.gl-node-sw { display: inline-flex; align-items: center; gap: 8px; }
+.gl-node-v { font-family: var(--f-cond); font-weight: 600; font-size: 0.9375rem; min-width: 1.7em; }
+.gl-node-r { margin-top: 12px; font-size: var(--fs-fine); line-height: 1.4; color: var(--ink-2); min-height: 2.8em; text-wrap: balance; }
+.gl-sw:not(.is-all) .gl-node { border-color: var(--g-1); }
+.gl-sw:not(.is-all) .gl-node-h b { color: var(--ink-3); }
+
+/* before it is seen, no wire has been drawn yet */
+html.js .gl-sw:not(.in) .wire { stroke-dashoffset: 240px; }
+html.js .gl-sw:not(.in) .term { opacity: 0; }
+html.js .gl-sw.in .wire-b { transition-delay: 120ms; }
+
+@container (max-width: 620px) {
+  .gl-sw-body { grid-template-columns: minmax(0, 1fr) 36px; align-items: start; }
+  .gl-wires .ww { display: none; }
+  .gl-wires .wn { display: block; }
+  .gl-node { grid-column: 1 / -1; margin-top: 22px; }
+  .gl-node-r { min-height: 0; }
+}
+
+/* ------------------------------------------------------------ who can read what */
+.gl-who { margin-top: 0; }
+.gl-who th { width: 38%; padding-right: var(--gut); }
+.gl-who td b { font-weight: 600; color: var(--ink); white-space: nowrap; }
+.gl-who tbody.is-not tr:first-child th, .gl-who tbody.is-not tr:first-child td { border-top: 1.5px solid var(--ink); }
+html.js .gl-who tr { opacity: 0; transform: translateY(8px); transition: opacity 600ms var(--eo), transform 800ms var(--eo); transition-delay: calc(120ms + var(--r) * 90ms); }
+html.js .gl-who.in tr { opacity: 1; transform: none; }
+html.js .gl-who tbody.is-not tr { transition-delay: calc(420ms + var(--r) * 90ms); }
+
+/* ------------------------------------------------------------ the release checklist */
+.gl-gate { margin-top: clamp(26px, 2.8vw, 40px); }
+.gl-gate + p { margin-top: clamp(26px, 2.8vw, 40px); }
+.gl-gate ul { margin-top: 10px; border-top: 1.5px solid var(--ink); }
+.gl-gate li { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 14px; row-gap: 8px; padding: 11px 0 12px; border-bottom: 1px solid var(--g-d); font-size: 1rem; line-height: 1.4; }
+.bx { flex: none; position: relative; top: 3px; width: 18px; height: 18px; border: 1.5px solid var(--ink); border-radius: 2px; background: var(--enamel); }
+.bx svg { position: absolute; inset: -1.5px; width: 18px; height: 18px; overflow: visible; }
+.bx path { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: square; stroke-dasharray: 20; stroke-dashoffset: 0; }
+.gl-gate-t { flex: 1 1 0; min-width: 0; }
+.gl-n { font-family: var(--f-cond); font-weight: 700; font-size: 1.25rem; line-height: 1; font-variant-numeric: tabular-nums lining-nums; }
+.gl-gate-t .gl-n[data-gate-n] { display: inline-block; min-width: 2ch; }
+.gl-fields { display: flex; gap: 5px; flex-basis: 100%; padding-left: 32px; }
+.gl-fields i { width: 10px; height: 10px; border: 1.5px solid var(--ink); border-radius: 1px; background: var(--ink-2); }
+
+html.js .gl-gate .bx path { stroke-dashoffset: 20; transition: stroke-dashoffset 420ms var(--eo); }
+html.js .gl-gate.in li:nth-child(1) .bx path { stroke-dashoffset: 0; transition-delay: 350ms; }
+html.js .gl-gate.in li:nth-child(2) .bx path { stroke-dashoffset: 0; transition-delay: 1900ms; }
+html.js .gl-gate.in li:nth-child(3) .bx path { stroke-dashoffset: 0; transition-delay: 3050ms; }
+html.js .gl-fields i { background: var(--enamel); transition: background-color 160ms ease calc(2050ms + var(--i) * 60ms); }
+html.js .gl-gate.in .gl-fields i { background: var(--ink-2); }
+
+/* ------------------------------------------------------------ August's audit */
+.gl-au { padding: clamp(16px, 1.8vw, 24px) clamp(16px, 1.8vw, 24px) clamp(16px, 1.8vw, 22px); }
+.gl-au-g { margin-top: clamp(18px, 2vw, 26px); display: grid; grid-template-columns: 42fr 32fr; column-gap: 3px; }
+.gl-au-cells { grid-column: 1 / -1; position: relative; display: grid; grid-template-columns: repeat(74, minmax(0, 1fr)); column-gap: 3px; height: 44px; }
+.gl-au-cells > :is(.is-y, .is-n) { position: relative; display: block; background: var(--ink); }
+.gl-au-cells > .is-n { background: var(--enamel); box-shadow: inset 0 0 0 1px var(--ink-3); }
+.gl-au-cells > .is-n::after { content: ""; position: absolute; left: -2px; right: -2px; top: 50%; height: 1.5px; margin-top: -0.75px; background: var(--ink); }
+.gl-au-pass { position: absolute; top: -8px; bottom: -8px; left: 0; width: 2px; margin-left: -1px; background: var(--ink); opacity: 0; pointer-events: none; }
+.gl-au-cells > .is-n:nth-child(74)::after { right: 0; }
+/* the brackets: 74 over the whole bar, 42 and 32 under their groups */
+.gl-au-all, .gl-au-y, .gl-au-n { position: relative; font-size: var(--fs-fine); line-height: 1.35; color: var(--ink-2); }
+.gl-au-all { grid-column: 1 / -1; padding: 0 0 14px; }
+.gl-au-y, .gl-au-n { padding-top: 14px; }
+.gl-au-y { grid-column: 1; padding-right: 12px; }
+.gl-au-n { grid-column: 2; }
+.gl-au-all::before, .gl-au-y::before, .gl-au-n::before { content: ""; position: absolute; left: 0; right: 0; height: 6px; border: 1px solid var(--ink-2); }
+.gl-au-all::before { bottom: 5px; border-bottom: 0; }
+.gl-au-y::before, .gl-au-n::before { top: 4px; border-top: 0; }
+.gl-au-y::before { right: 0; }
+.gl-au b { font-family: var(--f-cond); font-weight: 700; font-size: 1.1875rem; color: var(--ink); margin-right: 3px; }
+
+/* the second pass: a hairline crosses the candidates and each one resolves behind it */
+html.js .gl-au-cells > :is(.is-y, .is-n) { background: color-mix(in oklab, var(--ink-3) 30%, var(--enamel)); box-shadow: none; transition: background-color 260ms ease, box-shadow 260ms ease; transition-delay: calc(400ms + var(--i) * 22ms); }
+html.js .gl-au.in .gl-au-cells > .is-y { background: var(--ink); }
+html.js .gl-au.in .gl-au-cells > .is-n { background: var(--enamel); box-shadow: inset 0 0 0 1px var(--ink-3); }
+html.js .gl-au-cells > .is-n::after { transform: scaleX(0); transform-origin: left; transition: transform 200ms ease calc(460ms + var(--i) * 22ms); }
+html.js .gl-au.in .gl-au-cells > .is-n::after { transform: none; }
+html.js .gl-au.in .gl-au-pass { animation: gl-pass 1700ms linear 360ms both; }
+@keyframes gl-pass { 0% { left: 0; opacity: 1; } 94% { opacity: 1; } 100% { left: 100%; opacity: 0; } }
+html.js .gl-au-y, html.js .gl-au-n { opacity: 0; transition: opacity 600ms ease 2100ms; }
+html.js .gl-au.in .gl-au-y, html.js .gl-au.in .gl-au-n { opacity: 1; }
+
+/* ==========================================================================
+   Widths
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .gl-web-cap { grid-column: 1 / 3; }
+}
+
+@media (max-width: 760px) {
+  .case-line { margin-top: 22px; }
+  .gl-shelf { margin-top: 36px; }
+  .gl-devs { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--m); margin-inline: calc(-1 * var(--m)); padding: 0 var(--m) 6px; scrollbar-width: none; }
+  .gl-devs::-webkit-scrollbar { display: none; }
+  .gl-devs::before { display: none; }
+  .gl-dev { flex: 0 0 64%; scroll-snap-align: start; }
+  .gl-dev::before { display: none; }
+  .gl-slot { border-bottom: 1.5px solid var(--ink); }
+  .gl-cap { margin-top: 12px; padding-left: 0; }
+  .gl-web { margin-top: 48px; display: flex; flex-direction: column-reverse; align-items: stretch; }
+  .gl-web-cap { margin-top: 12px; padding: 0; font-size: var(--fs-fine); }
+  .gl-ruler { padding: 16px 12px 12px; }
+  .gl-sw { padding: 16px 12px 16px; }
+  .gl-card { height: 88px; padding: 0 12px; }
+  .gl-card-t { font-size: 1.1875rem; }
+  .gl-who th { width: 44%; }
+  .gl-au { padding: 16px 12px 14px; }
+  .gl-au-cells { column-gap: 1.5px; height: 40px; }
+  .gl-au-g { column-gap: 1.5px; }
+  .gl-au-cells > .is-n::after { left: -1px; right: -1px; }
+}
+
+/* ==========================================================================
+   Motion off: every figure in its final state
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html.js .gl-devs::before, html.js .gl-slot .phone { transform: none; transition: none; }
+  html.js .gl-cap, html.js .gl-dev::before { opacity: 1; transition: none; }
+  html.js .gr-t { transform: none; transition: none; }
+  html.js .gl-ruler.is-pre .gr-endg, html.js .gl-ruler.is-pre .gr-endl, html.js .gl-ruler.is-pre .gr-au:not(.on) { opacity: 1; }
+  html.js .gl-ruler.is-pre .gr-dash { stroke-dashoffset: 0; }
+  .wire, .term, .sw, .sw i, .gl-card, .gl-card-t, .gl-node, .gl-node-h b { transition: none; }
+  html.js .gl-sw:not(.in) .wire { stroke-dashoffset: 0; }
+  html.js .gl-sw:not(.in).gl-sw:not(.a-read) .wire-a, html.js .gl-sw:not(.in).gl-sw:not(.b-read) .wire-b { stroke-dashoffset: 228px; }
+  html.js .gl-sw:not(.in) .term { opacity: 0; }
+  html.js .gl-sw:not(.in):not(.a-read) .term-a, html.js .gl-sw:not(.in):not(.b-read) .term-b { opacity: 1; }
+  html.js .gl-who tr { opacity: 1; transform: none; transition: none; }
+  html.js .gl-gate .bx path { stroke-dashoffset: 0; transition: none; }
+  html.js .gl-fields i { background: var(--ink-2); transition: none; }
+  html.js .gl-au-cells > :is(.is-y, .is-n), html.js .gl-au-cells > .is-n::after { transition: none; }
+  html.js .gl-au-cells > .is-y { background: var(--ink); }
+  html.js .gl-au-cells > .is-n { background: var(--enamel); box-shadow: inset 0 0 0 1px var(--ink-3); }
+  html.js .gl-au-cells > .is-n::after { transform: none; }
+  html.js .gl-au.in .gl-au-pass { animation: none; }
+  html.js .gl-au-y, html.js .gl-au-n { opacity: 1; transition: none; }
+}
+
+@media print {
+  html.js .gl-slot .phone, html.js .gl-who tr { transform: none !important; opacity: 1 !important; }
+}
