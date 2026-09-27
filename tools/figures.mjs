@@ -47,6 +47,8 @@ const T = {
   levelNarrow: () => F.levelBars(boxing.level, 358),
   windowsWide: () => F.windowsGauge(boxing.windows, 1000),
   windowsNarrow: () => F.windowsGauge(boxing.windows, 358),
+  /* the home page's gauge starts on the page's own 1 line, so it has no label column */
+  windowsHome: () => F.windowsGauge(boxing.windows, 358, "-w"),
   zkWide: () => F.zacksField(257, 17),
   zkNarrow: () => F.zacksField(91, 48, 1),
   fanWide: () => F.zacksFan(257),

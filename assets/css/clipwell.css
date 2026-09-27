@@ -6,9 +6,9 @@
    The recording is the product, so it runs edge to edge like the bar does on
    screen. It comes up after the chord in its caption is pressed. */
 .cwc-hero { margin-top: clamp(28px, 2.7vw, 46px); }
-.cwc-bar { position: relative; width: 100%; max-width: 1760px; margin-inline: auto; aspect-ratio: 1600 / 286; background: #ADBBA9; overflow: hidden; box-shadow: 0 -1px 0 rgba(21, 20, 18, 0.1), 0 1px 0 rgba(21, 20, 18, 0.16), 0 44px 70px -48px rgba(21, 20, 18, 0.6); }
+.cwc-bar { position: relative; width: 100%; margin-inline: auto; aspect-ratio: 1600 / 286; background: #ADBBA9; overflow: hidden; box-shadow: 0 -1px 0 rgba(21, 20, 18, 0.1), 0 1px 0 rgba(21, 20, 18, 0.16), 0 44px 70px -48px rgba(21, 20, 18, 0.6); }
 .cwc-v { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; }
-@media (min-width: 1761px) { .cwc-bar { border-radius: 6px; } }
+@media (min-width: 1761px) { .cwc-bar { max-width: var(--frame); border-radius: 6px; } }
 
 .cwc-cap { margin-top: 12px; font-size: var(--fs-fine); line-height: 1.5; color: var(--ink-2); padding-right: min(30%, 30ch); }
 .cwc-keys { display: inline-flex; gap: 3px; margin-right: 4px; vertical-align: -0.1em; }
@@ -179,6 +179,7 @@ html.js .pw.in .pw-end { animation: pw-show 700ms ease 3700ms both; }
   .tw-d { width: min(100% - 40px, 400px); }
 }
 @media (max-width: 760px) {
+  .tw-svg.is-hist .cw-hi { font-size: 14px; }
   .cwc .case-line { margin-top: 20px; }
   .cwc-hero { margin-top: 30px; }
   .cwc-bar { aspect-ratio: auto; height: 188px; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none; }

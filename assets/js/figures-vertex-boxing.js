@@ -55,7 +55,7 @@
       s += '<rect x="' + pc(g0) + '" y="' + (yL - 6) + '" width="' + pc(g1 - g0) + '" height="' + (yU - yL + 12) + '" fill="url(#uw-h' + sfx + ')"/>';
       s += '<line class="uw-gl" x1="' + pc(g0) + '" x2="' + pc(g0) + '" y1="' + (yL - 6) + '" y2="' + (yU + 6) + '"/>';
       s += '<line class="uw-gl" x1="' + pc(g1) + '" x2="' + pc(g1) + '" y1="' + (yL - 6) + '" y2="' + (yU + 6) + '"/>';
-      s += '<text class="bx-ann" x="' + pc(g1) + '" dx="8" y="' + r2((yL + yU) / 2 + (wide ? 4 : -2)) + '">' + (wide ? "the intervals do not overlap" : "no overlap") + "</text>";
+      s += '<text class="bx-ann" x="' + pc(g1) + '" dx="8" y="' + r2((yL + yU) / 2 + (wide ? 4 : -12)) + '">' + (wide ? "the intervals do not overlap" : "no overlap") + "</text>";
       s += "</g>";
       rows.forEach(function (r, i) {
         var y = rowY(i), d = r.d;

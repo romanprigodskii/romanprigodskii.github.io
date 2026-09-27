@@ -9,6 +9,14 @@
 <meta name="robots" content="index,follow">
 <meta name="theme-color" content="#F3F2EE">
 <link rel="canonical" href="https://prigodskii.dev/plain/">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Roman Prigodskii, plain version">
+<meta property="og:description" content="A plain, printable record. Letovo School, Moscow Olympiad in Economics winner, four shipped systems, two sole-authored papers, one under review at a NeurIPS 2026 workshop.">
+<meta property="og:url" content="https://prigodskii.dev/plain/">
+<meta property="og:image" content="https://prigodskii.dev/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../assets/img/mark.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../assets/img/mark-180.png">
 <link rel="preload" href="../assets/fonts/barlow-condensed-800-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -367,10 +375,10 @@ h2 + .grp { padding-top: 16px; }
           <li>The best of the 84 reaches e = 151. One pre-registered hypothesis needs 20; all 84 at once need 1,680.</li>
           <li>The 84 slices overlap, so Benjamini-Hochberg&rsquo;s guarantee is not established. Its four discoveries on the 1,191-bout discovery window, one favourable and three against the model, survive neither Benjamini-Yekutieli nor e-BH.</li>
           <li>A segment written off at p = 0.30 is still growing on the wealth scale: not refuted, 100 bouts short at fair odds.</li>
-          <li>A threshold rule chosen after the fact is charged for the search it ran, the direction it could have searched and the bookmaker&rsquo;s margin: 31.28 falls to 10.43, and to 2.82 at the prices the book offered.</li>
+          <li>A threshold rule chosen after the fact clears 20 at 31.28 once the search it ran is paid for; charged for the direction it could have searched and the other disagreement statistic it could have used, it falls to 10.43, and at the prices the book offered to 2.82.</li>
           <li>Validated before use: 40,000 null replications give an expected e-value of 0.985 &plusmn; 0.018 per segment. The headline result is negative.</li>
         </ul>
-        <p class="src"><span><a href="../papers/evalues.pdf" data-p="prigodskii.dev/papers/evalues.pdf">The paper</a> <small>PDF, 258 KB</small></span><span><a href="../papers/newinml.pdf" data-p="prigodskii.dev/papers/newinml.pdf">Extended version</a> <small>PDF, 285 KB</small></span></p>
+        <p class="src"><span><a href="../papers/evalues.pdf" data-p="prigodskii.dev/papers/evalues.pdf">The paper</a> <small>PDF, 259 KB</small></span><span><a href="../papers/newinml.pdf" data-p="prigodskii.dev/papers/newinml.pdf">Extended version</a> <small>PDF, 287 KB</small></span></p>
       </div>
     </div>
     <div class="row">
@@ -384,7 +392,7 @@ h2 + .grp { padding-top: 16px; }
           <li>Recomputed on the 793-row pool where the project&rsquo;s one large win was measured, the floor is 0.0119 rather than 0.00362: the win is 4&times; its own floor, not 13&times; another pool&rsquo;s.</li>
           <li>The same test on a deployed LLM classifier: two identical reruns disagree on 5.6% of items, and the floor is 2.9 points of agreement.</li>
         </ul>
-        <p class="src"><span><a href="../papers/floors.pdf" data-p="prigodskii.dev/papers/floors.pdf">The paper</a> <small>PDF, 124 KB</small></span></p>
+        <p class="src"><span><a href="../papers/floors.pdf" data-p="prigodskii.dev/papers/floors.pdf">The paper</a> <small>PDF, 126 KB</small></span></p>
       </div>
     </div>
     <p class="grp">Before the papers</p>
@@ -462,7 +470,7 @@ h2 + .grp { padding-top: 16px; }
         <ul>
           <li>Cut by level, closing-line value rises from +0.0044 on four-to-six-round club fights to +0.0180 on twelve-round title fights. On a window the rule was never chosen on, the top gave 2.0 times the closing-line value of the bottom.</li>
           <li>Blended into the closing price at a weight of 0.17, the model improves its log-loss by +0.0043 nats [+0.0024, +0.0062] on 3,288 priced bouts. On its own it does not beat the closing line, and bets at the closing price make nothing.</li>
-          <li>At the opening price, a median three days before the fight, the blend moves the price 87% of the way to where it closes. Bet there and scored as e-values against a bar of 20, the rule passed on 2016&ndash;2020 (+18% to +24% flat, its protocol timestamped in Bitcoin blocks and pushed to GitHub before the model was trained), on 2023&ndash;2025 (+10.9% at Bet365) and on the January to July 2026 holdout, at <span class="hit">e = 41.8</span>. On 2021&ndash;2023 it fell short, at 12.5.</li>
+          <li>At the opening price, a median three days before the fight, the blend moves the price 87% of the way to where it closes. Bet there and scored as e-values against a bar of 20 (80 for 2023&ndash;2025, registered as one of four hypotheses), the rule passed on 2016&ndash;2020 (+18% to +24% flat, its protocol timestamped in Bitcoin blocks and pushed to GitHub before the model was trained), on 2023&ndash;2025 (+10.9% at Bet365) and on the January to July 2026 holdout, at <span class="hit">e = 41.8</span>. On 2021&ndash;2023 it fell short, at 12.5.</li>
           <li>A live test was frozen and pushed publicly on 24 September 2026, before any bout it covers had been fought: Bet365&rsquo;s opening price, one unit on every side where the blend beats it, no stake placed. It can be read at any checkpoint, rejects at 20 and closes on 25 September 2029. The result will be reported either way.</li>
           <li>Caught and removed a post-bell leak: judges&rsquo; scorecards are published only for fights that went the distance, so their mere presence told the model how a fight had ended. Where judges were recorded, 9.7% of fights ended early; where they were not, 74.3% did.</li>
           <li>A random search over 200 configurations, under a protocol committed before the first fit: none of the five taken forward kept its lead over the model in use on bouts the search never saw.</li>

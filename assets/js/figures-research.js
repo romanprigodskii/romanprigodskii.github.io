@@ -94,7 +94,7 @@
       s += wide ? '<text class="rs-cap" x="100%" dx="-6" y="' + r2(g.y(20) - 5) + '" text-anchor="end">20</text>'
         : '<text class="rs-cap" x="4" y="' + r2(g.y(20) - 5) + '">20</text>';
       s += '<text class="rs-cap" x="100%" dx="-6" y="' + (wide ? 12 : 10) + '" text-anchor="end">' + (wide ? "1,680, the bar for all 84 at once" : "1,680, for all 84") + '</text>';
-      s += '<text class="rs-ax" x="100%" dx="-6" y="' + (wide ? 40 : 29) + '" text-anchor="end">e after the margin</text>';
+      s += '<text class="rs-ax" x="100%" dx="-6" y="' + (wide ? 40 : 25) + '" text-anchor="end">e after the margin</text>';
       [100, 10, 1, 0.1, 0.01, 0.001].forEach(function (v) {
         s += '<text class="rs-yn" x="100%" dx="-6" y="' + r2(g.y(v) - 5) + '" text-anchor="end">' + F.fmtAxis(v) + "</text>";
       });

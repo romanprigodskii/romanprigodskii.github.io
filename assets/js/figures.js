@@ -124,7 +124,7 @@
       var x = pc(dx(t.v));
       s += '<line class="' + t.c + '" x1="' + x + '" x2="' + x + '" y1="' + (H - TLEN[t.c]) + '" y2="' + H + '"/>';
     });
-    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900].forEach(function (v) {
+    [1, 2, 3, 4, 5, 6, 7, 8, 10, 20, 30, 40, 50, 60, 70, 80, 100, 200, 300, 400, 500, 600, 700, 800].forEach(function (v) {
       var dec = v === 1 || v === 10 || v === 100;
       var major = /^[25]/.test(String(v));
       var cls = dec ? "nD" : v === 20 ? "nB" : major ? "nM" : "nS";
@@ -151,7 +151,7 @@
       s += '<line class="' + cls + '" x1="' + x + '" x2="' + x + '" y1="0" y2="' + TLEN[cls] + '"/>';
     }
     [1.5, 2.5].forEach(function (h) { s += '<line class="tu" x1="' + pc(cx(h)) + '" x2="' + pc(cx(h)) + '" y1="0" y2="' + TLEN.tu + '"/>'; });
-    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 84].forEach(function (k) {
+    [1, 2, 3, 4, 5, 6, 7, 8, 10, 15, 20, 30, 40, 84].forEach(function (k) {
       var cls = k === 1 || k === 10 ? "nD" : k === 84 ? "nE" : [2, 5, 20].indexOf(k) >= 0 ? "nM" : "nS";
       s += '<text class="' + cls + (k === 1 ? " is-first" : "") + '" x="' + pc(cx(k)) + '"' + (k === 84 ? ' dx="-34"' : "") + ' y="' + (k === 1 || k === 10 || k === 84 ? 44 : 38) + '">' + k + "</text>";
     });
@@ -163,7 +163,7 @@
      its e-value. Values under 0.01 are off this scale; on a wide page they
      stack in the margin left of the axis, on a phone they are a count. */
   function verdictLayout(rows, key, W) {
-    var wide = W > 700;
+    var wide = W > 700, pile = W > 1150;
     var r = wide ? 5.5 : 3.4, gap = wide ? 1.8 : 1.2, d = 2 * r + gap;
     var pts = rows.map(function (row, i) { return { i: i, v: row[key] }; });
     var on = pts.filter(function (p) { return p.v > GRID.lo; }).sort(function (a, b) { return a.v - b.v; });
@@ -181,12 +181,12 @@
     var cols = 3;
     off.forEach(function (p, j) {
       p.off = true;
-      if (wide) { p.x = -(r + 4) - (j % cols) * d; p.lv = Math.floor(j / cols); }
+      if (pile) { p.x = -(r + 4) - (j % cols) * d; p.lv = Math.floor(j / cols); }
       else { p.x = -1000; p.lv = 0; }           // counted, not drawn
     });
     var maxLv = 0;
-    pts.forEach(function (p) { if (!p.off || wide) maxLv = Math.max(maxLv, p.lv); });
-    return { pts: pts, r: r, d: d, maxLv: maxLv, nOff: off.length, wide: wide };
+    pts.forEach(function (p) { if (!p.off || pile) maxLv = Math.max(maxLv, p.lv); });
+    return { pts: pts, r: r, d: d, maxLv: maxLv, nOff: off.length, wide: wide, pile: pile };
   }
 
   /* opts.bar: 20 (one hypothesis) or 1680 (all 84 at once) */
@@ -197,7 +197,7 @@
     var lay = verdictLayout(rows, key, W);
     var other = verdictLayout(rows, key === "ef" ? "er" : "ef", W);
     var top = 62, stackH = (Math.max(lay.maxLv, other.maxLv) + 1) * lay.d + 8;
-    var y0 = top + stackH, H = y0 + (lay.wide ? 54 : 60), wide = lay.wide;
+    var y0 = top + stackH, H = y0 + (lay.pile ? 54 : 60), wide = lay.wide;
     var best = 0;
     rows.forEach(function (r) { if (r[key] > best) best = r[key]; });
     var s = '<svg class="vd-svg" viewBox="0 0 ' + r2(W) + " " + H + '" width="100%" height="' + H + '" data-y0="' + y0 + '" data-w="' + r2(W) + '" overflow="visible" role="img" aria-labelledby="vd-t' + sfx + ' vd-d' + sfx + '">' +
@@ -234,7 +234,7 @@
     s += '<text class="vd-n is-bar" x="' + x20 + '" y="' + (y0 + 28) + '">20</text>';
     s += '<text class="vd-n is-bar is-end" x="' + r2(W) + '" y="' + (y0 + 28) + '">1,680</text>';
     if (lay.nOff) {
-      if (wide) s += '<text class="vd-off" x="-4" y="' + (y0 + 22) + '">under</text><text class="vd-off" x="-4" y="' + (y0 + 36) + '">0.01</text>';
+      if (lay.pile) s += '<text class="vd-off" x="-4" y="' + (y0 + 22) + '">under</text><text class="vd-off" x="-4" y="' + (y0 + 36) + '">0.01</text>';
       else s += '<text class="vd-off is-count" x="0" y="' + (y0 + 46) + '">← ' + lay.nOff + " more under 0.01, off the scale</text>";
     }
     // captions on the two bars
@@ -248,7 +248,7 @@
     }
     s += '<g class="vd-dots">';
     lay.pts.forEach(function (p) {
-      if (p.off && !wide) return;
+      if (p.off && !lay.pile) return;
       var y = y0 - lay.r - 1.5 - p.lv * lay.d;
       var hit = rows[p.i][key] >= bar ? " is-hit" : "";
       s += '<circle class="vd-dot' + hit + (p.off ? " is-off" : "") + '" data-i="' + p.i + '" cx="' + r2(p.x) + '" cy="' + r2(y) + '" r="' + lay.r + '"/>';
@@ -264,7 +264,7 @@
     sfx = sfx || "";
     var wide = W > 700;
     var lo = -0.006, hi = 0.006;
-    var padL = wide ? 0.25 : 0.02, padR = wide ? 0.03 : 0.02;
+    var padL = wide ? 0.30 : 0.02, padR = wide ? 0.03 : 0.02;
     function fx(v) { return padL + (v - lo) / (hi - lo) * (1 - padL - padR); }
     var rows = [
       { key: "null", label: wide ? "Ten re-seeds of the same recipe, which change nothing" : "Ten re-seeds, which change nothing" },
@@ -275,7 +275,7 @@
     var rowH = wide ? 42 : 60, top = wide ? 34 : 44, axisY = top + rows.length * rowH + 6, H = axisY + 48;
     var s = '<svg class="fl-svg" width="100%" height="' + H + '" role="img" aria-labelledby="fl-t' + sfx + ' fl-d' + sfx + '">' +
       '<title id="fl-t' + sfx + '">Everything measured on the main pool, against the detection floor</title>' +
-      '<desc id="fl-d' + sfx + '">Change in out-of-fold log-loss in nats, negative is better, from minus 0.006 to 0.006. The detection floor is plus or minus 0.00362. Ten re-seeds of an unchanged recipe produce effects up to 0.00207. The only change the winner model shipped is worth 0.0026, and the largest re-seed is 80% of it. Every mark lies inside the floor.</desc>' +
+      '<desc id="fl-d' + sfx + '">Change in out-of-fold log-loss in nats, negative is better, from minus 0.006 to 0.006. The detection floor is plus or minus 0.00362. Ten re-seeds of an unchanged recipe produce effects up to 0.00207. The only change the winner model shipped is worth 0.0026, and the largest re-seed is 80% of it. Every mark lies inside the floor. The arrow keys step through the marks.</desc>' +
       '<defs><pattern id="fl-h' + sfx + '" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" class="fl-hl"/></pattern></defs>';
     var b0 = fx(-F.mde), b1 = fx(F.mde);
     s += '<rect class="fl-band" fill="url(#fl-h' + sfx + ')" x="' + pc(b0) + '" y="' + (top - 18) + '" width="' + pc(b1 - b0) + '" height="' + (axisY - top + 18) + '"/>';
@@ -379,7 +379,7 @@
     var rowH = wide ? 58 : 76, top = 30, H = top + rows.length * rowH + 34;
     var s = '<svg class="wg-svg" width="100%" height="' + H + '" role="img" aria-labelledby="wg-t' + sfx + ' wg-d' + sfx + '">' +
       '<title id="wg-t' + sfx + '">Four betting windows at the opening price, scored as e-values</title>' +
-      '<desc id="wg-d' + sfx + '">' + rows.map(function (r) { return r.when + ", " + fmtInt(r.bouts) + " bouts, " + r.how + ": e = " + r.label.replace("^", " to the ") + (r.e >= bar ? ", past the bar of 20" : ", short of the bar of 20"); }).join(". ") + ".</desc>";
+      '<desc id="wg-d' + sfx + '">' + rows.map(function (r) { return r.when + ", " + fmtInt(r.bouts) + " bouts, " + r.how + ": e = " + r.label.replace("^", " to the ") + (r.e >= bar ? ", past the bar of 20" : ", short of the bar of 20") + (r.fixed === "local" ? " (registered as one of four hypotheses, with a bar of 80)" : ""); }).join(". ") + ".</desc>";
     // the scale: 1 .. 1,680 of the page grid
     gridValues().forEach(function (g) {
       if (g.v < 1) return;

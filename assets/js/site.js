@@ -110,6 +110,11 @@
   var body = $("[data-rule-body]");
   if (body && F) (function () {
     var slide = $("[data-slide]"), cur = $("[data-cursor]");
+    cur.setAttribute("role", "slider");
+    cur.tabIndex = 0;
+    cur.setAttribute("aria-label", "Hypotheses tested at once");
+    cur.setAttribute("aria-valuemin", "1");
+    cur.setAttribute("aria-valuemax", "84");
     var roK = $("[data-ro-k]"), roD = $("[data-ro-d]"), roA = $("[data-ro-a]");
     var D20 = F.dx(20), SLIDE_W = F.dx(84);
     var st = { k: 84, pos: 1, stop: null, busy: false };
@@ -137,29 +142,40 @@
     function intro() {
       if (still()) return;
       st.busy = true;
+      var h = st.intro = [];
       setSlide(1); setCursor(0); show(1, 1);
-      later(900, function () {
-        tween(820, EIO, function (e) {
+      h.push(later(900, function () {
+        h.push(tween(820, EIO, function (e) {
           var a = Math.pow(20, e);
           setSlide(a); setCursor(F.dx(a)); show(Math.round(a), 1);
         }, function () {
-          later(140, function () {
-            tween(1000, EIO, function (e) {
+          h.push(later(140, function () {
+            h.push(tween(1000, EIO, function (e) {
               var f = D20 + (1 - D20) * e;
               setCursor(f);
               show(20, Math.max(1, Math.round(fracToK(f))));
-            }, function () { st.busy = false; setK(84, false); });
-          });
-        });
-      });
+            }, function () { st.busy = false; setK(84, false); }));
+          }));
+        }));
+      }));
     }
+    /* a visitor who reaches for the rule while it is still setting itself takes it over */
+    function skipIntro() {
+      if (!st.busy) return;
+      (st.intro || []).forEach(function (x) { if (typeof x === "function") x(); else clearTimeout(x); });
+      st.busy = false;
+      setSlide(20);
+      setK(84, false);
+    }
+    cur.addEventListener("focus", skipIntro);
     function kFromEvent(ev) {
       var r = body.getBoundingClientRect();
       return fracToK(Math.max(D20, Math.min(1, (ev.clientX - r.left) / r.width)));
     }
     var dragging = false;
     body.addEventListener("pointerdown", function (ev) {
-      if (st.busy || ev.button !== 0) return;
+      if (ev.button !== 0) return;
+      skipIntro();
       dragging = true;
       cur.classList.add("is-drag");
       try { body.setPointerCapture(ev.pointerId); } catch (e) {}
@@ -174,7 +190,7 @@
     body.addEventListener("pointerup", endDrag);
     body.addEventListener("pointercancel", endDrag);
     cur.addEventListener("keydown", function (ev) {
-      if (st.busy) return;
+      skipIntro();
       var k = st.k, map = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1, PageUp: 10, PageDown: -10 };
       if (ev.key in map) k += map[ev.key];
       else if (ev.key === "Home") k = 1;
@@ -210,7 +226,9 @@
       needles = $$(".wg-needle", wg).map(function (n) {
         var svg = n.ownerSVGElement, W = svg.getBoundingClientRect().width;
         var f = parseFloat(n.getAttribute("data-f")), e = parseFloat(n.getAttribute("data-e"));
-        var x0 = F.gaugeX(1, W) * W, x = f * W, xbar = F.gaugeX(20, W) * W;
+        var g1 = svg.querySelector(".wg-g.g1"), gb = svg.querySelector(".wg-bar");
+        var x0 = (g1 ? parseFloat(g1.getAttribute("x1")) / 100 : F.gaugeX(1, W)) * W, x = f * W;
+        var xbar = (gb ? parseFloat(gb.getAttribute("x1")) / 100 : F.gaugeX(20, W)) * W;
         var g = n.querySelector(".wg-ng");
         g.setAttribute("transform", "translate(" + (x0 - x) + ",0)");
         n.classList.remove("is-hit");
@@ -232,12 +250,31 @@
     });
   })();
 
-  /* ------------------------------------------------ videos play only while they are seen */
+  /* ------------------------------------------------ videos play only while they are seen,
+     and each has its own pause */
+  $$("video[data-play]").forEach(function (v) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "vid-toggle";
+    function set(held) {
+      v.dataset.held = held ? "1" : "";
+      b.textContent = held ? "Play" : "Pause";
+      b.setAttribute("aria-label", (held ? "Play" : "Pause") + " the video");
+    }
+    function toggle() {
+      if (v.paused) { set(false); var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+      else { set(true); v.pause(); }
+    }
+    set(still());
+    v.insertAdjacentElement("afterend", b);
+    b.addEventListener("click", toggle);
+    v.addEventListener("click", toggle);
+  });
   if (io) {
     var vio = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
         var v = e.target;
-        if (e.isIntersecting && !still()) {
+        if (e.isIntersecting && !still() && !v.dataset.held) {
           if (v.preload !== "auto") v.preload = "auto";
           var p = v.play();
           if (p && p.catch) p.catch(function () {});
@@ -267,8 +304,12 @@
     a.addEventListener("click", function () {
       copyText(a.getAttribute("data-copy-mail"), function () {
         if (!flag) return;
+        flag.textContent = "Copied";
         flag.classList.add("is-on");
-        later(2200, function () { flag.classList.remove("is-on"); });
+        later(2200, function () {
+          flag.classList.remove("is-on");
+          later(340, function () { if (!flag.classList.contains("is-on")) flag.textContent = ""; });
+        });
       });
     });
   });
@@ -431,6 +472,7 @@
       p.el.classList.add("is-on");
       g.classList.add("has-on");
       g.appendChild(p.el);
+      tip.hidden = false;
       tip.innerHTML = "<b>" + sliceName(row.s) + "</b><span class=\"t-fam\">" + FAM[row.f] + ", " + F.fmtInt(row.n) + " bouts</span>" +
         "<span class=\"t-e\">e = " + F.fmtE(row.ef) + " at fair odds, " + F.fmtE(row.er) + " after the margin</span>";
       tip.hidden = false;
@@ -464,18 +506,38 @@
   $$("[data-fl]").forEach(function (fl) {
     var ftip = $("[data-fl-tip]", fl);
     if (!ftip) return;
-    fl.addEventListener("pointerover", function (ev) {
-      var m = ev.target.closest && ev.target.closest("[data-tip]");
-      if (!m) return;
+    function show(m) {
       ftip.textContent = m.getAttribute("data-tip");
       ftip.hidden = false;
       var r = m.getBoundingClientRect(), fr = fl.getBoundingClientRect();
       ftip.style.left = Math.max(0, Math.min(fr.width - ftip.offsetWidth, r.left - fr.left + r.width / 2 - ftip.offsetWidth / 2)) + "px";
       ftip.style.top = (r.top - fr.top - ftip.offsetHeight - 10) + "px";
+    }
+    fl.addEventListener("pointerover", function (ev) {
+      var m = ev.target.closest && ev.target.closest("[data-tip]");
+      if (m) show(m);
     });
     fl.addEventListener("pointerout", function (ev) {
       var m = ev.target.closest && ev.target.closest("[data-tip]");
       if (m) ftip.hidden = true;
+    });
+    $$(".fl-svg", fl).forEach(function (svg) {
+      svg.setAttribute("tabindex", "0");
+      var at = -1, marks = null;
+      function list() {
+        return marks || (marks = $$("[data-tip]", svg).sort(function (a, b) { return a.getBoundingClientRect().left - b.getBoundingClientRect().left; }));
+      }
+      svg.addEventListener("keydown", function (ev) {
+        var m = list();
+        if (ev.key === "ArrowRight" || ev.key === "ArrowUp") at = Math.min(m.length - 1, at + 1);
+        else if (ev.key === "ArrowLeft" || ev.key === "ArrowDown") at = at < 0 ? m.length - 1 : Math.max(0, at - 1);
+        else if (ev.key === "Escape") { at = -1; ftip.hidden = true; return; }
+        else return;
+        ev.preventDefault();
+        show(m[at]);
+      });
+      svg.addEventListener("blur", function () { at = -1; ftip.hidden = true; });
+      window.addEventListener("resize", function () { marks = null; });
     });
   });
 

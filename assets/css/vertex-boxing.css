@@ -126,6 +126,7 @@ html.js .bx-ko.in .ko-v { opacity: 1; }
 .bx-reg td b { display: block; font-family: var(--f-cond); font-weight: 600; font-size: 1.375rem; line-height: 1.1; color: var(--ink); margin-bottom: 2px; font-variant-numeric: tabular-nums lining-nums; }
 .bx-reg td b.is-hit { color: var(--signal-t); }
 .bx-reg sup { font-size: 0.62em; }
+.bx-reg td > sup { font-size: 0.75em; }
 html.js .bx-reg tbody tr { opacity: 0; transform: translateY(10px); transition: opacity 700ms var(--eo), transform 900ms var(--eo); transition-delay: calc(var(--r) * 90ms); }
 html.js .bx-reg.in tbody tr { opacity: 1; transform: none; }
 .bx-after { margin-top: clamp(26px, 2.8vw, 40px); }
@@ -228,6 +229,8 @@ html.js .bx-lt.in .lt-never, html.js .bx-lt.in .lt-na, html.js .bx-lt.in .lt-say
    Widths
    ========================================================================== */
 @media (max-width: 1100px) {
+  .bx .chapter-b .bx-fig .fl-wide, .bx .chapter-b .bx-strip .fl-wide { display: none; }
+  .bx .chapter-b .bx-fig .fl-narrow, .bx .chapter-b .bx-strip .fl-narrow { display: block; }
   .bx-se-t { grid-column: 3 / 6; }
   .bx-se-f { grid-column: 3 / 6; margin-top: 30px; max-width: 420px; }
 }
