@@ -31,18 +31,18 @@ node tools/figures.mjs    # re-render the figures into the pages
 ```
 index.html                 the front page
 work/<slug>/index.html     one page per project
-research/index.html        both papers, and two school projects
+research/index.html        both papers, and three school projects
 plain/index.html           the printable version, self-contained
 404.html
-assets/css/site.css        tokens, grid, type, every shared component
+assets/css/site.css        tokens, type, every shared component and frame
 assets/css/*.css           page-specific additions
 assets/js/figures.js       figure renderers (browser and node)
 assets/js/figures-*.js     page-specific renderers, loaded by tools/figures.mjs
 assets/js/site.js          behaviour: reveals, the slide rule, the interactive figures
 assets/js/*.js             page-specific behaviour
 assets/data/               audit.json (generated), boxing.json (from the report)
-assets/fonts/              Barlow and Barlow Condensed, self-hosted (OFL)
-assets/img/, assets/video/ product screenshots and short loops
+assets/fonts/              Mona Sans, self-hosted (OFL)
+assets/img/, assets/video/ posters, screenshots, and loops recorded from the products
 papers/                    the PDFs
 tools/figures.mjs          writes the figures into the pages
 tools/build_data.py        regenerates audit.json
@@ -59,6 +59,9 @@ final state and the page is complete.
 ```bash
 python3 -m http.server 8777
 ```
+
+`http.server` does not answer byte-range requests, which Safari needs to play
+video at all and Chrome needs to seek; nginx on the server answers them.
 
 ## Deploying
 
