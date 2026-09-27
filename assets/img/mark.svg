@@ -1,9 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Three descending bars crossing a threshold line">
-  <rect width="64" height="64" rx="12" fill="#161e14"/>
-  <path d="M6 30h52" stroke="#81ef76" stroke-width="3" stroke-linecap="round" stroke-dasharray="5 5"/>
-  <g fill="#f2eedf">
-    <rect x="12" y="14" width="10" height="38" rx="2"/>
-    <rect x="27" y="33" width="10" height="19" rx="2"/>
-    <rect x="42" y="39" width="10" height="13" rx="2"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+<!-- prigodskii.dev. The page's own paper in miniature: hairlines at m x 10^k on the
+     e-value axis from 1 to 1,680, the bar at 20 in ink, and one reading past it in
+     the signal colour. The ink and vermilion edges sit on the 16px pixel grid.
+     assets/img/mark-180.png is this file drawn at 160px on a 180px paper square. -->
+<title>Roman Prigodskii</title>
+<rect width="32" height="32" rx="6" fill="#F3F2EE"/>
+<path fill="#DDDBD4" d="M7.3 6h0.5v18h-0.5zM8.23 6h0.5v18h-0.5zM9.54 6h0.5v18h-0.5zM10.04 6h0.5v18h-0.5zM10.47 6h0.5v18h-0.5zM10.85 6h0.5v18h-0.5zM14.74 6h0.5v18h-0.5zM15.67 6h0.5v18h-0.5zM16.98 6h0.5v18h-0.5zM17.48 6h0.5v18h-0.5zM17.91 6h0.5v18h-0.5zM18.29 6h0.5v18h-0.5zM22.18 6h0.5v18h-0.5zM23.11 6h0.5v18h-0.5zM24.42 6h0.5v18h-0.5zM24.92 6h0.5v18h-0.5zM25.35 6h0.5v18h-0.5zM25.73 6h0.5v18h-0.5z"/>
+<path fill="#CBC8C0" d="M5.99 6h0.5v18h-0.5zM8.95 6h0.5v18h-0.5zM16.39 6h0.5v18h-0.5zM20.87 6h0.5v18h-0.5zM23.83 6h0.5v18h-0.5z"/>
+<path fill="#ABA89F" d="M4 6h0.5v18h-0.5zM11.19 6h0.5v18h-0.5zM18.63 6h0.5v18h-0.5zM26.07 6h0.5v18h-0.5zM27.5 6h0.5v18h-0.5z"/>
+<path fill="#151412" d="M4 24h24v2H4zM12 6h4v18h-4z"/>
+<path fill="#E0401C" d="M22 13h2v11h-2zM19 10h8l-4 6z"/>
 </svg>
