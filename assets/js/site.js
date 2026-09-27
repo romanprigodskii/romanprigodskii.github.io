@@ -1,202 +1,483 @@
-(function (w, d) {
+/* prigodskii.dev: behaviour.
+   Everything here enhances markup that already reads correctly without it:
+   the figures are pre-rendered into the HTML (tools/figures.mjs), and with
+   JavaScript off or motion reduced every figure sits in its final state. */
+(function () {
   "use strict";
-  var root = d.documentElement;
-  root.classList.add("js");
+  window.__rp = true;
+  var F = window.Fig;
+  var doc = document.documentElement;
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  function still() { return reduce.matches; }
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  var base = document.body.getAttribute("data-base") || "";
 
-  var charts = {};
-  var reduced = w.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var base = d.body.dataset.base || "";
-
-  function all(sel, ctx) { return Array.prototype.slice.call((ctx || d).querySelectorAll(sel)); }
-  function docTop(el) { return el.getBoundingClientRect().top + w.scrollY; }
-  function onMeasure(fn) { if (w.rpOnMeasure) w.rpOnMeasure(fn); else { fn(); w.addEventListener("resize", fn, { passive: true }); w.addEventListener("load", fn); } }
-  function onScroll(fn) {
-    if (w.rpOnScroll) { w.rpOnScroll(fn); return; }
-    var q = false;
-    var run = function () { q = false; fn(w.scrollY, w.innerHeight); };
-    w.addEventListener("scroll", function () { if (!q) { q = true; w.requestAnimationFrame(run); } }, { passive: true });
-    w.addEventListener("resize", run, { passive: true });
-    run();
+  /* ------------------------------------------------ easing and a small tween */
+  function bezier(x1, y1, x2, y2) {
+    function a(p1, p2) { return 1 - 3 * p2 + 3 * p1; }
+    function b(p1, p2) { return 3 * p2 - 6 * p1; }
+    function c(p1) { return 3 * p1; }
+    function at(t, p1, p2) { return ((a(p1, p2) * t + b(p1, p2)) * t + c(p1)) * t; }
+    function slope(t, p1, p2) { return 3 * a(p1, p2) * t * t + 2 * b(p1, p2) * t + c(p1); }
+    return function (x) {
+      if (x <= 0) return 0;
+      if (x >= 1) return 1;
+      var t = x;
+      for (var i = 0; i < 8; i++) {
+        var s = slope(t, x1, x2);
+        if (Math.abs(s) < 1e-6) break;
+        t -= (at(t, x1, x2) - x) / s;
+      }
+      return at(Math.min(1, Math.max(0, t)), y1, y2);
+    };
   }
-
-  /* ---------- bars fill, shared with the motion layer ---------- */
-  w.rpFillBars = function (scope) {
-    if (!scope || !scope.querySelectorAll) return;
-    all("[data-w]", scope).forEach(function (n) {
-      if (n.dataset.filled) return;
-      n.dataset.filled = "1";
-      w.requestAnimationFrame(function () { n.style.width = n.dataset.w; });
-    });
-  };
-
-  /* ---------- theme ----------
-     The switch is instant: every colour changes in the same frame, the
-     canvas re-reads its colours in that frame too, and nothing is left
-     half-way through a transition. Where the browser can, a short
-     cross-fade covers the cut. */
-  var swap = d.getElementById("themeswap");
-  function setTheme(name) {
-    root.classList.add("theme-cut");
-    root.dataset.theme = name;
-    if (swap) swap.setAttribute("aria-pressed", name === "paper" ? "true" : "false");
-    var meta = d.querySelector('meta[name="theme-color"]');
-    if (meta) {
-      var c = getComputedStyle(root).getPropertyValue(name === "paper" ? "--p-theme-paper" : "--p-theme").trim();
-      if (c) meta.setAttribute("content", c);
+  var EO = bezier(0.16, 1, 0.3, 1), EIO = bezier(0.77, 0, 0.175, 1);
+  function tween(ms, ease, step, done) {
+    var t0 = null, stop = false;
+    function f(now) {
+      if (stop) return;
+      if (t0 === null) t0 = now;
+      var p = Math.min(1, (now - t0) / ms);
+      step(ease(p), p);
+      if (p < 1) requestAnimationFrame(f); else if (done) done();
     }
-    if (charts.field && charts.field.redraw) charts.field.redraw();
-    w.requestAnimationFrame(function () {
-      w.requestAnimationFrame(function () { root.classList.remove("theme-cut"); });
+    requestAnimationFrame(f);
+    return function () { stop = true; };
+  }
+  function later(ms, fn) { return setTimeout(fn, ms); }
+
+  /* ------------------------------------------------ reveal on scroll */
+  var io = "IntersectionObserver" in window ? new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add("in");
+      io.unobserve(e.target);
+      if (e.target.__onIn) e.target.__onIn();
+    });
+  }, { rootMargin: "0px 0px -10% 0px", threshold: 0.01 }) : null;
+  function watch(el, fn) {
+    if (!el) return;
+    if (fn) el.__onIn = fn;
+    if (io) io.observe(el); else { el.classList.add("in"); if (fn) fn(); }
+  }
+  $$("[data-rv], .edge, .sec-t, [data-shot], .ar-strip, .gl-phones, [data-fl], [data-lv], [data-zk], .thesis, .vs, .contact, [data-watch]").forEach(function (el) { watch(el); });
+  $$(".vs td.is-won").forEach(function (td, i) { td.style.setProperty("--r", i); });
+
+  /* ------------------------------------------------ the bar */
+  var bar = $("[data-bar]"), nameEl = $("#name");
+  function onScrollBar() {
+    if (!bar) return;
+    if (nameEl) bar.classList.toggle("is-on", nameEl.getBoundingClientRect().bottom < 64);
+    else bar.classList.toggle("is-on", window.scrollY > 8);
+  }
+  window.addEventListener("scroll", onScrollBar, { passive: true });
+  onScrollBar();
+  var navLinks = $$(".bar-nav a[href^='#']");
+  if (navLinks.length && io) {
+    var spy = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        navLinks.forEach(function (a) {
+          if (a.getAttribute("href") === "#" + e.target.id) a.setAttribute("aria-current", "location");
+          else a.removeAttribute("aria-current");
+        });
+      });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    $$("section[id]").forEach(function (s) { spy.observe(s); });
+  }
+
+  /* ------------------------------------------------ the name, machined to the frame */
+  var nameT = $(".name-t"), nameB = $(".name-b");
+  function textWidth(el) { var r = document.createRange(); r.selectNodeContents(el); return r.getBoundingClientRect().width; }
+  function fitName() {
+    if (!nameEl) return;
+    nameEl.style.fontSize = "";
+    var frame = nameEl.parentElement.getBoundingClientRect().width;
+    var narrow = window.innerWidth <= 760;
+    var w = textWidth(narrow ? nameB : nameT);
+    if (!w) return;
+    var fs = parseFloat(getComputedStyle(nameEl).fontSize);
+    var next = fs * (frame + fs * 0.035) / w;
+    nameEl.style.fontSize = Math.floor(next * 10) / 10 + "px";
+  }
+  if (nameEl) {
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitName);
+    fitName();
+  }
+
+  /* ------------------------------------------------ the slide rule */
+  var body = $("[data-rule-body]");
+  if (body && F) (function () {
+    var slide = $("[data-slide]"), cur = $("[data-cursor]");
+    var roK = $("[data-ro-k]"), roD = $("[data-ro-d]"), roA = $("[data-ro-a]");
+    var D20 = F.dx(20), SLIDE_W = F.dx(84);
+    var st = { k: 84, pos: 1, stop: null, busy: false };
+    function setSlide(a) { slide.style.transform = "translateX(" + (F.dx(a) / SLIDE_W * 100) + "%)"; }
+    function setCursor(f) {
+      cur.style.setProperty("--cx", (f * 100) + "%");
+      st.pos = f;
+      if (f > 0.985) body.setAttribute("data-at-end", ""); else body.removeAttribute("data-at-end");
+    }
+    function show(a, k) { roA.textContent = F.fmtInt(a); roK.textContent = F.fmtInt(k); roD.textContent = F.fmtInt(a * k); }
+    function kToFrac(k) { return F.dx(20 * k); }
+    function fracToK(f) { return Math.pow(10, f * Math.log(1680) / Math.LN10) / 20; }
+    function setK(k, animate) {
+      k = Math.max(1, Math.min(84, Math.round(k)));
+      st.k = k;
+      cur.setAttribute("aria-valuenow", k);
+      cur.setAttribute("aria-valuetext", "20 times " + k + " is " + F.fmtInt(20 * k) + (k === 1 ? ": the bar for one hypothesis" : ": the bar for " + k + " hypotheses at once"));
+      show(20, k);
+      var to = kToFrac(k);
+      if (st.stop) st.stop();
+      if (!animate || still()) { setCursor(to); return; }
+      var from = st.pos;
+      st.stop = tween(180, EO, function (e) { setCursor(from + (to - from) * e); });
+    }
+    function intro() {
+      if (still()) return;
+      st.busy = true;
+      setSlide(1); setCursor(0); show(1, 1);
+      later(900, function () {
+        tween(820, EIO, function (e) {
+          var a = Math.pow(20, e);
+          setSlide(a); setCursor(F.dx(a)); show(Math.round(a), 1);
+        }, function () {
+          later(140, function () {
+            tween(1000, EIO, function (e) {
+              var f = D20 + (1 - D20) * e;
+              setCursor(f);
+              show(20, Math.max(1, Math.round(fracToK(f))));
+            }, function () { st.busy = false; setK(84, false); });
+          });
+        });
+      });
+    }
+    function kFromEvent(ev) {
+      var r = body.getBoundingClientRect();
+      return fracToK(Math.max(D20, Math.min(1, (ev.clientX - r.left) / r.width)));
+    }
+    var dragging = false;
+    body.addEventListener("pointerdown", function (ev) {
+      if (st.busy || ev.button !== 0) return;
+      dragging = true;
+      cur.classList.add("is-drag");
+      try { body.setPointerCapture(ev.pointerId); } catch (e) {}
+      setK(kFromEvent(ev), true);
+    });
+    body.addEventListener("pointermove", function (ev) {
+      if (!dragging) return;
+      var k = Math.round(kFromEvent(ev));
+      if (k !== st.k) setK(k, true);
+    });
+    function endDrag() { dragging = false; cur.classList.remove("is-drag"); }
+    body.addEventListener("pointerup", endDrag);
+    body.addEventListener("pointercancel", endDrag);
+    cur.addEventListener("keydown", function (ev) {
+      if (st.busy) return;
+      var k = st.k, map = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1, PageUp: 10, PageDown: -10 };
+      if (ev.key in map) k += map[ev.key];
+      else if (ev.key === "Home") k = 1;
+      else if (ev.key === "End") k = 84;
+      else return;
+      ev.preventDefault();
+      setK(k, false);
+    });
+    setK(84, false);
+    intro();
+  })();
+
+  /* ------------------------------------------------ Vertex MMA: the AUC needle */
+  var auc = $("[data-auc]");
+  if (auc) {
+    var needle = $("[data-auc-needle]", auc), aucV = $("[data-auc-v]", auc);
+    var P = parseFloat(needle.style.getPropertyValue("--p")) || 44.88;
+    if (!still()) { needle.style.setProperty("--p", "0%"); aucV.textContent = "0.5000"; }
+    watch(auc, function () {
+      if (still()) return;
+      tween(1700, EO, function (e) {
+        needle.style.setProperty("--p", (P * e) + "%");
+        aucV.textContent = (0.5 + (0.7244 - 0.5) * e).toFixed(4);
+      });
     });
   }
-  setTheme(root.dataset.theme === "paper" ? "paper" : "slate");
-  if (swap) {
-    swap.addEventListener("click", function () {
-      var next = root.dataset.theme === "paper" ? "slate" : "paper";
-      if (d.startViewTransition && !reduced) d.startViewTransition(function () { setTheme(next); });
-      else setTheme(next);
-      try { localStorage.setItem("rp-theme", next); } catch (e) {}
+
+  /* ------------------------------------------------ Vertex Boxing: four needles against the bar */
+  var wg = $("[data-wg]");
+  if (wg && F) (function () {
+    var needles = [];
+    function prep() {
+      needles = $$(".wg-needle", wg).map(function (n) {
+        var svg = n.ownerSVGElement, W = svg.getBoundingClientRect().width;
+        var f = parseFloat(n.getAttribute("data-f")), e = parseFloat(n.getAttribute("data-e"));
+        var x0 = F.gaugeX(1, W) * W, x = f * W, xbar = F.gaugeX(20, W) * W;
+        var g = n.querySelector(".wg-ng");
+        g.setAttribute("transform", "translate(" + (x0 - x) + ",0)");
+        n.classList.remove("is-hit");
+        return { n: n, g: g, x0: x0, x: x, xbar: xbar, hit: e >= 20 };
+      });
+    }
+    if (still()) return;
+    prep();
+    watch(wg, function () {
+      needles.forEach(function (o, i) {
+        later(i * 150, function () {
+          tween(1500, EO, function (e) {
+            var x = o.x0 + (o.x - o.x0) * e;
+            o.g.setAttribute("transform", "translate(" + (x - o.x) + ",0)");
+            if (o.hit && x >= o.xbar - 0.5) o.n.classList.add("is-hit");
+          });
+        });
+      });
     });
+  })();
+
+  /* ------------------------------------------------ videos play only while they are seen */
+  if (io) {
+    var vio = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var v = e.target;
+        if (e.isIntersecting && !still()) {
+          if (v.preload !== "auto") v.preload = "auto";
+          var p = v.play();
+          if (p && p.catch) p.catch(function () {});
+        } else v.pause();
+      });
+    }, { threshold: 0.25 });
+    $$("video[data-play]").forEach(function (v) { vio.observe(v); });
   }
 
-  /* ---------- top bar ---------- */
-  var bar = d.getElementById("bar");
-  var hero = d.getElementById("top");
-  if (bar && hero && "IntersectionObserver" in w) {
-    new IntersectionObserver(function (entries) {
-      bar.classList.toggle("is-shown", !entries[0].isIntersecting);
-    }, { rootMargin: "-72% 0px 0px 0px" }).observe(hero);
+  /* ------------------------------------------------ copying */
+  function copyText(text, done) {
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () {});
   }
-
-  /* the bar adopts the palette of whatever section is under it, and the nav
-     marks the section being read; both from offsets cached at layout time */
-  var surfaced = all("main > section, main > article, main > div");
-  var navLinks = all(".bar__nav a").map(function (a) {
-    var href = a.getAttribute("href") || "";
-    var id = a.dataset.for || (href.charAt(0) === "#" ? href.slice(1) : "");
-    var t = id && d.getElementById(id);
-    return t ? { a: a, t: t, top: 0, bottom: 0 } : null;
-  }).filter(Boolean);
-  if (bar && (surfaced.length || navLinks.length)) {
-    var geo = [], lastSurf = null, lastHere = null;
-    onMeasure(function () {
-      geo = surfaced.filter(function (n) { return n.offsetParent !== null || n.classList.contains("hero"); })
-        .map(function (n) { return { top: docTop(n), surface: n.dataset.surface || null }; });
-      navLinks.forEach(function (l) { l.top = docTop(l.t); l.bottom = l.top + l.t.offsetHeight; });
-      lastSurf = lastHere = null;
+  $$("[data-copy-cmd]").forEach(function (btn) {
+    var code = btn.parentElement.querySelector("code");
+    if (!navigator.clipboard) return;
+    btn.hidden = false;
+    btn.addEventListener("click", function () {
+      copyText(code.textContent.trim(), function () {
+        btn.textContent = "Copied";
+        later(1600, function () { btn.textContent = "Copy"; });
+      });
     });
-    onScroll(function (y, vh) {
-      var at = y + 42, s = null, i;
-      for (i = 0; i < geo.length; i++) if (geo[i].top <= at) s = geo[i].surface;
-      if (s !== lastSurf) { lastSurf = s; if (s) bar.dataset.surface = s; else delete bar.dataset.surface; }
-      var mid = y + vh * 0.45, here = null;
-      for (i = 0; i < navLinks.length; i++) if (navLinks[i].top <= mid && navLinks[i].bottom > mid) here = navLinks[i];
-      if (here !== lastHere) {
-        lastHere = here;
-        navLinks.forEach(function (l) { l.a.classList.toggle("is-here", l === here); });
-      }
+  });
+  $$("[data-copy-mail]").forEach(function (a) {
+    var flag = a.parentElement.querySelector(".copied");
+    a.addEventListener("click", function () {
+      copyText(a.getAttribute("data-copy-mail"), function () {
+        if (!flag) return;
+        flag.classList.add("is-on");
+        later(2200, function () { flag.classList.remove("is-on"); });
+      });
     });
+  });
+
+  /* ------------------------------------------------ the record: a chart-recorder pen crosses the years */
+  var rec = $("[data-rec]"), pen = $("[data-rec-pen]");
+  if (rec && pen) {
+    var entries = $$(".rec-e", rec), recMax = 0, recQ = false;
+    function recFrame() {
+      recQ = false;
+      if (window.innerWidth <= 760 || still()) { entries.forEach(function (e) { e.classList.add("is-inked"); }); return; }
+      var r = rec.getBoundingClientRect(), vh = window.innerHeight;
+      var p = Math.max(recMax, Math.min(1, (vh * 0.9 - r.top) / (vh * 0.55)));
+      recMax = p;
+      var W = r.width, x0 = W * 0.191377, x = x0 + (W - x0) * p;
+      pen.style.setProperty("--pen", x + "px");
+      entries.forEach(function (e) { e.classList.toggle("is-inked", e.offsetLeft <= x - 2 || p >= 1); });
+      rec.classList.toggle("is-done", p >= 1);
+    }
+    function recQueue() { if (!recQ) { recQ = true; requestAnimationFrame(recFrame); } }
+    window.addEventListener("scroll", recQueue, { passive: true });
+    window.addEventListener("resize", recQueue);
+    recFrame();
   }
 
-  /* ---------- charts ---------- */
-  var C = w.RPCharts;
-  function degrade(msg) {
-    /* hide what would have been drawn, keep every caption and note */
-    all("#field, #fieldLabels, #bars-vertex, #ladder, #floor, #scatter").forEach(function (n) { n.hidden = true; });
-    if (msg && w.console) w.console.warn("charts unavailable:", msg);
+  /* ------------------------------------------------ contact: the title block */
+  $$("[data-tblock] .tb-rows > div").forEach(function (d, i) { d.style.setProperty("--r", i); });
+
+  /* ------------------------------------------------ the 84 on the page's own axis */
+  var FAM = { form_momentum: "Form and momentum", style_matchups: "Style matchups", physical_durability: "Physical durability", market_microstructure: "Market microstructure", gap: "Gap", experience_pedigree: "Experience and pedigree", division_context: "Division context", style_and_age: "Style and age", activity_layoff: "Activity and layoff" };
+  var WORDS = { tdd: "takedown defence", ufc: "UFC", elo: "Elo", ko: "KO", womens: "women's", pickem: "pick'em", "4plus": "4+" };
+  function sliceName(s) {
+    var t = s.split("_").map(function (x) { return WORDS[x] || x; }).join(" ").replace(/ (\d+)d?$/, ", $1 days");
+    return t.charAt(0).toUpperCase() + t.slice(1);
   }
-  if (!C) {
-    degrade("charts.js did not load");
-    fetch(base + "assets/data/audit.json").catch(function () {});
-    return;
+  window.RP = { FAM: FAM, sliceName: sliceName, tween: tween, EO: EO, EIO: EIO, still: still, watch: watch };
+  var audit = null;
+  function loadAudit() {
+    if (audit) return Promise.resolve(audit);
+    return fetch(base + "assets/data/audit.json").then(function (r) { return r.json(); }).then(function (d) { audit = d; return d; });
   }
+  window.RP.loadAudit = loadAudit;
 
-  fetch(base + "assets/data/audit.json", { cache: "no-cache" })
-    .then(function (r) { if (!r.ok) throw new Error("data " + r.status); return r.json(); })
-    .then(function (data) {
-      var canvas = d.getElementById("field");
-      if (canvas) {
-        /* WebGL first; the 2D field is the fallback, and it reads the same rows */
-        var f3 = w.RPField3D ? w.RPField3D(canvas, data.segments.rows, {
-          reduced: reduced, labels: d.getElementById("fieldLabels")
-        }) : null;
-        if (f3) {
-          charts.field = f3;
-          root.classList.add("has-webgl");
-          w.rpSetFold = f3.setFold;
-          w.rpFieldPointer = f3.pointer;
-          w.rpFieldPause = f3.pause;
-          /* the page may already be scrolled into the fold by the time the data lands */
-          f3.setFold(w.rpHeroFold ? w.rpHeroFold() : 0);
-          if (root.classList.contains("is-locked")) f3.pause(true);
-        } else {
-          /* a canvas that was ever asked for WebGL can never give a 2D context, so the
-             fallback needs a fresh one */
-          var fresh = canvas.cloneNode(false);
-          canvas.parentNode.replaceChild(fresh, canvas);
-          canvas = fresh;
-          charts.field = C.heroField(canvas, data.segments.rows, { reduced: reduced });
-          /* no WebGL, no fold: the motion layer unpins the hero */
-          if (w.rpHeroMeasure) w.rpHeroMeasure();
-        }
-        charts.field.run();
-        canvas.classList.add("is-in");
-        w.rpFieldRead = charts.field.read;
-        var rt;
-        w.addEventListener("resize", function () {
-          w.clearTimeout(rt);
-          rt = w.setTimeout(function () { charts.field.redraw(); }, 160);
-        }, { passive: true });
-      }
-
-      var barsHost = d.getElementById("bars-vertex");
-      if (barsHost) C.compareBars(barsHost, data.vertex);
-
-      var ladderHost = d.getElementById("ladder");
-      if (ladderHost) C.ladder(ladderHost, data.ladder);
-      /* the SVG charts are laid out for the width they are drawn at, so redraw
-         them when that width changes enough to matter */
-      var lastW = {};
-      function relayout() {
-        [["ladder", data.ladder, C.ladder], ["scatter", data.segments, C.scatter]].forEach(function (c) {
-          var h = d.getElementById(c[0]);
-          if (!h) return;
-          var cw = h.clientWidth;
-          if (lastW[c[0]] && Math.abs(lastW[c[0]] - cw) < 40) return;
-          lastW[c[0]] = cw;
-          c[2](h, c[1]);
-          var fig = h.closest(".chart");
-          if (fig && fig.classList.contains("is-drawn")) { fig.classList.remove("is-drawn"); void fig.offsetWidth; fig.classList.add("is-drawn"); }
+  var vd = $("[data-vd]");
+  if (vd && F && window.fetch) (function () {
+    var plot = $("[data-vd-plot]", vd), tip = $("[data-vd-tip]", vd), say = $("[data-vd-say]", vd), ctl = $("[data-vd-ctl]", vd);
+    var V = { key: "ef", bar: 20, rows: null, W: 0, on: -1, pos: {}, stop: null };
+    var SAY = {
+      "ef-20": "At fair odds, six of the 84 clear 20, the bar for one hypothesis.",
+      "er-20": "After the bookmaker’s margin, one clears 20, and only on its most favourable seed.",
+      "ef-1680": "Held to 1,680, the bar for all 84 at once, none of them clears. The best stops at 151.",
+      "er-1680": "After the margin and held to 1,680, nothing comes close. The best stops at 21."
+    };
+    function render() {
+      var W = plot.getBoundingClientRect().width;
+      if (!W || !V.rows) return;
+      V.W = W;
+      plot.innerHTML = F.verdict(V.rows, W, V.key, { bar: V.bar });
+      V.pos = {};
+      $$(".vd-dot", plot).forEach(function (c) {
+        V.pos[+c.getAttribute("data-i")] = { x: +c.getAttribute("cx"), y: +c.getAttribute("cy"), el: c };
+      });
+      bind();
+    }
+    function layoutFor(key) {
+      var svg = $("svg", plot), y0 = +svg.getAttribute("data-y0");
+      var lay = F.verdictLayout(V.rows, key, V.W), out = {};
+      lay.pts.forEach(function (p) { out[p.i] = { x: p.x, y: y0 - lay.r - 1.5 - p.lv * lay.d, off: p.off }; });
+      return out;
+    }
+    function sayNow() { say.textContent = SAY[V.key + "-" + V.bar]; }
+    function press(group, val) {
+      $$(".seg-b[data-" + group + "]", vd).forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-" + group) === String(val) ? "true" : "false"); });
+    }
+    function setKey(key) {
+      if (key === V.key) return;
+      V.key = key;
+      press("key", key);
+      sayNow();
+      pick(-1);
+      var to = layoutFor(key), from = {};
+      Object.keys(V.pos).forEach(function (i) { from[i] = { x: V.pos[i].x, y: V.pos[i].y }; });
+      if (V.stop) V.stop();
+      var xbar = F.gx(V.bar) * V.W;
+      function apply(e) {
+        Object.keys(V.pos).forEach(function (i) {
+          var p = V.pos[i], a = from[i], b = to[i];
+          if (!b) return;
+          p.x = a.x + (b.x - a.x) * e; p.y = a.y + (b.y - a.y) * e;
+          p.el.setAttribute("cx", p.x.toFixed(2)); p.el.setAttribute("cy", p.y.toFixed(2));
+          p.el.classList.toggle("is-hit", p.x >= xbar - 0.5);
+          p.el.classList.toggle("is-off", !!b.off && e === 1);
         });
       }
-      var rl;
-      w.addEventListener("resize", function () { w.clearTimeout(rl); rl = w.setTimeout(relayout, 200); }, { passive: true });
-
-      var floorHost = d.getElementById("floor");
-      if (floorHost) C.floorChart(floorHost, data.floor);
-
-      var scatterHost = d.getElementById("scatter");
-      if (scatterHost) C.scatter(scatterHost, data.segments);
-
-      if (w.rpMeasure) w.rpMeasure();
-      if (scatterHost) relayout();
-      /* the research page only has its final height once the charts are in */
-      if (w.rpRestore) w.setTimeout(w.rpRestore, 30);
-
-      var figs = all(".chart");
-      if (reduced || !("IntersectionObserver" in w)) {
-        figs.forEach(function (n) { n.classList.add("is-drawn"); w.rpFillBars(n); });
-      } else {
-        var co = new IntersectionObserver(function (entries) {
-          entries.forEach(function (e) {
-            if (!e.isIntersecting) return;
-            e.target.classList.add("is-drawn");
-            w.rpFillBars(e.target);
-            co.unobserve(e.target);
-          });
-        }, { threshold: 0.12 });
-        figs.forEach(function (n) { co.observe(n); });
+      if (still()) { apply(1); render(); return; }
+      V.stop = tween(1100, EIO, apply, function () { render(); });
+    }
+    function setBar(v) {
+      if (v === V.bar) return;
+      var from = V.bar;
+      V.bar = v;
+      press("bar", v);
+      sayNow();
+      pick(-1);
+      var line = $("[data-vd-bar]", plot), cap = $("[data-vd-barcap]", plot);
+      if (cap) cap.textContent = "";
+      var x0 = F.gx(from), x1 = F.gx(v);
+      function apply(e) {
+        var x = (x0 + (x1 - x0) * e) * V.W;
+        line.setAttribute("x1", x.toFixed(2)); line.setAttribute("x2", x.toFixed(2));
+        Object.keys(V.pos).forEach(function (i) { V.pos[i].el.classList.toggle("is-hit", V.pos[i].x >= x - 0.5 && V.rows[i][V.key] >= 20); });
       }
-    })
-    .catch(function (err) { degrade(err.message); });
-})(window, document);
+      if (still()) { render(); return; }
+      if (V.stop) V.stop();
+      V.stop = tween(1300, EIO, apply, function () { render(); });
+    }
+    function drop() {
+      if (still()) return;
+      var ids = Object.keys(V.pos).sort(function (a, b) { return V.pos[a].x - V.pos[b].x; });
+      ids.forEach(function (i, j) {
+        var p = V.pos[i], y1 = p.y, y0 = y1 - 90;
+        p.el.setAttribute("cy", y0);
+        p.el.style.opacity = "0";
+        later(j * 14, function () {
+          p.el.style.opacity = "";
+          tween(900, EO, function (e) { p.el.setAttribute("cy", (y0 + (y1 - y0) * e).toFixed(2)); });
+        });
+      });
+    }
+    function bind() {
+      var svg = $("svg", plot);
+      svg.setAttribute("tabindex", "0");
+      function nearest(ev) {
+        var r = svg.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top, best = -1, bd = 22 * 22;
+        Object.keys(V.pos).forEach(function (i) {
+          var p = V.pos[i], dx = p.x - x, dy = p.y - y, d = dx * dx + dy * dy;
+          if (d < bd) { bd = d; best = +i; }
+        });
+        return best;
+      }
+      svg.addEventListener("pointermove", function (ev) { if (ev.pointerType !== "touch") pick(nearest(ev)); });
+      svg.addEventListener("pointerleave", function () { pick(-1); });
+      svg.addEventListener("pointerdown", function (ev) { pick(nearest(ev)); });
+      svg.addEventListener("keydown", function (ev) {
+        var order = Object.keys(V.pos).map(Number).sort(function (a, b) { return V.rows[a][V.key] - V.rows[b][V.key]; });
+        var at = order.indexOf(V.on);
+        if (ev.key === "ArrowRight" || ev.key === "ArrowUp") { pick(order[Math.min(order.length - 1, at + 1)]); ev.preventDefault(); }
+        else if (ev.key === "ArrowLeft" || ev.key === "ArrowDown") { pick(order[Math.max(0, at < 0 ? order.length - 1 : at - 1)]); ev.preventDefault(); }
+        else if (ev.key === "Escape") pick(-1);
+      });
+      svg.addEventListener("blur", function () { pick(-1); });
+    }
+    function pick(i) {
+      if (i === V.on) return;
+      var g = $(".vd-dots", plot);
+      if (V.on >= 0 && V.pos[V.on]) V.pos[V.on].el.classList.remove("is-on");
+      V.on = i;
+      if (i < 0 || !V.pos[i]) { tip.hidden = true; if (g) g.classList.remove("has-on"); return; }
+      var p = V.pos[i], row = V.rows[i];
+      p.el.classList.add("is-on");
+      g.classList.add("has-on");
+      g.appendChild(p.el);
+      tip.innerHTML = "<b>" + sliceName(row.s) + "</b><span class=\"t-fam\">" + FAM[row.f] + ", " + F.fmtInt(row.n) + " bouts</span>" +
+        "<span class=\"t-e\">e = " + F.fmtE(row.ef) + " at fair odds, " + F.fmtE(row.er) + " after the margin</span>";
+      tip.hidden = false;
+      var pr = plot.getBoundingClientRect(), vr = vd.getBoundingClientRect();
+      var left = pr.left - vr.left + p.x, top = pr.top - vr.top + p.y;
+      var tw = tip.offsetWidth, th = tip.offsetHeight;
+      tip.style.left = Math.max(-8, Math.min(vr.width - tw + 8, left - tw / 2)) + "px";
+      tip.style.top = (top - th - 14) + "px";
+    }
+    loadAudit().then(function (d) {
+      V.rows = d.segments.rows;
+      if (ctl) ctl.hidden = false;
+      render();
+      $$(".seg-b[data-key]", vd).forEach(function (b) { b.addEventListener("click", function () { setKey(b.getAttribute("data-key")); }); });
+      $$(".seg-b[data-bar]", vd).forEach(function (b) { b.addEventListener("click", function () { setBar(+b.getAttribute("data-bar")); }); });
+      if (!still()) $$(".vd-dot", plot).forEach(function (c) { c.style.opacity = "0"; });
+      watch(vd, function () { $$(".vd-dot", plot).forEach(function (c) { c.style.opacity = ""; }); drop(); });
+      var rt = null, lastW = V.W;
+      window.addEventListener("resize", function () {
+        clearTimeout(rt);
+        rt = setTimeout(function () {
+          var w = plot.getBoundingClientRect().width;
+          if (Math.abs(w - lastW) < 2) return;
+          lastW = w; pick(-1); render();
+        }, 160);
+      });
+    }).catch(function () { vd.classList.add("in"); });
+  })();
+
+  /* ------------------------------------------------ floor plate: what each mark is */
+  $$("[data-fl]").forEach(function (fl) {
+    var ftip = $("[data-fl-tip]", fl);
+    if (!ftip) return;
+    fl.addEventListener("pointerover", function (ev) {
+      var m = ev.target.closest && ev.target.closest("[data-tip]");
+      if (!m) return;
+      ftip.textContent = m.getAttribute("data-tip");
+      ftip.hidden = false;
+      var r = m.getBoundingClientRect(), fr = fl.getBoundingClientRect();
+      ftip.style.left = Math.max(0, Math.min(fr.width - ftip.offsetWidth, r.left - fr.left + r.width / 2 - ftip.offsetWidth / 2)) + "px";
+      ftip.style.top = (r.top - fr.top - ftip.offsetHeight - 10) + "px";
+    });
+    fl.addEventListener("pointerout", function (ev) {
+      var m = ev.target.closest && ev.target.closest("[data-tip]");
+      if (m) ftip.hidden = true;
+    });
+  });
+
+  window.addEventListener("resize", fitName);
+})();
