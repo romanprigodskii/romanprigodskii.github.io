@@ -12,7 +12,7 @@ set -eu
 HOST=root@185.79.139.204
 KEY="$HOME/.ssh/vertexmma_vps_ed25519"
 DEST=/opt/prigodskii-site
-SITE="index.html 404.html robots.txt sitemap.xml assets papers plain research"
+SITE="index.html 404.html robots.txt sitemap.xml assets papers plain research work"
 
 cd "$(dirname "$0")/.."
 rev=$(git rev-parse --short HEAD)

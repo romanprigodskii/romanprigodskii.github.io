@@ -2,139 +2,125 @@
 
 ## The idea
 
-The work on this site is about measurement: what a number is worth once you
-price in everything that could have produced it by accident. Every effect on
-the page is either measuring something or showing something that was measured.
+Every page is drawn on semi-log paper, and the paper is data. Each vertical line
+behind a page sits at m x 10^k on an e-value axis that runs from 0.01 at the
+frame's left edge to 1,680 at its right edge:
 
-## Palette
+| line | what it is |
+|---|---|
+| 0.01 | the frame's left edge |
+| 1 | a bet that broke even; the main content edge (`--x1`) |
+| 20 | the bar for one pre-registered hypothesis |
+| 1,680 | the bar for all 84 hypotheses at once (20 x 84); the frame's right edge |
 
-Three palettes share one set of slots (`tools/palettes.py`), and the default,
-chosen by Roman, is **moss**: a deep moss ground, a linen ink, and one luminous
-green for whatever is being marked. The green carries the thresholds, the
-hypotheses that clear them, the shipped lever, the drenched contact section and
-the page wipe. Graphite (grey, black and a signal yellow) and cobalt (midnight
-blue, red and gold) remain available through `?palette=`. Every text and ground pair on every surface of every palette is
-contrast-checked by the script before it ships.
+The five decades are the layout's columns (`.cols`: four columns of 19.14% and
+the last decade, 100 to 1,680, as 1fr). Every e-value figure on the site is
+drawn on the same axis, so its ticks land on the page's own lines, and the
+slide rule in the hero computes the right-hand edge: 20 x 84 = 1,680.
 
-## Shape
+Reference: Braun instruments (white enamel, brushed aluminium, black
+graduations, one signal colour) laid on Muller-Brockmann grid paper. The scene
+it was designed for: an admissions reader or a workshop statistician, on a
+laptop in a daylit office, with twenty files queued.
 
-The front page is one scroll with three gears: a hero that is mostly the name, the work as a pinned horizontal
-filmstrip, and a research teaser that hands off to its own page. The
-papers used to sit in the middle of the front page, which made a visitor read a
-statistics abstract before they knew who they were reading. They now live at
-`/research/`, where there is room for them.
+## Colour
 
-## Surfaces, not pages
-
-Three palettes live in the same document and swap by `data-surface`:
-
-| surface | where | why |
+| token | value | use |
 |---|---|---|
-| `slate` | default | the board |
-| `paper` | the research section | papers are printed on paper |
-| `signal` | contact | the loudest thing on the page is the way to reach me |
+| `--paper` | #F3F2EE | the ground |
+| `--enamel` | #FBFAF7 | instrument plates |
+| `--ink` | #151412 | type, graduations, bars |
+| `--ink-2` | #4B4944 | secondary text (8:1 on paper) |
+| `--ink-3` | #6B6861 | tertiary text (5:1) |
+| `--g-*` | #E7E5DF to #ABA89F | the grid, lightest to darkest |
+| `--signal` | #E0401C | a measurement that clears its bar, and nothing else |
+| `--signal-t` | #C4351A | the same, as text (4.8:1) |
 
-The header reads the section under it on scroll and adopts that palette, so it
-never sits as a foreign dark bar over a light section. A full light theme
-inverts the whole document and flips the research section dark, keeping the
-inversion meaningful rather than decorative.
+Vermilion never decorates. If a mark is red, it cleared 20 (or whatever bar
+the figure states). The model beating nobody is drawn in ink.
 
 ## Type
 
-One family: **Archivo**, variable, with both the weight and the **width** axis
-in use. The width axis does the work a second typeface usually does:
+One family, Barlow, in two widths, self-hosted (OFL, `assets/fonts/`):
 
-- display and section heads at `font-stretch: 108-116%`, weight 700-780, tight
-  tracking
-- small labels at `font-stretch: 66-70%`, uppercase, weight 650, tracked out:
-  a scoreboard voice, not a magazine kicker
-- body at 100% width, weight 400-420
-- tabular lining numerals everywhere, because most of this page is numbers
+- **Barlow Condensed** for the name, titles, figure labels, scales and every
+  numeral in a figure: 800 for the name and project titles, 600 to 700 for
+  headings, 200 to 300 for large readouts (0.7244, 20 x 84 = 1,680).
+- **Barlow** for prose, 17px at 1.55.
+- System monospace appears once, for a literal `brew install` command.
 
-No monospace. Monospace on a quantitative portfolio is a costume; tabular
-figures in the text face are the honest version.
+Its condensed heavy weights come from the same signage lineage as DIN, which is
+the lettering of engineering drawings. Sofia Sans was tried first and rejected:
+its "g" carries a flag that reads as a diacritic at the size of the name.
 
-## Imagery
+## Pages
 
-The hero is WebGL (`field3d.js`, raw, no library): the 84 hypotheses in three
-dimensions, x the e-value at fair odds, y the same bet after the book's margin, z
-the nine hypothesis families, with the two e = 20 thresholds as translucent
-planes. While the hero is pinned, scrolling swings the camera round, collapses the
-families onto one plane, and the two planes become the two dashed rules of the
-ordinary scatter chart: the 3D picture folds into the figure from the paper. The
-reticle reads out the hypothesis under it. Where WebGL is missing, a 2D canvas
-field draws the same rows.
+| page | what it is |
+|---|---|
+| `/` | the name, the slide rule, six projects, both papers, the record, contact |
+| `/work/<slug>/` | one page per project, each opening on its own instrument |
+| `/research/` | both papers in full, with the explorable 84, and two school projects |
+| `/plain/` | one printable file, no JavaScript |
+| `/404.html` | the slide rule, parked off the scale |
 
-The filmstrip uses the real products. Clipwell is a five-second loop of its bar
-coming up over this site, and Gluline is three phones from the build sent to App
-Store review, the middle one a loop of the assistant being asked about a chat.
-Vertex MMA and Alfa-Romeo are screenshots; Vertex Boxing is a drawing of the leak
-it caught, and the client pipeline is a drawing of a rebalance, since it is
-private. The loops are muted H.264 under a megabyte, play only while on screen,
-and under reduced motion stay on their poster frame, which is their first frame.
+Moving from a project on the home page to its page, the title travels into
+place (a cross-document view transition, `view-transition-name: t-<slug>`); the
+rest of the page fades. Browsers without it simply navigate.
 
-The charts, all drawn from the papers' own artifacts:
+## Figures
 
-1. **Hero field**: as above.
-2. **Model against the closing line** (HTML bars): the comparison on every
-   basis, including where the baseline wins.
-3. **The ladder** (SVG): one post-hoc rule charged three ways.
-4. **The detection floor** (HTML, measured band): fifteen candidate levers
-   against the noise floor. Built in HTML rather than SVG so that fifteen long
-   labels stay readable on a phone.
-5. **The 84, explorable** (SVG, inside paper one): all 84 hypotheses, log-log,
-   mark size by sample size. The nearest mark follows the pointer (or a tap, or
-   the arrow keys, in order of wealth) and a panel beside it reads out its name
-   from the registry, its family, both e-values and its rank; a family chip
-   dims the other eight.
-6. **The verdict** (HTML): paper one's whole result on one log scale from 1 to
-   1,680, with 20, the bar for one hypothesis, and 151, the best of the 84.
-7. **The echo** (HTML): paper two's shipped improvement against the largest
-   effect a re-seeded refit produced, 80% of it.
+All figures are SVG strings built by `assets/js/figures.js` from
+`assets/data/audit.json` (generated from the papers by `tools/build_data.py`)
+and `assets/data/boxing.json` (copied from the Vertex Boxing report, section by
+section). `tools/figures.mjs` writes each one into the HTML between
+`<!--@name-->` markers, so a page is complete before any script runs; the
+browser redraws only what is interactive. Run it after changing a renderer or
+the data:
 
-The two papers share a header and nothing else. Each opens on the number it is
-about, drawn as a measurement, and lays out its findings the way its argument
-runs: paper one as figure-led rows, paper two as the four steps of a protocol.
+```bash
+node tools/figures.mjs                 # every page
+node tools/figures.mjs index.html      # one page
+node tools/figures.mjs --check         # exit 1 if a page is stale
+```
 
-Colour in the charts always encodes something: vermilion means "clears the
-threshold" or "shipped", never "decorative".
+| figure | where | what it shows |
+|---|---|---|
+| the slide rule | home hero | the bar for k hypotheses is 20k; drag or use the arrow keys |
+| the 84 | home, research | every hypothesis at its e-value on the page's axis; switch prices and raise the bar |
+| AUC gauge | home, Vertex MMA | 0.7244 on a scale from a coin flip to 1 |
+| model against the line | home, Vertex MMA | the closing line wins all three scores; the winner is underlined |
+| level bars | home, Vertex Boxing | closing-line value rises with the level of the fight |
+| four windows | home, Vertex Boxing | e-values at the opening price; the needle's head says how the test was fixed |
+| the book | home, Zacks | 4,369 stocks, 25 dots at the same scale, opened out into 25 equal positions |
+| the floor | home, Vertex MMA, research | everything measured sits inside the detection floor |
 
-Two honesty rules the charts follow, because the whole page is an argument about
-measurement:
-
-- **Every truncated axis says so, in the chart.** The model-against-the-line
-  differences are far smaller than a 0-to-1 axis would show, so each row gets its
-  own truncated range, printed underneath it.
-- **Bar length always means better.** Log-loss and Brier are lower-is-better, so
-  those rows run right to left. Without that, the longer bar would have read as
-  the winner while being the loser.
+Two honesty rules the figures follow: a truncated axis says so in the figure,
+and a schematic is labelled as a schematic.
 
 ## Motion
 
-Effects, and what each is for:
+Exponential ease-outs (`cubic-bezier(0.16, 1, 0.3, 1)`), no bounce. Every
+movement measures something or shows something measured:
 
-| effect | why it is there |
+| effect | why |
 |---|---|
-| intro counter | counts to 84, the number of hypotheses the page is about. Once per session, skippable, gone under reduced motion |
-| word masking | headings and ledes rise word by word. Split at text-node level, so nested links survive |
-| pinned filmstrip | vertical scroll drives horizontal travel through five project panels; below 900px it is a plain vertical list |
-| the record, row by row | each olympiad row reads in as it rises past the bottom of the screen and out again under the header. It is tied to the scroll position, not fired once, so scrolling back undoes it like the sheets and the filmstrip |
-| the newspaper wave | on /research/, the school project's cut edge, traced from the scan at its true proportions, draws in from the left as it rises into view and back out on the way down. The sine can be swapped for a triangle wave, which bends into it point by point, so the visitor sees why the claim is "a sine" and not just "a wave". Regenerated by `tools/sausage_wave.py --write` |
-| the tea glass | beside it, the glass from the second school project fills with discs as it rises into view, from 2 to 128 and back on the way out, and a dot on the beaker's scale walks into the 200 to 225 ml window the water test left. Once the visitor takes the slider, the scroll lets go of it |
-| reticle cursor | a crosshair instead of an arrow, and over the hero field it reads out the two e-values under the point it is standing on. That is the only cursor gimmick on the page and it is a measuring instrument |
-| page wipe | between the three pages. The keyframes are `both`, so the page opens even if the script never runs again |
+| the grid draws down, the name is engraved left to right | the paper is laid, then the plate is cut |
+| the slide rule sets itself: the slide moves to 20, the cursor runs to 84 | it performs the page's one calculation |
+| ruler edges tick in along each section | each section starts on the scale |
+| needles sweep to their values | the AUC and the four Boxing windows are read off like gauges; a needle turns red as it crosses 20 |
+| the thesis is struck through | Vertex Boxing's founding claim, refuted by its own data |
+| the rejected ideas are struck through | Vertex MMA keeps its failures on record |
+| the 84 drop onto the axis | a dot plot settling |
+| the record's pen crosses the school years | a chart recorder; it ratchets and never unwrites |
 
-
-
-`cubic-bezier(0.16, 1, 0.3, 1)` throughout, no bounce. One staggered entrance,
-then scroll reveals and chart draw-ins. Collapsible sections animate
-`grid-template-rows`, never `height`. Everything collapses to nothing under
-`prefers-reduced-motion`, and the whole page works with JavaScript off: the
-accordions open, the reveals are visible, the header is static.
+Under `prefers-reduced-motion` every figure is drawn in its final state, and
+with JavaScript off everything is visible (a script in the head adds the `js`
+class that motion depends on, and removes it again if the scripts never run).
 
 ## Rules kept
 
-- no gradient text, no glassmorphism as decoration, no coloured side stripes
-- no em dashes anywhere in the copy
-- no icon-above-heading card grids
-- body copy capped at 42-68 characters
+- no em dashes in the copy
+- no gradients except the slide rule's aluminium; no glass, no side stripes
+- no marquees, loaders, colour scenes, giant background words or custom cursors
+- no tiny uppercase labels as section grammar, no numbered sections
+- body copy capped near 62 characters
