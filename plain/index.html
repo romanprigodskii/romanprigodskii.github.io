@@ -2,315 +2,521 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Roman Prigodskii, plain version</title>
-<meta name="description" content="Roman Prigodskii: a plain, printable record. Letovo School, Moscow Olympiad in Economics winner, four shipped systems, two papers under review at NeurIPS 2026 workshops.">
+<meta name="description" content="Roman Prigodskii: a plain, printable record. Letovo School, Moscow Olympiad in Economics winner, four shipped systems, two sole-authored papers, one under review at a NeurIPS 2026 workshop.">
+<meta name="author" content="Roman Prigodskii">
 <meta name="robots" content="index,follow">
+<meta name="theme-color" content="#F3F2EE">
 <link rel="canonical" href="https://prigodskii.dev/plain/">
 <link rel="icon" href="../assets/img/mark.svg" type="image/svg+xml">
-<meta name="theme-color" content="#f2eee2">
-<link rel="preload" as="font" type="font/woff2" href="../assets/fonts/archivo-latin.woff2" crossorigin>
+<link rel="apple-touch-icon" href="../assets/img/mark-180.png">
+<link rel="preload" href="../assets/fonts/barlow-condensed-800-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/barlow-400-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-@font-face{font-family:Archivo;font-style:normal;font-weight:100 900;font-stretch:62% 125%;font-display:swap;src:url("../assets/fonts/archivo-latin.woff2") format("woff2")}
-:root{
-  --paper: oklch(0.966 0.014 88);
-  --ink:   oklch(0.215 0.030 132);
-  --ink-2: oklch(0.410 0.030 128);
-  --ink-3: oklch(0.482 0.028 126);
-  --rule:  oklch(0.850 0.024 90);
-  --sig:   oklch(0.470 0.130 145);
+/* Barlow and Barlow Condensed, by Jeremy Tribby (SIL Open Font License 1.1, assets/fonts/OFL-Barlow.txt) */
+@font-face{font-family:"Barlow Condensed";font-style:normal;font-weight:500;font-display:swap;src:url("../assets/fonts/barlow-condensed-500-normal-latin-ext.woff2") format("woff2");unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:"Barlow Condensed";font-style:normal;font-weight:500;font-display:swap;src:url("../assets/fonts/barlow-condensed-500-normal-latin.woff2") format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:"Barlow Condensed";font-style:normal;font-weight:600;font-display:swap;src:url("../assets/fonts/barlow-condensed-600-normal-latin-ext.woff2") format("woff2");unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:"Barlow Condensed";font-style:normal;font-weight:600;font-display:swap;src:url("../assets/fonts/barlow-condensed-600-normal-latin.woff2") format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:"Barlow Condensed";font-style:normal;font-weight:700;font-display:swap;src:url("../assets/fonts/barlow-condensed-700-normal-latin-ext.woff2") format("woff2");unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:"Barlow Condensed";font-style:normal;font-weight:700;font-display:swap;src:url("../assets/fonts/barlow-condensed-700-normal-latin.woff2") format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:"Barlow Condensed";font-style:normal;font-weight:800;font-display:swap;src:url("../assets/fonts/barlow-condensed-800-normal-latin-ext.woff2") format("woff2");unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:"Barlow Condensed";font-style:normal;font-weight:800;font-display:swap;src:url("../assets/fonts/barlow-condensed-800-normal-latin.woff2") format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:"Barlow";font-style:normal;font-weight:400;font-display:swap;src:url("../assets/fonts/barlow-400-normal-latin-ext.woff2") format("woff2");unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:"Barlow";font-style:normal;font-weight:400;font-display:swap;src:url("../assets/fonts/barlow-400-normal-latin.woff2") format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:"Barlow";font-style:italic;font-weight:400;font-display:swap;src:url("../assets/fonts/barlow-400-italic-latin-ext.woff2") format("woff2");unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:"Barlow";font-style:italic;font-weight:400;font-display:swap;src:url("../assets/fonts/barlow-400-italic-latin.woff2") format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:"Barlow";font-style:normal;font-weight:500;font-display:swap;src:url("../assets/fonts/barlow-500-normal-latin-ext.woff2") format("woff2");unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:"Barlow";font-style:normal;font-weight:500;font-display:swap;src:url("../assets/fonts/barlow-500-normal-latin.woff2") format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:"Barlow";font-style:normal;font-weight:600;font-display:swap;src:url("../assets/fonts/barlow-600-normal-latin-ext.woff2") format("woff2");unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:"Barlow";font-style:normal;font-weight:600;font-display:swap;src:url("../assets/fonts/barlow-600-normal-latin.woff2") format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+
+/* ==========================================================================
+   /plain/: the whole record on one page, with no scripts, for reading and
+   for printing. It is the same paper as the rest of the site, but the
+   graduation shows only in the header: an e-value axis from 0.01 (left edge)
+   to 1,680 (right edge), log scale. Its first decade line is the edge of the
+   text column below.
+   ========================================================================== */
+:root {
+  --paper: #F3F2EE;
+  --enamel: #FBFAF7;
+  --ink: #151412;
+  --ink-2: #4B4944;
+  --ink-3: #6B6861;
+  --g-n: #E7E5DF;
+  --g-h: #DDDBD4;
+  --g-d: #CBC8C0;
+  --g-1: #ABA89F;
+  --signal-t: #C4351A;
+
+  --m: clamp(16px, 3.34vw, 56px);
+  --gut: clamp(12px, 1.6vw, 22px);
+  --z: 19.1377%;       /* one decade of the axis: the key column */
+  --x1: 38.2753%;      /* e = 1 */
+  --x20: 63.1740%;     /* e = 20 */
+
+  --eo: cubic-bezier(0.16, 1, 0.3, 1);
+  --eq: cubic-bezier(0.25, 1, 0.5, 1);
+  --f-cond: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --f-sans: "Barlow", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
 }
-@media (prefers-color-scheme: dark){
-  :root{
-    --paper: oklch(0.198 0.030 132);
-    --ink:   oklch(0.948 0.020 95);
-    --ink-2: oklch(0.800 0.030 118);
-    --ink-3: oklch(0.660 0.032 124);
-    --rule:  oklch(0.312 0.034 132);
-    --sig:   oklch(0.860 0.190 142);
-  }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--f-sans);
+  font-size: 1rem;
+  line-height: 1.5;
+  font-kerning: normal;
+  font-variant-numeric: lining-nums;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-*,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{
-  margin:0;
-  background:var(--paper);
-  color:var(--ink);
-  font-family:Archivo,ui-sans-serif,system-ui,"Helvetica Neue",Arial,sans-serif;
-  font-size:16px;
-  line-height:1.58;
-  font-variant-numeric:tabular-nums;
-  -webkit-font-smoothing:antialiased;
+p, h1, h2, h3, ul, dl, dd { margin: 0; }
+ul { padding: 0; list-style: none; }
+b, strong { font-weight: 600; }
+i, em { font-style: italic; }
+::selection { background: var(--ink); color: var(--paper); }
+a { color: inherit; text-decoration-line: underline; text-decoration-thickness: 1px; text-underline-offset: 0.22em; text-decoration-color: color-mix(in oklab, currentColor 34%, transparent); transition: text-decoration-color 180ms ease; }
+a:hover { text-decoration-color: currentColor; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 1px; }
+
+.page { width: min(100% - 2 * var(--m), 46rem); margin-inline: auto; padding-bottom: 56px; }
+
+/* ------------------------------------------------------------ header */
+.hd-paper { position: relative; padding-top: clamp(20px, 3vw, 36px); padding-bottom: clamp(22px, 2.6vw, 30px); }
+.hd-grid { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.hd-grid svg { display: block; width: 100%; height: 100%; overflow: visible; shape-rendering: crispEdges; }
+.hd-grid line { stroke-width: 1; }
+.hd-grid .gn { stroke: var(--g-n); }
+.hd-grid .gh { stroke: var(--g-h); }
+.hd-grid .gd, .hd-grid .gb, .hd-grid .ge { stroke: var(--g-d); }
+.hd-grid .g1 { stroke: var(--g-1); }
+.hd-paper > :not(.hd-grid) { position: relative; z-index: 1; }
+
+.top { display: flex; justify-content: space-between; align-items: baseline; gap: 6px 24px; flex-wrap: wrap; font-size: 0.875rem; color: var(--ink-2); }
+.top-links { display: flex; gap: 22px; font-weight: 500; color: var(--ink); }
+.top-print { display: none; }
+
+h1 {
+  margin-top: clamp(40px, 6vw, 72px);
+  font-family: var(--f-cond);
+  font-weight: 800;
+  font-size: clamp(3rem, 1.9rem + 4.4vw, 5.25rem);
+  line-height: 0.86;
+  letter-spacing: -0.012em;
+  margin-left: -0.035em;
 }
-.page{max-width:46rem;margin:0 auto;padding:clamp(2.5rem,7vw,5rem) clamp(1.25rem,5vw,2.5rem) 4rem}
-a{color:inherit;text-decoration-color:var(--sig);text-underline-offset:2px}
-a:hover{color:var(--sig)}
-h1,h2,h3{margin:0;line-height:1.15;letter-spacing:-0.02em}
-p,ul{margin:0}
-ul{padding:0;list-style:none}
+.hd-a { display: grid; grid-template-columns: var(--z) minmax(0, 1fr); margin-top: clamp(22px, 2.6vw, 32px); }
+.hd-a > * { grid-column: 2; }
+.lede { font-size: clamp(1.125rem, 1.02rem + 0.4vw, 1.3125rem); line-height: 1.4; letter-spacing: -0.003em; max-width: 50ch; text-wrap: pretty; }
+.contact { display: flex; flex-wrap: wrap; gap: 10px 30px; margin-top: 22px; }
+.contact dt { font-family: var(--f-cond); font-size: 0.875rem; font-weight: 500; line-height: 1.2; color: var(--ink-3); }
+.contact dd { font-size: 0.96875rem; font-weight: 500; line-height: 1.35; }
 
-.top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;
-  padding-bottom:0.9rem;border-bottom:2px solid var(--ink);margin-bottom:1.6rem}
-h1{font-size:clamp(1.9rem,6vw,2.6rem);font-stretch:112%;font-weight:760}
-.top__alt{font-size:0.8rem;font-weight:600;color:var(--sig)}
-.top__alt a{color:inherit}
-.sum{font-size:1.05rem;color:var(--ink-2);max-width:60ch}
-.meta{display:flex;flex-wrap:wrap;gap:0.3rem 1.2rem;margin-top:1rem;font-size:0.86rem;color:var(--ink-2)}
-.meta b{font-weight:600;color:var(--ink)}
+.hd-edge { position: relative; height: 38px; }
+.hd-edge svg { display: block; overflow: visible; }
+.hd-edge line { stroke: var(--ink); stroke-width: 1; shape-rendering: crispEdges; }
+.hd-edge .gn, .hd-edge .gh { stroke: var(--ink-3); }
+.scale { position: absolute; left: 0; right: 0; top: 19px; font-family: var(--f-cond); font-size: 0.8125rem; font-weight: 500; line-height: 1; color: var(--ink-2); font-variant-numeric: tabular-nums lining-nums; }
+.scale span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.scale span:nth-child(1) { left: 0; transform: none; }
+.scale span:nth-child(2) { left: var(--x1); }
+.scale span:nth-child(3) { left: var(--x20); color: var(--ink); font-weight: 700; }
+.scale span:nth-child(4) { left: 100%; transform: translateX(-100%); color: var(--ink); font-weight: 700; }
 
-section{margin-top:2.6rem}
-h2{font-size:0.74rem;font-stretch:68%;text-transform:uppercase;letter-spacing:0.14em;font-weight:700;
-  color:var(--sig);padding-bottom:0.5rem;border-bottom:1px solid var(--rule);margin-bottom:1.1rem}
-.row{display:grid;grid-template-columns:7.5rem minmax(0,1fr);gap:0.2rem 1.25rem;padding:0.75rem 0;
-  border-bottom:1px solid var(--rule)}
-.row:last-child{border-bottom:0;padding-bottom:0}
-.row__k{font-size:0.78rem;color:var(--ink-3);font-stretch:80%;font-weight:600;padding-top:0.22rem;letter-spacing:0.02em}
-.row__v{font-size:0.94rem}
-.row__v h3{font-size:1rem;font-weight:680;margin-bottom:0.15rem}
-.row__v p{color:var(--ink-2);font-size:0.9rem}
-.row__v .sub{color:var(--ink-3);font-size:0.82rem;margin-top:0.2rem}
-.row__v ul{margin-top:0.45rem;display:grid;gap:0.25rem}
-.row__v li{position:relative;padding-left:0.95rem;font-size:0.88rem;color:var(--ink-2)}
-.row__v li::before{content:"";position:absolute;left:0;top:0.62em;width:5px;height:5px;background:var(--sig)}
-.win .row__k{color:var(--sig);font-weight:700}
-@media (max-width:620px){.row{grid-template-columns:1fr}.row__k{padding-top:0}}
+/* ------------------------------------------------------------ sections */
+section { margin-top: clamp(40px, 5vw, 60px); }
+h2 { font-family: var(--f-cond); font-weight: 700; font-size: clamp(1.5rem, 1.25rem + 0.9vw, 1.875rem); line-height: 1; letter-spacing: -0.004em; padding-bottom: 12px; border-bottom: 1.5px solid var(--ink); }
+.grp { padding: 26px 0 0; font-family: var(--f-cond); font-weight: 500; font-size: 1.25rem; line-height: 1.1; color: var(--ink-2); }
+h2 + .grp { padding-top: 16px; }
 
-.foot{margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--rule);
-  font-size:0.78rem;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:0.4rem 1.5rem;justify-content:space-between}
+.row { display: grid; grid-template-columns: var(--z) minmax(0, 1fr); align-items: baseline; padding: 13px 0 15px; border-bottom: 1px solid var(--g-d); }
+.k { font-family: var(--f-cond); font-weight: 600; font-size: 1.0625rem; line-height: 1.2; padding-right: var(--gut); }
+.v { min-width: 0; }
+.v h3 { font-size: 1.0625rem; font-weight: 600; line-height: 1.35; text-wrap: balance; }
+.v p { font-size: 0.96875rem; line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
+.v h3 + p, .v p + p { margin-top: 3px; }
+.v ul { margin-top: 9px; }
+.v li { position: relative; padding-left: 20px; font-size: 0.9375rem; line-height: 1.48; color: var(--ink-2); text-wrap: pretty; }
+.v li + li { margin-top: 5px; }
+.v li::before { content: ""; position: absolute; left: 2px; top: 0.6em; width: 5px; height: 5px; border-radius: 50%; background: var(--ink-3); }
+.v .src { display: flex; flex-wrap: wrap; gap: 4px 22px; margin-top: 9px; font-size: 0.9375rem; font-weight: 500; color: var(--ink); }
+.v .src > span { white-space: nowrap; }
+.v .src small { margin-left: 6px; font-size: inherit; font-weight: 400; color: var(--ink-3); }
+.v .quiet { margin-top: 5px; font-size: 0.875rem; color: var(--ink-3); }
+.num { font-variant-numeric: tabular-nums lining-nums; }
+.hit { color: var(--signal-t); font-weight: 600; white-space: nowrap; }
+.row.is-top .k { font-weight: 800; font-size: 1.25rem; line-height: 1; }
+.note { margin-top: 12px; padding-left: var(--z); font-size: 0.875rem; color: var(--ink-3); }
 
-@media print{
-  :root{--paper:#fff;--ink:#111;--ink-2:#333;--ink-3:#555;--rule:#ccc;--sig:#000}
-  body{font-size:10.5pt;line-height:1.42}
-  .page{max-width:none;padding:0}
-  .top__alt,.foot a{display:none}
-  section{margin-top:14pt}
-  h2{break-after:avoid}
-  .row{break-inside:avoid}
-  @page{margin:16mm}
+.foot { margin-top: clamp(48px, 6vw, 72px); padding-top: 12px; border-top: 1px solid var(--ink); display: grid; grid-template-columns: var(--z) minmax(0, 1fr); font-size: 0.875rem; color: var(--ink-2); }
+.foot > :first-child { padding-right: var(--gut); }
+.foot .src { display: flex; flex-wrap: wrap; gap: 4px 22px; margin-bottom: 6px; color: var(--ink); font-weight: 500; }
+
+/* ------------------------------------------------------------ motion
+   The header's paper is drawn the way every page on the site is: the lines
+   come down from the top, the scale's edge is ruled across, its ticks drop,
+   and the four values it is read by appear. Nothing below the header moves. */
+@media (prefers-reduced-motion: no-preference) {
+  .hd-grid { animation: pl-draw 1500ms var(--eo) both; }
+  .hd-edge .edge-base { transform-box: fill-box; transform-origin: left; animation: pl-rule 1100ms var(--eo) 250ms backwards; }
+  .hd-edge .edge-t { transform-box: fill-box; transform-origin: top; animation: pl-tick 700ms var(--eo) calc(420ms + var(--i) * 11ms) backwards; }
+  .scale span { animation: pl-fade 600ms ease 1050ms backwards; }
+  .scale span:nth-child(3) { animation-delay: 1150ms; }
+  .scale span:nth-child(4) { animation-delay: 1250ms; }
+}
+@keyframes pl-draw { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes pl-rule { from { transform: scaleX(0); } }
+@keyframes pl-tick { from { transform: scaleY(0); } }
+@keyframes pl-fade { from { opacity: 0; } }
+
+/* the page opens and closes the way the others do */
+@view-transition { navigation: auto; }
+::view-transition-group(*) { animation-duration: 520ms; animation-timing-function: var(--eo); }
+::view-transition-old(root) { animation: vt-out 260ms var(--eq) both; }
+::view-transition-new(root) { animation: vt-in 460ms var(--eo) 60ms both; }
+::view-transition-old(bar) { animation: vt-out 260ms var(--eq) both; }
+::view-transition-new(bar) { animation: vt-in 460ms var(--eo) 60ms both; }
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(12px); } }
+
+/* ------------------------------------------------------------ phones */
+@media (max-width: 760px) {
+  .page { padding-bottom: 40px; }
+  .top { font-size: 0.8125rem; }
+  .top-links { gap: 18px; }
+  h1 { margin-top: 36px; font-size: clamp(2.75rem, 14.2vw, 3.5rem); }
+  .hd-a { display: block; }
+  .contact { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+  .contact div:first-child { grid-column: 1 / 3; }
+  .row { display: block; padding: 12px 0 14px; }
+  .k { display: block; padding: 0 0 3px; font-size: 1rem; color: var(--ink-2); }
+  .row.is-top .k { color: var(--ink); font-size: 1.1875rem; }
+  .grp { padding-top: 22px; }
+  .note { padding-left: 0; }
+  .foot { display: block; }
+  .foot > :first-child { margin-bottom: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hd-grid, .hd-edge .edge-base, .hd-edge .edge-t, .scale span { animation: none; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
+
+/* ------------------------------------------------------------ print
+   A4, black on white, no paper grid. Rows never split across pages. */
+@page {
+  size: A4;
+  margin: 13mm 14mm 14mm;
+  @bottom-left { content: "Roman Prigodskii, prigodskii.dev"; font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 500; font-size: 8pt; color: #555; }
+  @bottom-right { content: counter(page) " of " counter(pages); font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 500; font-size: 8pt; color: #555; }
+}
+@media print {
+  :root { --paper: #fff; --ink: #000; --ink-2: #222; --ink-3: #555; --g-d: #b4b4b4; --signal-t: #000; --gut: 3.5mm; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html, body { background: #fff; }
+  body { font-size: 9pt; line-height: 1.36; orphans: 3; widows: 3; }
+  .page { width: auto; padding: 0; }
+  .hd-grid, .hd-edge, .top-links, .foot { display: none; }
+  .top-print { display: inline; color: var(--ink); font-weight: 500; }
+  .hd-paper { padding: 0 0 4.5mm; border-bottom: 0.75pt solid #000; }
+  .top { font-size: 8.5pt; }
+  h1 { margin-top: 5mm; font-size: 30pt; }
+  .hd-a { margin-top: 3.5mm; }
+  .lede { font-size: 10.5pt; line-height: 1.36; max-width: 64ch; }
+  .contact { margin-top: 3mm; gap: 2mm 7mm; }
+  .contact dt { font-size: 8pt; }
+  .contact dd { font-size: 9pt; }
+  section { margin-top: 6mm; }
+  h2 { font-size: 14pt; padding-bottom: 1.8mm; break-after: avoid; }
+  .grp { font-size: 11pt; padding: 3.4mm 0 0; break-after: avoid; break-inside: avoid; }
+  h2 + .grp { padding-top: 2.4mm; }
+  .row, .grp { grid-template-columns: 27mm minmax(0, 1fr); }
+  .row { padding: 2mm 0 2.2mm; break-inside: avoid; }
+  .hd-a { grid-template-columns: 27mm minmax(0, 1fr); }
+  .note { padding-left: 27mm; }
+  .k { font-size: 9.6pt; }
+  .row.is-top .k { font-size: 11pt; }
+  .v h3 { font-size: 9.6pt; }
+  .v p { font-size: 9pt; line-height: 1.38; }
+  .v h3 + p, .v p + p { margin-top: 0.6mm; }
+  .v ul { margin-top: 1.2mm; }
+  .v li { font-size: 8.7pt; line-height: 1.36; padding-left: 3.6mm; }
+  .v li + li { margin-top: 0.6mm; }
+  .v li::before { left: 0.4mm; top: 0.55em; width: 1.2mm; height: 1.2mm; background: none; border: 0.6mm solid #000; }
+  .v .src { font-size: 8.4pt; margin-top: 1.2mm; gap: 0.5mm 5mm; }
+  .v .quiet { font-size: 8.4pt; margin-top: 0.8mm; }
+  .note { font-size: 8.4pt; margin-top: 1.6mm; }
+  a { text-decoration: none; }
+  a[data-p]::after { content: " " attr(data-p); font-weight: 400; color: var(--ink-3); }
+  .v .src small, .np { display: none; }
 }
 </style>
 </head>
 <body>
-<main class="page">
+<div class="page">
 
-  <header class="top">
+<header class="hd">
+  <div class="hd-paper">
+    <div class="hd-grid" aria-hidden="true"><!--@grid--><svg class="gp-svg" width="100%" height="100%" preserveAspectRatio="none" focusable="false" aria-hidden="true"><line class="gd" x1="0%" x2="0%" y1="0" y2="100%"/><line class="gh" x1="5.761%" x2="5.761%" y1="0" y2="100%"/><line class="gn" x1="9.131%" x2="9.131%" y1="0" y2="100%"/><line class="gn" x1="11.522%" x2="11.522%" y1="0" y2="100%"/><line class="gh" x1="13.377%" x2="13.377%" y1="0" y2="100%"/><line class="gn" x1="14.892%" x2="14.892%" y1="0" y2="100%"/><line class="gn" x1="16.173%" x2="16.173%" y1="0" y2="100%"/><line class="gn" x1="17.283%" x2="17.283%" y1="0" y2="100%"/><line class="gn" x1="18.262%" x2="18.262%" y1="0" y2="100%"/><line class="gd" x1="19.138%" x2="19.138%" y1="0" y2="100%"/><line class="gh" x1="24.899%" x2="24.899%" y1="0" y2="100%"/><line class="gn" x1="28.269%" x2="28.269%" y1="0" y2="100%"/><line class="gn" x1="30.66%" x2="30.66%" y1="0" y2="100%"/><line class="gh" x1="32.514%" x2="32.514%" y1="0" y2="100%"/><line class="gn" x1="34.03%" x2="34.03%" y1="0" y2="100%"/><line class="gn" x1="35.311%" x2="35.311%" y1="0" y2="100%"/><line class="gn" x1="36.421%" x2="36.421%" y1="0" y2="100%"/><line class="gn" x1="37.4%" x2="37.4%" y1="0" y2="100%"/><line class="g1" x1="38.275%" x2="38.275%" y1="0" y2="100%"/><line class="gh" x1="44.036%" x2="44.036%" y1="0" y2="100%"/><line class="gn" x1="47.406%" x2="47.406%" y1="0" y2="100%"/><line class="gn" x1="49.797%" x2="49.797%" y1="0" y2="100%"/><line class="gh" x1="51.652%" x2="51.652%" y1="0" y2="100%"/><line class="gn" x1="53.167%" x2="53.167%" y1="0" y2="100%"/><line class="gn" x1="54.448%" x2="54.448%" y1="0" y2="100%"/><line class="gn" x1="55.558%" x2="55.558%" y1="0" y2="100%"/><line class="gn" x1="56.537%" x2="56.537%" y1="0" y2="100%"/><line class="gd" x1="57.413%" x2="57.413%" y1="0" y2="100%"/><line class="gb" x1="63.174%" x2="63.174%" y1="0" y2="100%"/><line class="gn" x1="66.544%" x2="66.544%" y1="0" y2="100%"/><line class="gn" x1="68.935%" x2="68.935%" y1="0" y2="100%"/><line class="gh" x1="70.789%" x2="70.789%" y1="0" y2="100%"/><line class="gn" x1="72.305%" x2="72.305%" y1="0" y2="100%"/><line class="gn" x1="73.586%" x2="73.586%" y1="0" y2="100%"/><line class="gn" x1="74.696%" x2="74.696%" y1="0" y2="100%"/><line class="gn" x1="75.675%" x2="75.675%" y1="0" y2="100%"/><line class="gd" x1="76.55%" x2="76.55%" y1="0" y2="100%"/><line class="gh" x1="82.311%" x2="82.311%" y1="0" y2="100%"/><line class="gn" x1="85.681%" x2="85.681%" y1="0" y2="100%"/><line class="gn" x1="88.072%" x2="88.072%" y1="0" y2="100%"/><line class="gh" x1="89.927%" x2="89.927%" y1="0" y2="100%"/><line class="gn" x1="91.442%" x2="91.442%" y1="0" y2="100%"/><line class="gn" x1="92.724%" x2="92.724%" y1="0" y2="100%"/><line class="gn" x1="93.833%" x2="93.833%" y1="0" y2="100%"/><line class="gn" x1="94.812%" x2="94.812%" y1="0" y2="100%"/><line class="gd" x1="95.688%" x2="95.688%" y1="0" y2="100%"/><line class="ge" x1="100%" x2="100%" y1="0" y2="100%"/></svg><!--/@grid--></div>
+    <p class="top">
+      <span>Revised 27 September 2026</span>
+      <span class="top-links"><a href="../">Full version</a><a href="../research/">Research</a></span>
+      <span class="top-print">prigodskii.dev</span>
+    </p>
     <h1>Roman Prigodskii</h1>
-    <span class="top__alt"><a href="../">Full version</a> &middot; <a href="../research/">Research</a></span>
-  </header>
-
-  <p class="sum">
-    Seventeen, final year at Letovo School in Moscow, advanced mathematics track.
-    Winner of the Moscow Olympiad in Economics, Grade 10 division, and a two-time national finalist in
-    the All-Russian Olympiad. Four shipped systems and two sole-authored papers
-    under review at NeurIPS 2026 workshops.
-  </p>
-
-  <div class="meta">
-    <span><b>Email</b> <a href="mailto:lioneldassy@gmail.com">lioneldassy@gmail.com</a></span>
-    <span><b>Telegram</b> <a href="https://t.me/prigodskii" rel="me noopener">@prigodskii</a></span>
-    <span><b>GitHub</b> <a href="https://github.com/romanprigodskii" rel="me noopener">romanprigodskii</a></span>
-    <span><b>Location</b> Moscow</span>
+    <div class="hd-a">
+      <p class="lede">Seventeen, final year at Letovo School in Moscow, advanced mathematics track. Winner of the Moscow Olympiad in Economics, Grade 10 division, and a two-time national finalist in the All-Russian Olympiad in Economics, in Grades 9 and 10. Four shipped systems, a concluded research project, and two sole-authored papers, one under review at a NeurIPS 2026 workshop.</p>
+      <dl class="contact">
+        <div><dt>Email</dt><dd><a href="mailto:lioneldassy@gmail.com">lioneldassy@gmail.com</a></dd></div>
+        <div><dt>Telegram</dt><dd><a href="https://t.me/prigodskii" rel="me noopener">@prigodskii</a></dd></div>
+        <div><dt>GitHub</dt><dd><a href="https://github.com/romanprigodskii" rel="me noopener">romanprigodskii</a></dd></div>
+        <div><dt>Based in</dt><dd>Moscow</dd></div>
+      </dl>
+    </div>
   </div>
+  <div class="hd-edge" aria-hidden="true"><!--@edge--><svg class="edge-svg" width="100%" height="16" focusable="false" aria-hidden="true"><line class="edge-base" x1="0" x2="100%" y1="0.5" y2="0.5"/><line class="edge-t gd" style="--i:0" x1="0%" x2="0%" y1="0.5" y2="14.5"/><line class="edge-t gh" style="--i:1" x1="5.761%" x2="5.761%" y1="0.5" y2="8.5"/><line class="edge-t gn" style="--i:2" x1="9.131%" x2="9.131%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:3" x1="11.522%" x2="11.522%" y1="0.5" y2="4.5"/><line class="edge-t gh" style="--i:4" x1="13.377%" x2="13.377%" y1="0.5" y2="8.5"/><line class="edge-t gn" style="--i:5" x1="14.892%" x2="14.892%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:6" x1="16.173%" x2="16.173%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:7" x1="17.283%" x2="17.283%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:8" x1="18.262%" x2="18.262%" y1="0.5" y2="4.5"/><line class="edge-t gd" style="--i:9" x1="19.138%" x2="19.138%" y1="0.5" y2="14.5"/><line class="edge-t gh" style="--i:10" x1="24.899%" x2="24.899%" y1="0.5" y2="8.5"/><line class="edge-t gn" style="--i:11" x1="28.269%" x2="28.269%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:12" x1="30.66%" x2="30.66%" y1="0.5" y2="4.5"/><line class="edge-t gh" style="--i:13" x1="32.514%" x2="32.514%" y1="0.5" y2="8.5"/><line class="edge-t gn" style="--i:14" x1="34.03%" x2="34.03%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:15" x1="35.311%" x2="35.311%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:16" x1="36.421%" x2="36.421%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:17" x1="37.4%" x2="37.4%" y1="0.5" y2="4.5"/><line class="edge-t g1" style="--i:18" x1="38.275%" x2="38.275%" y1="0.5" y2="14.5"/><line class="edge-t gh" style="--i:19" x1="44.036%" x2="44.036%" y1="0.5" y2="8.5"/><line class="edge-t gn" style="--i:20" x1="47.406%" x2="47.406%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:21" x1="49.797%" x2="49.797%" y1="0.5" y2="4.5"/><line class="edge-t gh" style="--i:22" x1="51.652%" x2="51.652%" y1="0.5" y2="8.5"/><line class="edge-t gn" style="--i:23" x1="53.167%" x2="53.167%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:24" x1="54.448%" x2="54.448%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:25" x1="55.558%" x2="55.558%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:26" x1="56.537%" x2="56.537%" y1="0.5" y2="4.5"/><line class="edge-t gd" style="--i:27" x1="57.413%" x2="57.413%" y1="0.5" y2="14.5"/><line class="edge-t gb" style="--i:28" x1="63.174%" x2="63.174%" y1="0.5" y2="8.5"/><line class="edge-t gn" style="--i:29" x1="66.544%" x2="66.544%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:30" x1="68.935%" x2="68.935%" y1="0.5" y2="4.5"/><line class="edge-t gh" style="--i:31" x1="70.789%" x2="70.789%" y1="0.5" y2="8.5"/><line class="edge-t gn" style="--i:32" x1="72.305%" x2="72.305%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:33" x1="73.586%" x2="73.586%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:34" x1="74.696%" x2="74.696%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:35" x1="75.675%" x2="75.675%" y1="0.5" y2="4.5"/><line class="edge-t gd" style="--i:36" x1="76.55%" x2="76.55%" y1="0.5" y2="14.5"/><line class="edge-t gh" style="--i:37" x1="82.311%" x2="82.311%" y1="0.5" y2="8.5"/><line class="edge-t gn" style="--i:38" x1="85.681%" x2="85.681%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:39" x1="88.072%" x2="88.072%" y1="0.5" y2="4.5"/><line class="edge-t gh" style="--i:40" x1="89.927%" x2="89.927%" y1="0.5" y2="8.5"/><line class="edge-t gn" style="--i:41" x1="91.442%" x2="91.442%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:42" x1="92.724%" x2="92.724%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:43" x1="93.833%" x2="93.833%" y1="0.5" y2="4.5"/><line class="edge-t gn" style="--i:44" x1="94.812%" x2="94.812%" y1="0.5" y2="4.5"/><line class="edge-t gd" style="--i:45" x1="95.688%" x2="95.688%" y1="0.5" y2="14.5"/><line class="edge-t ge" style="--i:46" x1="100%" x2="100%" y1="0.5" y2="14.5"/></svg><!--/@edge--><p class="scale"><span>0.01</span><span>1</span><span>20</span><span>1,680</span></p></div>
+</header>
 
-  <section>
-    <h2>Education</h2>
+<main>
+
+  <section aria-labelledby="s-edu">
+    <h2 id="s-edu">Education</h2>
     <div class="row">
-      <span class="row__k">2020&ndash;2027</span>
-      <div class="row__v">
+      <span class="k">To 2027</span>
+      <div class="v">
         <h3>Letovo School, Moscow</h3>
-        <p>Grade 11, final year. Russian national curriculum, advanced (profile) mathematics track. GPA 6.38 / 7.0, above group average in algebra and in every core quantitative subject inside the school's most competitive quantitative group.</p>
-        <p class="sub">SAT Mathematics 790, August 2026. A further sitting scheduled for December 2026. IELTS 7.0.</p>
+        <p>Grade 11, final year. Russian national curriculum, advanced (profile) mathematics track. GPA 6.38 / 7.0, above group average in algebra and in every core quantitative subject inside the school&rsquo;s most competitive quantitative group.</p>
+        <p class="quiet">SAT Mathematics 790, August 2026. Two further SAT sittings planned, on 7 November and 5 December 2026. IELTS 7.0.</p>
       </div>
     </div>
   </section>
 
-  <section>
-    <h2>Awards</h2>
-    <div class="row win">
-      <span class="row__k">1st place</span>
-      <div class="row__v">
+  <section aria-labelledby="s-awards">
+    <h2 id="s-awards">Awards</h2>
+    <p class="grp">Economics</p>
+    <div class="row is-top">
+      <span class="k">1st place</span>
+      <div class="v">
         <h3>Moscow Olympiad in Economics</h3>
-        <p>Winner, first place by score in the Grade 10 division. One of the largest regional economics olympiads in Russia.</p>
+        <p>Winner, first place by score in the Grade 10 division, 2025/26. On the federal list of olympiads at Level II; its 2026 final for Grades 8 to 10 was held at twelve venues across Russia.</p>
       </div>
     </div>
     <div class="row">
-      <span class="row__k">Finalist x2</span>
-      <div class="row__v">
+      <span class="k">Finalist &times;2</span>
+      <div class="v">
         <h3>All-Russian Olympiad in Economics</h3>
-        <p>National finalist in two separate years. The All-Russian Olympiad is Russia's national school olympiad system.</p>
+        <p>National finalist in Grades 9 and 10: one of 91 Grade 9 finalists at the 2025 final and one of 118 Grade 10 finalists at the 2026 final (checked against both final protocols). In 2024/25 more than 470,000 students took part in its economics olympiad, most in the open school round, and 392 reached the national final across Grades 9 to 11.</p>
       </div>
     </div>
     <div class="row">
-      <span class="row__k">Prize-winner</span>
-      <div class="row__v">
+      <span class="k">Prize-winner</span>
+      <div class="v">
+        <h3>Olympiad of the Russian Presidential Academy (RANEPA) in Economics</h3>
+        <p>Grade 10, 2025/26. Prize-winner at the final stage. On the federal list of olympiads for 2025/26, Level III. Diploma <span lang="ru">о</span>/11840-26.</p>
+      </div>
+    </div>
+    <p class="grp">Mathematics</p>
+    <div class="row">
+      <span class="k">Prize-winner</span>
+      <div class="v">
         <h3>All-Russian Olympiad in Mathematics, regional stage</h3>
-        <p>Grade 9. Protocol-verified.</p>
+        <p>Grade 9, 2024/25.</p>
       </div>
     </div>
     <div class="row">
-      <span class="row__k">3rd degree</span>
-      <div class="row__v">
+      <span class="k">3rd degree</span>
+      <div class="v">
         <h3>Leonhard Euler Olympiad, regional prize-winner</h3>
-        <p>Grade 8. The Euler Olympiad is the All-Russian mathematics olympiad for Grade 8, held on the same regional dates with problems from the same central commission.</p>
+        <p>Grade 8, 2023/24. The Euler Olympiad is the All-Russian mathematics olympiad for Grade 8, on the same regional dates with problems from the same central commission.</p>
       </div>
     </div>
     <div class="row">
-      <span class="row__k">3rd degree</span>
-      <div class="row__v">
+      <span class="k">3rd degree</span>
+      <div class="v">
         <h3>All-Siberian Open Olympiad</h3>
-        <p>Grade 7. Protocol-verified.</p>
+        <p>Grade 7, 2022/23. Third-degree diploma.</p>
       </div>
     </div>
     <div class="row">
-      <span class="row__k">Mar 2025</span>
-      <div class="row__v">
+      <span class="k">Mar 2025</span>
+      <div class="v">
         <h3>Letovo School, best MYP personal project in Mathematics</h3>
-        <p>Director-signed.</p>
+        <p>Grade 9. Director-signed.</p>
       </div>
     </div>
+    <p class="note">Checked against the published competition protocols where they exist.</p>
   </section>
 
-  <section>
-    <h2>Research</h2>
+  <section aria-labelledby="s-research">
+    <h2 id="s-research">Research</h2>
     <div class="row">
-      <span class="row__k">Under review</span>
-      <div class="row__v">
+      <span class="k">Under review</span>
+      <div class="v">
         <h3>Testing by betting when the bets are real</h3>
-        <p>An e-value audit of 84 pre-registered market-efficiency hypotheses. Sole author. Submitted to the NeurIPS 2026 workshop <i>E-Values: From Statistics to ML</i> and to NewInML.</p>
-        <ul role="list">
-          <li>The null is a bookmaker's posted price, the stake is a stake, and the wealth process is the e-process. 4,141 walk-forward out-of-fold bouts, 1,787 of them carrying an archived closing price.</li>
-          <li>The 84 slices overlap, so Benjamini-Hochberg's guarantee is not established. Its four discoveries on the 1,191-bout discovery window, one favourable and three against the model, survive neither Benjamini-Yekutieli nor e-BH.</li>
+        <p>An e-value audit of 84 pre-registered market-efficiency hypotheses. Sole author. Under review at the NeurIPS 2026 workshop <i>E-Values: From Statistics to ML</i> (non-archival), with an extended version at NewInML; notification 29 September 2026.</p>
+        <ul>
+          <li>The null is a bookmaker&rsquo;s posted price, the stake is a stake, and the wealth process is the e-process. 4,141 walk-forward out-of-fold bouts, 1,787 of them carrying an archived closing price.</li>
+          <li>The best of the 84 reaches e = 151. One pre-registered hypothesis needs 20; all 84 at once need 1,680.</li>
+          <li>The 84 slices overlap, so Benjamini-Hochberg&rsquo;s guarantee is not established. Its four discoveries on the 1,191-bout discovery window, one favourable and three against the model, survive neither Benjamini-Yekutieli nor e-BH.</li>
           <li>A segment written off at p = 0.30 is still growing on the wealth scale: not refuted, 100 bouts short at fair odds.</li>
-          <li>A post-hoc threshold rule is charged for the search it ran, the direction it could have searched, and the bookmaker's margin.</li>
-          <li>Validated before use: 40,000 null replications give E[e] = 0.985 &plusmn; 0.018 per segment. The headline result is negative.</li>
+          <li>A threshold rule chosen after the fact is charged for the search it ran, the direction it could have searched and the bookmaker&rsquo;s margin: 31.28 falls to 10.43, and to 2.82 at the prices the book offered.</li>
+          <li>Validated before use: 40,000 null replications give an expected e-value of 0.985 &plusmn; 0.018 per segment. The headline result is negative.</li>
         </ul>
-        <p class="sub"><a href="../papers/evalues.pdf">PDF, E-Values version</a> &nbsp;&middot;&nbsp; <a href="../papers/newinml.pdf">PDF, NewInML version</a></p>
+        <p class="src"><span><a href="../papers/evalues.pdf" data-p="prigodskii.dev/papers/evalues.pdf">The paper</a> <small>PDF, 258 KB</small></span><span><a href="../papers/newinml.pdf" data-p="prigodskii.dev/papers/newinml.pdf">Extended version</a> <small>PDF, 285 KB</small></span></p>
       </div>
     </div>
     <div class="row">
-      <span class="row__k">Under review</span>
-      <div class="row__v">
+      <span class="k">Working paper</span>
+      <div class="v">
         <h3>Measure the instrument first</h3>
-        <p>Detection floors for model selection and for LLM judges. Sole author. Submitted to the NeurIPS 2026 workshop <i>TAE: Can We Trust AI Evaluation?</i></p>
-        <ul role="list">
+        <p>Detection floors for model selection and for LLM judges. Sole author.</p>
+        <ul>
           <li>The null lever: the same recipe refit under a different random seed changes nothing real, so everything it produces is instrument noise.</li>
-          <li>On a 3,087-row walk-forward pool under five seeds, re-seeding alone reproduces 80% of the only lever ever shipped; the pipeline had 56% power against its own shipped result.</li>
-          <li>A floor belongs to the instrument that measured the effect. Recomputed on the right pool, the project's one large win is 4x its own floor rather than 13x another pool's.</li>
-          <li>The protocol transplants: on a deployed LLM classifier, two identical reruns disagree on 5.6% of items and the floor is 2.9 points of agreement.</li>
+          <li>On a 3,087-row walk-forward pool under five seeds, re-seeding alone reproduces 80% of the only change the winner model ever shipped; the pipeline had 56% power against its own shipped result.</li>
+          <li>Recomputed on the 793-row pool where the project&rsquo;s one large win was measured, the floor is 0.0119 rather than 0.00362: the win is 4&times; its own floor, not 13&times; another pool&rsquo;s.</li>
+          <li>The same test on a deployed LLM classifier: two identical reruns disagree on 5.6% of items, and the floor is 2.9 points of agreement.</li>
         </ul>
-        <p class="sub"><a href="../papers/tae.pdf">PDF</a></p>
+        <p class="src"><span><a href="../papers/floors.pdf" data-p="prigodskii.dev/papers/floors.pdf">The paper</a> <small>PDF, 124 KB</small></span></p>
       </div>
     </div>
+    <p class="grp">Before the papers</p>
     <div class="row">
-      <span class="row__k">School, 2024</span>
-      <div class="row__v">
+      <span class="k">School, 2024</span>
+      <div class="v">
         <h3>A sausage wrapped in newspaper</h3>
-        <p>A Grade 9 project, revised in 2026. Cut through a sausage wrapped in newspaper and the unrolled paper's edge is a sine wave, with a period of 2&pi;r and a height set by the angle of the cut. Proved, then checked on a real sausage: traced from the scan, the edge follows a sine to within 1.8% of its height (a triangle wave misses by 4.8%), and its height-to-period ratio is 0.233 against a predicted 0.243.</p>
-        <p class="sub"><a href="../papers/sausage.pdf">PDF</a></p>
+        <p>A Grade 9 project, revised in 2026. Cut through a sausage wrapped in newspaper and the unrolled paper&rsquo;s edge is a sine wave, with a period of 2&pi;r and a height set by the angle of the cut. Proved, then checked on a real sausage: traced from the scan, the edge follows a sine to within 1.8% of its height (a triangle wave misses by 4.8%), and its height is 0.233 of its period against a predicted 0.243.</p>
+        <p class="src"><span><a href="../papers/sausage.pdf" data-p="prigodskii.dev/papers/sausage.pdf">The project</a> <small>PDF, 1.4 MB</small></span></p>
       </div>
     </div>
     <div class="row">
-      <span class="row__k">School, 2025</span>
-      <div class="row__v">
+      <span class="k">School, 2025</span>
+      <div class="v">
         <h3>The volume of a tea glass</h3>
         <p>A Grade 9 project, translated and corrected in 2026. The profile of a Turkish tea glass fitted with four parabolas, the glass cut into discs and the discs summed in the limit with the formulas for sums of powers: 216.9 cm&sup3;. Lifted out of a measuring beaker full of water, the glass took between 200 and 225 ml with it.</p>
-        <p class="sub"><a href="../papers/glass.pdf">PDF</a></p>
+        <p class="src"><span><a href="../papers/glass.pdf" data-p="prigodskii.dev/papers/glass.pdf">The project</a> <small>PDF, 983 KB</small></span></p>
       </div>
     </div>
   </section>
 
-  <section>
-    <h2>Independent work</h2>
+  <section aria-labelledby="s-work">
+    <h2 id="s-work">Independent work</h2>
     <div class="row">
-      <span class="row__k">Live product</span>
-      <div class="row__v">
+      <span class="k">Live product</span>
+      <div class="v">
         <h3>Vertex MMA, <a href="https://vertexmma.com" rel="noopener">vertexmma.com</a></h3>
-        <p>UFC analytics and forecasting platform, English and Russian, virtual currency only. Sole developer.</p>
-        <ul role="list">
+        <p>A nine-model UFC forecasting stack, graded against the bookmaker&rsquo;s closing line. English and Russian, virtual currency only. Sole developer.</p>
+        <ul>
           <li>4,581 fighters, 8,906 bouts, 795 events. 243k score-history rows, 86k career bouts, 49k ranking snapshots, 41k round-stat rows, 31k judge scorecards.</li>
           <li>Nine models including a 10,000-run Monte Carlo simulator: a 118-feature winner ensemble over LightGBM, CatBoost and logistic regression, a debut specialist, method models, a cause-specific Poisson finish hazard, a no-intercept decision model.</li>
           <li>Held out from January 2025: accuracy 0.6747, log-loss 0.6137, Brier 0.2124, AUC 0.7244 over 664 bouts.</li>
-          <li>On the 582 priced bouts, 0.6753 / 0.6171 / 0.2140 against the closing line's 0.6838 / 0.5922 / 0.2035: better calibrated, less sharp, and the remaining gap is resolution, which needs information the public record does not contain.</li>
-          <li>Point-in-time enforced by five independent mechanisms. Bookmaker odds are never a feature: removing them cost 1.5 points of test accuracy and they stayed removed.</li>
-          <li>Roughly two dozen rejected ideas documented beside the shipped ones, each with its reason.</li>
-          <li>Its evaluation is the subject of both papers above.</li>
-          <li>Next.js 16, React 19, TypeScript 5.9 strict, Tailwind 4, Postgres, Python 3.12. 35 routes across two locales, 1,533 translation keys each.</li>
+          <li>On the 582 priced bouts, 0.6753 / 0.6171 / 0.2140 against the closing line&rsquo;s 0.6838 / 0.5922 / 0.2035: better calibrated, less sharp, and the remaining gap is resolution, which needs information the public record does not contain.</li>
+          <li>Five separate mechanisms keep future information out of the features. Bookmaker odds are never a feature: taking them out cost 1.5 points of test accuracy, and they stayed out.</li>
+          <li>Roughly two dozen rejected ideas documented beside the shipped ones, each with its reason. Its evaluation is the subject of both papers above.</li>
+          <li>Next.js 16, React 19, TypeScript 5.9 strict, Tailwind 4, Postgres, Python 3.12. 35 routes in two languages, 1,533 translation keys each.</li>
         </ul>
-        <p class="sub"><a href="https://github.com/romanprigodskii/vertex-mma" rel="noopener">Source</a></p>
+        <p class="src"><a href="https://github.com/romanprigodskii/vertex-mma" rel="noopener" data-p="github.com/romanprigodskii/vertex-mma">Source</a></p>
       </div>
     </div>
     <div class="row">
-      <span class="row__k">Co-founder</span>
-      <div class="row__v">
+      <span class="k">Co-founder</span>
+      <div class="v">
         <h3>Gluline, <a href="https://gluline.com" rel="noopener">gluline.com</a></h3>
-        <p>A messenger for people who want to know exactly who can read what, released on the <a href="https://apps.apple.com/us/app/gluline-messenger/id6786467294" rel="noopener">App Store</a>, <a href="https://play.google.com/store/apps/details?id=ae.apri.gluline" rel="noopener">Google Play</a> and the web, in ten languages. Android in Jetpack Compose, iOS in SwiftUI, a web client, Python and FastAPI backend, infrastructure, protocol. Co-founder, engineer and Head of AI.</p>
-        <ul role="list">
+        <p>A messenger for people who want to know exactly who can read what, released on the <a href="https://apps.apple.com/us/app/gluline-messenger/id6786467294" rel="noopener">App Store</a>, <a href="https://play.google.com/store/apps/details?id=ae.apri.gluline" rel="noopener">Google Play</a> and the web, in ten languages. Co-founder, engineer and Head of AI. One repository: Android in Jetpack Compose, iOS in SwiftUI, a web client, a Python and FastAPI backend, the infrastructure and the protocol documents.</p>
+        <ul>
           <li>From the first files in April 2026 to the App Store on 19 August 2026.</li>
-          <li>The AI assistant is off until the user turns it on; every chat states whether it can read that conversation, and it can be switched off for one chat.</li>
-          <li>Chats are encrypted on the device with a per-chat key; one-to-one calls are encrypted between the devices; group calls go through a media server and are stated as not end-to-end encrypted.</li>
-          <li>Release gate at the August 2026 audit: compile green, 309 unit tests passing, lintVital clean, R8 keep-rules verified.</li>
-          <li>Two formal codebase audits on record. August 2026: 74 candidate findings narrowed to 42 confirmed by an adversarial second pass, 32 written down as refuted.</li>
+          <li>As Head of AI I own everything the product does with a model. The assistant is off until the user turns it on; every chat states whether it can read that conversation, and it can be switched off for one chat.</li>
+          <li>Chat content is encrypted on the device with a key for each chat. One-to-one calls are encrypted between the two devices. Group calls pass through a media server that decrypts them to forward them, so the store listing says they are not end-to-end encrypted, and it claims no forward secrecy.</li>
+          <li>A written release checklist before any store: a clean build, 309 unit tests passing, and a check that minification had not broken any of the 15 fields the app sends over the wire.</li>
+          <li>Two formal codebase audits on record. August 2026: 74 candidate findings, 42 confirmed by an adversarial second pass and 32 written down as refuted.</li>
         </ul>
       </div>
     </div>
     <div class="row">
-      <span class="row__k">Paid client</span>
-      <div class="row__v">
+      <span class="k">For a client</span>
+      <div class="v">
         <h3>Zacks to Interactive Brokers execution pipeline</h3>
-        <p>Commissioned and paid third-party work. Screen ingestion from Zacks exports into an Interactive Brokers execution path: a daily screen of about 4,400 stocks turned into an equal-weight book of 25, VPS hosted, collected every trading day. Dry run so far; the live connection comes next, on a paper account first.</p>
+        <p>Paid client work, commissioned by a third party. It ingests screen exports from Zacks (4,369 stocks in one day&rsquo;s screen), turns them into an equal-weight book of 25 positions, and works out the orders that close the gap to what the Interactive Brokers account holds. Collection runs every trading day on a VPS. Dry run by default: no single order may exceed 10% of the book, and a run that would sell more than 80% of what is held stops before it starts. The connection to a live account is next, on a paper account first.</p>
       </div>
     </div>
     <div class="row">
-      <span class="row__k">Open source</span>
-      <div class="row__v">
+      <span class="k">Open source</span>
+      <div class="v">
         <h3>Clipwell</h3>
-        <p>A native clipboard history for macOS (Swift, SwiftUI) and Windows (C#, WPF). MIT licensed, distributed as a Homebrew cask, English and Russian UI. Content marked concealed by a password manager is never stored.</p>
-        <p class="sub"><a href="https://romanprigodskii.github.io/clipwell/" rel="noopener">Product site</a> &nbsp;&middot;&nbsp; <a href="https://github.com/romanprigodskii/clipwell" rel="noopener">Source</a></p>
+        <p>A native clipboard history for macOS (Swift, SwiftUI) and Windows (C#, WPF), written natively twice rather than once in Electron. MIT licensed, installed with one Homebrew command, English and Russian UI, no account and no network calls. Content that a password manager marks as concealed or transient is never written to disk.</p>
+        <p class="src"><a href="https://romanprigodskii.github.io/clipwell/" rel="noopener" data-p="romanprigodskii.github.io/clipwell">Product site</a><a href="https://github.com/romanprigodskii/clipwell" rel="noopener" data-p="github.com/romanprigodskii/clipwell">Source</a></p>
       </div>
     </div>
     <div class="row">
-      <span class="row__k">Concluded research</span>
-      <div class="row__v">
+      <span class="k">Concluded research</span>
+      <div class="v">
         <h3>Vertex Boxing</h3>
-        <p>The Vertex method on professional boxing, built to test whether regional and undercard markets are priced softly enough to leave room. They are not.</p>
-        <ul role="list">
-          <li>Cut by level, closing-line value rises from +0.0044 on four-to-six-round club fights to +0.0180 on twelve-round title fights. On a window the rule never saw, the top gave 2.0 times the closing-line value of the bottom.</li>
-          <li>Blended into the market price, the model improves it by +0.0043 [+0.0024, +0.0062]. On its own it does not beat the closing line, and bets at the closing price make nothing.</li>
-          <li>At the opening price, blended into that price, it returned +10.9% at Bet365 over 2023&ndash;2025, and +18% to +24% at ProBoxingOdds over 2016&ndash;2020 in a test whose rules were timestamped in the Bitcoin blockchain before it ran. On 2021&ndash;2023 it fell short. The same rule, fixed in advance, passed again on a holdout of the first seven months of 2026 (e-value 41.8 against a bar of 20).</li>
-          <li>Caught and removed a post-bell leak: judges' fields exist only for fights that went the distance, so their presence told the model how the fight ended (early finish 0.097 with judges, 0.743 without).</li>
-          <li>A pre-registered random search over 200 configurations found nothing that holds on unseen bouts: all five finalists did worse there than the model already in use.</li>
+        <p>The Vertex MMA models moved to professional boxing, to test whether regional and club lines are soft enough to beat. On every bout the available odds cover, they are not; the anonymous regional card the thesis was aimed at carries no price, so there it cannot be tested. What the model turned out to read is where the line is going.</p>
+        <ul>
+          <li>Cut by level, closing-line value rises from +0.0044 on four-to-six-round club fights to +0.0180 on twelve-round title fights. On a window the rule was never chosen on, the top gave 2.0 times the closing-line value of the bottom.</li>
+          <li>Blended into the closing price at a weight of 0.17, the model improves its log-loss by +0.0043 nats [+0.0024, +0.0062] on 3,288 priced bouts. On its own it does not beat the closing line, and bets at the closing price make nothing.</li>
+          <li>At the opening price, a median three days before the fight, the blend moves the price 87% of the way to where it closes. Bet there and scored as e-values against a bar of 20, the rule passed on 2016&ndash;2020 (+18% to +24% flat, its protocol timestamped in Bitcoin blocks and pushed to GitHub before the model was trained), on 2023&ndash;2025 (+10.9% at Bet365) and on the January to July 2026 holdout, at <span class="hit">e = 41.8</span>. On 2021&ndash;2023 it fell short, at 12.5.</li>
+          <li>A live test was frozen and pushed publicly on 24 September 2026, before any bout it covers had been fought: Bet365&rsquo;s opening price, one unit on every side where the blend beats it, no stake placed. It can be read at any checkpoint, rejects at 20 and closes on 25 September 2029. The result will be reported either way.</li>
+          <li>Caught and removed a post-bell leak: judges&rsquo; scorecards are published only for fights that went the distance, so their mere presence told the model how a fight had ended. Where judges were recorded, 9.7% of fights ended early; where they were not, 74.3% did.</li>
+          <li>A random search over 200 configurations, under a protocol committed before the first fit: none of the five taken forward kept its lead over the model in use on bouts the search never saw.</li>
           <li>All backtest, concluded September 2026. Zero real bets placed.</li>
         </ul>
-        <p class="sub"><a href="https://github.com/romanprigodskii/vertex-boxing/blob/main/docs/REPORT.md" rel="noopener">Report</a> &nbsp;&middot;&nbsp; <a href="https://github.com/romanprigodskii/vertex-boxing" rel="noopener">Source</a></p>
+        <p class="src"><a href="https://github.com/romanprigodskii/vertex-boxing/blob/main/docs/REPORT.md" rel="noopener" data-p="github.com/romanprigodskii/vertex-boxing">Report</a><a class="np" href="https://github.com/romanprigodskii/vertex-boxing/blob/main/docs/evalue_protocol_4.md" rel="noopener">The live test</a><a class="np" href="https://github.com/romanprigodskii/vertex-boxing" rel="noopener">Source</a></p>
+      </div>
+    </div>
+    <div class="row">
+      <span class="k">Internship</span>
+      <div class="v">
+        <h3>Alfa-Romeo</h3>
+        <p>Built during an internship at Alfa-Bank, as a concept of what a bank becomes by 2035: one passport, every profile a life needs, roubles and crypto in one balance, and an AI that works as a copilot rather than a chat window. 93 screens.</p>
+        <ul>
+          <li>Live rates from the Bank of Russia&rsquo;s daily fixing and from CoinGecko. The wallet is a closed economy on Postgres: sign up with a phone number and send play roubles, or play crypto, to another phone.</li>
+          <li>The copilot is Claude behind guardrails: it drafts the action and waits for a yes, the largest action it may carry out is &#8381;100,000, and a deterministic stand-in takes over when there is no key or no network.</li>
+          <li>The credit screen shows the three factors behind the limit, then recounts it when you ask what if.</li>
+          <li>The business half: acquiring by payment link, QR, NFC and terminal, any payment over &#8381;500,000 waiting for a second signature, and an AI accountant that draws the next ninety days of cash flow and points at a gap two weeks before it opens.</li>
+        </ul>
+        <p class="src"><a href="https://github.com/romanprigodskii/alfaromeo" rel="noopener" data-p="github.com/romanprigodskii/alfaromeo">Source</a></p>
       </div>
     </div>
   </section>
 
-  <section>
-    <h2>Skills</h2>
+  <section aria-labelledby="s-skills">
+    <h2 id="s-skills">Skills</h2>
     <div class="row">
-      <span class="row__k">Modelling</span>
-      <div class="row__v"><p>Python, LightGBM, CatBoost, scikit-learn, NumPy, pandas, statsmodels, Monte Carlo simulation</p></div>
+      <span class="k">Modelling</span>
+      <div class="v"><p>Python, LightGBM, CatBoost, scikit-learn, NumPy, pandas, statsmodels, Monte Carlo simulation</p></div>
     </div>
     <div class="row">
-      <span class="row__k">Statistics</span>
-      <div class="row__v"><p>E-values and test martingales, anytime-valid inference, walk-forward validation, calibration and sharpness decomposition, power and detection floors</p></div>
+      <span class="k">Statistics</span>
+      <div class="v"><p>E-values and test martingales, anytime-valid inference, walk-forward validation, calibration and sharpness decomposition, power and detection floors</p></div>
     </div>
     <div class="row">
-      <span class="row__k">Engineering</span>
-      <div class="row__v"><p>TypeScript, Next.js, React, Tailwind, Postgres, Supabase; Kotlin and Jetpack Compose, Swift and SwiftUI, C# and WPF; Python and FastAPI, NestJS, Docker, Linux, Caddy, SOPS</p></div>
+      <span class="k">Engineering</span>
+      <div class="v"><p>TypeScript, Next.js, React, Tailwind, Postgres, Supabase; Kotlin and Jetpack Compose, Swift and SwiftUI, C# and WPF; Python and FastAPI, NestJS, Docker, Linux, Caddy, SOPS</p></div>
     </div>
     <div class="row">
-      <span class="row__k">Languages</span>
-      <div class="row__v"><p>Russian (native), English (working). Bilingual technical writing. LaTeX.</p></div>
+      <span class="k">Languages</span>
+      <div class="v"><p>Russian (native), English (working). Bilingual technical writing. LaTeX.</p></div>
     </div>
   </section>
 
-  <footer class="foot">
-    <span>Compiled September 2026.</span>
-    <a href="../">Full version of this page</a>
-  </footer>
-
 </main>
+
+<footer class="foot">
+  <p>Moscow, 2026</p>
+  <div>
+    <p class="src"><a href="../">Full version</a><a href="../research/">Research</a><a href="https://github.com/romanprigodskii/romanprigodskii.github.io" rel="noopener">Source of this site</a></p>
+    <p>Set in Barlow. The lines in the header are the site&rsquo;s e-value axis, 0.01 to 1,680, on a log scale.</p>
+  </div>
+</footer>
+
+</div>
 </body>
 </html>
