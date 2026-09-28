@@ -14,13 +14,14 @@
 
    - Safari has the same feature, but it blanks the window for several frames
      before it starts (a white flash in the middle of the move). So Safari, and
-     Firefox, navigate plainly. With a mouse or trackpad, the page first fades
-     out under the bar (html.is-leaving, 170ms) and only then navigates:
-     WebKit draws nothing more of a page once a navigation has started, so a
-     fade begun with the navigation would never be seen. The next page fades
-     in under its own entrance (html.is-arriving). On a touch screen the page
-     is left as it is, because Safari's preview for swiping back is taken as
-     the navigation starts, and a faded page would make it blank. */
+     Firefox, navigate plainly. With a mouse or trackpad, a veil in the page's
+     colour first closes over it under the bar (html.is-leaving, 170ms) and
+     only then does the page navigate: WebKit draws nothing more of a page
+     once a navigation has started, so a fade begun with the navigation would
+     never be seen. On the next page the veil lifts as its entrance plays
+     (html.is-arriving). On a touch screen the page is left as it is, because
+     Safari's preview for swiping back is taken as the navigation starts, and
+     a veiled page would make it blank. */
 (function () {
   "use strict";
   var KEY = "rp-vt", LEAVE = "rp-leave", last = null;
@@ -36,7 +37,7 @@
   }
 
   /* ---------------------------------------------- Safari and Firefox */
-  var stuck = 0;
+  var stuck = 0, lift = 0;
   function arrive() {
     var t = 0;
     try { t = +sessionStorage.getItem(LEAVE) || 0; sessionStorage.removeItem(LEAVE); } catch (x) {}
@@ -44,6 +45,9 @@
     doc.classList.remove("is-arriving");
     void doc.offsetWidth;
     doc.classList.add("is-arriving");
+    /* once lifted, the veil is taken away altogether */
+    clearTimeout(lift);
+    lift = setTimeout(function () { doc.classList.remove("is-arriving"); }, 480);
   }
   arrive();
   /* a page brought back from the back-forward cache is shown whole again */
@@ -65,6 +69,7 @@
   }
   function leave() {
     try { sessionStorage.setItem(LEAVE, String(Date.now())); } catch (x) {}
+    clearTimeout(lift);
     doc.classList.remove("is-arriving");
     doc.classList.add("is-leaving");
     /* a navigation that never completes (stopped, offline) gives the page back */

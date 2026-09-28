@@ -672,10 +672,16 @@ html.js .rejects:not(.in) li span { background-size: 0 1.5px; }
 /* from the plain version, which has no bar, the bar fades in where it stands */
 ::view-transition-new(bar):only-child { animation: vt-show 400ms ease both; }
 @keyframes vt-show { from { opacity: 0; } }
-/* in Safari and Firefox (vt.js): the page fades out under the bar while the
-   next one loads, and the next one fades in under its own entrance */
-html.is-leaving main, html.is-leaving .foot { opacity: 0; transition: opacity 160ms cubic-bezier(0.4, 0, 1, 1); }
-html.is-arriving main, html.is-arriving .foot { animation: vt-show 420ms var(--eo) backwards; }
+/* in Safari and Firefox (vt.js): a veil in the page's own colour, under the
+   bar, closes over the page before it is left and lifts off the next one as
+   its entrance plays. The veil is one flat layer, so the fade costs next to
+   nothing to draw; fading the page itself (a tall layer full of playing
+   loops) made Safari redraw all of it on every frame, and the move stuttered.
+   The veil is hidden, not just transparent, whenever it is not moving. */
+body::after { content: ""; position: fixed; inset: 0; z-index: 45; background: var(--bg); opacity: 0; visibility: hidden; pointer-events: none; }
+html.is-leaving body::after { visibility: visible; opacity: 1; transition: opacity 160ms cubic-bezier(0.4, 0, 1, 1); }
+html.is-arriving body::after { visibility: visible; animation: veil-lift 420ms var(--eo) forwards; }
+@keyframes veil-lift { from { opacity: 1; } to { opacity: 0; } }
 
 /* ==========================================================================
    Widths
@@ -824,8 +830,7 @@ html.is-arriving main, html.is-arriving .foot { animation: vt-show 420ms var(--e
   .bar-name { transition: opacity 260ms ease; }
   html.js .bar[data-hide-name]:not(.is-on) .bar-name { transform: none; }
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
-  html.is-leaving main, html.is-leaving .foot { opacity: 1; transition: none; }
-  html.is-arriving main, html.is-arriving .foot { animation: none; }
+  html.is-leaving body::after, html.is-arriving body::after { visibility: hidden; transition: none; animation: none; }
 }
 
 /* ==========================================================================
