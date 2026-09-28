@@ -653,12 +653,12 @@ html.js .rejects:not(.in) li span { background-size: 0 1.5px; }
 .next-row > :first-child { grid-column: 1 / 5; }
 .next-row > :last-child { grid-column: 5 / 6; padding-right: 0; justify-self: end; }
 
-/* from page to page. The page being left fades out on top of the one
-   arriving, which is already in place beneath it and brings its own content
-   in as it does on a first load, so nothing is shown half-transparent twice.
-   The title the visitor followed (named by assets/js/vt.js) flies from where
-   it was to where it goes; the bar stays put. */
-@view-transition { navigation: auto; }
+/* from page to page, in Chromium (assets/js/vt.js opts in there, and only
+   there). The page being left fades out on top of the one arriving, which is
+   already in place beneath it and brings its own content in as it does on a
+   first load, so nothing is shown half-transparent twice. The title the
+   visitor followed (named by vt.js) flies from where it was to where it goes;
+   the bar stays put. */
 ::view-transition-group(*) { animation-duration: 640ms; animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1); }
 ::view-transition-old(root), ::view-transition-new(root) { mix-blend-mode: normal; }
 ::view-transition-old(root) { z-index: 1; animation: vt-out 240ms cubic-bezier(0.33, 1, 0.68, 1) both; }
@@ -672,6 +672,10 @@ html.js .rejects:not(.in) li span { background-size: 0 1.5px; }
 /* from the plain version, which has no bar, the bar fades in where it stands */
 ::view-transition-new(bar):only-child { animation: vt-show 400ms ease both; }
 @keyframes vt-show { from { opacity: 0; } }
+/* in Safari and Firefox (vt.js): the page fades out under the bar while the
+   next one loads, and the next one fades in under its own entrance */
+html.is-leaving main, html.is-leaving .foot { opacity: 0; transition: opacity 160ms cubic-bezier(0.4, 0, 1, 1); }
+html.is-arriving main, html.is-arriving .foot { animation: vt-show 420ms var(--eo) backwards; }
 
 /* ==========================================================================
    Widths
@@ -820,6 +824,8 @@ html.js .rejects:not(.in) li span { background-size: 0 1.5px; }
   .bar-name { transition: opacity 260ms ease; }
   html.js .bar[data-hide-name]:not(.is-on) .bar-name { transform: none; }
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+  html.is-leaving main, html.is-leaving .foot { opacity: 1; transition: none; }
+  html.is-arriving main, html.is-arriving .foot { animation: none; }
 }
 
 /* ==========================================================================
@@ -1621,7 +1627,7 @@ html.js [data-shot].in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: no-preference) { html.js .case-title { animation: sk-rise 1100ms var(--eo) 60ms backwards; } }
 html.vt-flown .case-title { animation: none; }
 /* the first stage under a case title arrives after the lines above it */
-.case-hero + .frame > figure:first-child > [data-shot] { --d: 360ms; }
+.case-hero + .frame > figure:first-child > [data-shot] { --d: 220ms; }
 .case-a { margin-top: clamp(28px, 3.2vw, 52px); }
 .case-kicker { color: var(--ink-3); }
 .case-kicker b { color: var(--ink); font-weight: 600; letter-spacing: -0.01em; }

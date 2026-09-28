@@ -1,18 +1,76 @@
 /* prigodskii.dev: from page to page.
    Loaded in the head of every page, ahead of its first frame, because a page
-   has to mark the element that travels before that frame is drawn. The move
-   itself is CSS (site.css, "from page to page"): the page being left fades
-   out over the one arriving, and a project's title flies from where it was
-   to where it is going.
+   has to decide how it arrives before that frame is drawn.
 
-   Only the title the visitor followed travels. A title marked data-vt="slug"
-   is given its view-transition-name on the way out (pageswap) and on the way
-   in (pagereveal), and only while it is on screen. Named in the markup, every
-   title on the home page would be captured on every click, and one scrolled
-   out of sight would fly in from beyond the edge. */
+   Two ways, by engine:
+
+   - Chrome and the other Chromium browsers run a cross-document view
+     transition (the CSS is in site.css, "from page to page"): the page being
+     left fades out over the one arriving, and a project's title flies from
+     where it was to where it is going. Only the title the visitor followed
+     travels: a title marked data-vt="slug" is given its view-transition-name
+     on the way out (pageswap) and on the way in (pagereveal), and only while
+     it is on screen.
+
+   - Safari has the same feature, but it blanks the window for several frames
+     before it starts (a white flash in the middle of the move). So Safari, and
+     Firefox, navigate plainly. With a mouse or trackpad, the page first fades
+     out under the bar (html.is-leaving, 170ms) and only then navigates:
+     WebKit draws nothing more of a page once a navigation has started, so a
+     fade begun with the navigation would never be seen. The next page fades
+     in under its own entrance (html.is-arriving). On a touch screen the page
+     is left as it is, because Safari's preview for swiping back is taken as
+     the navigation starts, and a faded page would make it blank. */
 (function () {
   "use strict";
-  var KEY = "rp-vt", last = null;
+  var KEY = "rp-vt", LEAVE = "rp-leave", last = null;
+  var doc = document.documentElement;
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var fine = window.matchMedia("(hover: hover) and (pointer: fine)");
+  /* navigator.userAgentData exists only in Chromium */
+  var native = !!navigator.userAgentData;
+  if (native) {
+    var opt = document.createElement("style");
+    opt.textContent = "@view-transition { navigation: auto; }";
+    document.head.appendChild(opt);
+  }
+
+  /* ---------------------------------------------- Safari and Firefox */
+  var stuck = 0;
+  function arrive() {
+    var t = 0;
+    try { t = +sessionStorage.getItem(LEAVE) || 0; sessionStorage.removeItem(LEAVE); } catch (x) {}
+    if (native || reduce.matches || Date.now() - t > 6000) return;
+    doc.classList.remove("is-arriving");
+    void doc.offsetWidth;
+    doc.classList.add("is-arriving");
+  }
+  arrive();
+  /* a page brought back from the back-forward cache is shown whole again */
+  window.addEventListener("pageshow", function (e) {
+    if (!e.persisted) return;
+    clearTimeout(stuck);
+    doc.classList.remove("is-leaving");
+    arrive();
+  });
+  window.addEventListener("pagehide", function () { clearTimeout(stuck); });
+  /* a link to another page of this site, not a file and not a place on this page */
+  function page(a) {
+    if ((a.target && a.target !== "_self") || a.hasAttribute("download")) return false;
+    var u;
+    try { u = new URL(a.href); } catch (x) { return false; }
+    if (u.origin !== location.origin) return false;
+    if (/\.[a-z0-9]+$/i.test(u.pathname) && !/\.html$/i.test(u.pathname)) return false;
+    return u.pathname !== location.pathname || u.search !== location.search;
+  }
+  function leave() {
+    try { sessionStorage.setItem(LEAVE, String(Date.now())); } catch (x) {}
+    doc.classList.remove("is-arriving");
+    doc.classList.add("is-leaving");
+    /* a navigation that never completes (stopped, offline) gives the page back */
+    clearTimeout(stuck);
+    stuck = setTimeout(function () { doc.classList.remove("is-leaving"); }, 5000);
+  }
 
   function slugOf(href) {
     try {
@@ -54,14 +112,24 @@
 
   /* the back button goes back the way the visitor came, to the same place on
      that page, when they came from where it points; otherwise it is a link */
-  document.addEventListener("click", function (e) {
-    var a = e.target.closest && e.target.closest("a[data-back]");
-    if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  function cameFrom(a) {
     var from, to;
-    try { from = new URL(document.referrer); to = new URL(a.href); } catch (x) { return; }
-    if (from.origin === to.origin && from.pathname === to.pathname && history.length > 1) {
+    try { from = new URL(document.referrer); to = new URL(a.href); } catch (x) { return false; }
+    return from.origin === to.origin && from.pathname === to.pathname && history.length > 1;
+  }
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a[href]");
+    if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var back = a.hasAttribute("data-back") && cameFrom(a);
+    function go() { if (back) history.back(); else location.assign(a.href); }
+    if (!native && fine.matches && !reduce.matches && (back || page(a))) {
       e.preventDefault();
-      history.back();
+      if (doc.classList.contains("is-leaving")) return;
+      leave();
+      setTimeout(go, 170);
+    } else if (back) {
+      e.preventDefault();
+      go();
     }
   });
 
