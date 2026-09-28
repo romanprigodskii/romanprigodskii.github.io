@@ -23,7 +23,7 @@
     var at = lis.map(function (li) { return parseFloat(li.getAttribute("data-at")); });
     var go = lis.map(function (li) { return parseFloat(li.getAttribute("data-go")); });
     var first = Math.min.apply(null, at);
-    var cur = -1, raf = 0;
+    var cur = -1;
 
     // the screen on at time t: the latest start at or before it, wrapping round the loop
     function segOf(t) {
@@ -38,25 +38,27 @@
       if (nxt === Infinity) nxt = first + len;
       return [a, nxt - a];
     }
+    /* a paused loop shows its screen's bar full; a playing one fills it (RP.follow) */
     function paint() {
-      var t = v.currentTime || 0, i = segOf(t), p = 1;
+      var t = v.currentTime || 0, i = segOf(t), p = 1, sp = span(i), left = 0;
       if (!v.paused) {
-        var sp = span(i), d = t - sp[0];
+        var d = t - sp[0];
         if (d < 0) d += len;
         p = Math.max(0, Math.min(1, d / sp[1]));
+        left = sp[1] * (1 - p);
       }
       if (i !== cur) {
         lis.forEach(function (li, j) {
           li.classList.toggle("is-on", j === i);
-          if (j !== i) li.style.setProperty("--p", "0");
+          if (j !== i) RP.fill(li, 0);
           var b = li.firstElementChild;
           if (b) { if (j === i) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); }
         });
         cur = i;
       }
-      lis[i].style.setProperty("--p", p.toFixed(4));
+      RP.fill(lis[i], p, sp[1], RP.running(v));
+      return left;
     }
-    function loop() { paint(); raf = v.paused ? 0 : requestAnimationFrame(loop); }
     function pick(i) {
       v.dataset.held = "1";
       v.pause();
@@ -77,8 +79,7 @@
       li.appendChild(b);
       b.addEventListener("click", function () { pick(i); });
     });
-    v.addEventListener("play", function () { if (!raf) raf = requestAnimationFrame(loop); });
-    ["pause", "seeked", "loadeddata"].forEach(function (e) { v.addEventListener(e, paint); });
+    RP.follow(v, paint);
     paint();
   });
 

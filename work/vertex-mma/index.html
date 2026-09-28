@@ -75,7 +75,7 @@
         <div class="vxm-devs">
           <div class="win is-dark vxm-win">
             <div class="win-bar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-url">vertexmma.com</span></div>
-            <video data-play muted loop playsinline preload="none" poster="../../assets/img/work/vertex-mma-fighter.webp" width="2400" height="1500" aria-label="Vertex MMA&rsquo;s profile of Islam Makhachev. It starts on the header with his 29-1 record and Vertex Scores of 95 current and 91 all-time, then scrolls to his career timeline. There, hovering two title fights opens their stat cards, UFC 280 against Charles Oliveira and UFC 294 against Alexander Volkanovski, above a six-attribute radar chart."><source src="../../assets/video/vertex-mma-fighter.mp4" type="video/mp4"></video>
+            <video data-play muted loop playsinline preload="none" poster="../../assets/img/work/vertex-mma-fighter.webp" width="2000" height="1250" aria-label="Vertex MMA&rsquo;s profile of Islam Makhachev. It starts on the header with his 29-1 record and Vertex Scores of 95 current and 91 all-time, then scrolls to his career timeline. There, hovering two title fights opens their stat cards, UFC 280 against Charles Oliveira and UFC 294 against Alexander Volkanovski, above a six-attribute radar chart."><source src="../../assets/video/vertex-mma-fighter.mp4" type="video/mp4"></video>
           </div>
           <div class="phone vxm-phone"><video data-play muted loop playsinline preload="none" poster="../../assets/img/work/vertex-mma-fighter-mobile.webp" width="780" height="1688" aria-label="Vertex MMA on a phone: Islam Makhachev&rsquo;s profile scrolls from his photo and 29-1 record to his Vertex Score rings, his peak score of 99, his career timeline and a six-attribute radar chart."><source src="../../assets/video/vertex-mma-fighter-mobile.mp4" type="video/mp4"></video></div>
         </div>
@@ -144,7 +144,7 @@
           <div class="stage vxm-amber" data-shot data-play-group data-title="the Vertex Score chart">
             <div class="win is-dark vxm-rate-win">
               <div class="win-bar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-url">vertexmma.com</span></div>
-              <video data-play muted loop playsinline preload="none" poster="../../assets/img/work/vertex-mma-rating.webp" width="2400" height="1500" data-title="the Vertex Score chart" aria-label="A chart on vertexmma.com of Islam Makhachev&rsquo;s current Vertex Score from September 2016 to September 2026. A cursor traces the line. Where a bout set the value, the tooltip names it, among them 53 after Thiago Moises, 92 after Charles Oliveira, 99 after Alexander Volkanovski and 95 after Ian Machado Garry; between bouts it reads as a monthly snapshot with no bout."><source src="../../assets/video/vertex-mma-rating.mp4" type="video/mp4"></video>
+              <video data-play muted loop playsinline preload="none" poster="../../assets/img/work/vertex-mma-rating.webp" width="1536" height="960" data-title="the Vertex Score chart" aria-label="A chart on vertexmma.com of Islam Makhachev&rsquo;s current Vertex Score from September 2016 to September 2026. A cursor traces the line. Where a bout set the value, the tooltip names it, among them 53 after Thiago Moises, 92 after Charles Oliveira, 99 after Alexander Volkanovski and 95 after Ian Machado Garry; between bouts it reads as a monthly snapshot with no bout."><source src="../../assets/video/vertex-mma-rating.mp4" type="video/mp4"></video>
             </div>
             <ol class="vxm-steps" aria-label="The steps the cursor stops on">
               <li data-at="3.55" data-seek="3.8"><b>53</b><span>after Thiago Moises</span><small>17 July 2021</small></li>
@@ -221,33 +221,43 @@
 /* The lists beside the bout and rating recordings follow them: the item for
    what is on screen lights up, and each item moves the recording to its part.
    Without this script the lists read as plain captions. */
-(function () {
+document.addEventListener("DOMContentLoaded", function () {
   "use strict";
+  var RP = window.RP;
+  if (!RP || !RP.follow) return;
   Array.prototype.forEach.call(document.querySelectorAll("[data-vxm-ch]"), function (fig) {
     var v = fig.querySelector("video");
     var items = Array.prototype.slice.call(fig.querySelectorAll("li[data-at]"));
     if (!v || !items.length) return;
+    /* the bout's list fills as its part plays; the rating's steps light whole */
+    var fills = !!fig.querySelector(".vxm-ch");
     var dur = parseFloat(fig.getAttribute("data-dur")) || 0;
     var at = items.map(function (li) { return parseFloat(li.getAttribute("data-at")); });
     var to = items.map(function (li, i) {
       var t = li.getAttribute("data-to");
       return t ? parseFloat(t) : (i + 1 < items.length ? at[i + 1] : dur);
     });
-    var cur = -2, raf = 0;
+    var cur = -2;
     function paint() {
       var t = v.currentTime, k = -1;
       for (var i = 0; i < items.length; i++) if (t >= at[i] && t < to[i]) k = i;
       if (k !== cur) {
-        items.forEach(function (li, i) { li.classList.toggle("is-on", i === k); });
+        items.forEach(function (li, i) { li.classList.toggle("is-on", i === k); if (fills && i !== k) RP.fill(li, 0); });
         cur = k;
       }
-      if (k >= 0) items[k].style.setProperty("--p", Math.min(1, Math.max(0, (t - at[k]) / (to[k] - at[k]))).toFixed(4));
+      if (k >= 0) {
+        var span = to[k] - at[k], p = Math.min(1, Math.max(0, (t - at[k]) / span));
+        if (fills) RP.fill(items[k], p, span, RP.running(v));
+        return span * (1 - p);
+      }
+      /* between items: until the next one begins, round the loop if need be */
+      var next = Infinity;
+      at.forEach(function (a) { if (a > t && a - t < next) next = a - t; });
+      return next < Infinity ? next : Math.max(0, (v.duration || dur) - t) + Math.min.apply(null, at);
     }
-    function loop() { paint(); raf = v.paused ? 0 : requestAnimationFrame(loop); }
     function live() { fig.classList.add("is-live"); }
-    v.addEventListener("play", function () { live(); if (!raf) raf = requestAnimationFrame(loop); });
-    v.addEventListener("seeked", paint);
-    v.addEventListener("pause", paint);
+    v.addEventListener("play", live);
+    RP.follow(v, paint);
     items.forEach(function (li) {
       var b = document.createElement("button"), sr = document.createElement("span");
       b.type = "button";
@@ -268,7 +278,7 @@
       });
     });
   });
-})();
+});
 </script>
 </body>
 </html>

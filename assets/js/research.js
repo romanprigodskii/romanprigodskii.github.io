@@ -181,24 +181,31 @@
       });
     });
     seen(plot, function () {
-      var last = 0;
+      /* every dot of every set in one frame loop; within a set they start
+         15ms apart, in order of their e-value */
+      var marks = [], last = 0;
       sets.forEach(function (S) {
         var ids = Object.keys(S.m).map(Number).filter(function (k) { return S.m[k].hasAttribute("data-ys"); });
         ids.sort(function (a, b) { return rows[a].ef - rows[b].ef; });
         ids.forEach(function (k, j) {
-          var c = S.m[k], y0 = +c.getAttribute("data-ys"), y1 = +c.getAttribute("data-y");
-          var delay = 250 + j * 15;
-          last = Math.max(last, delay);
-          later(delay, function () {
-            tween(1250, EO, function (e) {
-              var y = y0 + (y1 - y0) * e;
-              c.setAttribute("cy", y.toFixed(2));
-              colour(S, c, y);
-            });
-          });
+          var c = S.m[k];
+          marks.push({ S: S, c: c, y0: +c.getAttribute("data-ys"), y1: +c.getAttribute("data-y"), at: 250 + j * 15 });
+          last = Math.max(last, 250 + j * 15);
         });
       });
-      later(last + 1250, function () { fig.classList.add("is-settled"); });
+      marks.sort(function (a, b) { return a.at - b.at; });
+      tween(last + 1250, function (x) { return x; }, function (e, t) {
+        var now = t * (last + 1250);
+        marks.forEach(function (m) {
+          if (m.done) return;
+          var k = (now - m.at) / 1250;
+          if (k <= 0) return;
+          if (k >= 1) { k = 1; m.done = true; }
+          var y = m.y0 + (m.y1 - m.y0) * EO(k);
+          m.c.setAttribute("cy", y.toFixed(2));
+          colour(m.S, m.c, y);
+        });
+      }, function () { fig.classList.add("is-settled"); });
     }, 0.35);
   })();
 
@@ -417,20 +424,15 @@
     btns.forEach(function (b) { b.addEventListener("click", function () { pick(b.getAttribute("data-fit")); }); });
 
     if (still()) return;
-    var last = -1, on = false, q = false;
-    function frame() {
-      q = false;
+    var last = -1, on = false;
+    RP.whileNear(fig, function () {
       var vh = window.innerHeight, top = fig.getBoundingClientRect().top;
       var p = Math.round(clamp((vh * 0.95 - top) / (vh * 0.5), 0, 1) * 1000) / 1000;
       if (p === last) return;
       last = p;
       fig.style.setProperty("--p", p);
       if (!on) { on = true; fig.classList.add("is-scrub"); }
-    }
-    function queue() { if (!q) { q = true; requestAnimationFrame(frame); } }
-    window.addEventListener("scroll", queue, { passive: true });
-    window.addEventListener("resize", queue);
-    frame();
+    });
   })();
 
   /* ------------------------------------------------------------ before the papers: the tea glass
@@ -480,17 +482,11 @@
     range.addEventListener("input", function () { touched = true; set(parseInt(range.value, 10)); });
 
     if (still()) return;
-    var q = false;
-    function frame() {
-      q = false;
-      if (touched) return;
+    var stop = RP.whileNear(fig, function () {
+      if (touched) { if (stop) stop(); return; }
       var vh = window.innerHeight, top = fig.getBoundingClientRect().top;
       var p = clamp((vh * 0.95 - top) / (vh * 0.6), 0, 1);
       set(Math.round(p * (STEPS.length - 1)));
-    }
-    function queue() { if (!q) { q = true; requestAnimationFrame(frame); } }
-    window.addEventListener("scroll", queue, { passive: true });
-    window.addEventListener("resize", queue);
-    frame();
+    });
   })();
 })();

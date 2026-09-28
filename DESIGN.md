@@ -72,10 +72,19 @@ rest of the page fades. Browsers without it simply navigate.
 Every loop in `assets/video/` was recorded from the live product (vertexmma.com,
 gluline.com, Clipwell's site, the Vertex Boxing report) or cut from its own
 footage. They are muted H.264 MP4s with a WebP poster from their first frame,
-`preload="none"`, width and height always set. `site.js` plays a loop only while
-it is on screen and gives it one round pause control in its lower right corner;
-the videos inside a `[data-play-group]` (the phones on one stage) share a single
-control. Under reduced motion every loop stays on its poster.
+`preload="none"`, width and height always set. `site.js` starts loading a loop
+a screen before it arrives, plays it only while it is on screen and gives it one round pause
+control in its lower right corner; the videos inside a `[data-play-group]` (the
+phones on one stage) share a single control. Under reduced motion every loop
+stays on its poster.
+
+Nothing redraws on every frame unless it is moving on screen: scroll-driven
+figures listen only while they are within a screen of the viewport (`whileNear`
+in `site.js`), an endless animation holds while its `[data-loop]` figure is off
+screen, marks that move in turn share one frame loop, an index that follows a
+loop (Alfa-Romeo's screens, the Vertex MMA bout) fills its item with one
+browser animation per item rather than from script on every frame
+(`RP.follow` and `RP.fill`), and nothing blurs what sits behind a playing loop.
 
 ## Figures
 

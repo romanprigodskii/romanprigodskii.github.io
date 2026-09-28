@@ -112,7 +112,7 @@
         <div class="stage is-dark hs-vx-stage" data-shot data-play-group data-title="the Vertex MMA recordings">
           <div class="win is-dark hs-vx-a">
             <div class="win-bar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-url">vertexmma.com</span></div>
-            <video data-play muted loop playsinline preload="none" poster="assets/img/work/vertex-mma-fighter.webp" width="2400" height="1500" aria-label="Vertex MMA&rsquo;s profile of Islam Makhachev. It starts on the header with his 29-1 record and Vertex Scores of 95 current and 91 all-time, then scrolls to his career timeline, where hovering two title fights opens their stat cards above a six-attribute radar chart."><source src="assets/video/vertex-mma-fighter.mp4" type="video/mp4"></video>
+            <video data-play muted loop playsinline preload="none" poster="assets/img/work/vertex-mma-fighter.webp" width="2000" height="1250" aria-label="Vertex MMA&rsquo;s profile of Islam Makhachev. It starts on the header with his 29-1 record and Vertex Scores of 95 current and 91 all-time, then scrolls to his career timeline, where hovering two title fights opens their stat cards above a six-attribute radar chart."><source src="assets/video/vertex-mma-fighter.mp4" type="video/mp4"></video>
           </div>
           <div class="phone hs-vx-m">
             <video data-play muted loop playsinline preload="none" poster="assets/img/work/vertex-mma-fighter-mobile.webp" width="780" height="1688" aria-label="Vertex MMA on a phone: Islam Makhachev&rsquo;s profile scrolls from his photo and 29-1 record to his Vertex Score rings, his peak score of 99, his career timeline and a six-attribute radar chart."><source src="assets/video/vertex-mma-fighter-mobile.mp4" type="video/mp4"></video>
@@ -476,8 +476,10 @@
    show is inked and its track fills while it holds; each item is a button
    that moves the recording to its screen. Without this script the indexes
    read as plain lists of what the recordings show. */
-(function () {
+document.addEventListener("DOMContentLoaded", function () {
   "use strict";
+  var RP = window.RP;
+  if (!RP || !RP.follow) return;
   var lists = document.querySelectorAll("ol[data-ch]");
   Array.prototype.forEach.call(lists, function (ol) {
     var v = document.getElementById(ol.getAttribute("data-ch"));
@@ -486,26 +488,30 @@
     var stage = ol.closest(".stage") || ol.parentNode;
     var wrap = parseFloat(ol.getAttribute("data-wrap"));
     var from = items.map(function (li) { return parseFloat(li.getAttribute("data-b")); });
-    var cur = -1, raf = 0;
+    var cur = -1;
     function live() { stage.classList.add("is-live"); }
+    /* the first screen runs from the wrap point, round the loop, to the second */
     function paint() {
-      var t = v.currentTime, d = v.duration || 0, n = items.length, k = 0, p = 0;
+      var t = v.currentTime, d = v.duration || 0, n = items.length, k = 0, p = 0, span;
       for (var i = 1; i < n; i++) if (t >= from[i]) k = i;
       if (t >= wrap) k = 0;
       if (k === 0) {
-        var span = (d - wrap) + from[1 % n];
+        span = (d - wrap) + from[1 % n];
         p = d ? ((t >= wrap ? t - wrap : t + d - wrap)) / span : 0;
-      } else p = (t - from[k]) / ((k + 1 < n ? from[k + 1] : wrap) - from[k]);
+      } else {
+        span = (k + 1 < n ? from[k + 1] : wrap) - from[k];
+        p = (t - from[k]) / span;
+      }
+      p = Math.min(1, Math.max(0, p));
       if (k !== cur) {
-        items.forEach(function (li, i) { li.classList.toggle("is-on", i === k); });
+        items.forEach(function (li, i) { li.classList.toggle("is-on", i === k); if (i !== k) RP.fill(li, 0); });
         cur = k;
       }
-      items[k].style.setProperty("--p", Math.min(1, Math.max(0, p)).toFixed(3));
+      RP.fill(items[k], p, span, RP.running(v));
+      return d ? span * (1 - p) : 0.25;
     }
-    function loop() { paint(); raf = v.paused ? 0 : requestAnimationFrame(loop); }
-    v.addEventListener("play", function () { live(); if (!raf) raf = requestAnimationFrame(loop); });
-    v.addEventListener("seeked", paint);
-    v.addEventListener("pause", paint);
+    v.addEventListener("play", live);
+    RP.follow(v, paint);
     items.forEach(function (li) {
       var b = document.createElement("button"), sr = document.createElement("span");
       b.type = "button";
@@ -526,7 +532,7 @@
       });
     });
   });
-})();
+});
 </script>
 </body>
 </html>

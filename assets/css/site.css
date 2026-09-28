@@ -1241,9 +1241,9 @@ html.js .thesis:not(.in) .thesis-s { background-size: 0 2px; }
   border: 0;
   border-radius: 50%;
   color: #fff;
+  /* no backdrop blur: over a playing loop it would be redrawn on every video
+     frame, and on the recordings' flat grounds it showed nothing */
   background: oklch(0.18 0.01 262 / 0.55);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
   box-shadow: 0 0 0 0.5px oklch(1 0 0 / 0.16), 0 2px 8px -2px oklch(0.18 0.01 262 / 0.35);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -1271,6 +1271,8 @@ html.js .thesis:not(.in) .thesis-s { background-size: 0 2px; }
 .stage.hs-desk[data-play-group] > .vid-toggle, .cwc-stage .vid-toggle { top: 12px; bottom: auto; }
 @media (max-width: 760px) { .stage.hs-desk[data-play-group] { padding-top: 56px; } }
 @media (prefers-reduced-motion: reduce) { .vid-toggle { transition: none; } }
+/* endless animations hold while their figure is off screen (site.js) */
+[data-loop].is-away *, [data-loop].is-away *::before, [data-loop].is-away *::after { animation-play-state: paused !important; }
 @media print { .vid-toggle { display: none !important; } }
 
 /* Clipwell: the bar on its sage desktop */
@@ -1379,9 +1381,7 @@ html.js .thesis:not(.in) .thesis-s { background-size: 0 2px; }
 .vd-dot.is-hit { fill: var(--signal); fill-opacity: 1; }
 .vd-dot.is-on { stroke: var(--ink); }
 .vd-tip, .fl-tip {
-  background: oklch(0.2 0.012 262 / 0.94);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  background: oklch(0.2 0.012 262 / 0.95);
   color: var(--bg);
   border-radius: 12px;
   padding: 10px 12px;

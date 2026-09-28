@@ -119,6 +119,7 @@ html.js .vxm-stage.in .vxm-phone { opacity: 1; translate: 0 0; }
   .vxm-ch { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 var(--gut); margin-top: 16px; }
   .vxm-ch li { padding: 16px 0 4px; }
   .vxm-ch li::before, .vxm-ch li::after { top: 0; bottom: auto; right: 0; width: auto; height: 2px; }
+  .vxm-ch li { --fill-axis: x; }
   .vxm-ch li::after { transform: scaleX(0); transform-origin: left; }
   .vxm-bout.is-live .vxm-ch li.is-on::after { transform: scaleX(var(--p, 0)); }
   .vxm-note { margin-top: 18px; padding-top: 0; max-width: 70ch; }

@@ -46,6 +46,22 @@
     return function () { stop = true; };
   }
   function later(ms, fn) { return setTimeout(fn, ms); }
+  /* many marks moving in turn share one frame loop: item i starts
+     wait + i * gap ms in, runs ms long, and step(item, eased) draws it */
+  function stagger(items, wait, gap, ms, ease, step, done) {
+    var st = items.map(function () { return 0; });
+    var span = wait + Math.max(0, items.length - 1) * gap + ms;
+    return tween(span, function (x) { return x; }, function (e, t) {
+      var now = t * span;
+      items.forEach(function (it, i) {
+        if (st[i] === 2) return;
+        var k = (now - wait - i * gap) / ms;
+        if (k <= 0) return;
+        if (k >= 1) { k = 1; st[i] = 2; } else st[i] = 1;
+        step(it, ease(k), i);
+      });
+    }, done);
+  }
 
   /* ------------------------------------------------ reveal on scroll */
   var io = "IntersectionObserver" in window ? new IntersectionObserver(function (es) {
@@ -61,6 +77,29 @@
     if (fn) el.__onIn = fn;
     if (io) io.observe(el); else { el.classList.add("in"); if (fn) fn(); }
   }
+  /* a scroll-driven figure listens to the scroll only while it is within a
+     screen of the viewport, and reads the layout at most once a frame */
+  function whileNear(el, frame) {
+    var q = false, dead = false, on = !("IntersectionObserver" in window), near = null;
+    function tick() { q = false; if (!dead) frame(); }
+    function queue() { if (on && !q && !dead) { q = true; requestAnimationFrame(tick); } }
+    window.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("resize", queue);
+    if (!on) {
+      near = new IntersectionObserver(function (es) {
+        on = es[es.length - 1].isIntersecting;
+        if (on) queue();
+      }, { rootMargin: "100% 0px 100% 0px" });
+      near.observe(el);
+    }
+    frame();
+    return function () {
+      dead = true;
+      window.removeEventListener("scroll", queue);
+      window.removeEventListener("resize", queue);
+      if (near) near.disconnect();
+    };
+  }
   /* the hero is the first view: its items arrive on load, in their --d order,
      not when the observer's trimmed margin happens to reach them (at 1280x720
      the rule's tile sits under that margin) */
@@ -71,15 +110,43 @@
   $$("[data-rv], .edge, .sec-t, [data-shot], .ar-strip, .gl-phones, [data-fl], [data-lv], [data-zk], .thesis, .vs, .contact, [data-watch]").forEach(function (el) { watch(el); });
   $$(".vs td.is-won").forEach(function (td, i) { td.style.setProperty("--r", i); });
 
-  /* ------------------------------------------------ the bar */
-  var bar = $("[data-bar]"), nameEl = $("#name");
-  function onScrollBar() {
-    if (!bar) return;
-    if (nameEl) bar.classList.toggle("is-on", nameEl.getBoundingClientRect().bottom < 64);
-    else bar.classList.toggle("is-on", window.scrollY > 8);
+  /* a figure with an endless animation ([data-loop]) holds it while it is
+     off screen, so a page left open does not keep redrawing it */
+  if (io) {
+    var lio = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { e.target.classList.toggle("is-away", !e.isIntersecting); });
+    });
+    $$("[data-loop]").forEach(function (el) { lio.observe(el); });
   }
-  window.addEventListener("scroll", onScrollBar, { passive: true });
-  onScrollBar();
+
+  /* ------------------------------------------------ the bar */
+  /* the bar takes its ground once the name has gone up under it; an observer
+     reports that crossing, so scrolling itself costs nothing here */
+  var bar = $("[data-bar]"), nameEl = $("#name");
+  if (bar && nameEl && io) {
+    new IntersectionObserver(function (es) {
+      var e = es[es.length - 1];
+      bar.classList.toggle("is-on", !e.isIntersecting && e.boundingClientRect.bottom < 64);
+    }, { rootMargin: "-64px 0px 0px 0px" }).observe(nameEl);
+  } else if (bar && io) {
+    /* without the name, the bar is on once the page has moved 8px: a marker
+       over the page's first 8px leaves the viewport at that point */
+    var mark = document.createElement("div");
+    mark.setAttribute("aria-hidden", "true");
+    mark.style.cssText = "position:absolute;top:0;left:0;width:1px;height:8px;pointer-events:none;visibility:hidden";
+    document.body.appendChild(mark);
+    new IntersectionObserver(function (es) {
+      bar.classList.toggle("is-on", !es[es.length - 1].isIntersecting);
+    }).observe(mark);
+  } else if (bar) {
+    var barOn = null;
+    var onScrollBar = function () {
+      var on = nameEl ? nameEl.getBoundingClientRect().bottom < 64 : window.scrollY > 8;
+      if (on !== barOn) { barOn = on; bar.classList.toggle("is-on", on); }
+    };
+    window.addEventListener("scroll", onScrollBar, { passive: true });
+    onScrollBar();
+  }
   var navLinks = $$(".bar-nav a[href^='#']");
   if (navLinks.length && io) {
     var spy = new IntersectionObserver(function (es) {
@@ -307,7 +374,54 @@
         else if (!v.paused) v.pause();
       });
     }, { threshold: 0.25 });
-    $$("video[data-play]").forEach(function (v) { vio.observe(v); });
+    /* a loop starts loading a screen before it arrives, so it is already
+       running when it scrolls in rather than holding on its poster */
+    var vnear = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var v = e.target;
+        if (!e.isIntersecting || (still() && !v.__asked) || v.dataset.held) return;
+        if (v.preload !== "auto") v.preload = "auto";
+        vnear.unobserve(v);
+      });
+    }, { rootMargin: "100% 0px 100% 0px" });
+    $$("video[data-play]").forEach(function (v) { vio.observe(v); vnear.observe(v); });
+  }
+
+  /* ------------------------------------------------ an index that follows a loop
+     (Alfa-Romeo's screens, the Vertex MMA bout). The item on show fills as the
+     recording runs through it. The fill is one browser animation per item,
+     started where the recording is, so nothing is redrawn from script between
+     items: follow() calls paint() only when the item changes or the loop
+     plays, pauses, stalls or seeks. paint() draws and returns the seconds
+     until the next item takes over. The item's ::after is the fill; its CSS
+     gives the axis (--fill-axis: x, otherwise y). */
+  var fillOK = (function () {
+    try { return typeof KeyframeEffect === "function" && "pseudoElement" in KeyframeEffect.prototype; } catch (e) { return false; }
+  })();
+  function running(v) { return !v.paused && v.readyState > 2; }
+  function fill(li, p, secs, run) {
+    p = Math.min(1, Math.max(0, p || 0));
+    if (li.__fill) { li.__fill.cancel(); li.__fill = null; }
+    li.style.setProperty("--p", p.toFixed(4));
+    if (!fillOK || !run || !(secs > 0) || p >= 1) return;
+    var ax = getComputedStyle(li).getPropertyValue("--fill-axis").trim() === "x" ? "X" : "Y";
+    li.__fill = li.animate([{ transform: "scale" + ax + "(0)" }, { transform: "scale" + ax + "(1)" }],
+      { pseudoElement: "::after", duration: secs * 1000, fill: "forwards", easing: "linear" });
+    li.__fill.currentTime = p * secs * 1000;
+  }
+  function follow(v, paint) {
+    var timer = 0, raf = 0;
+    function tick() {
+      clearTimeout(timer);
+      timer = 0;
+      var left = paint();
+      if (!running(v)) return;
+      /* without pseudo-element animations the fill is drawn every frame, as before */
+      if (!fillOK) { if (!raf) raf = requestAnimationFrame(function () { raf = 0; tick(); }); return; }
+      if (left > 0) timer = setTimeout(tick, Math.max(16, left * 1000 / (v.playbackRate || 1) + 20));
+    }
+    ["play", "playing", "pause", "waiting", "seeked", "ratechange", "loadeddata"].forEach(function (e) { v.addEventListener(e, tick); });
+    return tick;
   }
 
   /* ------------------------------------------------ copying */
@@ -343,24 +457,27 @@
   /* ------------------------------------------------ the record: a chart-recorder pen crosses the years */
   var rec = $("[data-rec]"), pen = $("[data-rec-pen]");
   if (rec && pen) {
-    var entries = $$(".rec-e", rec), recMax = 0, recQ = false;
-    function recFrame() {
-      recQ = false;
+    var entries = $$(".rec-e", rec), recMax = 0, recW = -1, recLeft = [], recX = -1, stopRec = null;
+    var recFrame = function () {
       if (window.innerWidth <= 760 || still()) { entries.forEach(function (e) { e.classList.add("is-inked"); }); return; }
       var r = rec.getBoundingClientRect(), vh = window.innerHeight;
+      /* the entries' places are read once per width, not on every frame */
+      if (r.width !== recW) { recW = r.width; recLeft = entries.map(function (e) { return e.offsetLeft; }); }
       /* the pen starts as the Record's top enters and has crossed every year
          by the time that top is 60% of the way down the screen */
       var p = Math.max(recMax, Math.min(1, (vh - r.top) / (vh * 0.4)));
       recMax = p;
       var W = r.width, x0 = W * 0.191377, x = x0 + (W - x0) * p;
+      if (x === recX) return;
+      recX = x;
       pen.style.setProperty("--pen", x + "px");
-      entries.forEach(function (e) { e.classList.toggle("is-inked", e.offsetLeft <= x - 2 || p >= 1); });
+      entries.forEach(function (e, i) { e.classList.toggle("is-inked", recLeft[i] <= x - 2 || p >= 1); });
       rec.classList.toggle("is-done", p >= 1);
-    }
-    function recQueue() { if (!recQ) { recQ = true; requestAnimationFrame(recFrame); } }
-    window.addEventListener("scroll", recQueue, { passive: true });
-    window.addEventListener("resize", recQueue);
-    recFrame();
+      /* it never unwrites, so once every year is inked it stops listening */
+      if (p >= 1 && stopRec) { stopRec(); stopRec = null; }
+    };
+    stopRec = whileNear(rec, recFrame);
+    if (recMax >= 1) stopRec();
   }
 
   /* ------------------------------------------------ the 84 on the page's own axis */
@@ -370,7 +487,7 @@
     var t = s.split("_").map(function (x) { return WORDS[x] || x; }).join(" ").replace(/ (\d+)d?$/, ", $1 days");
     return t.charAt(0).toUpperCase() + t.slice(1);
   }
-  window.RP = { FAM: FAM, sliceName: sliceName, tween: tween, EO: EO, EIO: EIO, still: still, watch: watch };
+  window.RP = { FAM: FAM, sliceName: sliceName, tween: tween, EO: EO, EIO: EIO, still: still, watch: watch, whileNear: whileNear, stagger: stagger, fill: fill, follow: follow, running: running };
   var audit = null;
   function loadAudit() {
     if (audit) return Promise.resolve(audit);
@@ -453,15 +570,17 @@
     }
     function drop() {
       if (still()) return;
+      /* one frame loop moves all 84, each starting 14ms after its left neighbour */
       var ids = Object.keys(V.pos).sort(function (a, b) { return V.pos[a].x - V.pos[b].x; });
-      ids.forEach(function (i, j) {
-        var p = V.pos[i], y1 = p.y, y0 = y1 - 90;
-        p.el.setAttribute("cy", y0);
+      var ds = ids.map(function (i) {
+        var p = V.pos[i];
+        p.el.setAttribute("cy", p.y - 90);
         p.el.style.opacity = "0";
-        later(j * 14, function () {
-          p.el.style.opacity = "";
-          tween(900, EO, function (e) { p.el.setAttribute("cy", (y0 + (y1 - y0) * e).toFixed(2)); });
-        });
+        return { el: p.el, y1: p.y, shown: false };
+      });
+      stagger(ds, 0, 14, 900, EO, function (d, e) {
+        if (!d.shown) { d.shown = true; d.el.style.opacity = ""; }
+        d.el.setAttribute("cy", (d.y1 - 90 + 90 * e).toFixed(2));
       });
     }
     function bind() {
