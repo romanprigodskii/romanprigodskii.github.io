@@ -25,6 +25,7 @@ trap 'rm -rf "$tmp"' EXIT
 mkdir "$tmp/html"
 git archive HEAD $SITE | tar -x -C "$tmp/html"
 git archive HEAD:server | tar -x -C "$tmp"
+sh tools/fingerprint.sh "$tmp/html"
 chmod -R u=rwX,go=rX "$tmp"
 
 ssh="ssh -i $KEY -o IdentitiesOnly=yes"

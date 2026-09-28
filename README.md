@@ -39,6 +39,7 @@ assets/css/*.css           page-specific additions
 assets/js/figures.js       figure renderers (browser and node)
 assets/js/figures-*.js     page-specific renderers, loaded by tools/figures.mjs
 assets/js/site.js          behaviour: reveals, the slide rule, the interactive figures
+assets/js/vt.js            page to page: the title that flies, the back button
 assets/js/*.js             page-specific behaviour
 assets/data/               audit.json (generated), boxing.json (from the report)
 assets/fonts/              Mona Sans, self-hosted (OFL)
@@ -48,6 +49,7 @@ tools/figures.mjs          writes the figures into the pages
 tools/build_data.py        regenerates audit.json
 tools/og.html              the social card, screenshotted into assets/img/og.png
 tools/deploy.sh            publishes HEAD to prigodskii.dev
+tools/fingerprint.sh       stamps ?v=<hash> on every CSS and JS reference (run by deploy.sh)
 server/                    the nginx container and its Traefik routing
 ```
 
@@ -70,7 +72,10 @@ tools/deploy.sh
 ```
 
 It publishes the last commit, not the working tree, to `/opt/prigodskii-site`
-on the server, where nginx serves it behind Traefik. GitHub Pages still builds
+on the server, where nginx serves it behind Traefik. On the way it runs
+`tools/fingerprint.sh` over the copy it ships, so every page asks for
+`site.css?v=<hash>` and so on, which nginx lets browsers keep for a year; the
+repository itself keeps plain names. GitHub Pages still builds
 `main` at romanprigodskii.github.io; every page names prigodskii.dev as
 canonical.
 

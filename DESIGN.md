@@ -55,9 +55,25 @@ everywhere. System monospace appears once, for a literal `brew install`.
 | `/plain/` | one printable file, no JavaScript |
 | `/404.html` | the slide rule, parked off the scale |
 
-Moving from a project on the home page to its page, the title travels into
-place (a cross-document view transition, `view-transition-name: t-<slug>`); the
-rest of the page fades. Browsers without it simply navigate.
+Between pages (a cross-document view transition), the page being left fades
+out on top of the one arriving, which is already in place and brings its own
+content in as on a first load. The project title the visitor followed flies
+from where it was to where it goes: home to case page, case page back to its
+place on the home page, a "Next project" link to the next case title. Only
+that one title is named, on the way out and on the way in, and only while it
+is on screen (`assets/js/vt.js`, titles marked `data-vt="<slug>"`). A title
+that arrives this way skips its own rise (`html.vt-flown`). Browsers without
+view transitions simply navigate.
+
+Every case page, and the research page, opens with a back button over the
+title (`.back`). For a visitor who came from the page it points to, it goes
+back in history, to the same place on that page; otherwise it links to the
+project on the home page. The "All work" link at the foot does the same.
+
+Nothing may make the new page wait once its HTML has arrived: Safari shows a
+blank frame for as long as it waits, in the middle of the transition. So the
+CSS and JS ship fingerprinted and cached for a year (`tools/fingerprint.sh`),
+and each page prefetches the other pages' stylesheets at idle.
 
 ## Showing the products
 

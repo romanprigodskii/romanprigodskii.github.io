@@ -23,10 +23,18 @@
 <link rel="preload" href="../../assets/fonts/mona-sans-200-900-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../assets/css/site.css">
 <link rel="stylesheet" href="../../assets/css/vertex-mma.css">
+<!-- the other pages' stylesheets, fetched at idle so that a first click to one waits for nothing (where prefetch is unsupported, assets/js/vt.js fetches them) -->
+<link rel="prefetch" href="../../assets/css/gluline.css">
+<link rel="prefetch" href="../../assets/css/vertex-boxing.css">
+<link rel="prefetch" href="../../assets/css/zacks-ibkr.css">
+<link rel="prefetch" href="../../assets/css/clipwell.css">
+<link rel="prefetch" href="../../assets/css/alfa-romeo.css">
+<link rel="prefetch" href="../../assets/css/research.css">
 <script>
   document.documentElement.classList.add("js");
   setTimeout(function () { if (!window.__rp) document.documentElement.classList.remove("js"); }, 2500);
 </script>
+<script src="../../assets/js/vt.js"></script>
 <script src="../../assets/js/site.js" defer></script>
 </head>
 <body data-base="../../">
@@ -48,8 +56,8 @@
 <article class="case" aria-labelledby="case-t">
   <header class="case-hero">
     <div class="frame">
-      <p class="crumb"><a href="../../#work">Work</a></p>
-      <h1 class="case-title" id="case-t"><span style="view-transition-name: t-vertex-mma">Vertex MMA</span></h1>
+      <p class="crumb" data-rv><a class="back" href="../../#vx-h" data-back><svg viewBox="0 0 18 12" aria-hidden="true" focusable="false"><path d="M17 6H2.5M7 1.5 2.5 6 7 10.5"/></svg>All work</a></p>
+      <h1 class="case-title" id="case-t"><span data-vt="vertex-mma">Vertex MMA</span></h1>
       <div class="cols case-a">
         <div class="case-kicker" data-rv style="--d:200ms">
           <b>Live product</b>
@@ -202,9 +210,9 @@
     <nav class="cols next-row next" aria-label="Next project">
       <div>
         <p class="next-k">Next project</p>
-        <a class="next-a" href="../gluline/"><span style="view-transition-name: t-gluline">Gluline</span></a>
+        <a class="next-a" href="../gluline/"><span data-vt="gluline">Gluline</span></a>
       </div>
-      <p><a class="go is-back" href="../../#work">All work</a></p>
+      <p><a class="go is-back" href="../../#vx-h" data-back>All work</a></p>
     </nav>
   </div>
 </article>

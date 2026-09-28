@@ -653,14 +653,25 @@ html.js .rejects:not(.in) li span { background-size: 0 1.5px; }
 .next-row > :first-child { grid-column: 1 / 5; }
 .next-row > :last-child { grid-column: 5 / 6; padding-right: 0; justify-self: end; }
 
-/* the title flies from the list on the home page into the case page */
-::view-transition-group(*) { animation-duration: 520ms; animation-timing-function: var(--eo); }
+/* from page to page. The page being left fades out on top of the one
+   arriving, which is already in place beneath it and brings its own content
+   in as it does on a first load, so nothing is shown half-transparent twice.
+   The title the visitor followed (named by assets/js/vt.js) flies from where
+   it was to where it goes; the bar stays put. */
 @view-transition { navigation: auto; }
-::view-transition-old(root) { animation: vt-out 260ms var(--eq) both; }
-::view-transition-new(root) { animation: vt-in 460ms var(--eo) 60ms both; }
+::view-transition-group(*) { animation-duration: 640ms; animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1); }
+::view-transition-old(root), ::view-transition-new(root) { mix-blend-mode: normal; }
+::view-transition-old(root) { z-index: 1; animation: vt-out 240ms cubic-bezier(0.33, 1, 0.68, 1) both; }
+::view-transition-new(root) { animation: none; }
+/* a title with no partner on the other page leaves, or arrives, with its page */
+::view-transition-old(*):only-child { animation: vt-out 240ms cubic-bezier(0.33, 1, 0.68, 1) both; }
+::view-transition-new(*):only-child { animation: vt-in 640ms var(--eo) 80ms both; }
 @keyframes vt-out { to { opacity: 0; } }
-@keyframes vt-in { from { opacity: 0; transform: translateY(12px); } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(14px); } }
 ::view-transition-old(bar), ::view-transition-new(bar) { animation: none; }
+/* from the plain version, which has no bar, the bar fades in where it stands */
+::view-transition-new(bar):only-child { animation: vt-show 400ms ease both; }
+@keyframes vt-show { from { opacity: 0; } }
 
 /* ==========================================================================
    Widths
@@ -1480,7 +1491,7 @@ html.js .contact.in .reach-list a, html.js .contact.in .reach-at { opacity: 1; t
 
 /* ------------------------------------------------------------ motion: stages arrive whole */
 html.js [data-shot] .bezel > img, html.js [data-shot] > video, html.js [data-shot] .strip-v { clip-path: none; transition: none; }
-html.js [data-shot] { opacity: 0; transform: translateY(36px) scale(0.985); transition: opacity 1000ms var(--eo), transform 1400ms var(--eo); }
+html.js [data-shot] { opacity: 0; transform: translateY(36px) scale(0.985); transition: opacity 1000ms var(--eo) var(--d, 0ms), transform 1400ms var(--eo) var(--d, 0ms); }
 html.js [data-shot].in { opacity: 1; transform: none; }
 
 /* ------------------------------------------------------------ widths */
@@ -1557,7 +1568,7 @@ html.js [data-shot].in { opacity: 1; transform: none; }
   html.js .name-t, html.js .hero-b { animation: none; }
   html.js [data-shot] { opacity: 1; transform: none; transition: none; }
   html.js .reach-list li::after, html.js .reach-list li:first-child::before, html.js .reach-list a, html.js .reach-at { opacity: 1; transform: none; transition: none; }
-  .cursor::before, .seg-b { transition: none; }
+  .cursor::before, .seg-b, .back, .back svg { transition: none; }
 }
 
 @media print {
@@ -1595,10 +1606,22 @@ html.js [data-shot].in { opacity: 1; transform: none; }
    Case pages, in the theme
    ========================================================================== */
 .case-hero { padding-top: calc(var(--bar-h) + clamp(40px, 5.6vw, 96px)); }
-.crumb { color: var(--ink-3); font-size: 0.9375rem; }
+.crumb { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; color: var(--ink-3); font-size: 0.9375rem; }
+/* the way back, over the title: to the project on the home page, or, for a
+   visitor who came from there, back to the same place (assets/js/vt.js) */
+.back { position: relative; display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 15px 0 12px; border-radius: 10px; background: var(--tile); color: var(--ink); font-weight: 500; letter-spacing: -0.01em; text-decoration: none; -webkit-tap-highlight-color: transparent; transition: background-color 200ms ease, transform 160ms var(--eo); }
+.back::after { content: ""; position: absolute; inset: -4px; }
+.back svg { flex: none; width: 15px; height: 10px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform 320ms var(--eo); }
+.back:hover { background: var(--tile-2); }
+.back:hover svg { transform: translateX(-2px); }
+.back:active { transform: scale(0.97); }
 .case-title { font-family: var(--f-sans); font-weight: 600; font-size: clamp(3rem, 1.1rem + 6.2vw, 7.75rem); line-height: 0.96; letter-spacing: -0.052em; margin-left: -0.05em; }
-/* the title rises into place; with motion reduced it is simply there */
+/* the title rises into place; with motion reduced it is simply there, and
+   when it has flown in from the page before, it has already arrived */
 @media (prefers-reduced-motion: no-preference) { html.js .case-title { animation: sk-rise 1100ms var(--eo) 60ms backwards; } }
+html.vt-flown .case-title { animation: none; }
+/* the first stage under a case title arrives after the lines above it */
+.case-hero + .frame > figure:first-child > [data-shot] { --d: 360ms; }
 .case-a { margin-top: clamp(28px, 3.2vw, 52px); }
 .case-kicker { color: var(--ink-3); }
 .case-kicker b { color: var(--ink); font-weight: 600; letter-spacing: -0.01em; }

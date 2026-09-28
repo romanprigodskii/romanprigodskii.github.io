@@ -23,6 +23,13 @@
 <link rel="preload" href="../assets/fonts/mona-sans-200-900-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/css/site.css">
 <link rel="stylesheet" href="../assets/css/research.css">
+<!-- the other pages' stylesheets, fetched at idle so that a first click to one waits for nothing (where prefetch is unsupported, assets/js/vt.js fetches them) -->
+<link rel="prefetch" href="../assets/css/vertex-mma.css">
+<link rel="prefetch" href="../assets/css/gluline.css">
+<link rel="prefetch" href="../assets/css/vertex-boxing.css">
+<link rel="prefetch" href="../assets/css/zacks-ibkr.css">
+<link rel="prefetch" href="../assets/css/clipwell.css">
+<link rel="prefetch" href="../assets/css/alfa-romeo.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"CollectionPage","name":"Research, Roman Prigodskii","url":"https://prigodskii.dev/research/","author":{"@type":"Person","name":"Roman Prigodskii","url":"https://prigodskii.dev/"},"hasPart":[{"@type":"ScholarlyArticle","name":"Testing by betting when the bets are real: an e-value audit of 84 pre-registered market-efficiency hypotheses","author":{"@type":"Person","name":"Roman Prigodskii"},"url":"https://prigodskii.dev/papers/evalues.pdf","creativeWorkStatus":"Under review"},{"@type":"ScholarlyArticle","name":"Measure the instrument first: detection floors for model selection and for LLM judges","author":{"@type":"Person","name":"Roman Prigodskii"},"url":"https://prigodskii.dev/papers/floors.pdf","creativeWorkStatus":"Working paper"}]}
 </script>
@@ -30,6 +37,7 @@
   document.documentElement.classList.add("js");
   setTimeout(function () { if (!window.__rp) document.documentElement.classList.remove("js"); }, 2500);
 </script>
+<script src="../assets/js/vt.js"></script>
 <script src="../assets/js/figures.js" defer></script>
 <script src="../assets/js/site.js" defer></script>
 <script src="../assets/js/research.js" defer></script>
@@ -54,8 +62,8 @@
 <article class="rs" aria-labelledby="rs-t">
   <header class="case-hero">
     <div class="frame">
-      <p class="crumb"><a href="../#research">Home</a> / Two papers and three school projects</p>
-      <h1 class="case-title" id="rs-t"><span style="view-transition-name: t-research">Research</span></h1>
+      <p class="crumb" data-rv><a class="back" href="../#research" data-back><svg viewBox="0 0 18 12" aria-hidden="true" focusable="false"><path d="M17 6H2.5M7 1.5 2.5 6 7 10.5"/></svg>Home</a><span>Two papers and three school projects</span></p>
+      <h1 class="case-title" id="rs-t"><span>Research</span></h1>
       <div class="cols case-a">
         <div class="case-kicker" data-rv style="--d:200ms">
           <b>On this page</b>

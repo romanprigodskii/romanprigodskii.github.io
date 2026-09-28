@@ -67,11 +67,24 @@
   var io = "IntersectionObserver" in window ? new IntersectionObserver(function (es) {
     es.forEach(function (e) {
       if (!e.isIntersecting) return;
-      e.target.classList.add("in");
       io.unobserve(e.target);
-      if (e.target.__onIn) e.target.__onIn();
+      reveal(e.target);
     });
   }, { rootMargin: "0px 0px -10% 0px", threshold: 0.01 }) : null;
+  function reveal(el) {
+    function go() { el.classList.add("in"); if (el.__onIn) el.__onIn(); }
+    if (el.__ready) el.__ready().then(go); else go();
+  }
+  /* a stage arrives with its picture: the posters and screenshots on it are
+     decoded first (for at most 800ms), so it never rises as an empty panel */
+  function pictures(el) {
+    var jobs = $$("video[poster]", el).map(function (v) { var i = new Image(); i.src = v.poster; return i; })
+      .concat($$("img", el))
+      .map(function (i) { return i.decode ? i.decode().catch(function () {}) : null; })
+      .filter(Boolean);
+    return Promise.race([Promise.all(jobs), new Promise(function (r) { setTimeout(r, 800); })]);
+  }
+  $$("[data-shot]").forEach(function (el) { el.__ready = function () { return pictures(el); }; });
   function watch(el, fn) {
     if (!el) return;
     if (fn) el.__onIn = fn;

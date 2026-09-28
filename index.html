@@ -22,6 +22,14 @@
 <link rel="apple-touch-icon" href="assets/img/mark-180.png">
 <link rel="preload" href="assets/fonts/mona-sans-200-900-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/site.css">
+<!-- the other pages' stylesheets, fetched at idle so that a first click to one waits for nothing (where prefetch is unsupported, assets/js/vt.js fetches them) -->
+<link rel="prefetch" href="assets/css/vertex-mma.css">
+<link rel="prefetch" href="assets/css/gluline.css">
+<link rel="prefetch" href="assets/css/vertex-boxing.css">
+<link rel="prefetch" href="assets/css/zacks-ibkr.css">
+<link rel="prefetch" href="assets/css/clipwell.css">
+<link rel="prefetch" href="assets/css/alfa-romeo.css">
+<link rel="prefetch" href="assets/css/research.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Roman Prigodskii","url":"https://prigodskii.dev/","email":"mailto:roman@prigodskii.dev","jobTitle":"Student and independent researcher","affiliation":{"@type":"EducationalOrganization","name":"Letovo School"},"address":{"@type":"PostalAddress","addressLocality":"Moscow","addressCountry":"RU"},"sameAs":["https://github.com/romanprigodskii","https://t.me/prigodskii","https://vertexmma.com","https://gluline.com"],"knowsAbout":["Empirical market efficiency","E-values and anytime-valid inference","Forecasting","Gradient boosting","Software engineering"]}
 </script>
@@ -30,6 +38,7 @@
   document.documentElement.classList.add("js");
   setTimeout(function () { if (!window.__rp) document.documentElement.classList.remove("js"); }, 2500);
 </script>
+<script src="assets/js/vt.js"></script>
 <script src="assets/js/figures.js" defer></script>
 <script src="assets/js/site.js" defer></script>
 </head>
@@ -100,7 +109,7 @@
     <article class="proj p-vx hs-vx" aria-labelledby="vx-h">
       <div class="cols hs-head">
         <div class="proj-text">
-          <h3 id="vx-h" class="h3" data-rv><a href="work/vertex-mma/"><span style="view-transition-name: t-vertex-mma">Vertex MMA</span></a></h3>
+          <h3 id="vx-h" class="h3" data-rv><a href="work/vertex-mma/"><span data-vt="vertex-mma">Vertex MMA</span></a></h3>
           <p class="status" data-rv style="--d:60ms">Live product at <a href="https://vertexmma.com" rel="noopener">vertexmma.com</a></p>
         </div>
         <div class="hs-head-b">
@@ -154,7 +163,7 @@
           <figure class="phone" style="--i:2"><video data-play muted loop playsinline preload="none" poster="assets/img/work/gluline-call.webp" width="600" height="1304" aria-label="A Gluline contact card that says the AI can read this chat. A voice call starts from it, rings, connects and runs for a few seconds, then the card returns."><source src="assets/video/gluline-call.mp4" type="video/mp4"></video></figure>
         </div>
         <div class="proj-text gl-text">
-          <h3 id="gl-h" class="h3" data-rv><a href="work/gluline/"><span style="view-transition-name: t-gluline">Gluline</span></a></h3>
+          <h3 id="gl-h" class="h3" data-rv><a href="work/gluline/"><span data-vt="gluline">Gluline</span></a></h3>
           <p class="status" data-rv style="--d:60ms">Released 19 August 2026. Co-founder, engineer and Head of AI.</p>
           <p data-rv style="--d:110ms">A messenger that says exactly who can read what, on the App Store, Google Play and the web, in ten languages. From the first files in April 2026 to the App Store took four and a half months, with 309 unit tests at the release gate.</p>
           <table class="who" data-rv style="--d:160ms">
@@ -180,7 +189,7 @@
     <article class="proj p-bx hs-bx" aria-labelledby="bx-h">
       <div class="cols">
         <div class="proj-text">
-          <h3 id="bx-h" class="h3" data-rv><a href="work/vertex-boxing/"><span style="view-transition-name: t-vertex-boxing">Vertex Boxing</span></a></h3>
+          <h3 id="bx-h" class="h3" data-rv><a href="work/vertex-boxing/"><span data-vt="vertex-boxing">Vertex Boxing</span></a></h3>
           <p class="status" data-rv style="--d:60ms">Concluded research, September 2026. The report and the code are public.</p>
         </div>
         <div class="thesis" style="grid-column: 3 / 6">
@@ -234,7 +243,7 @@
       </figure>
       <div class="cols zk-row">
         <div class="proj-text">
-          <h3 id="zk-h" class="h3" data-rv><a href="work/zacks-ibkr/"><span style="view-transition-name: t-zacks-ibkr">Zacks to Interactive Brokers</span></a></h3>
+          <h3 id="zk-h" class="h3" data-rv><a href="work/zacks-ibkr/"><span data-vt="zacks-ibkr">Zacks to Interactive Brokers</span></a></h3>
           <p class="status" data-rv style="--d:60ms">Paid client work, private.</p>
         </div>
         <div class="zk-desc" data-rv style="--d:100ms">
@@ -253,7 +262,7 @@
     <article class="proj p-cw hs-cw" aria-labelledby="cw-h">
       <div class="cols hs-cw-row">
         <div class="proj-text hs-cw-text">
-          <h3 id="cw-h" class="h3" data-rv><a href="work/clipwell/"><span style="view-transition-name: t-clipwell">Clipwell</span></a></h3>
+          <h3 id="cw-h" class="h3" data-rv><a href="work/clipwell/"><span data-vt="clipwell">Clipwell</span></a></h3>
           <p class="status" data-rv style="--d:60ms">Open source, MIT.</p>
           <p data-rv style="--d:100ms">Native clipboard history for macOS and Windows, written natively twice rather than once in Electron. No account and no network calls, and anything a password manager marks as concealed or transient is never written to disk.</p>
           <div class="hs-cw-cmd" data-rv style="--d:150ms">
@@ -302,7 +311,7 @@
       </div>
       <div class="cols ar-row">
         <div class="proj-text">
-          <h3 id="ar-h" class="h3" data-rv><a href="work/alfa-romeo/"><span style="view-transition-name: t-alfa-romeo">Alfa-Romeo</span></a></h3>
+          <h3 id="ar-h" class="h3" data-rv><a href="work/alfa-romeo/"><span data-vt="alfa-romeo">Alfa-Romeo</span></a></h3>
           <p class="status" data-rv style="--d:60ms">Built on an internship at Alfa-Bank. A concept, 93 screens.</p>
         </div>
         <div class="ar-desc" data-rv style="--d:100ms">
