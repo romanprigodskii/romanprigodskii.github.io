@@ -28,9 +28,10 @@ shown as a muted looping recording of the real thing.
 Blue never decorates. If a mark is blue, it cleared 20 (or whatever bar the
 figure states). The model beating nobody is drawn in ink.
 
-The stages (`.stage.is-dark`, `.is-mist`, `.is-red`, `.is-sage`) take their
-colour from the product on them: Vertex's dark web app, Gluline's mist, the
-bank's red, Clipwell's desktop. They are the only coloured surfaces on the site.
+The stages (`.stage.is-dark`, `.is-mist`, `.is-red`, `.is-sage`, `.is-paper`)
+take their colour from the product on them: Vertex's dark web app, Gluline's
+mist, the bank's red, Clipwell's desktop, the warm paper indelible prints on.
+They are the only coloured surfaces on the site.
 
 ## Type
 
@@ -49,7 +50,7 @@ everywhere. System monospace appears once, for a literal `brew install`.
 
 | page | what it is |
 |---|---|
-| `/` | the name, the slide rule, six projects, both papers, the school papers, the record, contact |
+| `/` | the name, the slide rule, seven projects, both papers, the school papers, the record, contact |
 | `/work/<slug>/` | one page per project, each opening on the product running |
 | `/research/` | both papers in full, with the explorable 84, and three school projects |
 | `/plain/` | one printable file, no JavaScript |
@@ -94,8 +95,9 @@ each page prefetches the other pages' stylesheets at idle.
 | `.plate` | a neutral tile for a figure |
 
 Every loop in `assets/video/` was recorded from the live product (vertexmma.com,
-gluline.com, Clipwell's site, the Vertex Boxing report) or cut from its own
-footage. They are muted H.264 MP4s with a WebP poster from their first frame,
+gluline.com, Clipwell's site, indelible's site, the Vertex Boxing report) or cut
+from its own footage. indelible's sheets are pages it printed itself, from the
+sample study folder in its repository (an invented learner) and a 2-day recheck. They are muted H.264 MP4s with a WebP poster from their first frame,
 `preload="none"`, width and height always set. `site.js` starts loading a loop
 a screen before it arrives, plays it only while it is on screen and gives it one round pause
 control in its lower right corner; the videos inside a `[data-play-group]` (the
@@ -138,6 +140,9 @@ node tools/figures.mjs --check         # exit 1 if a page is stale
 | the floor | home, Vertex MMA, research | everything measured sits inside the detection floor |
 | the Collatz path | research | the path of any start from 2 to 1,000 on a log scale |
 | the school sparklines | home | the sausage's traced edge, the glass's discs, the path of 27 |
+| the 48 hours | home, indelible | the same day's sheets are practice; the recheck two days later is the first score that counts |
+| one topic, lesson to retired | indelible | the default intervals on a log scale of days; an example, labelled so; blue from the recheck on |
+| question 4, working | indelible | a printed question takes an answer, and its check line runs backwards from it |
 
 Two honesty rules the figures follow: a truncated axis says so in the figure,
 and a schematic is labelled as a schematic.
@@ -156,6 +161,8 @@ or shows something measured:
 | the rejected ideas are struck through | Vertex MMA keeps its failures on record |
 | the 84 drop onto the axis | a dot plot settling |
 | the record's pen crosses the school years | a chart recorder; it never unwrites |
+| indelible's sheets land in the day's order, then the 48 hours are drawn, then the recheck | the method's own sequence |
+| a pen draws indelible's time axis and each stop lands as it is reached | a schedule being kept |
 | the product loops play in view | the products, working |
 
 Under `prefers-reduced-motion` every figure is drawn in its final state and the

@@ -1,0 +1,209 @@
+/* /work/indelible/: the product site's practice sheet on indelible's paper,
+   the two days before a score counts, a printed question whose check line
+   works, the three rules the scripts hold, and the brief. Tokens and shared
+   frames (.stage, .win, .plate, .stage.is-paper) come from site.css;
+   everything here is specific to this case. */
+
+/* ------------------------------------------------------------ the lead: the site, on its own paper */
+.inc-stage { padding: clamp(22px, 3.6vw, 60px) clamp(18px, 4.4vw, 76px); }
+.inc-win { box-shadow: 0 0 0 1px oklch(0.4 0.03 70 / 0.12), 0 2px 4px oklch(0.4 0.03 70 / 0.06), 0 34px 64px -34px oklch(0.35 0.05 60 / 0.5); }
+.inc-win > video { aspect-ratio: 2880 / 1800; background: oklch(0.978 0.006 85); }
+html.js .inc-stage .inc-win { opacity: 0; translate: 0 26px; transition: opacity 900ms var(--eo) 140ms, translate 1300ms var(--eo) 140ms; }
+html.js .inc-stage.in .inc-win { opacity: 1; translate: 0 0; }
+
+/* ------------------------------------------------------------ 48 hours: one topic, lesson to retired */
+.inc-lad { padding: clamp(22px, 2.8vw, 40px) clamp(18px, 2.6vw, 40px) clamp(18px, 2.2vw, 30px); }
+.inc-lad-n { display: none; }
+.il-svg { display: block; overflow: visible; font-family: var(--f-sans); }
+.il-axis { stroke: var(--line-2); stroke-width: 1.5; stroke-linecap: round; }
+.il-hop { fill: none; stroke: var(--ink-3); stroke-width: 1.25; stroke-linecap: round; }
+.il-hop.is-first { stroke: var(--ink); stroke-dasharray: 0.012 0.018; }
+.il-hl { font-size: 12.5px; font-weight: 500; fill: var(--ink-3); paint-order: stroke; stroke: var(--tile); stroke-width: 4px; }
+.il-hl.is-first { font-weight: 600; fill: var(--ink); }
+.il-m { stroke-width: 2; }
+.il-stop.is-practice .il-m { fill: var(--tile); stroke: var(--ink); }
+.il-stop.is-counts .il-m { fill: var(--signal); stroke: var(--tile); }
+.il-day { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; fill: var(--ink); }
+.il-a { font-size: 13px; fill: var(--ink-2); }
+.il-b { font-size: 13px; font-weight: 600; fill: var(--ink-3); }
+.il-stop.is-counts .il-b { fill: var(--signal-t); }
+.il-stop.is-practice .il-b { fill: var(--ink-3); }
+.inc-lad-cap { margin-top: clamp(14px, 1.6vw, 22px); font-size: var(--fs-fine); line-height: 1.5; color: var(--ink-3); max-width: 70ch; }
+/* a pen draws the axis from the lesson on at a steady pace; each stop lands as the pen
+   reaches it (its --t, from figures-indelible.js), and the hop into it is drawn just before */
+html.js .inc-lad:not(.in) .il-axis { stroke-dashoffset: 1; }
+html.js .inc-lad .il-axis { stroke-dasharray: 1 1; transition: stroke-dashoffset 1900ms linear 160ms; }
+html.js .inc-lad.in .il-axis { stroke-dashoffset: 0; }
+html.js .inc-lad .il-stop { opacity: 0; transition: opacity 500ms var(--eo) var(--t); }
+html.js .inc-lad .il-m { transform-box: fill-box; transform-origin: center; transform: scale(0.2); transition: transform 700ms var(--eo) var(--t); }
+html.js .inc-lad .il-hop:not(.is-first) { stroke-dasharray: 1 1; stroke-dashoffset: 1; transition: stroke-dashoffset 520ms var(--eo) calc(var(--t) - 300ms); }
+html.js .inc-lad .il-hop.is-first { opacity: 0; transition: opacity 600ms ease calc(var(--t) - 400ms); }
+html.js .inc-lad .il-hl { opacity: 0; transition: opacity 500ms ease calc(var(--t) - 200ms); }
+html.js .inc-lad.in .il-stop, html.js .inc-lad.in .il-hl, html.js .inc-lad.in .il-hop.is-first { opacity: 1; }
+html.js .inc-lad.in .il-m { transform: none; }
+html.js .inc-lad.in .il-hop:not(.is-first) { stroke-dashoffset: 0; }
+
+/* ------------------------------------------------------------ check backwards: the printed question, working
+   The picture is question 4 of a real recheck. Over its box sits an input,
+   and over its check line the check that runs backwards from what is typed
+   (indelible.js). Sizes follow the picture's width. */
+.inc-q-stage { padding: clamp(18px, 3.2vw, 52px) clamp(16px, 3.4vw, 56px); }
+.inc-q {
+  position: relative;
+  container-type: inline-size;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px oklch(0.4 0.03 70 / 0.08), 0 2px 4px oklch(0.4 0.03 70 / 0.05), 0 24px 44px -28px oklch(0.35 0.05 60 / 0.45);
+}
+.inc-q img { display: block; width: 100%; height: auto; border-radius: 4px; }
+.inc-q-box { position: absolute; left: 8.88%; top: 26.3%; width: 87.95%; height: 43.4%; cursor: text; }
+.inc-q-box input {
+  width: 100%;
+  height: 100%;
+  padding: 0 3cqw;
+  border: 0;
+  border-radius: 0.5cqw;
+  background: transparent;
+  font: 500 5.2cqw/1 var(--f-sans);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  caret-color: var(--ink);
+  outline: none;
+  transition: background-color 200ms ease;
+}
+.inc-q-box input::placeholder { color: oklch(0.72 0.01 262); font-weight: 400; font-size: 3.2cqw; letter-spacing: -0.005em; }
+.inc-q-box input:hover { background: oklch(0.2 0.012 262 / 0.025); }
+.inc-q-box input:focus-visible { box-shadow: inset 0 0 0 2px var(--ink); }
+.inc-q-check {
+  position: absolute;
+  left: 18.2%;
+  right: 3.4%;
+  bottom: 17.3%;
+  display: flex;
+  align-items: baseline;
+  gap: 1.6cqw;
+  font: 500 3.3cqw/1.1 var(--f-sans);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.inc-q-check[hidden] { display: none; }
+.inc-q-check .q-say { font-weight: 600; font-size: 2.6cqw; color: var(--ink-3); }
+.inc-q-check.is-no .q-say { color: var(--ink); }
+.inc-q-check svg { flex: none; align-self: center; width: 3.4cqw; height: 3.4cqw; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.inc-q-check .q-mark { stroke-dasharray: 1; stroke-dashoffset: 1; animation: q-pen 420ms var(--eo) 60ms forwards; }
+@keyframes q-pen { to { stroke-dashoffset: 0; } }
+.inc-q-check.is-wait { color: oklch(0.72 0.01 262); }
+
+/* ------------------------------------------------------------ three rules the scripts hold */
+.inc-gates { padding: clamp(10px, 1.4vw, 20px) clamp(20px, 2.6vw, 40px) clamp(18px, 2.2vw, 30px); }
+.gt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 0;
+  row-gap: 8px;
+  padding: clamp(20px, 2vw, 28px) 0 clamp(18px, 1.8vw, 24px);
+  border-bottom: 1px solid var(--line-2);
+}
+.gt:last-child { border-bottom: 0; }
+.gt-in, .gt-out { position: relative; font-weight: 600; font-size: 1rem; line-height: 1.3; letter-spacing: -0.015em; }
+.gt-in { padding-right: 18px; }
+.gt-out { padding-left: 18px; }
+/* the track into the gate and out of it, drawn when the figure arrives */
+.gt-gate::before, .gt-gate::after { content: ""; position: absolute; top: 50%; width: clamp(18px, 2.4vw, 40px); height: 1.5px; background: var(--ink); transform-origin: left center; }
+.gt-gate::before { right: 100%; }
+.gt-gate::after { left: 100%; }
+.gt-gate {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 clamp(18px, 2.4vw, 40px);
+  padding: 8px 13px 8px 10px;
+  border-radius: 10px;
+  background: var(--bg);
+  box-shadow: 0 0 0 1px var(--line-2), 0 1px 2px oklch(0.2 0.02 262 / 0.06);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.gt-lock { position: relative; flex: none; width: 13px; height: 14px; }
+.gt-lock::before { content: ""; position: absolute; left: 2.5px; top: 0; width: 8px; height: 8px; border: 1.5px solid var(--ink); border-bottom: 0; border-radius: 5px 5px 0 0; box-sizing: border-box; }
+.gt-lock::after { content: ""; position: absolute; left: 0; bottom: 0; width: 13px; height: 8px; border-radius: 2px; background: var(--ink); }
+.gt-out::after { content: ""; position: absolute; left: 0; top: 50%; width: 7px; height: 7px; margin: -3.5px 0 0 -8px; border-top: 1.5px solid var(--ink); border-right: 1.5px solid var(--ink); transform: rotate(45deg); }
+.gt-no { grid-column: 1 / -1; margin-top: 4px; font-size: 0.9375rem; line-height: 1.5; color: var(--ink-2); max-width: 64ch; text-wrap: pretty; }
+.gt-cap { margin-top: 8px; font-size: var(--fs-fine); color: var(--ink-3); }
+html.js .inc-gates .gt-gate::before, html.js .inc-gates .gt-gate::after { transform: scaleX(0); transition: transform 700ms var(--eo) calc(200ms + var(--i) * 260ms); }
+html.js .inc-gates .gt-gate::after { transition-delay: calc(560ms + var(--i) * 260ms); }
+html.js .inc-gates .gt-out { opacity: 0; translate: -8px 0; transition: opacity 600ms ease calc(760ms + var(--i) * 260ms), translate 800ms var(--eo) calc(760ms + var(--i) * 260ms); }
+html.js .inc-gates.in .gt-gate::before, html.js .inc-gates.in .gt-gate::after { transform: none; }
+html.js .inc-gates.in .gt-out { opacity: 1; translate: 0 0; }
+
+/* ------------------------------------------------------------ the brief, in a terminal */
+.inc-term {
+  overflow: hidden;
+  border-radius: clamp(10px, 1vw, 14px);
+  background: oklch(0.2 0.008 265);
+  color: oklch(0.9 0.006 262);
+  box-shadow: 0 0 0 1px oklch(0.2 0.02 262 / 0.1), 0 30px 60px -34px oklch(0.2 0.02 262 / 0.55);
+}
+.inc-term:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.inc-term-bar { display: flex; align-items: center; gap: 14px; height: clamp(30px, 2.6vw, 38px); padding: 0 14px; border-bottom: 1px solid oklch(0.3 0.01 265); font: 500 0.75rem/1 var(--f-sans); color: oklch(0.68 0.01 262); }
+.inc-term-bar .win-dots i { background: oklch(0.36 0.01 265); }
+.inc-term-b { margin: 0; padding: clamp(16px, 1.8vw, 24px) clamp(16px, 2vw, 28px) clamp(18px, 2vw, 26px); white-space: pre-wrap; overflow-wrap: anywhere; font: 400 0.8125rem/1.7 var(--f-code); }
+.inc-term-b code { font-size: inherit; }
+.inc-term-b b { font-weight: 600; color: #fff; }
+.inc-term-b .t-p { color: oklch(0.6 0.01 262); }
+.inc-term-b .t-k { color: oklch(0.74 0.012 262); }
+.inc-term-b .t-l { color: #fff; font-weight: 600; background: oklch(1 0 0 / 0.1); border-radius: 4px; padding: 1px 4px; }
+
+/* ------------------------------------------------------------ install */
+.inc-inst { margin-top: clamp(80px, 8vw, 140px); }
+.inc-inst-b { grid-column: 3 / 6; padding-right: 0; }
+.inc-inst-b > p:first-child { color: var(--ink-2); max-width: 52ch; }
+.inc-cmd { margin-top: 22px; max-width: 620px; }
+.inc-cmd code { white-space: pre-wrap; line-height: 1.7; }
+.inc-go { margin-top: 22px; }
+
+/* ------------------------------------------------------------ widths */
+/* where the chapter column is too narrow for the timeline to read at its size,
+   time runs down the page instead; the three rules put what arrives above its gate */
+@media (max-width: 1100px) {
+  .inc-lad-w { display: none; }
+  .inc-lad-n { display: block; max-width: 440px; }
+  .gt { grid-template-columns: auto minmax(0, 1fr); row-gap: 10px; }
+  .gt-in { grid-column: 1 / -1; padding-right: 0; }
+  .gt-gate { grid-column: 1; margin: 0; }
+  .gt-gate::before { display: none; }
+  .gt-gate::after { width: 18px; }
+  .gt-out { grid-column: 2; padding-left: 30px; }
+  .gt-out::after { margin-left: 16px; }
+}
+@media (max-width: 760px) {
+  .inc-stage { padding: 16px 12px; }
+  .inc-lad { padding: 18px 12px 14px; }
+  .il-hl { font-size: 12px; }
+  .il-a, .il-b { font-size: 12.5px; }
+  .inc-q-stage { padding: 14px 10px; }
+  .gt-gate { font-size: 0.8125rem; }
+  .inc-term-b { font-size: 0.75rem; line-height: 1.65; }
+  .inc-inst-b { grid-column: 1 / 6; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .inc-stage .inc-win { opacity: 1; translate: none; transition: none; }
+  html.js .inc-lad .il-axis, html.js .inc-lad .il-hop:not(.is-first) { stroke-dashoffset: 0 !important; transition: none; }
+  html.js .inc-lad .il-stop, html.js .inc-lad .il-hl, html.js .inc-lad .il-hop.is-first { opacity: 1; transition: none; }
+  html.js .inc-lad .il-m { transform: none; transition: none; }
+  html.js .inc-gates .gt-gate::before, html.js .inc-gates .gt-gate::after { transform: none; transition: none; }
+  html.js .inc-gates .gt-out { opacity: 1; translate: none; transition: none; }
+  .inc-q-check .q-mark { animation: none; stroke-dashoffset: 0; }
+}
+
+@media print {
+  .inc-stage, .inc-q-stage, .inc-lad, .inc-gates { background: none !important; box-shadow: none !important; }
+  .inc-term { background: none; color: var(--ink); box-shadow: none; border: 1px solid var(--line-2); }
+  .inc-term-b b, .inc-term-b .t-l { color: var(--ink); }
+}

@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>indelible, Roman Prigodskii</title>
+<meta name="description" content="indelible: an open-source skill for Claude Code that runs self-study like a strict tutor. Theory you read and close, drills checked backwards on paper, and a cold recheck two days later.">
+<meta name="author" content="Roman Prigodskii">
+<meta name="theme-color" content="#FBFCFE">
+<link rel="canonical" href="https://prigodskii.dev/work/indelible/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="indelible, Roman Prigodskii">
+<meta property="og:description" content="An open-source Claude skill for teaching yourself anything. Nothing counts until it survives 48 hours.">
+<meta property="og:url" content="https://prigodskii.dev/work/indelible/">
+<meta property="og:image" content="https://prigodskii.dev/assets/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Roman Prigodskii: forecasting models graded against the bookmaker's closing line; co-founder and Head of AI at Gluline. Beside it, vertexmma.com in a browser and the Gluline app on a phone.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image:alt" content="Roman Prigodskii: forecasting models graded against the bookmaker's closing line; co-founder and Head of AI at Gluline. Beside it, vertexmma.com in a browser and the Gluline app on a phone.">
+<link rel="icon" href="../../assets/img/mark.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../assets/img/mark-180.png">
+<link rel="preload" href="../../assets/fonts/mona-sans-200-900-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../assets/css/site.css">
+<link rel="stylesheet" href="../../assets/css/indelible.css">
+<!-- the other pages' stylesheets, fetched at idle so that a first click to one waits for nothing (where prefetch is unsupported, assets/js/vt.js fetches them) -->
+<link rel="prefetch" href="../../assets/css/vertex-mma.css">
+<link rel="prefetch" href="../../assets/css/gluline.css">
+<link rel="prefetch" href="../../assets/css/vertex-boxing.css">
+<link rel="prefetch" href="../../assets/css/zacks-ibkr.css">
+<link rel="prefetch" href="../../assets/css/clipwell.css">
+<link rel="prefetch" href="../../assets/css/alfa-romeo.css">
+<link rel="prefetch" href="../../assets/css/research.css">
+<script>
+  document.documentElement.classList.add("js");
+  setTimeout(function () { if (!window.__rp) document.documentElement.classList.remove("js"); }, 2500);
+</script>
+<script src="../../assets/js/vt.js"></script>
+<script src="../../assets/js/site.js" defer></script>
+<script src="../../assets/js/indelible.js" defer></script>
+</head>
+<body data-base="../../">
+<a class="skip" href="#main">Skip to the case</a>
+
+<header class="bar" data-bar>
+  <div class="frame bar-in">
+    <a class="bar-name" href="../../">Roman Prigodskii</a>
+    <nav class="bar-nav" aria-label="Site">
+      <a href="../../#work" aria-current="true">Work</a>
+      <a href="../../research/">Research</a>
+      <a href="../../#record">Record</a>
+      <a href="../../#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<article class="case inc" aria-labelledby="case-t">
+  <header class="case-hero">
+    <div class="frame">
+      <p class="crumb" data-rv><a class="back" href="../../#in-h" data-back><svg viewBox="0 0 18 12" aria-hidden="true" focusable="false"><path d="M17 6H2.5M7 1.5 2.5 6 7 10.5"/></svg>All work</a></p>
+      <h1 class="case-title" id="case-t"><span data-vt="indelible">indelible</span></h1>
+      <div class="cols case-a">
+        <div class="case-kicker" data-rv style="--d:200ms">
+          <b>Open source, MIT or Apache-2.0</b>
+          <p class="links"><a href="https://romanprigodskii.github.io/indelible/" rel="noopener">Product site</a><a href="https://github.com/romanprigodskii/indelible" rel="noopener">Source on GitHub</a></p>
+        </div>
+        <p class="case-line" data-rv style="--d:260ms">A tutor for teaching yourself anything, built as a skill for Claude Code. It plans backwards from your date, teaches from sheets you read and then close, marks your work from photos of the paper, and tests everything again, cold, two days later.</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="frame">
+    <!-- the lead: the product site's own three-question sheet, filled in and marked -->
+    <figure class="case-media inc-lead">
+      <div class="stage is-paper inc-stage" data-shot>
+        <div class="win inc-win">
+          <div class="win-bar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-url">romanprigodskii.github.io/indelible</span></div>
+          <video data-play muted loop playsinline preload="none" poster="../../assets/img/work/indelible-try.webp" width="2880" height="1800" aria-label="indelible's website in a browser. On its practice sheet the answers 50, 96 and 9 are typed in, with written checks beside the first and the third; least sure of question 2. The sheet is handed in and marked: two ticks, a cross on 96, and under it the check that catches it, 96 minus 20% is 76.80, not 80. The page scrolls to the verdict: 2 of 3, it does not count yet; the recheck opens on Thursday."><source src="../../assets/video/indelible-try.mp4" type="video/mp4"></video>
+        </div>
+      </div>
+      <figcaption class="stage-cap">The practice sheet on indelible&rsquo;s site, which I built. Question 2 is answered without a check, and the marking shows the one that would have caught the slip. Recorded in Chrome.</figcaption>
+    </figure>
+
+    <dl class="cols case-facts inc-facts" data-rv>
+      <div><dt>tests, run on macOS, Linux and Windows</dt><dd>588</dd></div>
+      <div><dt>lines of Python in its scripts, standard library only</dt><dd>17,743</dd></div>
+      <div><dt>rules in the sheet checker</dt><dd>14</dd></div>
+      <div><dt>network requests made by the scripts</dt><dd>0</dd></div>
+    </dl>
+
+    <section class="cols chapter" aria-labelledby="c1">
+      <h2 class="chapter-h" id="c1">Nothing counts until it survives 48 hours</h2>
+      <div class="chapter-b prose">
+        <p>A score on the day you learned something mostly shows that the explanation is still fresh. So every new skill is tested again two days later, on fresh questions, with nothing looked at in the 24 hours before, and that is the first score that counts. A question missed there comes back after 1 day, 3 days, 1 week and 3 weeks.</p>
+        <figure class="plate inc-lad" data-lad data-watch>
+          <div class="inc-lad-w"><!--@inLadderWide--><svg class="il-svg" viewBox="0 0 760 204" width="100%" preserveAspectRatio="xMinYMin meet" role="img" aria-labelledby="il-t-w il-d-w"><title id="il-t-w">One topic, from the lesson to retired</title><desc id="il-d-w">One topic on indelible's default intervals, with time on a log scale. Day 0, the lesson: 6 of 6 on the drills, which is practice and does not count. Day 2, 48 hours later and cold: the 2-day recheck, 3 of 4, the first score that counts. The question it missed comes back after 1 day (day 3), 3 days (day 6), 1 week (day 13) and 3 weeks (day 34), passing each time, and after four passes on four different days it is retired. The scores are an example, not a measurement.</desc><line class="il-axis" x1="8" y1="100" x2="752" y2="100" pathLength="1"/><path class="il-hop is-first" style="--t:747ms" d="M17,88 Q122.95,-19.81 228.9,88" pathLength="1"/><text style="--t:747ms" class="il-hl is-first" x="122.95" y="26.1" text-anchor="middle">48 hours, cold</text><path class="il-hop" style="--t:901ms" d="M246.9,88 Q268,34.5 289.1,88" pathLength="1"/><text style="--t:901ms" class="il-hl" x="268" y="53.25" text-anchor="middle">+1 day</text><path class="il-hop" style="--t:1200ms" d="M307.1,88 Q356.65,16.29 406.21,88" pathLength="1"/><text style="--t:1200ms" class="il-hl" x="356.65" y="44.14" text-anchor="middle">+3 days</text><path class="il-hop" style="--t:1570ms" d="M424.21,88 Q487.73,7.34 551.25,88" pathLength="1"/><text style="--t:1570ms" class="il-hl" x="487.73" y="39.67" text-anchor="middle">+1 week</text><path class="il-hop" style="--t:2060ms" d="M569.25,88 Q656.13,-7.6 743,88" pathLength="1"/><text style="--t:2060ms" class="il-hl" x="656.13" y="32.2" text-anchor="middle">+3 weeks</text><g class="il-stop is-practice" style="--t:160ms"><circle class="il-m" cx="8" cy="100" r="7"/><text class="il-day" x="1" y="134">Day 0</text><text class="il-a" x="1" y="154">the lesson: 6 of 6</text><text class="il-b" x="1" y="172">practice only</text></g><g class="il-stop is-counts" style="--t:747ms"><circle class="il-m" cx="237.9" cy="100" r="7"/><text class="il-day" x="244.9" y="134" text-anchor="end">Day 2</text><text class="il-a" x="244.9" y="154" text-anchor="end">the recheck: 3 of 4</text><text class="il-b" x="244.9" y="172" text-anchor="end">the first that counts</text></g><g class="il-stop is-counts" style="--t:901ms"><circle class="il-m" cx="298.1" cy="100" r="5.5"/><text class="il-day" x="292.6" y="134">Day 3</text><text class="il-a" x="292.6" y="154">the miss, back</text><text class="il-b" x="292.6" y="172">passed</text></g><g class="il-stop is-counts" style="--t:1200ms"><circle class="il-m" cx="415.21" cy="100" r="5.5"/><text class="il-day" x="415.21" y="134" text-anchor="middle">Day 6</text><text class="il-b" x="415.21" y="154" text-anchor="middle">passed</text></g><g class="il-stop is-counts" style="--t:1570ms"><circle class="il-m" cx="560.25" cy="100" r="5.5"/><text class="il-day" x="560.25" y="134" text-anchor="middle">Day 13</text><text class="il-b" x="560.25" y="154" text-anchor="middle">passed</text></g><g class="il-stop is-counts" style="--t:2060ms"><circle class="il-m" cx="752" cy="100" r="7"/><text class="il-day" x="759" y="134" text-anchor="end">Day 34</text><text class="il-a" x="759" y="154" text-anchor="end">four passes on four days</text><text class="il-b" x="759" y="172" text-anchor="end">retired</text></g></svg><!--/@inLadderWide--></div>
+          <div class="inc-lad-n"><!--@inLadderNarrow--><svg class="il-svg" viewBox="0 0 358 452" width="100%" preserveAspectRatio="xMinYMin meet" role="img" aria-labelledby="il-t-n il-d-n"><title id="il-t-n">One topic, from the lesson to retired</title><desc id="il-d-n">One topic on indelible's default intervals, with time on a log scale. Day 0, the lesson: 6 of 6 on the drills, which is practice and does not count. Day 2, 48 hours later and cold: the 2-day recheck, 3 of 4, the first score that counts. The question it missed comes back after 1 day (day 3), 3 days (day 6), 1 week (day 13) and 3 weeks (day 34), passing each time, and after four passes on four different days it is retired. The scores are an example, not a measurement.</desc><line class="il-axis" x1="104" y1="16" x2="104" y2="412" pathLength="1"/><path class="il-hop is-first" style="--t:747ms" d="M92,25 Q26.08,77.18 92,129.37" pathLength="1"/><text style="--t:747ms" class="il-hl is-first" x="51.04" y="81.18" text-anchor="end">48 hours</text><path class="il-hop" style="--t:901ms" d="M92,147.37 Q65.82,154.39 92,161.41" pathLength="1"/><text style="--t:901ms" class="il-hl" x="70.91" y="158.39" text-anchor="end">+1 day</text><path class="il-hop" style="--t:1200ms" d="M92,179.41 Q52.49,201.57 92,223.74" pathLength="1"/><text style="--t:1200ms" class="il-hl" x="64.25" y="205.57" text-anchor="end">+3 days</text><path class="il-hop" style="--t:1570ms" d="M92,241.74 Q45.95,271.34 92,300.94" pathLength="1"/><text style="--t:1570ms" class="il-hl" x="60.98" y="275.34" text-anchor="end">+1 week</text><path class="il-hop" style="--t:2060ms" d="M92,318.94 Q35.01,360.97 92,403" pathLength="1"/><text style="--t:2060ms" class="il-hl" x="55.51" y="364.97" text-anchor="end">+3 weeks</text><g class="il-stop is-practice" style="--t:160ms"><circle class="il-m" cx="104" cy="16" r="7"/><text class="il-day" x="124" y="21">Day 0</text><text class="il-a" x="124" y="39">the lesson: 6 of 6, <tspan class="il-b">practice only</tspan></text></g><g class="il-stop is-counts" style="--t:747ms"><circle class="il-m" cx="104" cy="138.37" r="7"/><text class="il-a" x="124" y="124.37"><tspan class="il-day">Day 2</tspan>  the recheck: 3 of 4</text><text class="il-b" x="124" y="142.37">the first that counts</text></g><g class="il-stop is-counts" style="--t:901ms"><circle class="il-m" cx="104" cy="170.41" r="5.5"/><text class="il-a" x="124" y="180.41"><tspan class="il-day">Day 3</tspan>  the miss, back, <tspan class="il-b">passed</tspan></text></g><g class="il-stop is-counts" style="--t:1200ms"><circle class="il-m" cx="104" cy="232.74" r="5.5"/><text class="il-day" x="124" y="237.74">Day 6</text><text class="il-a" x="124" y="255.74"><tspan class="il-b">passed</tspan></text></g><g class="il-stop is-counts" style="--t:1570ms"><circle class="il-m" cx="104" cy="309.94" r="5.5"/><text class="il-day" x="124" y="314.94">Day 13</text><text class="il-a" x="124" y="332.94"><tspan class="il-b">passed</tspan></text></g><g class="il-stop is-counts" style="--t:2060ms"><circle class="il-m" cx="104" cy="412" r="7"/><text class="il-day" x="124" y="417">Day 34</text><text class="il-a" x="124" y="435">four passes on four days, <tspan class="il-b">retired</tspan></text></g></svg><!--/@inLadderNarrow--></div>
+          <figcaption class="inc-lad-cap">One topic on indelible&rsquo;s default intervals, with days on a log scale. The scores are an example, not a measurement. From the recheck on, the marks are blue: those scores count.</figcaption>
+        </figure>
+        <p>Every number the tool reports carries that label, measured or practice. The method was developed with one learner over about four weeks, which is not a controlled study. Its principles come from well-studied effects, retrieval practice, spacing and interleaving, and the intervals are defaults a learner can change.</p>
+      </div>
+    </section>
+
+    <section class="cols chapter" aria-labelledby="c2">
+      <h2 class="chapter-h" id="c2">Check backwards, in writing</h2>
+      <div class="chapter-b prose">
+        <p>Beside every answer goes one written check that runs the other way: put the answer back into the question, rebuild the total, or test the definition against the question&rsquo;s words. Solving it again in your head tends to repeat the slip. A check on paper catches it, so drills and rechecks print a check line under every answer, with a hint while the topic is new.</p>
+        <figure class="inc-q-fig">
+          <div class="stage is-paper inc-q-stage" data-shot>
+            <div class="inc-q" data-q>
+              <img src="../../assets/img/work/indelible-check.webp" width="1600" height="621" alt="Question 4 of a 2-day recheck printed by indelible: Solve 3x + 5 = 20, a box for x, and under it a Check line with the hint, Put your x back into 3x + 5." loading="lazy" decoding="async">
+              <label class="inc-q-box" hidden><span class="sr">Your answer for x</span><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" maxlength="8" data-q-x></label>
+              <p class="inc-q-check" aria-live="polite" hidden data-q-check></p>
+            </div>
+          </div>
+          <figcaption class="stage-cap">Question 4 of a 2-day recheck, printed by indelible. <span class="inc-q-hint" hidden data-q-hint>Type an answer into the box, and the check runs backwards under it.</span></figcaption>
+        </figure>
+        <p>Each sheet ends with one line, <i>Least sure I chose the right idea</i>, instead of a confidence mark on every answer. Doubt tends to fire on the arithmetic, while the costly mistakes are confident misreadings of a definition.</p>
+      </div>
+    </section>
+
+    <section class="cols chapter" aria-labelledby="c3">
+      <h2 class="chapter-h" id="c3">Three rules the model can&rsquo;t skip</h2>
+      <div class="chapter-b prose">
+        <p>A skill is a set of instructions, and a model can break an instruction. So the three rules that matter most are enforced by the scripts, and Claude has to go through them.</p>
+        <figure class="plate inc-gates" data-gates data-watch aria-labelledby="gates-cap">
+          <ol class="gt-list">
+            <li class="gt" style="--i:0">
+              <p class="gt-in">A sheet Claude has written</p>
+              <p class="gt-gate"><span class="gt-lock" aria-hidden="true"></span>the sheet checker</p>
+              <p class="gt-out">a sheet you can print</p>
+              <p class="gt-no">It refuses a measuring sheet that names its topic, an answer from the key anywhere in the text, and a drill with no check line.</p>
+            </li>
+            <li class="gt" style="--i:1">
+              <p class="gt-in">Your attempt, filed as a photo or typed answers</p>
+              <p class="gt-gate"><span class="gt-lock" aria-hidden="true"></span>the sealed key</p>
+              <p class="gt-out">the answer key, for marking</p>
+              <p class="gt-no">Keys are sealed when a sheet is built. A helper agent writes each sheet and its key to files, so the answers never pass through the chat.</p>
+            </li>
+            <li class="gt" style="--i:2">
+              <p class="gt-in">The next session opens</p>
+              <p class="gt-gate"><span class="gt-lock" aria-hidden="true"></span>the brief</p>
+              <p class="gt-out">what the last one skipped, done first</p>
+              <p class="gt-no">A session left open is closed first, missed sessions are asked about, and a recheck whose window has passed is dealt with before anything new.</p>
+            </li>
+          </ol>
+          <figcaption class="gt-cap" id="gates-cap">What each script stands between.</figcaption>
+        </figure>
+        <p>The scripts are plain Python with no dependencies. They make no network requests, and a browser they start to print a sheet to PDF runs with its network blocked.</p>
+      </div>
+    </section>
+
+    <section class="cols chapter" aria-labelledby="c4">
+      <h2 class="chapter-h" id="c4">What a session opens with</h2>
+      <div class="chapter-b prose">
+        <p>When a session starts, Claude reads one summary, the brief. The scripts build it from plain files in a folder the learner chooses: what is due, how the last sessions went, and every number with the kind of evidence behind it.</p>
+        <figure class="inc-term-fig">
+          <div class="inc-term" role="region" aria-label="The brief, printed in a terminal" tabindex="0">
+            <div class="inc-term-bar" aria-hidden="true"><span class="win-dots"><i></i><i></i><i></i></span><span>indelible-sample</span></div>
+<pre class="inc-term-b"><code><span class="t-p">$</span> python3 indelible.py brief
+<b>IELTS Academic</b> · exam · 2026-12-12 (58 days left)
+<span class="t-k">NOW/NEXT:</span> today 07:00&ndash;07:15 2-day recheck (mixed) (15 min) · today 07:15&ndash;08:00 fixing mistakes: 2-day recheck first, then the mistakes from the diagnostic (45 min)
+<span class="t-k">DUE:</span> 2-day rechecks ready now: 1 · mistakes due: 1 slip · mistakes to fix before they come back: 1
+<span class="t-k">MASTERY (0&ndash;5):</span> Matching headings 2 · True, false or not given 1 · Task 1 overview 1 · Paraphrase 1
+<span class="t-k">LAST SESSIONS:</span>
+  Tue 13 Oct 07:00 · 52 of 60 min · 9 questions, 9 right · closed same day
+  Mon 12 Oct 07:00 · 50 of 60 min · 8 questions, 4 right · closed same day
+<span class="t-k">PACE:</span> mixed sheet about 142 s per question (1 sheet; plan 99 s) <span class="t-l">[measured]</span> · reading about 100 s per question (1 sheet; plan 70 s) <span class="t-l">[practice]</span></code></pre>
+          </div>
+          <figcaption class="stage-cap">The first lines of the brief for the sample study folder in the repository, at its fixed clock, Thursday 15 October 2026. The learner is invented.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <div class="cols inc-inst">
+      <div class="inc-inst-b">
+        <p>Installing it is two commands in Claude Code. Then you say what you are learning and by when, and answer a few questions.</p>
+        <div class="cmd inc-cmd" data-rv><code>claude plugin marketplace add romanprigodskii/indelible
+claude plugin install indelible@indelible</code><button class="key" type="button" data-copy-cmd hidden>Copy</button></div>
+        <p class="links inc-go"><a class="go" href="https://romanprigodskii.github.io/indelible/" rel="noopener">The product site</a><a href="https://github.com/romanprigodskii/indelible" rel="noopener">Source on GitHub</a><a href="https://github.com/romanprigodskii/indelible/blob/main/PRIVACY.md" rel="noopener">Privacy</a></p>
+      </div>
+    </div>
+
+    <nav class="cols next-row next" aria-label="Next project">
+      <div>
+        <p class="next-k">Next project</p>
+        <a class="next-a" href="../clipwell/"><span data-vt="clipwell">Clipwell</span></a>
+      </div>
+      <p><a class="go is-back" href="../../#in-h" data-back>All work</a></p>
+    </nav>
+  </div>
+</article>
+</main>
+
+<footer class="foot">
+  <div class="frame foot-in">
+    <p>&copy; 2026 Roman Prigodskii</p>
+    <p class="foot-links"><a href="../../">Home</a><a href="../../research/">Research</a><a href="../../plain/">Plain version</a></p>
+    <p>Set in Mona Sans.</p>
+  </div>
+</footer>
+</body>
+</html>
