@@ -2,9 +2,9 @@
    Loaded in the head of every page, ahead of its first frame, because a page
    has to decide how it arrives before that frame is drawn.
 
-   Two ways, by engine:
+   Two ways, by browser:
 
-   - Chrome and the other Chromium browsers run a cross-document view
+   - Chrome and the other Chromium browsers but Arc run a cross-document view
      transition (the CSS is in site.css, "from page to page"): the page being
      left fades out over the one arriving, and a project's title flies from
      where it was to where it is going. Only the title the visitor followed
@@ -13,41 +13,184 @@
      it is on screen.
 
    - Safari has the same feature, but it blanks the window for several frames
-     before it starts (a white flash in the middle of the move). So Safari, and
-     Firefox, navigate plainly. With a mouse or trackpad, a veil in the page's
-     colour first closes over it under the bar (html.is-leaving, 170ms) and
-     only then does the page navigate: WebKit draws nothing more of a page
-     once a navigation has started, so a fade begun with the navigation would
-     never be seen. On the next page the veil lifts as its entrance plays
-     (html.is-arriving). On a touch screen the page is left as it is, because
-     Safari's preview for swiping back is taken as the navigation starts, and
-     a veiled page would make it blank. */
+     before it starts (a white flash in the middle of the move). Arc, though
+     built on Chromium, does the same: for a few frames between the two pages
+     its window shows neither of them. So Safari, Arc and Firefox navigate
+     plainly. With a mouse or trackpad, a veil in the page's colour first
+     closes over it (html.is-leaving, 170ms) and only then does the page
+     navigate: WebKit draws nothing more of a page once a navigation has
+     started, so a fade begun with the navigation would never be seen. The
+     next page comes up under the veil (html.is-arriving) and the veil lifts
+     from its first frame (html.is-lifting). On a touch screen the page is
+     left as it is, because Safari's preview for swiping back is taken as the
+     navigation starts, and a veiled page would make it blank.
+
+   Arc gives no name of its own in its client hints, only Chromium's, which
+   tells it from Chrome, Edge, Opera and Brave from the first frame (a plain
+   Chromium build, which names nothing else either, takes the veil too).
+   Once a page has loaded, Arc also sets --arc-palette-* on the root; the
+   first page that sees that remembers it for the next ones.
+
+   A link to a place on another page (the bar's Work, Record and Contact, a
+   section of the research page) opens that page on the place itself, not on
+   its top with a glide down after: the page is moved there before its first
+   frame, and the smooth scrolling of same-page links (html.is-smooth) only
+   starts once the page has loaded. */
 (function () {
   "use strict";
-  var KEY = "rp-vt", LEAVE = "rp-leave", last = null;
+  var KEY = "rp-vt", LEAVE = "rp-leave", ARC = "rp-arc", last = null;
   var doc = document.documentElement;
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
   var fine = window.matchMedia("(hover: hover) and (pointer: fine)");
+  var ua = navigator.userAgentData, arc = false;
+  try { arc = localStorage.getItem(ARC) === "1"; } catch (x) {}
+  if (!arc && ua && ua.brands && ua.brands.length && (ua.platform === "macOS" || ua.platform === "Windows")) {
+    arc = ua.brands.every(function (b) { return b.brand === "Chromium" || /^Not.A.Brand$/i.test(b.brand); });
+  }
+  if (arc) doc.classList.add("is-arc");
   /* navigator.userAgentData exists only in Chromium */
-  var native = !!navigator.userAgentData;
+  var native = !!ua && !arc, opt = null;
   if (native) {
-    var opt = document.createElement("style");
+    opt = document.createElement("style");
     opt.textContent = "@view-transition { navigation: auto; }";
     document.head.appendChild(opt);
   }
+  function sniff() {
+    if (arc || !getComputedStyle(doc).getPropertyValue("--arc-palette-title")) return;
+    arc = true;
+    native = false;
+    doc.classList.add("is-arc");
+    if (opt) { opt.remove(); opt = null; }
+    try { localStorage.setItem(ARC, "1"); } catch (x) {}
+  }
+  window.addEventListener("load", function () {
+    sniff();
+    setTimeout(sniff, 1200);
+    requestAnimationFrame(function () { doc.classList.add("is-smooth"); });
+  });
 
-  /* ---------------------------------------------- Safari and Firefox */
-  var stuck = 0, lift = 0;
+  /* ---------------------------------------------- arriving on a place */
+  /* followed from another page of the site to a place on this one; not a
+     reload or a step back or forward, where the browser puts the page back
+     where it was. For a view transition the first frame is held until that
+     place is parsed (rel=expect), so the move is made before anything is
+     drawn, but for 700ms at most: on a slow line the page then opens on its
+     top as before. The veil needs no such hold: it hides the page until the
+     move is made. */
+  var how = performance.getEntriesByType ? performance.getEntriesByType("navigation")[0] : null;
+  var spot = null, mark = null;
+  /* the browser puts a reloaded page, or one gone back or forward to, where
+     it was; it does so as the page is parsed, so the veil waits for that */
+  var settle = !!how && how.type !== "navigate";
+  var fresh = !how || how.type === "navigate", ref = null;
+  try { ref = new URL(document.referrer); } catch (x) {}
+  if (fresh && /^#[A-Za-z][\w-]*$/.test(location.hash)) {
+    spot = location.hash.slice(1);
+    settle = true;
+  }
+  /* a case page reached through a view transition holds its first frame for
+     its title too (it is near the top), so the title followed has somewhere
+     to fly to however slowly the page is parsed */
+  var until = spot || (/^\/work\/[^\/]+\/$/.test(location.pathname) ? "case-t" : null);
+  if (native && fresh && until && ref && ref.origin === location.origin) {
+    var ex = document.createElement("link");
+    ex.rel = "expect";
+    ex.href = "#" + until;
+    ex.setAttribute("blocking", "render");
+    document.head.appendChild(ex);
+    setTimeout(function () { ex.remove(); }, 700);
+  }
+  /* a title the page opens on, or flies to, is there at once: its own rise
+     would move it from under the place the page was put */
+  function now(el) {
+    var rv = el && el.closest("[data-rv]");
+    if (rv) rv.classList.add("in", "is-now");
+  }
+  /* true once the page stands on its place (or has none to go to) */
+  function land() {
+    if (!spot) return true;
+    var t = document.getElementById(spot);
+    if (!t) {
+      if (document.readyState === "loading") return false;
+      spot = null;
+      return true;
+    }
+    spot = null;
+    mark = t;
+    now(t);
+    t.scrollIntoView({ block: "start", behavior: "instant" });
+    return true;
+  }
+  /* the bar's ground on a page that opens already scrolled, set before the
+     frame is drawn rather than faded in after it (site.js keeps it after) */
+  function ground() {
+    var bar = document.querySelector("[data-bar]");
+    if (!bar || bar.classList.contains("is-on")) return;
+    var name = document.getElementById("name");
+    if (!(name ? name.getBoundingClientRect().bottom < 64 : window.scrollY > 8)) return;
+    doc.classList.add("is-snap");
+    bar.classList.add("is-on");
+    requestAnimationFrame(function () { requestAnimationFrame(function () { doc.classList.remove("is-snap"); }); });
+  }
+  if (how && how.type !== "navigate") {
+    /* the browser puts a reloaded page back where it was with a scroll */
+    window.addEventListener("scroll", ground, { once: true, passive: true });
+    setTimeout(function () { window.removeEventListener("scroll", ground); }, 1500);
+  }
+  document.addEventListener("DOMContentLoaded", function () {
+    land();
+    ground();
+    lift();
+  });
+
+  /* ---------------------------------------------- Safari, Arc and Firefox */
+  var stuck = 0, held = false, hold = 0, drawn = false, late = false;
+  var revealing = "onpagereveal" in window;
   function arrive() {
     var t = 0;
     try { t = +sessionStorage.getItem(LEAVE) || 0; sessionStorage.removeItem(LEAVE); } catch (x) {}
     if (native || reduce.matches || Date.now() - t > 6000) return;
-    doc.classList.remove("is-arriving");
-    void doc.offsetWidth;
+    /* the veil comes up closed and lifts from the first frame drawn: begun in
+       the head, half the lift was over before anything was painted */
+    clearTimeout(hold);
+    doc.classList.remove("is-lifting");
     doc.classList.add("is-arriving");
-    /* once lifted, the veil is taken away altogether */
-    clearTimeout(lift);
-    lift = setTimeout(function () { doc.classList.remove("is-arriving"); }, 480);
+    held = true;
+    late = false;
+    /* the first frame: pagereveal, or where there is none, the first rAF */
+    drawn = false;
+    if (!revealing) requestAnimationFrame(function () { drew(); requestAnimationFrame(lift); });
+  }
+  function drew() {
+    if (drawn) return;
+    drawn = true;
+    /* whatever happens after the first frame, the veil does not stay: on a
+       slow line it lifts on what has arrived, and the page still goes to
+       its place, at once, when that place is parsed */
+    if (held) hold = setTimeout(function () { late = true; lift(); }, 2500);
+  }
+  function lift() {
+    /* not before the first frame, and on an arrival with a place to stand
+       on, not before the page has been parsed and laid out by its scripts */
+    if (!held || !drawn) return;
+    if (!late && settle && document.readyState === "loading") return;
+    if (!land() && !late) return;
+    /* the scripts may have moved the page under its place since it landed */
+    if (mark) mark.scrollIntoView({ block: "start", behavior: "instant" });
+    mark = null;
+    held = false;
+    ground();
+    /* the lift is started in a frame of its own: WebKit dates an animation
+       begun anywhere else by its last frame, which on a step back can be
+       long enough ago for the lift to be over before it is painted */
+    requestAnimationFrame(function () {
+      if (doc.classList.contains("is-leaving")) return;
+      doc.classList.remove("is-arriving");
+      doc.classList.add("is-lifting");
+      /* once lifted, the veil is taken away altogether */
+      clearTimeout(hold);
+      hold = setTimeout(function () { doc.classList.remove("is-lifting"); }, 480);
+    });
   }
   arrive();
   /* a page brought back from the back-forward cache is shown whole again */
@@ -56,6 +199,8 @@
     clearTimeout(stuck);
     doc.classList.remove("is-leaving");
     arrive();
+    /* in case this browser has no pagereveal for a page it brings back */
+    requestAnimationFrame(function () { requestAnimationFrame(function () { drew(); lift(); }); });
   });
   window.addEventListener("pagehide", function () { clearTimeout(stuck); });
   /* a link to another page of this site, not a file and not a place on this page */
@@ -69,13 +214,31 @@
   }
   function leave() {
     try { sessionStorage.setItem(LEAVE, String(Date.now())); } catch (x) {}
-    clearTimeout(lift);
-    doc.classList.remove("is-arriving");
+    clearTimeout(hold);
+    held = false;
+    doc.classList.remove("is-arriving", "is-lifting");
     doc.classList.add("is-leaving");
     /* a navigation that never completes (stopped, offline) gives the page back */
     clearTimeout(stuck);
-    stuck = setTimeout(function () { doc.classList.remove("is-leaving"); }, 5000);
+    stuck = setTimeout(function () { doc.classList.remove("is-leaving"); }, 10000);
   }
+  /* a step of history within this page (a contents link, the back button
+     after one) is not a page change: nothing to veil */
+  var moved = false;
+  function within() {
+    moved = true;
+    if (!doc.classList.contains("is-leaving")) return;
+    clearTimeout(stuck);
+    doc.classList.remove("is-leaving");
+  }
+  window.addEventListener("hashchange", within);
+  window.addEventListener("popstate", within);
+  /* stopping the page (Escape) gives it back at once */
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape" || !doc.classList.contains("is-leaving")) return;
+    clearTimeout(stuck);
+    doc.classList.remove("is-leaving");
+  });
 
   function slugOf(href) {
     try {
@@ -116,15 +279,25 @@
   }, true);
 
   /* the back button goes back the way the visitor came, to the same place on
-     that page, when they came from where it points; otherwise it is a link */
+     that page, when the step before this one in history is the page it
+     points to; otherwise (they landed here, or a contents link has added a
+     step within this page since) it is a link */
   function cameFrom(a) {
     var from, to;
     try { from = new URL(document.referrer); to = new URL(a.href); } catch (x) { return false; }
-    return from.origin === to.origin && from.pathname === to.pathname && history.length > 1;
+    if (from.origin !== to.origin || from.pathname !== to.pathname || history.length < 2) return false;
+    var nav = window.navigation, cur = nav && nav.currentEntry;
+    if (cur && typeof cur.index === "number" && cur.index >= 0 && nav.entries) {
+      var prev = nav.entries()[cur.index - 1];
+      if (!prev || !prev.url) return false;
+      try { return new URL(prev.url).pathname === to.pathname; } catch (x) { return false; }
+    }
+    return !moved;
   }
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("a[href]");
     if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    sniff();
     var back = a.hasAttribute("data-back") && cameFrom(a);
     function go() { if (back) history.back(); else location.assign(a.href); }
     if (!native && fine.matches && !reduce.matches && (back || page(a))) {
@@ -155,8 +328,13 @@
     try { sessionStorage.setItem(KEY, JSON.stringify({ slug: slug, t: Date.now() })); } catch (x) {}
   });
 
+  /* the moment before this page's first frame */
   window.addEventListener("pagereveal", function (e) {
     clear();
+    land();
+    ground();
+    drew();
+    lift();
     var s = null;
     try { s = JSON.parse(sessionStorage.getItem(KEY)); sessionStorage.removeItem(KEY); } catch (x) {}
     if (!e.viewTransition) return;
@@ -164,8 +342,9 @@
       var el = find(s.slug);
       if (el) {
         el.style.viewTransitionName = "t-" + s.slug;
-        /* the case title arrives through the air, so it skips its own rise */
-        if (el.closest(".case-title")) document.documentElement.classList.add("vt-flown");
+        /* a title that arrives through the air skips its own entrance */
+        if (el.closest(".case-title")) doc.classList.add("vt-flown");
+        now(el);
       }
     }
     e.viewTransition.finished.then(clear, clear);
@@ -191,16 +370,24 @@
     }, 1500);
   });
 
-  /* Chrome fetches a page while the pointer rests on a link to it, so the
-     click has nothing left to wait for */
-  if (window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports("speculationrules")) {
+  /* Chromium fetches the next page before it is asked for, so the click has
+     nothing left to wait for. The pages a visitor most likely opens next
+     (every case page from the home page, the next project from a case
+     page) are fetched as the page opens, not when the pointer reaches their
+     links: by then the loops are downloading on the same connection, and a
+     page queued behind a megabyte of video waits whole seconds on a slow
+     line. Any other page of the site is fetched once the pointer comes to
+     rest on a link to it (10ms). */
+  /* Chromium only (Arc included): where WebKit takes the rules, its arrivals
+     drop frames under the fetching */
+  if (ua && window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports("speculationrules")) {
+    var site = [{ href_matches: "/*" }, { not: { href_matches: "/papers/*" } }, { not: { href_matches: "/assets/*" } }];
     var sr = document.createElement("script");
     sr.type = "speculationrules";
-    sr.textContent = JSON.stringify({ prefetch: [{
-      source: "document",
-      where: { and: [{ href_matches: "/*" }, { not: { href_matches: "/papers/*" } }, { not: { href_matches: "/assets/*" } }] },
-      eagerness: "moderate"
-    }] });
+    sr.textContent = JSON.stringify({ prefetch: [
+      { source: "document", where: { and: site.concat([{ selector_matches: '.next-a, a.go[href^="work/"]' }]) }, eagerness: "immediate" },
+      { source: "document", where: { and: site }, eagerness: "eager" }
+    ] });
     document.head.appendChild(sr);
   }
 })();

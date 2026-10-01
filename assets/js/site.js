@@ -656,7 +656,11 @@
           lastW = w; pick(-1); render();
         }, 160);
       });
-    }).catch(function () { vd.classList.add("in"); });
+    }).catch(function () {
+      /* without the data the switches never appear, so their kept room goes too */
+      if (ctl) ctl.style.display = "none";
+      vd.classList.add("in");
+    });
   })();
 
   /* ------------------------------------------------ floor plate: what each mark is */

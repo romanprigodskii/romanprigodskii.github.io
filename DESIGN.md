@@ -60,31 +60,64 @@ everywhere. System monospace appears once, for a literal `brew install`.
 
 Between pages, two ways by engine (`assets/js/vt.js` decides in the head):
 
-- Chrome and other Chromium browsers run a cross-document view transition
-  (vt.js opts in there only). The page being left fades out on top of the
-  one arriving, which is already in place and brings its own content in as on
-  a first load. The project title the visitor followed flies from where it
-  was to where it goes: home to case page, case page back to its place on the
-  home page, a "Next project" link to the next case title. Only that one
-  title is named, on the way out and on the way in, and only while it is on
-  screen (titles marked `data-vt="<slug>"`). A title that arrives this way
-  skips its own rise (`html.vt-flown`).
+- Chrome and other Chromium browsers but Arc run a cross-document view
+  transition (vt.js opts in there only). The page being left fades out on top
+  of the one arriving, which is already in place and brings its own content
+  in as on a first load. The project title the visitor followed flies from
+  where it was to where it goes: home to case page, case page back to its
+  place on the home page, a "Next project" link to the next case title. Only
+  that one title is named, on the way out and on the way in, and only while
+  it is on screen (titles marked `data-vt="<slug>"`). A title that arrives
+  this way skips its own rise (`html.vt-flown`).
 - Safari has the same feature but blanks the window for several frames before
   it starts, so Safari and Firefox navigate plainly. With a mouse or trackpad
-  the page fades out under the bar first (`html.is-leaving`, 170ms) and then
-  navigates, because WebKit stops drawing a page as soon as a navigation
-  starts; the next page fades in under its own entrance (`html.is-arriving`).
-  On touch screens the page is not faded, so Safari's swipe-back preview,
-  taken as the navigation starts, shows the page and not an empty one.
+  a veil in the page's colour closes over the page under the bar first
+  (`html.is-leaving`, 170ms) and then the page navigates, because WebKit
+  stops drawing a page as soon as a navigation starts. The next page comes up
+  under the closed veil (`html.is-arriving`), and the veil lifts as its
+  entrance plays (`html.is-lifting`), started in a frame callback after the
+  first frame: started earlier, WebKit dated the lift by an older frame and
+  half of it was over before anything was painted. On touch screens the page
+  is not veiled, so Safari's swipe-back preview, taken as the navigation
+  starts, shows the page and not an empty one.
+- Arc is Chromium, but it keeps neither page on screen between the two: for
+  a few frames after every click its window shows a flat colour, so a view
+  transition there starts with a blink and the old page reappearing. Arc
+  takes Safari's way, with the veil over the bar too (`html.is-arc`), so the
+  screen is already that flat colour when Arc empties it. vt.js knows Arc by
+  its client hints on macOS and Windows, which name Chromium and no browser
+  of its own, and, once a page has loaded, by the `--arc-palette-*`
+  properties Arc sets on the root.
+
+A link to a place on another page (the bar's Work, Record and Contact,
+"All work", a paper on the research page) opens that page on the place, not
+on its top with a glide down after it: vt.js moves the page there before its
+first frame (in Chromium the frame waits up to 700ms for the place to be
+parsed, `rel=expect`; under the veil it waits for DOMContentLoaded), and a
+project title landed on or flown to is shown at once (`.is-now`) rather than
+rising from under the place. Smooth scrolling (`html.is-smooth`) starts only
+once the page has loaded, for same-page links. The bar takes its ground in
+the same frame when a page opens scrolled (`html.is-snap`).
 
 Every case page, and the research page, opens with a back button over the
-title (`.back`). For a visitor who came from the page it points to, it goes
-back in history, to the same place on that page; otherwise it links to the
-project on the home page. The "All work" link at the foot does the same.
+title (`.back`). When the step before this one in history is the page it
+points to, it goes back, to the same place on that page; otherwise (the
+visitor landed here, or a contents link has added a step within the page)
+it links to the project on the home page. The "All work" link at the foot
+does the same.
 
 Nothing should make the new page wait once its HTML has arrived, so the CSS
 and JS ship fingerprinted and cached for a year (`tools/fingerprint.sh`), and
 each page prefetches the other pages' stylesheets at idle.
+
+Nor should the HTML itself keep a click waiting. The loops download over the
+same connection as everything else, and a page queued behind a megabyte of
+video waits whole seconds on a slow line. So, in Chromium, the pages a
+visitor most likely opens next are fetched as the page opens (speculation
+rules, `immediate`), not when the pointer reaches their links: every case
+page from the home page, the next project from a case page. Any other page
+is fetched once the pointer rests on a link to it (`eager`, 10ms). WebKit
+is given no rules: where it took them, its arrivals dropped frames.
 
 ## Showing the products
 

@@ -64,7 +64,9 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: calc(var(--bar-h) + 20px); overflow-x: clip; }
-@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+/* same-page links glide; a page opened on a place of its own is put there at
+   once (vt.js adds is-smooth after load; with no scripts it glides there) */
+@media (prefers-reduced-motion: no-preference) { html:not(.js), html.is-smooth { scroll-behavior: smooth; } }
 body {
   position: relative;
   margin: 0;
@@ -126,6 +128,7 @@ html.js .gp-frame, html.js .gp-fine { animation: gp-in 1500ms var(--eo) both; }
 .bar { position: fixed; top: 0; left: 0; right: 0; z-index: 50; height: var(--bar-h); view-transition-name: bar; }
 .bar::before { content: ""; position: absolute; inset: 0; background: var(--paper); box-shadow: 0 1px 0 var(--g-d); opacity: 0; transition: opacity 260ms ease; }
 .bar.is-on::before, .bar.is-solid::before, html:not(.js) .bar::before { opacity: 1; }
+html.is-snap .bar::before, html.is-snap .bar-name { transition: none; }
 .bar-in { position: relative; display: grid; grid-template-columns: var(--z) var(--z) var(--z) var(--z) 1fr; align-items: center; height: 100%; }
 .bar-name { grid-column: 1 / 3; justify-self: start; font-family: var(--f-cond); font-weight: 700; font-size: 1.1875rem; letter-spacing: 0.005em; line-height: 1; text-decoration: none; padding: 8px 0; transition: opacity 260ms ease, transform 360ms var(--eo); }
 html.js .bar[data-hide-name]:not(.is-on) .bar-name { opacity: 0; transform: translateY(4px); pointer-events: none; }
@@ -142,6 +145,7 @@ html.js .bar[data-hide-name]:not(.is-on) .bar-name:focus-visible { opacity: 1; t
 /* ------------------------------------------------------------ reveals */
 html.js [data-rv] { opacity: 0; transform: translateY(14px); transition: opacity 900ms var(--eo), transform 900ms var(--eo); transition-delay: var(--d, 0ms); }
 html.js [data-rv].in { opacity: 1; transform: none; }
+html.js [data-rv].is-now { transition: none; }
 
 /* ------------------------------------------------------------ type */
 .h3 { font-family: var(--f-cond); font-weight: 800; font-size: var(--fs-h3); line-height: 0.88; letter-spacing: -0.012em; margin-left: -0.03em; text-wrap: balance; }
@@ -454,6 +458,9 @@ video[data-play] { cursor: pointer; }
 .key:hover { background: #2a2926; }
 .key:active { transform: scale(0.97); }
 .cmd .key:focus-visible { outline: 2px solid var(--enamel); outline-offset: -5px; }
+/* with scripts, the Copy button keeps its room until site.js shows it, so
+   the text beside it does not move */
+html.js .cmd .key[hidden] { display: block; visibility: hidden; }
 .cw-cmd .more { margin-top: 16px; }
 
 /* Alfa-Romeo */
@@ -489,6 +496,9 @@ html.js .ar-strip.in li { opacity: 1; transform: none; }
 .vd-say { grid-column: 1 / 5; font-family: var(--f-cond); font-weight: 600; font-size: clamp(1.5rem, 1rem + 1.4vw, 2.375rem); line-height: 1.05; letter-spacing: -0.006em; max-width: 34ch; min-height: 2.1em; text-wrap: balance; }
 .vd-ctl { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px 36px; }
 .vd-ctl[hidden] { display: none; }
+/* with scripts, the switches keep their room while the data loads (hidden,
+   not removed), so nothing below them moves when they appear */
+html.js .vd-ctl[hidden] { display: flex; visibility: hidden; }
 .seg { position: relative; display: flex; gap: 22px; align-items: baseline; }
 .seg-k { font-size: var(--fs-fine); color: var(--ink-2); }
 .seg-b { font: 600 0.96875rem/1.2 var(--f-sans); color: var(--ink-3); background: none; border: 0; padding: 8px 0; cursor: pointer; transition: color 180ms ease; position: relative; }
@@ -653,12 +663,12 @@ html.js .rejects:not(.in) li span { background-size: 0 1.5px; }
 .next-row > :first-child { grid-column: 1 / 5; }
 .next-row > :last-child { grid-column: 5 / 6; padding-right: 0; justify-self: end; }
 
-/* from page to page, in Chromium (assets/js/vt.js opts in there, and only
-   there). The page being left fades out on top of the one arriving, which is
-   already in place beneath it and brings its own content in as it does on a
-   first load, so nothing is shown half-transparent twice. The title the
-   visitor followed (named by vt.js) flies from where it was to where it goes;
-   the bar stays put. */
+/* from page to page, in Chromium other than Arc (assets/js/vt.js opts in
+   there, and only there). The page being left fades out on top of the one
+   arriving, which is already in place beneath it and brings its own content
+   in as it does on a first load, so nothing is shown half-transparent twice.
+   The title the visitor followed (named by vt.js) flies from where it was to
+   where it goes; the bar stays put. */
 ::view-transition-group(*) { animation-duration: 640ms; animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1); }
 ::view-transition-old(root), ::view-transition-new(root) { mix-blend-mode: normal; }
 ::view-transition-old(root) { z-index: 1; animation: vt-out 240ms cubic-bezier(0.33, 1, 0.68, 1) both; }
@@ -668,19 +678,31 @@ html.js .rejects:not(.in) li span { background-size: 0 1.5px; }
 ::view-transition-new(*):only-child { animation: vt-in 640ms var(--eo) 80ms both; }
 @keyframes vt-out { to { opacity: 0; } }
 @keyframes vt-in { from { opacity: 0; transform: translateY(14px); } }
-::view-transition-old(bar), ::view-transition-new(bar) { animation: none; }
+/* the bar stays put: where the two bars differ (the ground, the name, the
+   underlined link), the old one fades out with its page */
+::view-transition-old(bar) { animation: vt-out 240ms cubic-bezier(0.33, 1, 0.68, 1) both; }
+::view-transition-new(bar) { animation: none; }
 /* from the plain version, which has no bar, the bar fades in where it stands */
 ::view-transition-new(bar):only-child { animation: vt-show 400ms ease both; }
 @keyframes vt-show { from { opacity: 0; } }
-/* in Safari and Firefox (vt.js): a veil in the page's own colour, under the
-   bar, closes over the page before it is left and lifts off the next one as
-   its entrance plays. The veil is one flat layer, so the fade costs next to
-   nothing to draw; fading the page itself (a tall layer full of playing
-   loops) made Safari redraw all of it on every frame, and the move stuttered.
-   The veil is hidden, not just transparent, whenever it is not moving. */
+/* in Safari, Arc and Firefox (vt.js): a veil in the page's own colour,
+   under the bar, closes over the page before it is left and lifts off the
+   next one as its entrance plays. The veil is one flat layer, so the fade
+   costs next to nothing to draw; fading the page itself (a tall layer full
+   of playing loops) made Safari redraw all of it on every frame, and the
+   move stuttered. The veil is hidden, not just transparent, whenever it is
+   not moving. */
 body::after { content: ""; position: fixed; inset: 0; z-index: 45; background: var(--bg); opacity: 0; visibility: hidden; pointer-events: none; }
+/* Arc shows an empty window for a few frames between the two pages, the bar
+   gone with everything else, so there the veil covers the bar as well and the
+   gap looks like the veil */
+html.is-arc body::after { z-index: 60; }
 html.is-leaving body::after { visibility: visible; opacity: 1; transition: opacity 160ms cubic-bezier(0.4, 0, 1, 1); }
-html.is-arriving body::after { visibility: visible; animation: veil-lift 420ms var(--eo) forwards; }
+html.is-arriving body::after { visibility: visible; opacity: 1; }
+/* closed until the lift's first frame: WebKit starts an animation set while
+   a frame is being prepared only on the next one, and would show the bare
+   page for that frame */
+html.is-lifting body::after { visibility: visible; opacity: 1; animation: veil-lift 420ms var(--eo) forwards; }
 @keyframes veil-lift { from { opacity: 1; } to { opacity: 0; } }
 
 /* ==========================================================================
@@ -830,7 +852,7 @@ html.is-arriving body::after { visibility: visible; animation: veil-lift 420ms v
   .bar-name { transition: opacity 260ms ease; }
   html.js .bar[data-hide-name]:not(.is-on) .bar-name { transform: none; }
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
-  html.is-leaving body::after, html.is-arriving body::after { visibility: hidden; transition: none; animation: none; }
+  html.is-leaving body::after, html.is-arriving body::after, html.is-lifting body::after { visibility: hidden; transition: none; animation: none; }
 }
 
 /* ==========================================================================

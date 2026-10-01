@@ -39,7 +39,7 @@ assets/css/*.css           page-specific additions
 assets/js/figures.js       figure renderers (browser and node)
 assets/js/figures-*.js     page-specific renderers, loaded by tools/figures.mjs
 assets/js/site.js          behaviour: reveals, the slide rule, the interactive figures
-assets/js/vt.js            page to page: the flying title (Chromium), the fade (Safari), the back button
+assets/js/vt.js            page to page: the flying title (Chromium), the veil (Safari, Arc), the back button
 assets/js/*.js             page-specific behaviour
 assets/data/               audit.json (generated), boxing.json (from the report)
 assets/fonts/              Mona Sans, self-hosted (OFL)
