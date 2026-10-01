@@ -1141,7 +1141,9 @@ html.js .hero-b { animation: sk-up 1000ms var(--eo) 620ms backwards; }
 .vs td.is-won { font-weight: 500; color: var(--ink); }
 .vs td.is-won span { background-image: linear-gradient(var(--ink), var(--ink)); padding-bottom: 3px; }
 
-/* Gluline: its own mist */
+/* Gluline: its own teal, one muted hue lit from above (as Clipwell's sage
+   is), a mid tone, so the white screens stand out on it rather than
+   dissolving into a wash as light as they are */
 .gl-phones {
   position: relative;
   margin-right: clamp(28px, 3.6vw, 64px);
@@ -1149,10 +1151,9 @@ html.js .hero-b { animation: sk-up 1000ms var(--eo) 620ms backwards; }
   border-radius: var(--r-stage);
   gap: clamp(10px, 1.5vw, 24px);
   background:
-    radial-gradient(70% 60% at 8% 12%, oklch(0.9 0.07 188 / 0.95), transparent 70%),
-    radial-gradient(60% 70% at 96% 92%, oklch(0.84 0.085 298 / 0.9), transparent 72%),
-    radial-gradient(50% 50% at 60% 40%, oklch(0.95 0.03 230 / 0.9), transparent 80%),
-    linear-gradient(140deg, oklch(0.93 0.045 196), oklch(0.9 0.055 285));
+    radial-gradient(70% 90% at 24% -20%, oklch(0.9 0.034 198 / 0.95), transparent 62%),
+    radial-gradient(55% 80% at 90% -10%, oklch(0.86 0.028 214 / 0.8), transparent 66%),
+    linear-gradient(to bottom, oklch(0.82 0.034 205), oklch(0.75 0.03 211) 78%);
 }
 .phone {
   background: oklch(0.14 0.01 265);
@@ -1160,6 +1161,12 @@ html.js .hero-b { animation: sk-up 1000ms var(--eo) 620ms backwards; }
     0 0 0 1px oklch(0.25 0.03 260 / 0.14),
     0 2px 4px oklch(0.25 0.04 260 / 0.08),
     0 28px 44px -22px oklch(0.28 0.06 265 / 0.5);
+}
+.gl-phones .phone {
+  box-shadow:
+    0 0 0 1px oklch(0.3 0.04 215 / 0.14),
+    0 2px 4px oklch(0.3 0.04 215 / 0.08),
+    0 28px 44px -22px oklch(0.27 0.05 220 / 0.5);
 }
 .gl-text { padding-top: clamp(8px, 2.4vw, 40px); }
 .who { margin-top: 30px; }
@@ -1608,7 +1615,7 @@ html.js [data-shot].in { opacity: 1; transform: none; }
 /* a stage: the coloured surface a product stands on */
 .stage { position: relative; border-radius: var(--r-stage); overflow: hidden; padding: clamp(24px, 4vw, 64px); background: var(--tile); }
 .stage.is-dark { background: radial-gradient(90% 70% at 18% 108%, oklch(0.36 0.09 50 / 0.5), transparent 62%), radial-gradient(70% 60% at 100% 0%, oklch(0.3 0.02 265 / 0.9), transparent 70%), oklch(0.15 0.008 265); }
-.stage.is-mist { background: radial-gradient(70% 60% at 8% 12%, oklch(0.9 0.07 188 / 0.95), transparent 70%), radial-gradient(60% 70% at 96% 92%, oklch(0.84 0.085 298 / 0.9), transparent 72%), linear-gradient(140deg, oklch(0.93 0.045 196), oklch(0.9 0.055 285)); }
+.stage.is-teal { background: radial-gradient(70% 90% at 24% -20%, oklch(0.9 0.034 198 / 0.95), transparent 62%), radial-gradient(55% 80% at 90% -10%, oklch(0.86 0.028 214 / 0.8), transparent 66%), linear-gradient(to bottom, oklch(0.82 0.034 205), oklch(0.75 0.03 211) 78%); }
 .stage.is-red { background: radial-gradient(70% 90% at 50% -20%, oklch(0.985 0.012 30), transparent 70%), radial-gradient(60% 80% at 100% 110%, oklch(0.9 0.06 22 / 0.8), transparent 70%), linear-gradient(170deg, oklch(0.965 0.02 28), oklch(0.93 0.04 22)); }
 .stage.is-sage { background: radial-gradient(70% 140% at 24% -30%, oklch(0.86 0.035 128 / 0.95), transparent 62%), linear-gradient(to bottom, oklch(0.79 0.022 135), #AAB0A6 62%); }
 /* indelible's warm paper, a shade under its own page so a white sheet stands on it */
@@ -1669,7 +1676,7 @@ html.vt-flown .case-title { animation: none; }
    Home showcases
    The seven projects on the home page, each shown working on a stage of its
    own: Vertex MMA's site in a dark window with its phone in front, Gluline's
-   three phones on its mist, the Vertex Boxing report on a slate desk beside
+   three phones on its teal, the Vertex Boxing report on a slate desk beside
    its charts, indelible's printed sheets on its paper either side of the
    48 hours, Clipwell's bar docked over its own site on the sage desktop,
    and Alfa-Romeo's two walkthroughs on red, each with an index that follows
@@ -1737,7 +1744,7 @@ html.js .hs-vx-stage.in .hs-vx-a,
 html.js .hs-vx-stage.in .hs-vx-m { opacity: 1; translate: 0 0; }
 
 /* ------------------------------------------------------------ Gluline */
-.hs-gl .gl-phones { box-shadow: 0 44px 84px -60px oklch(0.4 0.09 285 / 0.6); }
+.hs-gl .gl-phones { box-shadow: 0 44px 84px -60px oklch(0.36 0.05 215 / 0.6); }
 
 /* ------------------------------------------------------------ Vertex Boxing */
 /* the report on a slate desk beside the level chart, then the four windows */
@@ -1746,12 +1753,10 @@ html.js .hs-vx-stage.in .hs-vx-m { opacity: 1; translate: 0 0; }
 .stage.hs-bx-stage {
   padding: clamp(22px, 3.4vw, 56px) clamp(18px, 3.8vw, 64px);
   background:
-    radial-gradient(90% 70% at 50% -12%, oklch(0.975 0.008 250 / 0.9), transparent 64%),
-    radial-gradient(55% 75% at -4% 104%, oklch(0.79 0.042 240 / 0.9), transparent 70%),
-    radial-gradient(55% 75% at 104% 104%, oklch(0.78 0.04 272 / 0.85), transparent 70%),
-    linear-gradient(180deg, oklch(0.915 0.018 252), oklch(0.83 0.03 258));
+    radial-gradient(70% 90% at 24% -20%, oklch(0.92 0.014 248 / 0.95), transparent 62%),
+    linear-gradient(to bottom, oklch(0.84 0.02 250), oklch(0.76 0.024 254) 78%);
 }
-.hs-bx-win { box-shadow: 0 0 0 1px oklch(0.25 0.03 260 / 0.1), 0 2px 4px oklch(0.25 0.03 260 / 0.06), 0 40px 80px -36px oklch(0.3 0.05 262 / 0.5); }
+.hs-bx-win { box-shadow: 0 0 0 1px oklch(0.25 0.03 255 / 0.1), 0 2px 4px oklch(0.25 0.03 255 / 0.06), 0 40px 80px -36px oklch(0.27 0.04 255 / 0.5); }
 /* the recording shows the report without GitHub's file tree, so the whole frame shows */
 .hs-bx-win video { aspect-ratio: 2160 / 1350; background: #fff; }
 .hs-bx-r2 .bx-a { grid-column: 4 / 6; padding-right: 0; padding-left: clamp(4px, 1.4vw, 24px); }

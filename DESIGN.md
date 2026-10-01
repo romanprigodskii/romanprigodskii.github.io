@@ -28,9 +28,11 @@ shown as a muted looping recording of the real thing.
 Blue never decorates. If a mark is blue, it cleared 20 (or whatever bar the
 figure states). The model beating nobody is drawn in ink.
 
-The stages (`.stage.is-dark`, `.is-mist`, `.is-red`, `.is-sage`, `.is-paper`)
+The stages (`.stage.is-dark`, `.is-teal`, `.is-red`, `.is-sage`, `.is-paper`)
 take their colour from the product on them: Vertex's dark web app, Gluline's
-mist, the bank's red, Clipwell's desktop, the warm paper indelible prints on.
+teal, the bank's red, Clipwell's desktop, the warm paper indelible prints on.
+Each is one hue, muted and lit from above, so the screens standing on it
+keep their own colours.
 They are the only coloured surfaces on the site.
 
 ## Type

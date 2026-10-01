@@ -39,12 +39,10 @@ html.js .bx-thesis:not(.in) .thesis-s { background-size: 0 max(2px, 0.035em); co
 .bx-stage {
   padding: clamp(28px, 5.2vw, 84px) clamp(20px, 6.4vw, 120px);
   background:
-    radial-gradient(90% 70% at 50% -12%, oklch(0.975 0.008 250 / 0.9), transparent 64%),
-    radial-gradient(55% 75% at -4% 104%, oklch(0.79 0.042 240 / 0.9), transparent 70%),
-    radial-gradient(55% 75% at 104% 104%, oklch(0.78 0.04 272 / 0.85), transparent 70%),
-    linear-gradient(180deg, oklch(0.915 0.018 252), oklch(0.83 0.03 258));
+    radial-gradient(70% 90% at 24% -20%, oklch(0.92 0.014 248 / 0.95), transparent 62%),
+    linear-gradient(to bottom, oklch(0.84 0.02 250), oklch(0.76 0.024 254) 78%);
 }
-.bx-win { max-width: 1080px; margin-inline: auto; box-shadow: 0 0 0 1px oklch(0.25 0.03 260 / 0.1), 0 2px 4px oklch(0.25 0.03 260 / 0.06), 0 40px 80px -36px oklch(0.3 0.05 262 / 0.5); }
+.bx-win { max-width: 1080px; margin-inline: auto; box-shadow: 0 0 0 1px oklch(0.25 0.03 255 / 0.1), 0 2px 4px oklch(0.25 0.03 255 / 0.06), 0 40px 80px -36px oklch(0.27 0.04 255 / 0.5); }
 .bx-win video { aspect-ratio: 2160 / 1350; background: #fff; }
 .bx-media .stage-cap { max-width: none; text-wrap: pretty; }
 .bx-media .stage-cap a { color: var(--ink-2); }

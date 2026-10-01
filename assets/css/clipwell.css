@@ -208,21 +208,20 @@ html.js .tw[data-armed] .tw-row.in .tw-d::after { animation: tw-pen 950ms var(--
 .cwc-go { margin-top: 20px; }
 
 /* ------------------------------------------------------------ the product site
-   A browser window on a wash of the site's own colours: the peach and lilac
-   of its hero, over a trace of its teal. */
+   A browser window on Clipwell's sage, the same desk as its bar above, so
+   the site's own peach and lilac stay inside its window. */
 .cwc-site { margin-top: clamp(40px, 4vw, 64px); }
 .cwc-site-stage {
   padding: clamp(18px, 4.6vw, 80px) clamp(14px, 6vw, 112px) clamp(22px, 5vw, 88px);
   background:
-    radial-gradient(70% 80% at 0% 0%, oklch(0.95 0.045 68 / 0.95), transparent 64%),
-    radial-gradient(70% 90% at 100% 100%, oklch(0.88 0.075 305 / 0.8), transparent 66%),
-    radial-gradient(60% 60% at 90% 0%, oklch(0.93 0.05 15 / 0.7), transparent 70%),
-    linear-gradient(135deg, oklch(0.955 0.03 55), oklch(0.925 0.045 330));
+    radial-gradient(70% 90% at 24% -20%, oklch(0.86 0.035 128 / 0.95), transparent 62%),
+    radial-gradient(55% 80% at 90% -10%, oklch(0.83 0.03 170 / 0.85), transparent 66%),
+    linear-gradient(to bottom, oklch(0.8 0.022 135), #AAB0A6 78%);
 }
 /* the address sits in the middle of the title bar, as a browser sets it */
 .cwc-site .win-bar { display: grid; grid-template-columns: 1fr minmax(0, 360px) 1fr; }
 .cwc-site .win-dots + .win-url { width: 100%; max-width: none; margin: 0; }
-.cwc-site .win { max-width: 1060px; margin-inline: auto; box-shadow: 0 0 0 1px oklch(0.3 0.04 330 / 0.12), 0 2px 4px oklch(0.3 0.04 330 / 0.06), 0 40px 70px -34px oklch(0.3 0.08 330 / 0.5); }
+.cwc-site .win { max-width: 1060px; margin-inline: auto; box-shadow: 0 0 0 1px oklch(0.3 0.03 140 / 0.14), 0 2px 4px oklch(0.3 0.03 140 / 0.08), 0 40px 70px -34px oklch(0.28 0.04 140 / 0.55); }
 .cwc-site .win > video { aspect-ratio: 2880 / 1800; background: var(--bg); }
 
 /* ------------------------------------------------------------ passwords stay out */
