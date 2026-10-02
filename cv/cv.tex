@@ -1,0 +1,155 @@
+% Roman Prigodskii: the CV, and with \resumeonly defined (resume.tex) the
+% one-page resume. \rs{resume}{CV} picks the wording for each; \cvpoint
+% adds a line only the CV carries. Typeset both with cv/build.sh.
+\documentclass[letterpaper,10pt]{article}
+\usepackage{fontspec}             % Latin Modern, as LaTeX sets it
+\usepackage[margin=0.5in,top=0.42in,bottom=0.42in]{geometry}
+\usepackage{microtype}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{needspace}
+\usepackage[hidelinks]{hyperref}
+
+\newif\ifresume
+\ifdefined\resumeonly \resumetrue \fi
+\newcommand{\rs}[2]{\ifresume#1\else#2\fi}
+\hypersetup{pdfauthor={Roman Prigodskii},
+  pdftitle={\rs{Roman Prigodskii, Resume}{Roman Prigodskii, CV}}}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\raggedbottom
+
+% a section: its name in bold over a rule the width of the page
+\titleformat{\section}{\large\bfseries}{}{0pt}{}[\vspace{-0.6em}\rule{\textwidth}{0.4pt}]
+\titlespacing*{\section}{0pt}{0.45em}{0.2em}
+
+% \entry{name}{what it was}{where and when}: one line, the name in bold,
+% kept on the same page as the first lines under it
+\newcommand{\entry}[3]{%
+  \par\needspace{3\baselineskip}\noindent\textbf{#1}%
+  \if\relax\detokenize{#2}\relax\else\ \textendash\ #2\fi
+  \hfill #3\par}
+\newenvironment{points}
+  {\begin{itemize}[leftmargin=1.1em,label=\textbullet,itemsep=0.12em,parsep=0pt,topsep=0.12em,partopsep=0pt]}
+  {\end{itemize}}
+\newcommand{\cvpoint}[1]{\ifresume\else\begin{points}\item #1\end{points}\fi}
+\newcommand{\sep}{\enspace|\enspace}
+
+\begin{document}
+
+\begin{center}
+  {\Huge\bfseries Roman Prigodskii}\\[0.45em]
+  Moscow, Russia\enspace\textbullet\enspace
+  \href{mailto:roman@prigodskii.dev}{roman@prigodskii.dev}\enspace\textbullet\enspace
+  \href{https://prigodskii.dev/}{\textbf{prigodskii.dev}}\enspace\textbullet\enspace
+  \href{https://github.com/romanprigodskii}{github.com/romanprigodskii}
+\end{center}
+\vspace{-0.7em}
+
+\section*{Education}
+\entry{Letovo School}{}{Moscow, Russia\sep Expected Jun 2027}
+\rs{Grade 11 (final year), advanced (profile) mathematics track\enspace\textbullet\enspace SAT Mathematics 790 (Aug 2026)\enspace\textbullet\enspace IELTS 7.0}%
+   {Grade 11 (final year): Russian national curriculum, advanced (profile) mathematics track; IB MYP in middle school\\
+    SAT Mathematics 790 (Aug 2026)\enspace\textbullet\enspace IELTS 7.0}
+
+\section*{Honours}
+\entry{Moscow Olympiad in Economics}{winner, 1st place by score in the Grade 10 division}{2025/26}
+\cvpoint{Level II on the federal list of olympiads; the 2026 final was held at twelve venues across Russia.}
+\entry{All-Russian Olympiad in Economics}{national finalist in Grades 9 and 10}{2025, 2026}
+\cvpoint{One of 91 Grade 9 finalists in 2025 and of 118 Grade 10 finalists in 2026. In 2024/25 more than 470,000 students entered, most in the open school round, and 392 reached the final in Grades 9 to 11.}
+\entry{Russian Presidential Academy (RANEPA) Olympiad in Economics}{prize-winner, final stage}{\rs{2025/26}{2025, 2026}}
+\cvpoint{Grade 10, Level III on the federal list of olympiads; in Grade 9, prize-winner at the qualifying stage (2024/25).}
+\entry{International Mathematical Modeling Challenge (IM²C)}{commendation, 7th place in Russia}{2026}
+\cvpoint{The Russian national round, with Letovo’s team Elbrus.}
+\entry{All-Russian Olympiad in Mathematics}{prize-winner of the regional stage, Grade 9}{2024/25}
+\entry{Euler Olympiad}{its analogue for Grade 8: prize-winner of the regional stage}{2023/24}
+\ifresume\else
+\entry{All-Siberian Open Olympiad in Mathematics}{third-degree diploma, Grade 7}{2022/23}
+\fi
+\entry{Letovo School}{best MYP personal project in Mathematics\rs{, on the Collatz conjecture (published 2025)}{}}{Mar 2025}
+\cvpoint{``Collatz conjecture'', written in English in Grade 9 with supervisor Kirill Kusakin and published in \emph{Young Scientist}, No.~2 (87), 2025: the residues modulo 4 and 3 that a smallest counterexample would have to fall in.}
+
+\section*{Research (papers at \href{https://prigodskii.dev/research/}{prigodskii.dev/research})}
+\entry{Testing by betting when the bets are real}{sole author}{\textbf{Accepted, two NeurIPS 2026 workshops\sep Sep 2026}}
+\begin{points}
+  \item \rs{An e-value audit of \textbf{84 pre-registered hypotheses} about a deployed UFC forecaster, bet at a bookmaker’s posted prices. Poster at \textbf{New in ML} and, in a shorter version, \textbf{E-Values: From Statistics to ML}, both non-archival.}%
+          {An e-value audit of \textbf{84 pre-registered hypotheses} about a deployed UFC forecaster, bet at a bookmaker’s posted prices over 4,141 walk-forward bouts. Poster at \textbf{New in ML} and, in a shorter version, \textbf{E-Values: From Statistics to ML}, both non-archival. The headline result is negative.}
+  \ifresume\else
+  \item The 84 slices overlap, so Benjamini–Hochberg’s guarantee is not established; its four discoveries survive neither Benjamini–Yekutieli nor e-BH. Checked on 40,000 null replications (expected e-value $0.985 \pm 0.018$).
+  \fi
+\end{points}
+\entry{Measure the instrument first}{sole author}{\textbf{Working paper\sep 2026}}
+\begin{points}
+  \item \rs{Detection floors: the smallest effect an evaluation could have detected, measured by refitting under a new seed.}%
+          {Detection floors for model selection and for LLM judges: the smallest effect an evaluation could have detected, measured with a null lever, the same recipe refit under a new random seed.}
+  \ifresume\else
+  \item Re-seeding alone reproduces \textbf{80\%} of the only change Vertex MMA’s winner model ever shipped; identical reruns of a deployed LLM classifier disagree on 5.6\% of items, a floor of 2.9 agreement points.
+  \fi
+\end{points}
+\entry{Vertex Boxing}{the Vertex MMA models moved to professional boxing}{\textbf{Public report\sep Jul--Sep 2026}}
+\begin{points}
+  \item \rs{Tested on \textbf{413,279 bouts} whether regional and club betting lines are soft: where priced, they are not. Blended into the opening price, the model passed a pre-registered backtest at {\boldmath$e = 41.8$} against a bar of 20 (2026 holdout).}%
+          {Tested on \textbf{413,279 professional bouts} whether regional and club betting lines are soft enough to beat: where prices exist, they are not. Blended into the opening price, the model passed a test registered in public before its holdout model was trained, at {\boldmath$e = 41.8$} against a bar of 20 (January to July 2026).}
+  \ifresume\else
+  \item Backtests only, no real bets. A live test was frozen in public on 24 September 2026 and runs to 2029.
+  \fi
+\end{points}
+
+\section*{Experience}
+\entry{Apri Software L.L.C-FZ}{Co-Founder, Engineer and Head of AI}{UAE, remote\sep 2026--Present}
+\begin{points}
+  \item \rs{Co-founded the company behind \textbf{Gluline}, a messenger released on the \textbf{App Store} on 19 August 2026, then on \textbf{Google Play} and the web, in ten languages: Android, iOS, web and a Python backend in one repository.}%
+          {Co-founded the company behind \textbf{Gluline}, a messenger released in ten languages on the \textbf{App Store} (19 August 2026), \textbf{Google Play} and the web; Android (Jetpack Compose), iOS (SwiftUI), web and Python/FastAPI in one repository.}
+  \item \rs{As Head of AI, responsible for everything the product does with a model, its assistant included.}%
+          {As Head of AI, responsible for everything the product does with a model; the assistant stays off until the user turns it on. Chat content is encrypted on the device with a key for each chat.}
+  \ifresume\else
+  \item Released through a written checklist: a clean build, \textbf{309 unit tests} and two formal codebase audits. August’s raised 74 candidate findings: 42 confirmed, 32 refuted by an adversarial second pass.
+  \fi
+\end{points}
+\entry{Alfa-Bank}{Intern}{2026}
+\begin{points}
+  \item Built \textbf{Alfa-Romeo}, a working concept of the bank of 2035: 93 iOS screens in SwiftUI on a NestJS and Postgres backend, live rates from the Bank of Russia and CoinGecko, and a Claude copilot that drafts each action and waits for a yes.
+\end{points}
+\entry{Zacks to Interactive Brokers pipeline}{paid client work}{Remote\sep Jul 2026}
+\begin{points}
+  \item \rs{Turns each day’s Zacks screen (4,369 stocks on one day) into an equal-weight book of 25 positions and the orders that close the gap at Interactive Brokers; a dry run so far.}%
+          {Turns each day’s Zacks screen (4,369 stocks on one day) into an equal-weight book of 25 positions and the orders that close the gap at Interactive Brokers. Runs daily on a VPS; a dry run so far, and no order may exceed 10\% of the book.}
+\end{points}
+\entry{SPIEF Junior}{delegate, St Petersburg International Economic Forum}{St Petersburg, Russia\sep Jun 2025}
+\cvpoint{One of the Letovo School delegation to the forum’s programme for school students.}
+
+\section*{Projects (more at \href{https://prigodskii.dev/}{prigodskii.dev})}
+\entry{Vertex MMA}{UFC analytics platform, \href{https://vertexmma.com/}{vertexmma.com}}{\textbf{Next.js, Python, LightGBM\sep 2026--Present}}
+\begin{points}
+  \item \rs{A nine-model forecasting stack (\textbf{LightGBM, CatBoost}, logistic regression and a 10,000-run Monte Carlo simulator) over 4,581 fighters and 8,906 bouts, in English and Russian.}%
+          {A nine-model forecasting stack: a 118-feature winner ensemble over \textbf{LightGBM, CatBoost} and logistic regression, method and finish models, and a 10,000-run Monte Carlo simulator. English and Russian; 4,581 fighters, 8,906 bouts.}
+  \item \textbf{AUC 0.7244} on 664 bouts held out from January 2025, graded against the bookmaker’s closing line, which stays ahead: the model is better calibrated and less sharp.\rs{}{ Bookmaker odds are never a feature, and about two dozen rejected ideas are documented with their reasons.}
+\end{points}
+\entry{indelible}{open-source self-study tutor for Claude Code}{\textbf{Python\sep Sep 2026}}
+\begin{points}
+  \item \rs{Plans back from the learner’s date, re-tests every skill cold two days later and brings each miss back on a spaced schedule. \textbf{17,743 lines} of standard-library Python, \textbf{588 tests}.}%
+          {Plans back from the learner’s date, closes the theory before the drills, re-tests every skill cold two days later and brings each miss back after 1 day, 3 days, 1 week and 3 weeks. \textbf{17,743 lines} of standard-library Python, \textbf{588 tests}.}
+\end{points}
+\entry{Clipwell}{native clipboard history for macOS and Windows}{\textbf{Swift, C\#\sep Jun 2026}}
+\begin{points}
+  \item \rs{Written natively twice (SwiftUI, WPF) rather than once in Electron; MIT licensed, no account and no network calls.}%
+          {Written natively twice, in SwiftUI and in WPF, rather than once in Electron; MIT licensed, installed with one Homebrew command, no account and no network calls.}
+\end{points}
+\ifresume\else
+\entry{Grade 9 mathematics projects}{}{\textbf{2024--2025}}
+\begin{points}
+  \item Proved that a sausage wrapped in newspaper and cut at an angle unrolls into a sine wave, its period the circumference; on a real one, the traced edge follows a sine to within 1.8\% of its height.
+  \item Found the volume of a Turkish tea glass by fitting its profile with four parabolas and summing thin discs with the formulas for sums of powers: 216.9 cm³, against 200 to 225 ml in a water test.
+\end{points}
+\fi
+
+\section*{Skills}
+\textbf{Statistics:} e-values and test martingales, anytime-valid inference, walk-forward validation, calibration, power analysis\\
+\textbf{Modelling:} Python, LightGBM, CatBoost, scikit-learn, NumPy, pandas, statsmodels, Monte Carlo simulation\\
+\textbf{Engineering:} \rs{TypeScript, React, Next.js, Postgres; Swift, Kotlin, C\#; FastAPI, NestJS, Docker, Linux; \LaTeX}%
+                        {TypeScript, React, Next.js, Postgres, Supabase; Swift and SwiftUI, Kotlin and Jetpack Compose, C\# and WPF; FastAPI, NestJS, Docker, Linux; \LaTeX}\\
+\textbf{Languages:} Russian (native), English (working)
+
+\end{document}
