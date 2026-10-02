@@ -46,6 +46,18 @@ services:
       # them again only costs the box time and drops their Content-Length
       traefik.http.middlewares.prigodskii-gzip.compress.excludedcontenttypes: "video/mp4,image/webp,image/png,font/woff2,application/pdf"
       traefik.http.services.prigodskii-svc.loadbalancer.server.port: "80"
+      # media.prigodskii.dev: the loops, on a connection of their own. A router
+      # of its own gets a certificate of its own, naming only that host, so a
+      # browser cannot reuse the pages' connection for it (server/nginx).
+      traefik.http.routers.prigodskii-media-http.entryPoints: http
+      traefik.http.routers.prigodskii-media-http.rule: "Host(`media.prigodskii.dev`)"
+      traefik.http.routers.prigodskii-media-http.middlewares: prigodskii-https
+      traefik.http.routers.prigodskii-media-http.service: prigodskii-svc
+      traefik.http.routers.prigodskii-media.entryPoints: https
+      traefik.http.routers.prigodskii-media.rule: "Host(`media.prigodskii.dev`)"
+      traefik.http.routers.prigodskii-media.tls: "true"
+      traefik.http.routers.prigodskii-media.tls.certresolver: letsencrypt
+      traefik.http.routers.prigodskii-media.service: prigodskii-svc
 
 networks:
   coolify:

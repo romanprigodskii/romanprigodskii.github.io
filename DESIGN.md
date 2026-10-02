@@ -119,6 +119,12 @@ page from the home page, the next project from a case page. Any other page
 is fetched once the pointer rests on a link to it (`eager`, 10ms). WebKit
 is given no rules: where it took them, its arrivals dropped frames.
 
+On prigodskii.dev the loops themselves come from `media.prigodskii.dev`
+(`tools/media.sh`, at deploy): the same files, from a host with a
+certificate of its own, so browsers open a second connection for them and
+no page or picture ever waits behind a loop, in any browser. Each page with
+loops preconnects to it as it opens.
+
 ## Showing the products
 
 | component | what it is |

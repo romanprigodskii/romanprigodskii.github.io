@@ -26,6 +26,12 @@ mkdir "$tmp/html"
 git archive HEAD $SITE | tar -x -C "$tmp/html"
 git archive HEAD:server | tar -x -C "$tmp"
 sh tools/fingerprint.sh "$tmp/html"
+# the loops come from their own host, once it answers (tools/media.sh)
+if curl -sfI --max-time 15 https://media.prigodskii.dev/assets/video/clipwell-strip.mp4 | grep -qi '^content-type: video/mp4'; then
+  sh tools/media.sh "$tmp/html"
+else
+  echo "note: media.prigodskii.dev does not answer; the loops stay on prigodskii.dev" >&2
+fi
 chmod -R u=rwX,go=rX "$tmp"
 
 ssh="ssh -i $KEY -o IdentitiesOnly=yes"

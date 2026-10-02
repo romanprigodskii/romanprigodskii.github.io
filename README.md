@@ -50,6 +50,7 @@ tools/build_data.py        regenerates audit.json
 tools/og.html              the social card, screenshotted into assets/img/og.png
 tools/deploy.sh            publishes HEAD to prigodskii.dev
 tools/fingerprint.sh       stamps ?v=<hash> on every CSS and JS reference (run by deploy.sh)
+tools/media.sh             points the loops at media.prigodskii.dev (run by deploy.sh)
 server/                    the nginx container and its Traefik routing
 ```
 
@@ -75,7 +76,10 @@ It publishes the last commit, not the working tree, to `/opt/prigodskii-site`
 on the server, where nginx serves it behind Traefik. On the way it runs
 `tools/fingerprint.sh` over the copy it ships, so every page asks for
 `site.css?v=<hash>` and so on, which nginx lets browsers keep for a year; the
-repository itself keeps plain names. GitHub Pages still builds
+repository itself keeps plain names. Once `media.prigodskii.dev` answers, it
+also runs `tools/media.sh`, so the shipped pages take their loops from that
+host, on a connection of their own; the repository keeps relative paths.
+GitHub Pages still builds
 `main` at romanprigodskii.github.io; every page names prigodskii.dev as
 canonical.
 
