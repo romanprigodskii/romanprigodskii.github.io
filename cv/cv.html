@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en" class="cv">
+<head>
+<meta charset="utf-8">
+<title>Roman Prigodskii, CV</title>
+<meta name="author" content="Roman Prigodskii">
+<script>
+  /* One file, two documents: cv.html prints the two-page CV, cv.html?resume
+     the one-page résumé. Whatever only one of them carries is marked
+     .cv-only or .rs-only. */
+  (function () {
+    var rs = /(^|&)resume(&|=|$)/.test(location.search.slice(1));
+    document.documentElement.className = rs ? 'rs' : 'cv';
+    document.title = rs ? 'Roman Prigodskii, résumé' : 'Roman Prigodskii, CV';
+  })();
+</script>
+<style>
+/* Mona Sans, by GitHub (SIL Open Font License 1.1, assets/fonts/OFL-MonaSans.txt), the site's one family.
+   Chrome puts a variable font into a PDF as Type 3 glyphs, so cv/build.sh makes
+   static instances of the weights used here (.fonts/, for the build only) and
+   prints with those; without them the page falls back to the variable font. */
+@font-face { font-family: "CV Sans"; font-weight: 400; src: url(".fonts/normal-latin-400.ttf"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "CV Sans"; font-weight: 500; src: url(".fonts/normal-latin-500.ttf"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "CV Sans"; font-weight: 600; src: url(".fonts/normal-latin-600.ttf"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "CV Sans"; font-weight: 400; font-style: italic; src: url(".fonts/italic-latin-400.ttf"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Mona Sans"; font-style: normal; font-weight: 200 900; font-stretch: 75% 125%; src: url("../assets/fonts/mona-sans-200-900-normal-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Mona Sans"; font-style: italic; font-weight: 200 900; font-stretch: 75% 125%; src: url("../assets/fonts/mona-sans-200-900-italic-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+/* ==========================================================================
+   The CV and the résumé, printed to A4 by cv/build.sh. The site's clean
+   light theme on paper: Mona Sans, near-black ink, two greys and hairlines.
+   Every entry is a row, as on /plain/: on the left what it was (a result, a
+   role, a kind of work), on the right what and when.
+   ========================================================================== */
+:root {
+  --ink: #13161C;
+  --ink-2: #4C5058;
+  --ink-3: #686C73;
+  --line: #DCDFE4;
+  --rule: #13161C;
+  --signal-t: oklch(0.51 0.2 257);   /* a result that clears its bar, and nothing else */
+  --f-sans: "CV Sans", "Mona Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* the CV; the résumé sets the same steps a size down */
+  --k: 28mm;
+  --gut: 4mm;
+  --fs: 8.5pt;     --lh: 1.38;
+  --fs-li: 8.3pt;
+  --fs-h3: 9pt;
+  --fs-k: 8pt;
+  --fs-d: 7.9pt;
+  --fs-h2: 12pt;
+  --fs-h1: 28pt;
+  --fs-lede: 9.4pt;
+  --sec: 4.8mm;    /* above a section */
+  --row: 1.5mm;    /* above and below the text of a row */
+  color-scheme: light;
+}
+html.rs {
+  --k: 26mm;
+  --gut: 3.5mm;
+  --fs: 8.3pt;     --lh: 1.34;
+  --fs-li: 8.1pt;
+  --fs-h3: 8.75pt;
+  --fs-k: 7.9pt;
+  --fs-d: 7.8pt;
+  --fs-h2: 11pt;
+  --fs-h1: 24pt;
+  --sec: 3.4mm;
+  --row: 0.9mm;
+}
+html.cv .rs-only, html.rs .cv-only { display: none !important; }
+
+@page { size: A4; margin: 14mm 16mm 15mm; }
+@page cv {
+  size: A4;
+  margin: 14mm 16mm 15mm;
+  @bottom-left { content: "Roman Prigodskii, curriculum vitae"; font-family: "CV Sans", "Mona Sans", sans-serif; font-weight: 500; font-size: 7.4pt; letter-spacing: -0.01em; color: #686C73; }
+  @bottom-right { content: counter(page) " of " counter(pages); font-family: "CV Sans", "Mona Sans", sans-serif; font-weight: 500; font-size: 7.4pt; color: #686C73; }
+}
+@page rs { size: A4; margin: 12mm 15mm 10mm; }
+html.cv body { page: cv; }
+html.rs body { page: rs; }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--f-sans);
+  font-size: var(--fs);
+  line-height: var(--lh);
+  letter-spacing: -0.002em;
+  font-kerning: normal;
+  /* Mona Sans's tabular figures carry a slashed zero; its proportional ones belong here */
+  font-variant-numeric: lining-nums proportional-nums;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  orphans: 3; widows: 3;
+}
+p, h1, h2, h3, ul, dl, dd { margin: 0; }
+ul { padding: 0; list-style: none; }
+b, strong { font-weight: 600; }
+a { color: inherit; text-decoration: none; }
+
+/* on a screen the file reads as the sheet it prints to */
+@media screen {
+  html { background: #E9EBEE; }
+  body { width: 210mm; min-height: 297mm; margin: 24px auto; padding: 14mm 16mm 15mm; box-shadow: 0 1px 3px rgb(0 0 0 / 0.08), 0 8px 32px rgb(0 0 0 / 0.06); }
+  html.rs body { padding: 12mm 15mm 10mm; }
+}
+
+/* ------------------------------------------------------------ header */
+.hd { padding-bottom: 4mm; border-bottom: 0.75pt solid var(--rule); }
+.top { display: flex; justify-content: space-between; gap: 6mm; font-size: 7.6pt; font-weight: 500; letter-spacing: -0.005em; color: var(--ink-3); }
+h1 {
+  margin: 4.6mm 0 0 -0.045em;
+  font-size: var(--fs-h1);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+.lede {
+  margin-top: 3mm;
+  font-size: var(--fs-lede);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+.contact { display: flex; flex-wrap: wrap; gap: 1.6mm 8mm; margin-top: 3.8mm; }
+.contact dt { font-size: 7.1pt; line-height: 1.3; color: var(--ink-3); }
+.contact dd { margin-top: 0.3mm; font-size: 8.9pt; font-weight: 500; line-height: 1.3; letter-spacing: -0.012em; }
+/* the résumé: the name, and under it one line of addresses */
+html.rs .hd { padding-bottom: 3mm; }
+html.rs .top { display: none; }
+html.rs h1 { margin-top: 0; }
+html.rs .contact { margin-top: 2.2mm; gap: 1mm 6.5mm; }
+html.rs .contact dt { display: none; }
+html.rs .contact dd { margin: 0; font-size: 8.5pt; }
+
+/* ------------------------------------------------------------ sections */
+section { margin-top: var(--sec); }
+h2 {
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  padding-bottom: 1.9mm;
+  border-bottom: 0.75pt solid var(--rule);
+  break-after: avoid;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+h2 a { font-size: var(--fs-d); font-weight: 500; letter-spacing: -0.005em; color: var(--ink-3); }
+html.rs h2 { padding-bottom: 1.4mm; }
+
+.row {
+  display: grid;
+  grid-template-columns: var(--k) minmax(0, 1fr);
+  align-items: baseline;
+  padding: var(--row) 0 calc(var(--row) + 0.2mm);
+  border-bottom: 0.5pt solid var(--line);
+  break-inside: avoid;
+}
+section > .row:last-child { border-bottom: 0; padding-bottom: 0; }
+.k { padding-right: var(--gut); font-size: var(--fs-k); font-weight: 500; line-height: 1.32; letter-spacing: -0.01em; color: var(--ink-3); }
+.row.is-top .k { color: var(--ink); font-weight: 600; }
+.v { min-width: 0; }
+.v h3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 5mm;
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  line-height: 1.32;
+  letter-spacing: -0.012em;
+}
+.v h3 > :first-child { text-wrap: balance; }
+.d { flex: none; font-size: var(--fs-d); font-weight: 500; letter-spacing: -0.005em; color: var(--ink-3); white-space: nowrap; }
+.v p { color: var(--ink-2); text-wrap: pretty; }
+.v h3 + p, .v p + p { margin-top: 0.5mm; }
+.v ul { margin-top: 0.9mm; }
+.v li { position: relative; padding-left: 3.3mm; font-size: var(--fs-li); line-height: 1.38; color: var(--ink-2); text-wrap: pretty; }
+.v li + li { margin-top: 0.5mm; }
+.v li::before { content: ""; position: absolute; left: 0.5mm; top: 0.62em; width: 1mm; height: 1mm; border-radius: 50%; background: var(--ink-3); }
+.v .src { margin-top: 0.8mm; font-size: 8pt; font-weight: 500; letter-spacing: -0.008em; color: var(--ink); }
+.v .src a + a { margin-left: 5mm; }
+.hit { color: var(--signal-t); font-weight: 600; white-space: nowrap; }
+
+/* skills: a line each, no hairlines */
+.skills .row { border-bottom: 0; padding: 0.9mm 0 0; }
+.skills h2 + .row { padding-top: var(--row); }
+</style>
+</head>
+<body>
+
+<header class="hd">
+  <p class="top"><span><span class="cv-only">Curriculum vitae</span><span class="rs-only">Résumé</span></span><span id="when">October 2026</span></p>
+  <h1>Roman Prigodskii</h1>
+  <p class="lede cv-only">Final year at Letovo School, Moscow. Grade 10 winner of the Moscow Olympiad in Economics and two-time national finalist in the All-Russian Olympiad in Economics. Built Vertex MMA, a UFC forecasting platform graded against a bookmaker’s closing line; sole author of two papers on its evaluation, one accepted at two NeurIPS 2026 workshops.</p>
+  <dl class="contact">
+    <div><dt>Email</dt><dd><a href="mailto:roman@prigodskii.dev">roman@prigodskii.dev</a></dd></div>
+    <div><dt>Website</dt><dd><a href="https://prigodskii.dev/">prigodskii.dev</a></dd></div>
+    <div><dt>GitHub</dt><dd><a href="https://github.com/romanprigodskii">github.com/romanprigodskii</a></dd></div>
+    <div><dt>Based in</dt><dd>Moscow, Russia</dd></div>
+  </dl>
+</header>
+
+<section>
+  <h2>Education</h2>
+  <div class="row">
+    <p class="k">Grade 11</p>
+    <div class="v">
+      <h3><span>Letovo School, Moscow</span><span class="d">Graduating 2027</span></h3>
+      <p class="cv-only">Final year. Russian national curriculum, advanced (profile) mathematics track; MYP in the middle-school years. SAT Mathematics 790 (August 2026). IELTS 7.0.</p>
+      <p class="rs-only">Final year, advanced (profile) mathematics track. SAT Mathematics 790 (August 2026). IELTS 7.0.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Honours</h2>
+  <div class="row is-top">
+    <p class="k">1st place</p>
+    <div class="v">
+      <h3><span>Moscow Olympiad in Economics, Grade 10 division</span><span class="d">2025/26</span></h3>
+      <p class="cv-only">Level II on the federal list of olympiads; the 2026 final was held at twelve venues across Russia.</p>
+    </div>
+  </div>
+  <div class="row">
+    <p class="k">Finalist ×2</p>
+    <div class="v">
+      <h3><span>All-Russian Olympiad in Economics, national final, Grades 9 and 10</span><span class="d">2025, 2026</span></h3>
+      <p class="cv-only">One of 91 Grade 9 finalists in 2025 and of 118 Grade 10 finalists in 2026. In 2024/25 more than 470,000 students entered, most in the open school round, and 392 reached the final in Grades 9 to 11.</p>
+    </div>
+  </div>
+  <div class="row">
+    <p class="k">Prize-winner</p>
+    <div class="v">
+      <h3><span>Russian Presidential Academy (RANEPA) Olympiad in Economics, final stage</span><span class="d"><span class="rs-only">2025/26</span><span class="cv-only">2025, 2026</span></span></h3>
+      <p class="cv-only">Grade 10; Level III on the federal list of olympiads. In Grade 9, prize-winner at the qualifying stage (2024/25).</p>
+    </div>
+  </div>
+  <div class="row">
+    <p class="k">Commendation</p>
+    <div class="v">
+      <h3><span>International Mathematical Modeling Challenge (IM²C), Russian national round</span><span class="d">2026</span></h3>
+      <p>7th of 20 teams, in Letovo’s team Elbrus.</p>
+    </div>
+  </div>
+  <div class="row">
+    <p class="k">Prize-winner ×2</p>
+    <div class="v">
+      <h3><span>Mathematics olympiads, regional stage, Grades 8 and 9</span><span class="d">2024, 2025</span></h3>
+      <p class="cv-only">The All-Russian Olympiad in Mathematics in Grade 9, and the Euler Olympiad, its Grade 8 counterpart.</p>
+    </div>
+  </div>
+  <div class="row cv-only">
+    <p class="k">3rd degree</p>
+    <div class="v">
+      <h3><span>All-Siberian Open Olympiad in Mathematics, Grade 7</span><span class="d">2022/23</span></h3>
+    </div>
+  </div>
+  <div class="row">
+    <p class="k">School award</p>
+    <div class="v">
+      <h3><span>Letovo School, best MYP personal project in Mathematics</span><span class="d">March 2025</span></h3>
+      <p class="rs-only">“Collatz conjecture”, written in Grade 9 and published in <i>Young Scientist</i>, 2025.</p>
+      <p class="cv-only">“Collatz conjecture”, written in English in Grade 9 with supervisor Kirill Kusakin and published in <i>Young Scientist</i>, No. 2 (87), 2025: the residues modulo 4 and 3 that a smallest counterexample would have to fall in.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Research <a href="https://prigodskii.dev/research/">prigodskii.dev/research</a></h2>
+  <div class="row is-top">
+    <p class="k">Accepted</p>
+    <div class="v">
+      <h3><a href="https://prigodskii.dev/papers/newinml.pdf">Testing by betting when the bets are real: an e-value audit of 84 pre-registered hypotheses about a deployed forecaster</a><span class="d">2026</span></h3>
+      <p class="cv-only">Sole author. Accepted as a poster at two NeurIPS 2026 workshops, both non-archival: New in ML, and in a shorter version, E-Values: From Statistics to ML.</p>
+      <p class="rs-only">Sole author. Poster at two NeurIPS 2026 workshops (non-archival): New in ML; E-Values: From Statistics to ML.</p>
+      <ul class="cv-only">
+        <li>Real bets: a deployed UFC forecaster against a bookmaker’s posted prices, over 4,141 walk-forward bouts.</li>
+        <li>The 84 slices overlap, so Benjamini–Hochberg’s guarantee is not established; its four discoveries survive neither Benjamini–Yekutieli nor e-BH.</li>
+        <li>Checked on 40,000 null replications (expected e-value 0.985 ± 0.018). The headline result is negative.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <p class="k">Working paper</p>
+    <div class="v">
+      <h3><a href="https://prigodskii.dev/papers/floors.pdf">Measure the instrument first: detection floors for model selection and for LLM judges</a><span class="d">2026</span></h3>
+      <p class="cv-only">Sole author. Measures the smallest effect an evaluation could have detected, with a null lever: the same recipe refit under a new random seed, which changes nothing real.</p>
+      <p class="rs-only">Sole author. Measures the smallest effect an evaluation could have detected, by refitting under a new seed.</p>
+      <ul class="cv-only">
+        <li>Re-seeding alone reproduces 80% of the only change Vertex MMA’s winner model ever shipped; the pipeline had 56% power against its own result.</li>
+        <li>Identical reruns of a deployed LLM classifier disagree on 5.6% of items: a floor of 2.9 agreement points.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <p class="k">Concluded</p>
+    <div class="v">
+      <h3><a href="https://github.com/romanprigodskii/vertex-boxing">Vertex Boxing: the Vertex MMA models moved to professional boxing</a><span class="d">Jul–Sep 2026</span></h3>
+      <p class="cv-only">Built on 413,279 professional bouts to test whether regional and club betting lines are soft enough to beat; where prices exist, they are not. Blended into the opening price, the model passed a test registered in public before its holdout model was trained, at <span class="hit">e = 41.8</span> against a bar of 20 (January to July 2026). Backtests only, no real bets; a live test frozen in public on 24 September 2026 runs to 2029.</p>
+      <p class="rs-only">Tested on 413,279 bouts whether regional and club boxing lines are soft: where priced, they are not. Blended into the opening price, it passed a pre-registered backtest at <span class="hit">e = 41.8</span> against a bar of 20 (2026 holdout).</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Projects and experience</h2>
+  <div class="row">
+    <p class="k">Live product</p>
+    <div class="v">
+      <h3><span>Vertex MMA, <a href="https://vertexmma.com">vertexmma.com</a></span><span class="d">2026–present</span></h3>
+      <p class="cv-only">A UFC analytics platform in English and Russian with a nine-model forecasting stack: a 118-feature winner ensemble over LightGBM, CatBoost and logistic regression, method and finish models, and a 10,000-run Monte Carlo simulator. AUC 0.7244 on 664 bouts held out from January 2025; graded against the bookmaker’s closing line, which stays ahead, it is better calibrated and less sharp.</p>
+      <p class="rs-only">A UFC analytics platform with a nine-model forecasting stack and a 10,000-run Monte Carlo simulator. AUC 0.7244 on 664 held-out bouts, graded against the bookmaker’s closing line, which stays ahead.</p>
+      <ul class="cv-only">
+        <li>4,581 fighters and 8,906 bouts. Five mechanisms keep future information out of the features and bookmaker odds are never one; about two dozen rejected ideas are documented with their reasons.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <p class="k">Co-founder</p>
+    <div class="v">
+      <h3><span>Gluline, <a href="https://gluline.com">gluline.com</a></span><span class="d">2026–present</span></h3>
+      <p>Co-founder of Apri Software L.L.C-FZ in the UAE; engineer and Head of AI for its messenger, released on the App Store on 19 August 2026, then on Google Play and the web, in ten languages.<span class="cv-only"> One repository: Android in Jetpack Compose, iOS in SwiftUI, a web client and a Python and FastAPI backend.</span></p>
+      <ul class="cv-only">
+        <li>Responsible for everything the product does with a model; the assistant stays off until the user turns it on. Released through a written checklist, with 309 unit tests and two formal codebase audits.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <p class="k">Internship</p>
+    <div class="v">
+      <h3><span>Alfa-Bank</span><span class="d">2026</span></h3>
+      <p class="cv-only">Built Alfa-Romeo, a working concept of the bank of 2035: 93 iOS screens in SwiftUI on a NestJS and Postgres backend, live rates from the Bank of Russia and CoinGecko, and a Claude copilot that waits for a yes.</p>
+      <p class="rs-only">Built Alfa-Romeo, a working concept of the bank of 2035: 93 iOS screens in SwiftUI on a NestJS backend, with a Claude copilot that drafts each action and waits for a yes.</p>
+    </div>
+  </div>
+  <div class="row">
+    <p class="k">Client work</p>
+    <div class="v">
+      <h3><span>Zacks to Interactive Brokers execution pipeline</span><span class="d">2026</span></h3>
+      <p class="cv-only">Paid work for a third party: each day’s Zacks screen (4,369 stocks on one day) turned into an equal-weight book of 25 positions and the orders that close the gap at Interactive Brokers. A dry run so far.</p>
+      <p class="rs-only">Paid work for a third party: each day’s Zacks screen turned into an equal-weight book of 25 positions and the orders that reach it at Interactive Brokers. A dry run so far.</p>
+    </div>
+  </div>
+  <div class="row">
+    <p class="k">Open source</p>
+    <div class="v">
+      <h3><span>indelible, <a href="https://github.com/romanprigodskii/indelible">github.com/romanprigodskii/indelible</a></span><span class="d">September 2026</span></h3>
+      <p class="cv-only">A Claude Code skill that runs self-study the way a strict tutor would: a plan built back from the learner’s date, theory read and then closed, a cold recheck two days later, and every miss brought back after 1 day, 3 days, 1 week and 3 weeks. 17,743 lines of standard-library Python, 588 tests.</p>
+      <p class="rs-only">A Claude Code skill that runs self-study the way a strict tutor would, with a cold recheck two days later and every miss brought back on a schedule. 17,743 lines of Python, 588 tests.</p>
+    </div>
+  </div>
+  <div class="row">
+    <p class="k">Open source</p>
+    <div class="v">
+      <h3><span>Clipwell, <a href="https://github.com/romanprigodskii/clipwell">github.com/romanprigodskii/clipwell</a></span><span class="d">2026</span></h3>
+      <p class="cv-only">A clipboard history for macOS and Windows, written natively twice (Swift and SwiftUI, C# and WPF) rather than once in Electron; MIT licensed, with no account and no network calls.</p>
+      <p class="rs-only">A native clipboard history for macOS (Swift) and Windows (C#); MIT licensed, no account and no network calls.</p>
+    </div>
+  </div>
+  <div class="row">
+    <p class="k">Delegate</p>
+    <div class="v">
+      <h3><span>SPIEF Junior, St Petersburg International Economic Forum</span><span class="d">June 2025</span></h3>
+      <p class="cv-only">One of the Letovo School delegation to the forum’s programme for school students.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cv-only">
+  <h2>School projects</h2>
+  <div class="row">
+    <p class="k">Grade 9</p>
+    <div class="v">
+      <h3><span>A sausage wrapped in newspaper</span><span class="d">December 2024</span></h3>
+      <p>Proved that a sausage wrapped in newspaper and cut at an angle unrolls into a sine wave, its period the circumference; on a real one, the traced edge follows a sine to within 1.8% of its height.</p>
+    </div>
+  </div>
+  <div class="row">
+    <p class="k">Grade 9</p>
+    <div class="v">
+      <h3><span>The volume of a tea glass</span><span class="d">Spring 2025</span></h3>
+      <p>Fitted the profile of a Turkish tea glass with four parabolas and summed thin discs in the limit with the formulas for sums of powers: 216.9 cm³, against 200 to 225 ml in a water test.</p>
+    </div>
+  </div>
+</section>
+
+<section class="skills">
+  <h2>Skills</h2>
+  <div class="row"><p class="k">Statistics</p><div class="v"><p>E-values and test martingales, anytime-valid inference, walk-forward validation, calibration, power analysis</p></div></div>
+  <div class="row"><p class="k">Modelling</p><div class="v"><p>Python, LightGBM, CatBoost, scikit-learn, NumPy, pandas, statsmodels, Monte Carlo simulation</p></div></div>
+  <div class="row"><p class="k">Engineering</p><div class="v"><p>TypeScript, React, Next.js, Postgres; Swift, SwiftUI, Kotlin, Compose, C#; FastAPI, NestJS, Docker; LaTeX</p></div></div>
+  <div class="row"><p class="k">Languages</p><div class="v"><p>Russian (native), English (working)</p></div></div>
+</section>
+
+<script>
+  /* the month it was printed */
+  document.getElementById('when').textContent =
+    new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+</script>
+</body>
+</html>
