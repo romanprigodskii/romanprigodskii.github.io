@@ -74,8 +74,8 @@
 \section*{Research (papers at \href{https://prigodskii.dev/research/}{prigodskii.dev/research})}
 \entry{Testing by betting when the bets are real}{sole author}{\textbf{Accepted, two NeurIPS 2026 workshops\sep Sep 2026}}
 \begin{points}
-  \item \rs{An e-value audit of \textbf{84 pre-registered hypotheses} about a deployed UFC forecaster, bet at a bookmaker’s posted prices. Poster at \textbf{New in ML} and, in a shorter version, \textbf{E-Values: From Statistics to ML}, both non-archival.}%
-          {An e-value audit of \textbf{84 pre-registered hypotheses} about a deployed UFC forecaster, bet at a bookmaker’s posted prices over 4,141 walk-forward bouts. Poster at \textbf{New in ML} and, in a shorter version, \textbf{E-Values: From Statistics to ML}, both non-archival. The headline result is negative.}
+  \item \rs{An e-value audit of \textbf{84 pre-registered market-efficiency hypotheses} about a deployed UFC forecaster. Poster at \textbf{New in ML} and, in a shorter version, \textbf{E-Values: From Statistics to ML}, both non-archival.}%
+          {An e-value audit of \textbf{84 pre-registered market-efficiency hypotheses} about a deployed UFC forecaster, tested against posted market prices over 4,141 walk-forward bouts. Poster at \textbf{New in ML} and, in a shorter version, \textbf{E-Values: From Statistics to ML}, both non-archival. The headline result is negative.}
   \ifresume\else
   \item The 84 slices overlap, so Benjamini–Hochberg’s guarantee is not established; its four discoveries survive neither Benjamini–Yekutieli nor e-BH. Checked on 40,000 null replications (expected e-value $0.985 \pm 0.018$).
   \fi
@@ -90,10 +90,10 @@
 \end{points}
 \entry{Vertex Boxing}{the Vertex MMA models moved to professional boxing}{\textbf{Public report\sep Jul--Sep 2026}}
 \begin{points}
-  \item \rs{Tested on \textbf{413,279 bouts} whether regional and club betting lines are soft: where priced, they are not. Blended into the opening price, the model passed a pre-registered backtest at {\boldmath$e = 41.8$} against a bar of 20 (2026 holdout).}%
-          {Tested on \textbf{413,279 professional bouts} whether regional and club betting lines are soft enough to beat: where prices exist, they are not. Blended into the opening price, the model passed a test registered in public before its holdout model was trained, at {\boldmath$e = 41.8$} against a bar of 20 (January to July 2026).}
+  \item \rs{Tested on \textbf{413,279 bouts} whether regional and club boxing is priced less efficiently: where priced, it is not. Blended into the opening price, the model passed a pre-registered backtest at {\boldmath$e = 41.8$} against a bar of 20 (2026 holdout).}%
+          {Tested on \textbf{413,279 professional bouts} whether regional and club boxing is priced less efficiently than the top of the sport: where prices exist, it is not. Blended into the opening price, the model passed a test registered in public before its holdout model was trained, at {\boldmath$e = 41.8$} against a bar of 20 (January to July 2026).}
   \ifresume\else
-  \item Backtests only, no real bets. A live test was frozen in public on 24 September 2026 and runs to 2029.
+  \item Every result is a backtest. A forward test was frozen in public on 24 September 2026 and runs to 2029.
   \fi
 \end{points}
 
@@ -125,7 +125,7 @@
 \begin{points}
   \item \rs{A nine-model forecasting stack (\textbf{LightGBM, CatBoost}, logistic regression and a 10,000-run Monte Carlo simulator) over 4,581 fighters and 8,906 bouts, in English and Russian.}%
           {A nine-model forecasting stack: a 118-feature winner ensemble over \textbf{LightGBM, CatBoost} and logistic regression, method and finish models, and a 10,000-run Monte Carlo simulator. English and Russian; 4,581 fighters, 8,906 bouts.}
-  \item \textbf{AUC 0.7244} on 664 bouts held out from January 2025, graded against the bookmaker’s closing line, which stays ahead: the model is better calibrated and less sharp.\rs{}{ Bookmaker odds are never a feature, and about two dozen rejected ideas are documented with their reasons.}
+  \item \textbf{AUC 0.7244} on 664 bouts held out from January 2025, measured against the market’s closing price, which stays ahead: the model is better calibrated and less sharp.\rs{}{ Market prices are never a feature, and about two dozen rejected ideas are documented with their reasons.}
 \end{points}
 \entry{indelible}{open-source self-study tutor for Claude Code}{\textbf{Python\sep Sep 2026}}
 \begin{points}
