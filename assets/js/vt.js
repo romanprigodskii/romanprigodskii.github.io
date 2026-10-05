@@ -14,16 +14,21 @@
 
    - Safari has the same feature, but it blanks the window for several frames
      before it starts (a white flash in the middle of the move). Arc, though
-     built on Chromium, does the same: for a few frames between the two pages
-     its window shows neither of them. So Safari, Arc and Firefox navigate
-     plainly. With a mouse or trackpad, a veil in the page's colour first
-     closes over it (html.is-leaving, 170ms) and only then does the page
-     navigate: WebKit draws nothing more of a page once a navigation has
-     started, so a fade begun with the navigation would never be seen. The
-     next page comes up under the veil (html.is-arriving) and the veil lifts
-     from its first frame (html.is-lifting). On a touch screen the page is
-     left as it is, because Safari's preview for swiping back is taken as the
-     navigation starts, and a veiled page would make it blank.
+     built on Chromium, does the same: for about 80ms between the two pages
+     its window is a flat field of the page's colour, with a view transition,
+     with the next page prerendered, and with the pages sent no-store alike
+     (Arc 1.165, October 2026). So Safari, Arc and Firefox navigate plainly.
+     With a mouse or trackpad, a veil in the page's colour first closes over
+     it (html.is-leaving, 170ms) and only then does the page navigate:
+     WebKit draws nothing more of a page once a navigation has started, so
+     a fade begun with the navigation would never be seen. The next page
+     comes up under the veil (html.is-arriving) and the veil lifts from its
+     first frame (html.is-lifting). The title the visitor followed
+     flies in there as it does in Chrome, from where it was on the page they
+     left (stored on the way out) to its place, while the veil lifts around
+     it (html.is-flying). On a touch screen the page is left as it is,
+     because Safari's preview for swiping back is taken as the navigation
+     starts, and a veiled page would make it blank.
 
    Arc gives no name of its own in its client hints, only Chromium's, which
    tells it from Chrome, Edge, Opera and Brave from the first frame (a plain
@@ -38,7 +43,7 @@
    starts once the page has loaded. */
 (function () {
   "use strict";
-  var KEY = "rp-vt", LEAVE = "rp-leave", ARC = "rp-arc", last = null;
+  var KEY = "rp-vt", LEAVE = "rp-leave", FLY = "rp-fly", ARC = "rp-arc", last = null;
   var doc = document.documentElement;
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
   var fine = window.matchMedia("(hover: hover) and (pointer: fine)");
@@ -146,9 +151,16 @@
   /* ---------------------------------------------- Safari, Arc and Firefox */
   var stuck = 0, held = false, hold = 0, drawn = false, late = false;
   var revealing = "onpagereveal" in window;
+  /* the title to fly in, from where it was on the page before */
+  var fly = null;
   function arrive() {
-    var t = 0;
-    try { t = +sessionStorage.getItem(LEAVE) || 0; sessionStorage.removeItem(LEAVE); } catch (x) {}
+    var t = 0, f = null;
+    try {
+      t = +sessionStorage.getItem(LEAVE) || 0;
+      f = JSON.parse(sessionStorage.getItem(FLY));
+      sessionStorage.removeItem(LEAVE);
+      sessionStorage.removeItem(FLY);
+    } catch (x) {}
     if (native || reduce.matches || Date.now() - t > 6000) return;
     /* the veil comes up closed and lifts from the first frame drawn: begun in
        the head, half the lift was over before anything was painted */
@@ -157,6 +169,9 @@
     doc.classList.add("is-arriving");
     held = true;
     late = false;
+    fly = f && f.slug && doc.animate ? f : null;
+    /* a case title that is to fly in does not rise as well */
+    if (fly && fly.slug === slugOf(location.href)) doc.classList.add("vt-flown");
     /* the first frame: pagereveal, or where there is none, the first rAF */
     drawn = false;
     if (!revealing) requestAnimationFrame(function () { drew(); requestAnimationFrame(lift); });
@@ -174,6 +189,8 @@
        on, not before the page has been parsed and laid out by its scripts */
     if (!held || !drawn) return;
     if (!late && settle && document.readyState === "loading") return;
+    /* nor, when a title is to fly in, before it has been parsed */
+    if (!late && fly && document.readyState === "loading" && !find(fly.slug)) return;
     if (!land() && !late) return;
     /* the scripts may have moved the page under its place since it landed */
     if (mark) mark.scrollIntoView({ block: "start", behavior: "instant" });
@@ -185,12 +202,56 @@
        long enough ago for the lift to be over before it is painted */
     requestAnimationFrame(function () {
       if (doc.classList.contains("is-leaving")) return;
+      /* the title the visitor followed, if it is on screen here, flies in
+         as the veil lifts */
+      if (flyIn()) doc.classList.add("is-flying");
       doc.classList.remove("is-arriving");
       doc.classList.add("is-lifting");
       /* once lifted, the veil is taken away altogether */
       clearTimeout(hold);
-      hold = setTimeout(function () { doc.classList.remove("is-lifting"); }, 480);
+      hold = setTimeout(function () { doc.classList.remove("is-lifting", "is-flying"); }, 480);
     });
+  }
+  /* the title the visitor followed flies from where it was on the page they
+     left to its place on this one, as it does in Chrome, and the veil lifts
+     around it as quickly as the old page fades there. That page is gone by
+     then (WebKit stops drawing a page once a navigation starts, and Arc
+     empties its window between the two), so the title comes up out of the
+     veil as it sets off rather than lifting off the page before. Only the
+     title's transform moves and the veil only fades, so nothing is redrawn
+     on the way: a view transition within this page did the same, but
+     WebKit stalled for a frame as it ended. */
+  function flyIn() {
+    var f = fly;
+    fly = null;
+    var el = f ? find(f.slug) : null;
+    if (!el) return false;
+    var box = el.closest("h1, h2, h3") || el;
+    now(el);
+    var r = el.getBoundingClientRect(), b = box.getBoundingClientRect();
+    var s = f.fs / (parseFloat(getComputedStyle(el).fontSize) || f.fs);
+    /* from where it was: its first line's corner at the same place on the
+       screen, its type at the size it had there */
+    box.style.transformOrigin = (r.left - b.left) + "px " + (r.top - b.top) + "px";
+    var a = box.animate([
+      { transform: "translate(" + (f.x - r.left) + "px, " + (f.y - r.top) + "px) scale(" + s + ")" },
+      { transform: "none" }
+    ], { duration: 640, easing: "cubic-bezier(0.32, 0.72, 0, 1)" });
+    function done() { box.style.transformOrigin = ""; }
+    a.finished.then(done, done);
+    return true;
+  }
+  /* on the way out: the title that will fly in on the next page, and where it
+     is now (the next project's title here, or this case page's own) */
+  function aim(href) {
+    var dest = slugOf(href), mine = own();
+    var slug = dest && dest !== mine ? dest : mine;
+    var el = slug ? find(slug) : null;
+    if (!el) return;
+    var r = el.getBoundingClientRect();
+    try {
+      sessionStorage.setItem(FLY, JSON.stringify({ slug: slug, x: r.left, y: r.top, fs: parseFloat(getComputedStyle(el).fontSize) }));
+    } catch (x) {}
   }
   arrive();
   /* a page brought back from the back-forward cache is shown whole again */
@@ -303,6 +364,7 @@
     if (!native && fine.matches && !reduce.matches && (back || page(a))) {
       e.preventDefault();
       if (doc.classList.contains("is-leaving")) return;
+      aim(a.href);
       leave();
       setTimeout(go, 170);
     } else if (back) {

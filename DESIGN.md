@@ -80,17 +80,27 @@ Between pages, two ways by engine (`assets/js/vt.js` decides in the head):
   under the closed veil (`html.is-arriving`), and the veil lifts as its
   entrance plays (`html.is-lifting`), started in a frame callback after the
   first frame: started earlier, WebKit dated the lift by an older frame and
-  half of it was over before anything was painted. On touch screens the page
-  is not veiled, so Safari's swipe-back preview, taken as the navigation
-  starts, shows the page and not an empty one.
+  half of it was over before anything was painted. The title the visitor
+  followed flies in on the next page as it does in Chrome: vt.js keeps where
+  it was and its size on the way out, and on the way in moves the title from
+  there to its place by its transform alone (640ms, Chrome's curve), while
+  the veil lifts around it as fast as Chrome fades the old page
+  (`html.is-flying`, 240ms). The old page is gone by then, so the title rises
+  out of the veil as it sets off. A view transition within the arriving page
+  drew the same, but WebKit stalled for a frame as it ended. On touch screens
+  the page is not veiled, so Safari's swipe-back preview, taken as the
+  navigation starts, shows the page and not an empty one.
 - Arc is Chromium, but it keeps neither page on screen between the two: for
-  a few frames after every click its window shows a flat colour, so a view
-  transition there starts with a blink and the old page reappearing. Arc
-  takes Safari's way, with the veil over the bar too (`html.is-arc`), so the
-  screen is already that flat colour when Arc empties it. vt.js knows Arc by
-  its client hints on macOS and Windows, which name Chromium and no browser
-  of its own, and, once a page has loaded, by the `--arc-palette-*`
-  properties Arc sets on the root.
+  about 80ms after every click its window is a flat field of the page's
+  colour, so a view transition there starts with a blink and the old page
+  reappearing. Measured on Arc 1.165 in October 2026, the gap is there with
+  a view transition, with the next page prerendered and with the pages sent
+  no-store alike. Arc takes Safari's way, title flight included, with
+  the veil over the bar too (`html.is-arc`), so the screen is already that
+  flat colour when Arc empties it. vt.js knows Arc by its client hints on
+  macOS and Windows, which name Chromium and no browser of its own, and, once
+  a page has loaded, by the `--arc-palette-*` properties Arc sets on the
+  root.
 
 A link to a place on another page (the bar's Work, Record and Contact,
 "All work", a paper on the research page) opens that page on the place, not

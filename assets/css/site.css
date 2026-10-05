@@ -704,6 +704,10 @@ html.is-arriving body::after { visibility: visible; opacity: 1; }
    page for that frame */
 html.is-lifting body::after { visibility: visible; opacity: 1; animation: veil-lift 420ms var(--eo) forwards; }
 @keyframes veil-lift { from { opacity: 1; } to { opacity: 0; } }
+/* when the title the visitor followed flies in, as it does in Chromium
+   above (vt.js moves it), the veil lifts around it as quickly as the old
+   page fades there */
+html.is-flying.is-lifting body::after { animation-duration: 240ms; animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1); }
 
 /* ==========================================================================
    Widths
