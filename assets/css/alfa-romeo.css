@@ -1,10 +1,10 @@
 /* ==========================================================================
    Alfa-Romeo (/work/alfa-romeo/), in the clean light theme
 
-   The lead is the app itself: both sides of it running on one red stage,
-   each phone with an index of its screens that follows the loop and stops
-   on any screen picked from it. The screens stand on red stages tinted from
-   Alfa's own palette; the copilot's limits sit on a neutral tile. Tokens and
+   The lead is the app itself: both sides of it running on the page, each
+   phone with an index of its screens that follows the loop and stops on any
+   screen picked from it. The screens stand on the page with no box, in a
+   pool of Alfa's red; the copilot's limits sit on a neutral tile. Tokens and
    components come from site.css.
    ========================================================================== */
 
@@ -15,19 +15,38 @@
   --off: clamp(24px, 3vw, 52px);
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--ph-w) var(--ph-w) minmax(0, 1fr);
-  column-gap: clamp(20px, 2.4vw, 40px);
+  --gap: clamp(20px, 2.4vw, 40px);
+  column-gap: var(--gap);
   align-items: center;
-  padding: clamp(40px, 4vw, 64px) clamp(20px, 2.8vw, 48px);
+  padding: clamp(40px, 4vw, 64px) 0;
 }
+/* no box: the phones stand on the page in a pool of Alfa's red that fades
+   out inside its own edges */
+.ar-stage, .ar-cr { overflow: visible; border-radius: 0; background: none; isolation: isolate; }
+.ar-stage::before, .ar-cr::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: -10%;
+  width: calc(var(--ph-w) * 3.4);
+  height: 66%;
+  translate: -50% 0;
+  pointer-events: none;
+  background: radial-gradient(closest-side, oklch(0.78 0.11 24 / 0.55), oklch(0.86 0.07 24 / 0.24) 55%, oklch(0.93 0.035 24 / 0));
+}
+.ar-cr::before { left: 20%; width: 64%; }
+/* the pause button under the business phone, not out at the page's edge */
+.ar-stage > .vid-toggle { right: auto; left: calc(50% + var(--gap) / 2 + var(--ph-w) - 32px); }
 @supports (height: 100svh) { .ar-stage { --ph-w: clamp(200px, min((100svh - 250px) * 0.46, 22vw), 330px); } }
 .ar-dev { display: contents; }
 .ar-ph {
   width: var(--ph-w);
   background: #fff;
   box-shadow:
-    0 0 0 1px oklch(0.35 0.06 22 / 0.09),
+    0 0 0 1px oklch(0.35 0.06 22 / 0.16),
     0 2px 4px oklch(0.35 0.08 22 / 0.06),
-    0 36px 64px -34px oklch(0.36 0.12 22 / 0.55);
+    0 40px 64px -32px oklch(0.42 0.13 22 / 0.5);
 }
 .is-p .ar-ph { grid-column: 2; grid-row: 1; margin-bottom: var(--off); }
 .is-b .ar-ph { grid-column: 3; grid-row: 1; margin-top: var(--off); }
@@ -48,14 +67,14 @@
   font-weight: 500;
   line-height: 1.3;
   letter-spacing: -0.012em;
-  color: oklch(0.42 0.045 22);
+  color: var(--ink-3);
   text-wrap: balance;
   transition: color 280ms ease;
 }
 .is-p .ar-steps li { padding: 7px 18px 7px 0; }
 .ar-steps li::before, .ar-steps li::after { content: ""; position: absolute; left: 0; top: 7px; bottom: 7px; width: 2px; border-radius: 1px; }
 .is-p .ar-steps li::before, .is-p .ar-steps li::after { left: auto; right: 0; }
-.ar-steps li::before { background: oklch(0.4 0.08 22 / 0.14); }
+.ar-steps li::before { background: var(--line-2); }
 .ar-steps li::after { background: var(--ink); transform: scaleY(var(--p)); transform-origin: top; }
 .ar-steps li.is-on { color: var(--ink); }
 .ar-step {
@@ -179,19 +198,19 @@ html.js .ar-sc.in .ar-cur { opacity: 1; }
 html.js .ar-lim-f .ar-hint { display: inline; }
 
 /* ------------------------------------------------------------ the credit screen, read, on its stage */
-.ar-cr { display: grid; grid-template-columns: minmax(0, 40%) minmax(0, 1fr); align-items: stretch; padding: clamp(28px, 3.4vw, 56px) clamp(22px, 3vw, 48px); }
+.ar-cr { display: grid; grid-template-columns: minmax(0, 40%) minmax(0, 1fr); align-items: stretch; padding: clamp(28px, 3.4vw, 56px) 0; }
 .ar-cr-ph {
   background: #fff;
   box-shadow:
-    0 0 0 1px oklch(0.35 0.06 22 / 0.09),
+    0 0 0 1px oklch(0.35 0.06 22 / 0.16),
     0 2px 4px oklch(0.35 0.08 22 / 0.06),
-    0 30px 54px -30px oklch(0.36 0.12 22 / 0.5);
+    0 36px 56px -28px oklch(0.42 0.13 22 / 0.5);
 }
 .ar-cr-l { position: relative; }
 .ar-cr-l li { position: absolute; left: 0; right: 0; top: var(--t); height: var(--h); padding-left: clamp(30px, 2.8vw, 44px); outline: none; }
 .ar-cr-l li::before { content: ""; position: absolute; left: clamp(10px, 1vw, 16px); top: 3px; bottom: 3px; width: 9px; border: 1.25px solid var(--ink); border-left: 0; border-radius: 0 5px 5px 0; }
 .ar-cr-l b { display: block; font-weight: 600; font-size: clamp(1.125rem, 0.9rem + 0.5vw, 1.375rem); line-height: 1.1; letter-spacing: -0.025em; }
-.ar-cr-l span { display: block; margin-top: 5px; font-size: var(--fs-small); line-height: 1.4; color: oklch(0.4 0.04 22); max-width: 30ch; text-wrap: pretty; }
+.ar-cr-l span { display: block; margin-top: 5px; font-size: var(--fs-small); line-height: 1.4; color: var(--ink-2); max-width: 30ch; text-wrap: pretty; }
 .ar-cr-l li.is-on b { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 0.2em; }
 html.js .ar-cr-l li { cursor: default; }
 /* a window that walks the screen with the brackets; the rest of the screen falls back */
@@ -220,7 +239,8 @@ html.js .ar-biz.in > div > * { opacity: 1; }
    ========================================================================== */
 @media (max-width: 1100px) {
   /* the indexes go under their phones */
-  .ar-stage { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(12px, 3vw, 40px); align-items: start; padding: clamp(28px, 4vw, 48px) clamp(16px, 3vw, 40px); }
+  .ar-stage { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(12px, 3vw, 40px); align-items: start; padding: clamp(28px, 4vw, 48px) 0; }
+  .ar-stage > .vid-toggle { left: auto; right: 0; }
   .ar-dev { display: flex; flex-direction: column; align-items: center; }
   .is-b { padding-top: var(--off); }
   .ar-ph { width: min(100%, 280px); margin: 0 !important; }
@@ -236,7 +256,7 @@ html.js .ar-biz.in > div > * { opacity: 1; }
   .ar-narrow { display: block; }
 }
 @media (max-width: 760px) {
-  .ar-stage { --off: 22px; padding: 22px 14px 18px; column-gap: 12px; }
+  .ar-stage { --off: 22px; padding: 22px 0 18px; column-gap: 12px; }
   .ar-idx { margin-top: 16px !important; }
   .ar-idx-h { gap: 6px; margin-bottom: 4px; min-height: 28px; }
   .ar-idx-k { font-size: 1rem; }
@@ -287,5 +307,6 @@ html.js .ar-biz.in > div > * { opacity: 1; }
 @media print {
   .ar-cur, .ar-hint, .ar-spot { display: none !important; }
   .ar-stage, .ar-cr, .ar-lim { background: none !important; box-shadow: none !important; }
+  .ar-stage::before, .ar-cr::before { display: none; }
   html.js .ar-stage .ar-ph, html.js .ar-stage .ar-steps li, html.js .ar-stage .ar-idx-h, html.js .ar-fan-b li, html.js .ar-fan-a, html.js .ar-cr-l li > *, html.js .ar-biz > div > * { opacity: 1 !important; translate: 0 0 !important; transform: none !important; }
 }

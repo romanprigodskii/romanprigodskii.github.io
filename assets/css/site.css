@@ -1673,7 +1673,6 @@ html.js [data-shot].in { opacity: 1; transform: none; }
 /* a stage: the coloured surface a product stands on */
 .stage { position: relative; border-radius: var(--r-stage); overflow: hidden; padding: clamp(24px, 4vw, 64px); background: var(--tile); }
 .stage.is-dark { background: radial-gradient(90% 70% at 18% 108%, oklch(0.36 0.09 50 / 0.5), transparent 62%), radial-gradient(70% 60% at 100% 0%, oklch(0.3 0.02 265 / 0.9), transparent 70%), oklch(0.15 0.008 265); }
-.stage.is-red { background: radial-gradient(70% 90% at 50% -20%, oklch(0.985 0.012 30), transparent 70%), radial-gradient(60% 80% at 100% 110%, oklch(0.9 0.06 22 / 0.8), transparent 70%), linear-gradient(170deg, oklch(0.965 0.02 28), oklch(0.93 0.04 22)); }
 .stage.is-sage { background: radial-gradient(70% 140% at 24% -30%, oklch(0.86 0.035 128 / 0.95), transparent 62%), linear-gradient(to bottom, oklch(0.79 0.022 135), #AAB0A6 62%); }
 /* indelible's warm paper, a shade under its own page so a white sheet stands on it */
 .stage.is-paper { background: radial-gradient(80% 90% at 12% -10%, oklch(0.975 0.008 85), transparent 66%), radial-gradient(60% 80% at 100% 110%, oklch(0.9 0.02 74 / 0.85), transparent 70%), linear-gradient(170deg, oklch(0.955 0.011 82), oklch(0.925 0.016 78)); }
@@ -1736,7 +1735,7 @@ html.vt-flown .case-title { animation: none; }
    three phones in a pool of its teal, the Vertex Boxing report on a slate desk beside
    its charts, indelible's printed sheets on its paper either side of the
    48 hours, Clipwell's bar docked over its own site on the sage desktop,
-   and Alfa-Romeo's two walkthroughs on red, each with an index that follows
+   and Alfa-Romeo's two walkthroughs in a pool of its red, each with an index that follows
    it. Zacks keeps its figure. A recording loads nothing until it is in view
    and plays only while seen (site.js). Home only: every rule here hangs on
    an .hs- class or on #work.
@@ -1910,23 +1909,43 @@ html.js .hs-in-stage.in .hs-in-bar::before { transform: none; }
 html.js .hs-in-stage.in .hs-in-bar span { opacity: 1; }
 
 /* ------------------------------------------------------------ Alfa-Romeo */
-/* both sides of the app on one red stage; beside each phone, the screens of
-   its loop in order, the one on show inked and its track filling */
+/* both sides of the app on the page, with no box: a pool of the bank's red
+   under the two phones, fading out inside its own edges (as Gluline's teal
+   does); beside each phone, the screens of its loop in order, the one on
+   show inked and its track filling */
 .stage.hs-ar-stage {
   --ph-w: clamp(180px, 17.4vw, 272px);
   --off: clamp(20px, 2.8vw, 48px);
+  --gap: clamp(20px, 3vw, 52px);
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--ph-w) var(--ph-w) minmax(0, 1fr);
-  column-gap: clamp(20px, 3vw, 52px);
+  column-gap: var(--gap);
   align-items: center;
-  padding: clamp(36px, 4.4vw, 72px) clamp(20px, 3vw, 52px);
-  box-shadow: 0 40px 80px -60px oklch(0.4 0.1 22 / 0.5);
+  padding: clamp(36px, 4.4vw, 72px) 0;
+  overflow: visible;
+  border-radius: 0;
+  background: none;
+  isolation: isolate;
 }
+.stage.hs-ar-stage::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: -10%;
+  width: calc(var(--ph-w) * 3.4);
+  height: 66%;
+  translate: -50% 0;
+  pointer-events: none;
+  background: radial-gradient(closest-side, oklch(0.78 0.11 24 / 0.55), oklch(0.86 0.07 24 / 0.24) 55%, oklch(0.93 0.035 24 / 0));
+}
+/* the pause button under the business phone, not out at the page's edge */
+.stage.hs-ar-stage > .vid-toggle { right: auto; left: calc(50% + var(--gap) / 2 + var(--ph-w) - 32px); }
 @supports (height: 100svh) { .stage.hs-ar-stage { --ph-w: clamp(180px, min(17.4vw, (100svh - 240px) * 0.46), 272px); } }
 .hs-ar-ph {
   width: var(--ph-w);
   background: #fff;
-  box-shadow: 0 0 0 1px oklch(0.35 0.06 22 / 0.09), 0 2px 4px oklch(0.35 0.08 22 / 0.06), 0 36px 64px -34px oklch(0.36 0.12 22 / 0.55);
+  box-shadow: 0 0 0 1px oklch(0.35 0.06 22 / 0.16), 0 2px 4px oklch(0.35 0.08 22 / 0.06), 0 40px 64px -32px oklch(0.42 0.13 22 / 0.5);
 }
 .hs-ar-ph.is-p { grid-column: 2; grid-row: 1; margin-bottom: var(--off); }
 .hs-ar-ph.is-b { grid-column: 3; grid-row: 1; margin-top: var(--off); }
@@ -1951,9 +1970,9 @@ html.js .hs-in-stage.in .hs-in-bar span { opacity: 1; }
 .is-p .hs-ch li { padding: 7px 18px 7px 0; }
 .hs-ch li::before, .hs-ch li::after { content: ""; position: absolute; left: 0; top: 7px; bottom: 7px; width: 2px; border-radius: 1px; }
 .is-p .hs-ch li::before, .is-p .hs-ch li::after { left: auto; right: 0; }
-.hs-ch li::before { background: oklch(0.4 0.08 22 / 0.16); }
+.hs-ch li::before { background: var(--line-2); }
 .hs-ch li::after { background: var(--ink); transform: scaleY(0); transform-origin: top; }
-.hs-ar-stage.is-live .hs-ch li { color: oklch(0.44 0.05 22); }
+.hs-ar-stage.is-live .hs-ch li { color: var(--ink-3); }
 .hs-ar-stage.is-live .hs-ch li.is-on { color: var(--ink); }
 .hs-ar-stage.is-live .hs-ch li.is-on::after { transform: scaleY(var(--p)); }
 /* each item is a button once the script runs; the whole row is its target */
@@ -1995,8 +2014,10 @@ html.js .hs-ar-stage.in .hs-ar-ph, html.js .hs-ar-stage.in .hs-ar-col { opacity:
     column-gap: clamp(14px, 3vw, 28px);
     row-gap: 22px;
     align-items: start;
-    padding: 28px clamp(16px, 4vw, 40px) 26px;
+    padding: 28px 0 26px;
   }
+  .stage.hs-ar-stage::before { width: 110%; }
+  .stage.hs-ar-stage > .vid-toggle { left: auto; right: 0; }
   .hs-ar-ph { width: 100%; max-width: 280px; }
   .hs-ar-ph.is-p { grid-column: 1; justify-self: end; margin-bottom: 0; }
   .hs-ar-ph.is-b { grid-column: 2; justify-self: start; margin-top: var(--off); }
@@ -2066,6 +2087,7 @@ html.js .hs-ar-stage.in .hs-ar-ph, html.js .hs-ar-stage.in .hs-ar-col { opacity:
 
 @media print {
   .stage.hs-vx-stage, .stage.hs-in-stage, .stage.hs-desk, .stage.hs-ar-stage { background: none !important; box-shadow: none !important; }
+  .stage.hs-ar-stage::before { display: none; }
 }
 
 
