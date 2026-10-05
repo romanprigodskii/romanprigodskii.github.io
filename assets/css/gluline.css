@@ -1,8 +1,8 @@
 /* ==========================================================================
    /work/gluline/: page styles, on top of site.css (the clean light theme)
 
-   The app runs on three phones on Gluline's own teal, and the web client in
-   a window. The timeline is one filled track that ends on the release; the
+   The app runs on three phones standing in a pool of Gluline's teal, with no
+   box round them, and the web client in a window. The timeline is one filled track that ends on the release; the
    card figure is a schematic of what the assistant is allowed to read, with
    switches that work; the first-run choice runs on its own phone; the audit
    is one bar of 74 candidates. Ink only: nothing on this page is a
@@ -10,10 +10,30 @@
    ========================================================================== */
 
 /* ------------------------------------------------------------ the phones */
+/* no box, as on the home page: the stage is only as wide as its phones, so
+   the pause button lands under the last of them, and the teal is a pool of
+   light under them that fades out well inside its own edges */
 .gl-stage {
   --ph-w: clamp(204px, min((100vh - 270px) * 0.46, 21vw), 300px);
-  padding: clamp(44px, 5.4vw, 84px) clamp(20px, 3vw, 48px) clamp(30px, 3.4vw, 52px);
-  box-shadow: 0 50px 90px -60px oklch(0.36 0.05 215 / 0.55);
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  padding: clamp(28px, 3vw, 48px) 0 clamp(30px, 3.4vw, 52px);
+  overflow: visible;
+  border-radius: 0;
+  background: none;
+  isolation: isolate;
+}
+.gl-stage::before, .gl-first::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -14%;
+  right: -14%;
+  bottom: -14%;
+  height: 72%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, oklch(0.8 0.06 200 / 0.6), oklch(0.86 0.045 200 / 0.24) 55%, oklch(0.9 0.03 200 / 0));
 }
 @supports (height: 100svh) { .gl-stage { --ph-w: clamp(204px, min((100svh - 270px) * 0.46, 21vw), 300px); } }
 .gl-devs { display: flex; justify-content: center; align-items: flex-start; gap: clamp(4px, 2.6vw, 44px); }
@@ -21,11 +41,11 @@
 /* each slot is a little wider than its phone, so a long caption has room */
 .gl-dev { flex: none; width: calc(var(--ph-w) + 36px); min-width: 0; }
 .gl-dev .phone { width: var(--ph-w); margin-inline: auto; }
-.gl-stage .phone {
+.gl-stage .phone, .gl-first .phone {
   box-shadow:
-    0 0 0 1px oklch(0.3 0.04 215 / 0.12),
+    0 0 0 1px oklch(0.3 0.04 215 / 0.2),
     0 2px 6px oklch(0.3 0.04 215 / 0.1),
-    0 40px 60px -30px oklch(0.27 0.05 220 / 0.55);
+    0 40px 60px -28px oklch(0.3 0.06 215 / 0.55);
 }
 .gl-cap {
   margin: 20px auto 0;
@@ -34,7 +54,7 @@
   font-size: 0.9375rem;
   line-height: 1.4;
   letter-spacing: -0.01em;
-  color: oklch(0.27 0.025 225);
+  color: var(--ink-2);
   text-wrap: balance;
 }
 .gl-media .stage-cap { margin-top: 16px; max-width: none; }
@@ -162,17 +182,12 @@ html.js .gl-who tbody.is-not tr { transition-delay: calc(420ms + var(--r) * 90ms
 
 /* ------------------------------------------------------------ the first-run choice, on its own phone */
 .chapter-b > .gl-first { margin-top: clamp(36px, 3.6vw, 56px); }
-.gl-first { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: clamp(28px, 4.4vw, 72px); padding: clamp(32px, 3.6vw, 56px) clamp(28px, 4.4vw, 72px); }
-.gl-first .phone {
-  width: clamp(180px, 16vw, 236px);
-  box-shadow:
-    0 0 0 1px oklch(0.3 0.04 215 / 0.14),
-    0 2px 4px oklch(0.3 0.04 215 / 0.08),
-    0 28px 44px -22px oklch(0.27 0.05 220 / 0.5);
-}
+.gl-first { --fw: clamp(180px, 16vw, 236px); display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: clamp(36px, 5vw, 88px); padding: clamp(16px, 2vw, 32px) 0 clamp(24px, 2.6vw, 40px); overflow: visible; border-radius: 0; background: none; isolation: isolate; }
+.gl-first::before { left: calc(var(--fw) * -0.8); right: auto; width: calc(var(--fw) * 2.6); height: 50%; bottom: -12%; }
+.gl-first .phone { width: var(--fw); }
 .gl-first-t .fig-k { font-size: clamp(1.375rem, 1rem + 0.9vw, 1.875rem); line-height: 1.1; letter-spacing: -0.035em; }
-.gl-first-c { position: relative; margin-top: 18px; padding-left: 24px; max-width: 32ch; font-size: 1rem; line-height: 1.5; letter-spacing: -0.01em; color: oklch(0.27 0.025 225); text-wrap: pretty; }
-.gl-first-c + .gl-first-c { margin-top: 14px; padding-top: 14px; border-top: 1px solid oklch(0.3 0.04 220 / 0.16); }
+.gl-first-c { position: relative; margin-top: 18px; padding-left: 24px; max-width: 32ch; font-size: 1rem; line-height: 1.5; letter-spacing: -0.01em; color: var(--ink-2); text-wrap: pretty; }
+.gl-first-c + .gl-first-c { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
 .gl-first-c b { font-weight: 600; color: var(--ink); }
 /* the marks gluline.com uses for its own two lists: filled for what the server can see, open for what it cannot */
 .gl-first-c::after { content: ""; position: absolute; left: 1px; top: 0.5em; width: 9px; height: 9px; border-radius: 50%; box-sizing: border-box; }
@@ -247,7 +262,7 @@ html.js .gl-au.in .gl-au-y, html.js .gl-au.in .gl-au-n { opacity: 1; translate: 
 @media (max-width: 760px) {
   .case-line { margin-top: 22px; }
   /* the phones become a strip that scrolls sideways inside the stage */
-  .gl-stage { padding: 28px 0 22px; }
+  .gl-stage { width: auto; padding: 24px 0 22px; }
   .gl-devs { justify-content: flex-start; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 20px; padding: 0 20px 6px; scrollbar-width: none; }
   .gl-devs::-webkit-scrollbar { display: none; }
   .gl-devs::after { content: ""; flex: 0 0 6px; }
@@ -263,8 +278,8 @@ html.js .gl-au.in .gl-au-y, html.js .gl-au.in .gl-au-n { opacity: 1; translate: 
   .gl-card { height: 88px; padding: 0 14px 0 16px; }
   .gl-card-t { font-size: 1.0625rem; }
   .gl-who th { width: 44%; padding-right: 14px; }
-  .gl-first { grid-template-columns: 1fr; justify-items: center; padding: 28px 20px 26px; }
-  .gl-first .phone { width: 58%; max-width: 236px; }
+  .gl-first { --fw: min(58%, 236px); grid-template-columns: 1fr; justify-items: center; padding: 16px 0 8px; }
+  .gl-first::before { left: 50%; width: 120%; height: 56%; bottom: auto; top: 30%; translate: -50% 0; }
   .gl-first-t { margin-top: 24px; justify-self: stretch; }
   .gl-au { padding: 18px 14px 16px; }
   .gl-au-cells { column-gap: 1.5px; height: 40px; }
@@ -297,5 +312,6 @@ html.js .gl-au.in .gl-au-y, html.js .gl-au.in .gl-au-n { opacity: 1; translate: 
 
 @media print {
   .gl-stage, .gl-first { background: none !important; box-shadow: none !important; }
+  .gl-stage::before, .gl-first::before { display: none; }
   html.js .gl-stage .gl-dev, html.js .gl-who tr, html.js .gl-first .gl-first-t > * { transform: none !important; translate: none !important; opacity: 1 !important; }
 }

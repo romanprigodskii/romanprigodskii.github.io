@@ -28,12 +28,15 @@ shown as a muted looping recording of the real thing.
 Blue never decorates. If a mark is blue, it cleared 20 (or whatever bar the
 figure states). The model beating nobody is drawn in ink.
 
-The stages (`.stage.is-dark`, `.is-teal`, `.is-red`, `.is-sage`, `.is-paper`)
-take their colour from the product on them: Vertex's dark web app, Gluline's
-teal, the bank's red, Clipwell's desktop, the warm paper indelible prints on.
+The stages (`.stage.is-dark`, `.is-red`, `.is-sage`, `.is-paper`)
+take their colour from the product on them: Vertex's dark web app, the
+bank's red, Clipwell's desktop, the warm paper indelible prints on.
 Each is one hue, muted and lit from above, so the screens standing on it
 keep their own colours.
-They are the only coloured surfaces on the site.
+Gluline has no stage: a filled box round its phones read as a card dropped
+on the page, so its phones stand on the page itself, in a pool of the app's
+teal that fades out under them, on the home page and on its own page.
+These are the only coloured surfaces on the site.
 
 ## Type
 
@@ -131,7 +134,7 @@ loops preconnects to it as it opens.
 |---|---|
 | `.win` (+ `.is-dark`) | a browser window: a quiet bar with the address, the recording under it |
 | `.stage` | the coloured surface a product stands on; `.stage-cap` is its caption |
-| `.phone`, `.gl-phones` | phone screens on a stage |
+| `.phone`, `.gl-phones` | phone screens, on a stage or (Gluline) on the page in a pool of its teal |
 | `.bezel` | a dark stage for a single screenshot |
 | `.plate` | a neutral tile for a figure |
 

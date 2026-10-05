@@ -1163,19 +1163,26 @@ html.js .hero-b { animation: sk-up 1000ms var(--eo) 620ms backwards; }
 .vs td.is-won { font-weight: 500; color: var(--ink); }
 .vs td.is-won span { background-image: linear-gradient(var(--ink), var(--ink)); padding-bottom: 3px; }
 
-/* Gluline: its own teal, one muted hue lit from above (as Clipwell's sage
-   is), a mid tone, so the white screens stand out on it rather than
-   dissolving into a wash as light as they are */
+/* Gluline: no box. The phones stand on the page in a pool of the app's
+   teal, as if lit from the floor under them; the pool fades out well inside
+   its own edges, so nothing draws a corner */
 .gl-phones {
   position: relative;
+  isolation: isolate;
   margin-right: clamp(28px, 3.6vw, 64px);
-  padding: clamp(40px, 5vw, 84px) clamp(18px, 3vw, 48px) clamp(26px, 3vw, 48px);
-  border-radius: var(--r-stage);
+  padding: clamp(36px, 3.6vw, 60px) 0 0;
   gap: clamp(10px, 1.5vw, 24px);
-  background:
-    radial-gradient(70% 90% at 24% -20%, oklch(0.9 0.034 198 / 0.95), transparent 62%),
-    radial-gradient(55% 80% at 90% -10%, oklch(0.86 0.028 214 / 0.8), transparent 66%),
-    linear-gradient(to bottom, oklch(0.82 0.034 205), oklch(0.75 0.03 211) 78%);
+}
+.gl-phones::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -14%;
+  right: -14%;
+  bottom: -14%;
+  height: 72%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, oklch(0.8 0.06 200 / 0.6), oklch(0.86 0.045 200 / 0.24) 55%, oklch(0.9 0.03 200 / 0));
 }
 .phone {
   background: oklch(0.14 0.01 265);
@@ -1184,11 +1191,12 @@ html.js .hero-b { animation: sk-up 1000ms var(--eo) 620ms backwards; }
     0 2px 4px oklch(0.25 0.04 260 / 0.08),
     0 28px 44px -22px oklch(0.28 0.06 265 / 0.5);
 }
+/* on the white page a light screen needs its edge drawn a little firmer */
 .gl-phones .phone {
   box-shadow:
-    0 0 0 1px oklch(0.3 0.04 215 / 0.14),
+    0 0 0 1px oklch(0.3 0.04 215 / 0.2),
     0 2px 4px oklch(0.3 0.04 215 / 0.08),
-    0 28px 44px -22px oklch(0.27 0.05 220 / 0.5);
+    0 40px 60px -28px oklch(0.3 0.06 215 / 0.55);
 }
 .gl-text { padding-top: clamp(8px, 2.4vw, 40px); }
 .who { margin-top: 30px; }
@@ -1566,7 +1574,7 @@ html.js [data-shot].in { opacity: 1; transform: none; }
   .h3 { font-size: clamp(2.375rem, 11.5vw, 3.25rem); }
   .vx-right { margin-top: 30px; }
   .bezel { padding: 16px 16px 0; }
-  .gl-phones { margin-right: 0; padding: 30px 12px 20px; gap: 8px; }
+  .gl-phones { margin-right: 0; padding-top: 24px; gap: 8px; }
   .gl-text { padding-top: 34px; }
   .zk { padding: 22px 14px 18px; }
   /* the two limits no longer fit on one line: the 80% stem runs down past the
@@ -1613,6 +1621,7 @@ html.js [data-shot].in { opacity: 1; transform: none; }
 
 @media print {
   .hero-b, .bezel, .gl-phones, .cw-strip, .ar-strip, .vd, .plate, .bx-a, .bx-b { background: none !important; box-shadow: none !important; }
+  .gl-phones::before { display: none; }
   html.js .reach-list li::after, html.js .reach-list li:first-child::before, html.js .reach-list a, html.js .reach-at { opacity: 1 !important; transform: none !important; }
 }
 
@@ -1637,7 +1646,6 @@ html.js [data-shot].in { opacity: 1; transform: none; }
 /* a stage: the coloured surface a product stands on */
 .stage { position: relative; border-radius: var(--r-stage); overflow: hidden; padding: clamp(24px, 4vw, 64px); background: var(--tile); }
 .stage.is-dark { background: radial-gradient(90% 70% at 18% 108%, oklch(0.36 0.09 50 / 0.5), transparent 62%), radial-gradient(70% 60% at 100% 0%, oklch(0.3 0.02 265 / 0.9), transparent 70%), oklch(0.15 0.008 265); }
-.stage.is-teal { background: radial-gradient(70% 90% at 24% -20%, oklch(0.9 0.034 198 / 0.95), transparent 62%), radial-gradient(55% 80% at 90% -10%, oklch(0.86 0.028 214 / 0.8), transparent 66%), linear-gradient(to bottom, oklch(0.82 0.034 205), oklch(0.75 0.03 211) 78%); }
 .stage.is-red { background: radial-gradient(70% 90% at 50% -20%, oklch(0.985 0.012 30), transparent 70%), radial-gradient(60% 80% at 100% 110%, oklch(0.9 0.06 22 / 0.8), transparent 70%), linear-gradient(170deg, oklch(0.965 0.02 28), oklch(0.93 0.04 22)); }
 .stage.is-sage { background: radial-gradient(70% 140% at 24% -30%, oklch(0.86 0.035 128 / 0.95), transparent 62%), linear-gradient(to bottom, oklch(0.79 0.022 135), #AAB0A6 62%); }
 /* indelible's warm paper, a shade under its own page so a white sheet stands on it */
@@ -1698,7 +1706,7 @@ html.vt-flown .case-title { animation: none; }
    Home showcases
    The seven projects on the home page, each shown working on a stage of its
    own: Vertex MMA's site in a dark window with its phone in front, Gluline's
-   three phones on its teal, the Vertex Boxing report on a slate desk beside
+   three phones in a pool of its teal, the Vertex Boxing report on a slate desk beside
    its charts, indelible's printed sheets on its paper either side of the
    48 hours, Clipwell's bar docked over its own site on the sage desktop,
    and Alfa-Romeo's two walkthroughs on red, each with an index that follows
@@ -1764,9 +1772,6 @@ html.js .hs-vx-stage .hs-vx-a { transition-delay: 120ms; }
 html.js .hs-vx-stage .hs-vx-m { translate: 36px 56px; transition-delay: 380ms; }
 html.js .hs-vx-stage.in .hs-vx-a,
 html.js .hs-vx-stage.in .hs-vx-m { opacity: 1; translate: 0 0; }
-
-/* ------------------------------------------------------------ Gluline */
-.hs-gl .gl-phones { box-shadow: 0 44px 84px -60px oklch(0.36 0.05 215 / 0.6); }
 
 /* ------------------------------------------------------------ Vertex Boxing */
 /* the report on a slate desk beside the level chart, then the four windows */
