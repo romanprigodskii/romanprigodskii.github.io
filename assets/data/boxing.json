@@ -2,36 +2,47 @@
   "source": "Vertex Boxing final report, github.com/romanprigodskii/vertex-boxing/blob/main/docs/REPORT.md (September 2026). Every number below is copied from the section named beside it; nothing is computed here.",
   "level": {
     "section": "4.2 The thesis, cut by level",
-    "note": "Bets struck at the open when the model's probability beats the price's by 2 points. CLV is the movement of the de-vigged price towards the bet between open and close, in probability.",
+    "note": "Bouts where the model's probability for a fighter is at least 2 points above the opening price's. The move is how far the price, with its margin taken out, travelled towards the model between the open and the close, in probability.",
     "rows": [
-      { "label": "4 to 6 rounds", "kind": "club", "priced": 597, "bets": 283, "clv": 0.0044, "lo": 0.0017, "hi": 0.0073, "ret": -0.149 },
-      { "label": "8 rounds", "kind": "regional", "priced": 582, "bets": 337, "clv": 0.0075, "lo": 0.0033, "hi": 0.0119, "ret": 0.054 },
-      { "label": "10 rounds", "kind": "national, continental", "priced": 1195, "bets": 781, "clv": 0.0093, "lo": 0.0060, "hi": 0.0127, "ret": 0.041 },
-      { "label": "12 rounds", "kind": "title", "priced": 629, "bets": 468, "clv": 0.0180, "lo": 0.0130, "hi": 0.0232, "ret": 0.131 }
+      { "label": "4 to 6 rounds", "kind": "club", "priced": 597, "selected": 283, "move": 0.0044, "lo": 0.0017, "hi": 0.0073 },
+      { "label": "8 rounds", "kind": "regional", "priced": 582, "selected": 337, "move": 0.0075, "lo": 0.0033, "hi": 0.0119 },
+      { "label": "10 rounds", "kind": "national, continental", "priced": 1195, "selected": 781, "move": 0.0093, "lo": 0.0060, "hi": 0.0127 },
+      { "label": "12 rounds", "kind": "title", "priced": 629, "selected": 468, "move": 0.0180, "lo": 0.0130, "hi": 0.0232 }
     ]
   },
   "unseen": {
     "section": "4.2, on an era the rule never saw (rule_oos.json)",
     "window": "10 June 2021 to 10 June 2023",
-    "top": { "label": "upper tier: 12 rounds, or a continental or world belt", "bets": 461, "clv": 0.0276, "lo": 0.0200, "hi": 0.0347, "ret": 0.095, "ret_lo": -0.026, "ret_hi": 0.228 },
-    "bottom": { "label": "lower tier: 8 rounds or fewer, no belt", "bets": 365, "clv": 0.0136, "lo": 0.0080, "hi": 0.0191, "ret": -0.083 },
-    "ratio": 2.0,
-    "close_power": -0.032,
-    "close_proportional": 0.028
+    "top": { "label": "upper tier: 12 rounds, or a continental or world belt", "selected": 461, "move": 0.0276, "lo": 0.0200, "hi": 0.0347 },
+    "bottom": { "label": "lower tier: 8 rounds or fewer, no belt", "selected": 365, "move": 0.0136, "lo": 0.0080, "hi": 0.0191 },
+    "ratio": 2.0
   },
   "blend": {
     "section": "The answer first; 4.1",
     "alone": -0.0211, "alone_lo": -0.0322, "alone_hi": -0.0100, "alone_yearly": -0.0198,
     "gain": 0.0043, "gain_lo": 0.0024, "gain_hi": 0.0062, "lambda": 0.17, "priced": 3288
   },
+  "forecasts": {
+    "section": "9.1, the log-loss of each forecast on the same 3,077 bouts",
+    "window": "June 2023 to December 2025",
+    "bouts": 3077,
+    "share": 0.87,
+    "rows": [
+      { "key": "model", "name": "The model alone", "ll": 0.3590 },
+      { "key": "open", "name": "The opening price", "ll": 0.3506 },
+      { "key": "open+", "name": "The open, blended", "sub": "with the model, weight 0.35", "ll": 0.3396 },
+      { "key": "close", "name": "The closing price", "ll": 0.3379 },
+      { "key": "close+", "name": "The close, blended", "sub": "with the model, weight 0.15", "ll": 0.3336 }
+    ]
+  },
   "windows": {
     "section": "9.1, 9.2, 9.3",
     "bar": 20,
     "rows": [
-      { "when": "2016–2020", "bouts": 2016, "price": "ProBoxingOdds open", "fixed": "public", "how": "pre-registered in public", "e": 7.0e6, "label": "7.0 × 10^6", "flat": "+18% to +24%" },
-      { "when": "2021–2023", "bouts": 1545, "price": "Bet365 open", "fixed": "seen", "how": "declared in advance as already seen", "e": 12.5, "label": "12.5" },
-      { "when": "2023–2025", "bouts": 3077, "price": "Bet365 open", "fixed": "local", "how": "pre-registered, committed locally", "e": 3.9e8, "label": "3.9 × 10^8", "flat": "+10.9% [+6.2%, +15.9%]" },
-      { "when": "Jan–Jul 2026", "bouts": 541, "price": "Bet365 open", "fixed": "public", "how": "pre-registered in public", "e": 41.8, "label": "41.8" }
+      { "when": "2016–2020", "bouts": 2016, "src": "untimestamped prices", "fixed": "public", "how": "pre-registered in public", "e": 7.0e6, "label": "7.0 × 10^6" },
+      { "when": "2021–2023", "bouts": 1545, "src": "timestamped prices", "fixed": "seen", "how": "declared in advance as already seen", "e": 12.5, "label": "12.5" },
+      { "when": "2023–2025", "bouts": 3077, "src": "timestamped prices", "fixed": "local", "how": "pre-registered, committed locally", "e": 3.9e8, "label": "3.9 × 10^8" },
+      { "when": "Jan–Jul 2026", "bouts": 541, "src": "timestamped prices", "fixed": "public", "how": "pre-registered in public", "e": 41.8, "label": "41.8" }
     ]
   },
   "leak": {

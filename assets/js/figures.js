@@ -54,7 +54,7 @@
   function gridClass(g) {
     if (g.end) return "ge";          // 1,680, the bar for all 84
     if (g.v === 20) return "gb";     // 20, the bar for one
-    if (g.v === 1) return "g1";      // e = 1, a bet that broke even
+    if (g.v === 1) return "g1";      // e = 1, no evidence either way
     if (g.m === 1) return "gd";      // decades
     if (g.m === 2 || g.m === 5) return "gh";
     return "gn";
@@ -206,7 +206,7 @@
     rows.forEach(function (r) { if (r[key] > best) best = r[key]; });
     var s = '<svg class="vd-svg" viewBox="0 0 ' + r2(W) + " " + H + '" width="100%" height="' + H + '" data-y0="' + y0 + '" data-w="' + r2(W) + '" overflow="visible" role="img" aria-labelledby="vd-t' + sfx + ' vd-d' + sfx + '">' +
       '<title id="vd-t' + sfx + '">The 84 pre-registered hypotheses, by e-value</title>' +
-      '<desc id="vd-d' + sfx + '">Each mark is one hypothesis on a logarithmic e-value axis from 0.01 to 1,680. At fair odds six reach 20, the bar for a single hypothesis; after the bookmaker\'s margin one does, on the most favourable of five seeds. None reaches 1,680, the bar for all 84 at once. The best reaches 151.</desc>' +
+      '<desc id="vd-d' + sfx + '">Each mark is one hypothesis on a logarithmic e-value axis from 0.01 to 1,680. At fair prices six reach 20, the bar for a single hypothesis; with the market\'s margin charged, one does, on the most favourable of five seeds. None reaches 1,680, the bar for all 84 at once. The best reaches 151.</desc>' +
       '<defs><pattern id="vd-h' + sfx + '" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" class="vd-hl"/></pattern></defs>';
     // the gap between the best mark and the bar for all 84, hatched: what nothing reached
     var xb = r2(gx(best) * W), xe = r2(W);
@@ -344,22 +344,22 @@
   }
 
   /* ------------------------------------------------------------ 6. Vertex Boxing
-     (a) closing-line value by the level of the fight, with 95% intervals;
-     (b) four betting windows as e-values on a log scale from 1 to 1,000.
+     (a) how far the price moved towards the model between the open and the
+     close, by the level of the fight, with 95% intervals;
+     (b) four windows as e-values on a log scale from 1 to 1,000.
      How each test was fixed is the needle's head: filled for a test
      published before it ran, hollow for one committed locally, none for a
      window declared in advance as already seen. Blue means it cleared 20. */
   function levelBars(level, W, sfx) {
     var rows = level.rows, wide = W > 620;
     sfx = sfx || (wide ? "-w" : "-n");
-    var max = 0.03, lab = wide ? 0.27 : 0, rt = wide ? 0.13 : 0.16;
+    var max = 0.03, lab = wide ? 0.27 : 0, rt = wide ? 0.04 : 0.05;
     var rowH = wide ? 46 : 64, top = 26, H = top + rows.length * rowH + 30;
     function fx(v) { return lab + v / max * (1 - lab - rt); }
     var s = '<svg class="lv-svg" width="100%" height="' + H + '" role="img" aria-labelledby="lv-t' + sfx + ' lv-d' + sfx + '">' +
-      '<title id="lv-t' + sfx + '">Closing-line value by scheduled distance</title>' +
-      '<desc id="lv-d' + sfx + '">' + rows.map(function (r) { return r.label + " (" + r.kind + ", " + fmtInt(r.bets) + " bets): " + signed(r.clv, 4) + ", 95% interval " + signed(r.lo, 4) + " to " + signed(r.hi, 4) + ", realised return " + signed(r.ret * 100, 1) + "%"; }).join(". ") + ".</desc>";
-    s += '<text class="lv-k" x="' + pc(fx(0)) + '" y="12">closing-line value, in probability</text>';
-    s += '<text class="lv-k is-r" x="100%" y="12">return</text>';
+      '<title id="lv-t' + sfx + '">How far the price moved towards the model, by scheduled distance</title>' +
+      '<desc id="lv-d' + sfx + '">' + rows.map(function (r) { return r.label + " (" + r.kind + ", " + fmtInt(r.selected) + " bouts): " + signed(r.move, 4) + ", 95% interval " + signed(r.lo, 4) + " to " + signed(r.hi, 4); }).join(". ") + ".</desc>";
+    s += '<text class="lv-k" x="' + pc(fx(0)) + '" y="12">move towards the model, in probability</text>';
     [0, 0.01, 0.02, 0.03].forEach(function (v, i) {
       var x = pc(fx(v));
       s += '<line class="lv-g' + (v === 0 ? " is-0" : "") + '" x1="' + x + '" x2="' + x + '" y1="' + (top - 4) + '" y2="' + (H - 26) + '"/>';
@@ -373,12 +373,11 @@
       } else {
         s += '<text class="lv-lab" x="0" y="' + (y - 16) + '">' + r.label + ' <tspan class="lv-sub">' + r.kind + "</tspan></text>";
       }
-      s += '<rect class="lv-bar" style="--i:' + i + '" x="' + pc(fx(0)) + '" y="' + (y - 7) + '" width="' + pc(fx(r.clv) - fx(0)) + '" height="14"/>';
+      s += '<rect class="lv-bar" style="--i:' + i + '" x="' + pc(fx(0)) + '" y="' + (y - 7) + '" width="' + pc(fx(r.move) - fx(0)) + '" height="14"/>';
       s += '<line class="lv-ci" x1="' + pc(fx(r.lo)) + '" x2="' + pc(fx(r.hi)) + '" y1="' + y + '" y2="' + y + '"/>';
       s += '<line class="lv-ci" x1="' + pc(fx(r.lo)) + '" x2="' + pc(fx(r.lo)) + '" y1="' + (y - 5) + '" y2="' + (y + 5) + '"/>';
       s += '<line class="lv-ci" x1="' + pc(fx(r.hi)) + '" x2="' + pc(fx(r.hi)) + '" y1="' + (y - 5) + '" y2="' + (y + 5) + '"/>';
-      s += '<text class="lv-v" x="' + pc(fx(r.hi)) + '" dx="8" y="' + (y + 5) + '">' + signed(r.clv, 4) + "</text>";
-      s += '<text class="lv-ret' + (r.ret < 0 ? " is-neg" : "") + '" x="100%" y="' + (y + 5) + '">' + signed(r.ret * 100, 1) + "%</text>";
+      s += '<text class="lv-v" x="' + pc(fx(r.hi)) + '" dx="8" y="' + (y + 5) + '">' + signed(r.move, 4) + "</text>";
     });
     return s + "</svg>";
   }
@@ -397,7 +396,7 @@
     function X(v) { return lab + bx(v) * (1 - lab); }
     var rowH = wide ? 58 : 76, top = 30, H = top + rows.length * rowH + 34;
     var s = '<svg class="wg-svg" width="100%" height="' + H + '" role="img" aria-labelledby="wg-t' + sfx + ' wg-d' + sfx + '">' +
-      '<title id="wg-t' + sfx + '">Four betting windows at the opening price, scored as e-values</title>' +
+      '<title id="wg-t' + sfx + '">Four windows at the opening price, scored as e-values</title>' +
       '<desc id="wg-d' + sfx + '">' + rows.map(function (r) { return r.when + ", " + fmtInt(r.bouts) + " bouts, " + r.how + ": e = " + r.label.replace("^", " to the ") + (r.e >= bar ? ", past the bar of 20" : ", short of the bar of 20") + (r.fixed === "local" ? " (registered as one of four hypotheses, with a bar of 80)" : ""); }).join(". ") + ".</desc>";
     // the scale: 1 .. 1,000, graduated at m x 10^k
     gridValues().forEach(function (g) {
@@ -416,9 +415,9 @@
       var fx = off ? 1 : X(r.e);
       if (wide) {
         s += '<text class="wg-lab" x="0" y="' + (y - 16) + '">' + r.when + "</text>";
-        s += '<text class="wg-sub" x="0" y="' + (y + 1) + '">' + fmtInt(r.bouts) + " bouts, " + r.price + "</text>";
+        s += '<text class="wg-sub" x="0" y="' + (y + 1) + '">' + fmtInt(r.bouts) + " bouts, " + r.src + "</text>";
       } else {
-        s += '<text class="wg-lab" x="0" y="' + (y - 44) + '">' + r.when + ' <tspan class="wg-sub">' + fmtInt(r.bouts) + " bouts, " + r.price + "</tspan></text>";
+        s += '<text class="wg-lab" x="0" y="' + (y - 44) + '">' + r.when + ' <tspan class="wg-sub">' + fmtInt(r.bouts) + " bouts, " + r.src + "</tspan></text>";
       }
       s += '<line class="wg-base" x1="' + pc(X(1)) + '" x2="100%" y1="' + y + '" y2="' + y + '"/>';
       var head = r.fixed === "public" ? '<path class="wg-h is-fill" d="M-6 -30 L6 -30 L0 -21 Z"/>'

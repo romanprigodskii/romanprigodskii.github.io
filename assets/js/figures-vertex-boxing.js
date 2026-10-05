@@ -1,4 +1,4 @@
-/* Figures for /work/vertex-boxing/.
+/* Figures for /work/vertex-boxing/ (and the five forecasts, on the home page too).
 
    Pure functions that return SVG strings, pre-rendered into the page by
    tools/figures.mjs (markers named vb*). Every number comes from
@@ -20,29 +20,29 @@
     function hatch(id) {
       return '<pattern id="' + id + '" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" class="bx-hl"/></pattern>';
     }
-    function pct(v, d) { return signed(v * 100, d === undefined ? 1 : d) + "%"; }
     function mv(from, to) { return ' data-from="' + r2(from * 1e4) / 1e4 + '" data-f="' + r2(to * 1e4) / 1e4 + '"'; }
 
-    /* ------------------------------------------------ 1. the window the rule never saw: closing-line value
-       Lower and upper tier on one axis, 0 to +0.04. The outlined rod under the
-       upper bar is the lower tier's value laid twice end to end; the sliver
-       between the two intervals is the gap that says they do not overlap. */
-    function clv(u, W, sfx) {
+    /* ------------------------------------------------ 1. the window the rule never saw: the move towards the model
+       How far the price travelled towards the model between the open and the
+       close, lower and upper tier on one axis, 0 to +0.04. The outlined rod
+       under the upper bar is the lower tier's value laid twice end to end; the
+       sliver between the two intervals is the gap that says they do not overlap. */
+    function tiers(u, W, sfx) {
       var wide = W > 620;
       var lab = wide ? 0.27 : 0, rt = wide ? 0.12 : 0.18, max = 0.04;
       function fx(v) { return lab + v / max * (1 - lab - rt); }
       var rows = [
-        { d: u.bottom, name: "Lower tier", sub: ["8 rounds or fewer, no belt", fmtInt(u.bottom.bets) + " bets"] },
-        { d: u.top, name: "Upper tier", sub: ["12 rounds, or a continental", "or world belt, " + fmtInt(u.top.bets) + " bets"] }
+        { d: u.bottom, name: "Lower tier", sub: ["8 rounds or fewer, no belt", fmtInt(u.bottom.selected) + " bouts"] },
+        { d: u.top, name: "Upper tier", sub: ["12 rounds, or a continental", "or world belt, " + fmtInt(u.top.selected) + " bouts"] }
       ];
       var top = 30, rowH = wide ? 60 : 84;
       function rowY(i) { return wide ? top + i * rowH + rowH / 2 : top + i * rowH + rowH - 26; }
       var axisY = top + rows.length * rowH + (wide ? 16 : 6), H = axisY + 22;
       var s = '<svg class="bx-svg uw-svg" width="100%" height="' + H + '" role="img" aria-labelledby="uwc-t' + sfx + ' uwc-d' + sfx + '">' +
-        '<title id="uwc-t' + sfx + '">Closing-line value by tier, 10 June 2021 to 10 June 2023</title>' +
-        '<desc id="uwc-d' + sfx + '">Lower tier, ' + u.bottom.bets + ' bets: ' + signed(u.bottom.clv, 4) + ', 95% interval ' + signed(u.bottom.lo, 4) + ' to ' + signed(u.bottom.hi, 4) + '. Upper tier, ' + u.top.bets + ' bets: ' + signed(u.top.clv, 4) + ', 95% interval ' + signed(u.top.lo, 4) + ' to ' + signed(u.top.hi, 4) + '. The upper tier gave ' + u.ratio.toFixed(1) + ' times the closing-line value of the lower, and the two intervals do not overlap.</desc>' +
+        '<title id="uwc-t' + sfx + '">How far the price moved towards the model, by tier, 10 June 2021 to 10 June 2023</title>' +
+        '<desc id="uwc-d' + sfx + '">Lower tier, ' + fmtInt(u.bottom.selected) + ' bouts: ' + signed(u.bottom.move, 4) + ', 95% interval ' + signed(u.bottom.lo, 4) + ' to ' + signed(u.bottom.hi, 4) + '. Upper tier, ' + fmtInt(u.top.selected) + ' bouts: ' + signed(u.top.move, 4) + ', 95% interval ' + signed(u.top.lo, 4) + ' to ' + signed(u.top.hi, 4) + '. In the upper tier the price moved ' + u.ratio.toFixed(1) + ' times as far towards the model as in the lower, and the two intervals do not overlap.</desc>' +
         "<defs>" + hatch("uw-h" + sfx) + "</defs>";
-      s += '<text class="bx-k" x="' + pc(fx(0)) + '" y="12">closing-line value, in probability</text>';
+      s += '<text class="bx-k" x="' + pc(fx(0)) + '" y="12">move towards the model, in probability</text>';
       [0, 0.01, 0.02, 0.03, 0.04].forEach(function (v) {
         var x = pc(fx(v));
         s += '<line class="bx-g' + (v === 0 ? " is-0" : "") + '" x1="' + x + '" x2="' + x + '" y1="' + (top - 4) + '" y2="' + axisY + '"/>';
@@ -65,18 +65,18 @@
           s += '<text class="bx-sub" x="0" y="' + (y + 27) + '">' + r.sub[1] + "</text>";
         } else {
           s += '<text class="bx-lab" x="0" y="' + (y - 30) + '">' + r.name + ' <tspan class="bx-sub">' + (i ? "12 rounds, or a continental or world belt" : r.sub[0]) + "</tspan></text>";
-          s += '<text class="bx-sub" x="0" y="' + (y - 15) + '">' + fmtInt(d.bets) + " bets</text>";
+          s += '<text class="bx-sub" x="0" y="' + (y - 15) + '">' + fmtInt(d.selected) + " bouts</text>";
         }
-        s += '<rect class="uw-bar" style="--i:' + i + '" x="' + pc(fx(0)) + '" y="' + (y - 7) + '" width="' + pc(fx(d.clv) - fx(0)) + '" height="14"/>';
+        s += '<rect class="uw-bar" style="--i:' + i + '" x="' + pc(fx(0)) + '" y="' + (y - 7) + '" width="' + pc(fx(d.move) - fx(0)) + '" height="14"/>';
         s += '<g class="uw-ci" style="--i:' + i + '">';
         s += '<line x1="' + pc(fx(d.lo)) + '" x2="' + pc(fx(d.hi)) + '" y1="' + y + '" y2="' + y + '"/>';
         s += '<line x1="' + pc(fx(d.lo)) + '" x2="' + pc(fx(d.lo)) + '" y1="' + (y - 5) + '" y2="' + (y + 5) + '"/>';
         s += '<line x1="' + pc(fx(d.hi)) + '" x2="' + pc(fx(d.hi)) + '" y1="' + (y - 5) + '" y2="' + (y + 5) + '"/>';
         s += "</g>";
-        s += '<text class="bx-v uw-v" style="--i:' + i + '" x="100%" y="' + (y + 6) + '">' + signed(d.clv, 4) + "</text>";
+        s += '<text class="bx-v uw-v" style="--i:' + i + '" x="100%" y="' + (y + 6) + '">' + signed(d.move, 4) + "</text>";
       });
       // the rod: the lower tier's value, twice, under the upper bar
-      var w = fx(u.bottom.clv) - fx(0), ry = yU + 12;
+      var w = fx(u.bottom.move) - fx(0), ry = yU + 12;
       s += '<g class="uw-rod">';
       s += '<rect class="uw-r uw-r1" style="--dy:' + (yL - yU) + 'px" x="' + pc(fx(0)) + '" y="' + ry + '" width="' + pc(w) + '" height="6"/>';
       s += '<rect class="uw-r uw-r2" x="' + pc(fx(0) + w) + '" y="' + ry + '" width="' + pc(w) + '" height="6"/>';
@@ -87,61 +87,9 @@
       return s + "</svg>";
     }
 
-    /* ------------------------------------------------ 2. the same window: what the upper tier's bets returned */
-    function ret(u, W, sfx) {
-      var wide = W > 620;
-      var lab = wide ? 0.27 : 0, rt = wide ? 0.12 : 0.18, lo = -0.1, hi = 0.25;
-      function fx(v) { return lab + (v - lo) / (hi - lo) * (1 - lab - rt); }
-      var t = u.top;
-      var rows = [
-        { v: t.ret, lo: t.ret_lo, hi: t.ret_hi, name: "At the price bet", sub: "realised, with its 95% interval" },
-        { v: u.close_power, name: "At the close, power", sub: "the calibrated method" },
-        { v: u.close_proportional, name: "At the close, proportional", sub: "" }
-      ];
-      var top = 30, rowH = wide ? 46 : 62;
-      function rowY(i) { return wide ? top + i * rowH + rowH / 2 : top + i * rowH + rowH - 18; }
-      var axisY = top + rows.length * rowH + 4, H = axisY + 40;
-      var s = '<svg class="bx-svg ur-svg" width="100%" height="' + H + '" role="img" aria-labelledby="uwr-t' + sfx + ' uwr-d' + sfx + '">' +
-        '<title id="uwr-t' + sfx + '">What the upper tier\'s ' + t.bets + ' bets returned, 10 June 2021 to 10 June 2023</title>' +
-        '<desc id="uwr-d' + sfx + '">Realised return at the price bet: ' + pct(t.ret) + ', 95% interval ' + pct(t.ret_lo) + ' to ' + pct(t.ret_hi) + ', so zero is inside it. At the closing price: ' + pct(u.close_power) + ' with the margin taken out by the power method, ' + pct(u.close_proportional) + ' with the proportional method.</desc>';
-      s += '<text class="bx-k" x="' + pc(fx(lo)) + '" y="12">return on the upper tier\'s ' + fmtInt(t.bets) + " bets</text>";
-      [-0.1, 0, 0.1, 0.2].forEach(function (v) {
-        var x = pc(fx(v));
-        s += '<line class="bx-g' + (v === 0 ? " is-0" : "") + '" x1="' + x + '" x2="' + x + '" y1="' + (top - 4) + '" y2="' + axisY + '"/>';
-        s += '<text class="bx-n' + (v === lo && !wide ? " is-first" : "") + '" x="' + x + '" y="' + (axisY + 17) + '">' + (v === 0 ? "0" : pct(v, 0)) + "</text>";
-      });
-      s += '<text class="bx-dir" x="' + pc(fx(lo)) + '" y="' + (axisY + 34) + '">← lost</text>';
-      s += '<text class="bx-dir is-r" x="' + pc(fx(hi)) + '" y="' + (axisY + 34) + '">made money →</text>';
-      rows.forEach(function (r, i) {
-        var y = rowY(i);
-        if (wide) {
-          s += '<text class="bx-lab is-s" x="0" y="' + (r.sub ? y - 2 : y + 5) + '">' + r.name + "</text>";
-          if (r.sub) s += '<text class="bx-sub" x="0" y="' + (y + 13) + '">' + r.sub + "</text>";
-        } else {
-          s += '<text class="bx-lab is-s" x="0" y="' + (y - 16) + '">' + r.name + (r.sub ? ' <tspan class="bx-sub">' + r.sub + "</tspan>" : "") + "</text>";
-        }
-        s += '<line class="bx-row" x1="' + pc(fx(lo)) + '" x2="' + pc(fx(hi)) + '" y1="' + y + '" y2="' + y + '"/>';
-        if (r.lo !== undefined) {
-          var o = (r.v - r.lo) / (r.hi - r.lo);
-          s += '<g class="ur-ci" style="--o:' + r2(o * 100) + '%">';
-          s += '<line x1="' + pc(fx(r.lo)) + '" x2="' + pc(fx(r.hi)) + '" y1="' + y + '" y2="' + y + '"/>';
-          s += '<line x1="' + pc(fx(r.lo)) + '" x2="' + pc(fx(r.lo)) + '" y1="' + (y - 5) + '" y2="' + (y + 5) + '"/>';
-          s += '<line x1="' + pc(fx(r.hi)) + '" x2="' + pc(fx(r.hi)) + '" y1="' + (y - 5) + '" y2="' + (y + 5) + '"/>';
-          s += "</g>";
-          // zero, inside the interval
-          s += '<g class="ur-z"><circle class="ur-ring" cx="' + pc(fx(0)) + '" cy="' + y + '" r="6.5"/>';
-          s += '<text class="bx-ann" x="' + pc(fx(0)) + '" dx="10" y="' + (wide ? y - 12 : y + 20) + '">' + (wide ? "zero, inside the interval" : "zero, inside") + "</text></g>";
-        }
-        s += '<circle class="ur-dot" style="--i:' + i + '" cx="' + pc(fx(r.v)) + '" cy="' + y + '" r="5"/>';
-        s += '<text class="bx-v ur-v' + (r.v < 0 ? " is-neg" : "") + '" style="--i:' + i + '" x="100%" y="' + (y + 6) + '">' + pct(r.v) + "</text>";
-      });
-      return s + "</svg>";
-    }
-
     /* ------------------------------------------------ 3. what the model knows
        (a) against the closing price, in nats: alone and blended, each drawn
-       from the price (zero) out to where it lands; (b) against the opening
-       price: the blend moves it 87% of the way to the close. */
+       from the price (zero) out to where it lands. */
     function knowsClose(b, W, sfx) {
       var wide = W > 620;
       var lab = wide ? 0.27 : 0, rt = wide ? 0.12 : 0.18, lo = -0.035, hi = 0.01;
@@ -185,33 +133,60 @@
       return s + "</svg>";
     }
 
-    function knowsOpen(W, sfx) {
-      var wide = W > 620;
-      var lab = wide ? 0.27 : 0, rt = wide ? 0.12 : 0.04, share = 0.87;
-      function fx(f) { return lab + f * (1 - lab - rt); }
-      var y = wide ? 58 : 76, H = y + 44;
-      var s = '<svg class="bx-svg ko-svg" width="100%" height="' + H + '" role="img" aria-labelledby="kno-t' + sfx + ' kno-d' + sfx + '">' +
-        '<title id="kno-t' + sfx + '">Blended into the opening price, the model moves it 87% of the way to the close</title>' +
-        '<desc id="kno-d' + sfx + '">A scale from the opening price, a median three days before the fight, to the closing price. Blended with the model, the opening price moves 87% of the way to where it closes. On its own the model forecasts worse than the opening price.</desc>';
-      if (wide) s += '<text class="bx-k" x="' + pc(fx(0)) + '" y="12">against the opening price, a median three days before the fight</text>';
-      else s += '<text class="bx-k" x="' + pc(fx(0)) + '" y="12">against the opening price,</text><text class="bx-k" x="' + pc(fx(0)) + '" y="27">a median three days before the fight</text>';
-      if (wide) {
-        s += '<text class="bx-lab is-s" x="0" y="' + (y - 2) + '">Blended into the open</text>';
-        s += '<text class="bx-sub" x="0" y="' + (y + 13) + '">alone, the model is worse</text>';
-      }
-      s += '<line class="ko-base" x1="' + pc(fx(0)) + '" x2="' + pc(fx(1)) + '" y1="' + y + '" y2="' + y + '"/>';
-      for (var i = 0; i <= 20; i++) {
-        var f = i / 20, len = i % 10 === 0 ? 12 : i % 2 === 0 ? 7 : 4;
-        s += '<line class="ko-t" x1="' + pc(fx(f)) + '" x2="' + pc(fx(f)) + '" y1="' + y + '" y2="' + (y + len) + '"/>';
-      }
-      s += '<text class="bx-n is-first" x="' + pc(fx(0)) + '" y="' + (y + 28) + '">the opening price</text>';
-      s += '<text class="bx-n is-end" x="' + pc(fx(1)) + '" y="' + (y + 28) + '">the closing price</text>';
-      if (wide) s += '<text class="bx-n" x="' + pc(fx(0.5)) + '" y="' + (y + 28) + '">halfway</text>';
-      s += '<line class="ko-run" x1="' + pc(fx(0)) + '" x2="' + pc(fx(share)) + '" y1="' + (y - 1.5) + '" y2="' + (y - 1.5) + '"/>';
-      s += '<g class="ko-m"' + mv(fx(0), fx(share)) + ">";
-      s += '<line class="ko-needle" x1="' + pc(fx(share)) + '" x2="' + pc(fx(share)) + '" y1="' + (y - 22) + '" y2="' + (y + 12) + '"/>';
-      s += "</g>";
-      s += '<text class="bx-v ko-v" x="' + pc(fx(share)) + '" dx="-8" y="' + (y - 10) + '" text-anchor="end">87% of the way</text>';
+    /* (b) five forecasts of the same fights, by log-loss (report 9.1): the
+       model alone, the opening price, the open with the model blended in, the
+       closing price, and the close with the model blended in. Further right
+       is better. The price learns between its open and its close; the run on
+       the blended open is how much of that the model already had, and the
+       dotted rest is what only the close knew. The market's own prices are
+       filled, the forecasts with the model in them are rings. The home page
+       draws this figure too, so its classes live in site.css. */
+    function forecasts(c, W, sfx) {
+      var wide = W > 620, rows = c.rows;
+      var lo = 0.362, hi = 0.332;                      // log-loss: worse at the left, better at the right
+      var lab = wide ? 0.27 : 0, rt = wide ? 0.1 : 0.19;
+      function fx(v) { return lab + (lo - v) / (lo - hi) * (1 - lab - rt); }
+      function at(k) { for (var n = 0; n < rows.length; n++) if (rows[n].key === k) return n; return -1; }
+      var top = 34, rowH = wide ? 46 : 64;
+      function rowY(n) { return wide ? top + n * rowH + rowH / 2 : top + n * rowH + rowH - 18; }
+      var axisY = top + rows.length * rowH + (wide ? 6 : 2), H = axisY + 42;
+      var iO = at("open"), iB = at("open+"), iC = at("close");
+      var xO = fx(rows[iO].ll), xB = fx(rows[iB].ll), xC = fx(rows[iC].ll);
+      var share = Math.round(c.share * 100) + "% of the way to the close";
+      var s = '<svg class="fc-svg" width="100%" height="' + H + '" role="img" aria-labelledby="fc-t' + sfx + ' fc-d' + sfx + '">' +
+        '<title id="fc-t' + sfx + '">Five forecasts of the same ' + fmtInt(c.bouts) + ' fights, by log-loss</title>' +
+        '<desc id="fc-d' + sfx + '">Log-loss on the same ' + fmtInt(c.bouts) + ' fights, ' + c.window + ', where lower is better. ' +
+        rows.map(function (r) { return r.name + (r.sub ? " " + r.sub : "") + ", " + r.ll.toFixed(4); }).join("; ") +
+        '. Blended into the opening price, the model moves it ' + share + '.</desc>';
+      s += '<text class="fc-k" x="' + pc(fx(lo)) + '" y="12">log-loss, lower is better</text>';
+      [0.36, 0.355, 0.35, 0.345, 0.34, 0.335].forEach(function (v, k) {
+        var x = pc(fx(v));
+        s += '<line class="fc-g" x1="' + x + '" x2="' + x + '" y1="' + (top - 4) + '" y2="' + axisY + '"/>';
+        if (wide || k % 2 === 0) s += '<text class="fc-n" x="' + x + '" y="' + (axisY + 17) + '">' + v.toFixed(3) + "</text>";
+      });
+      s += '<text class="fc-dir" x="' + pc(fx(lo)) + '" y="' + (axisY + 35) + '">← worse</text>';
+      s += '<text class="fc-dir is-r" x="' + pc(fx(hi)) + '" y="' + (axisY + 35) + '">better →</text>';
+      rows.forEach(function (r, n) {
+        var y = rowY(n), price = r.key === "open" || r.key === "close";
+        if (wide) {
+          s += '<text class="fc-lab" x="0" y="' + (r.sub ? y - 2 : y + 5) + '">' + r.name + "</text>";
+          if (r.sub) s += '<text class="fc-sub" x="0" y="' + (y + 13) + '">' + r.sub + "</text>";
+        } else {
+          s += '<text class="fc-lab" x="0" y="' + (y - 14) + '">' + r.name + (r.sub ? ' <tspan class="fc-sub">' + r.sub + "</tspan>" : "") + "</text>";
+        }
+        s += '<line class="fc-row" x1="' + pc(fx(lo)) + '" x2="' + pc(fx(hi)) + '" y1="' + y + '" y2="' + y + '"/>';
+        if (n === iB) {
+          // the open and the close, carried to this row; the run is what the model already had
+          s += '<line class="fc-guide" x1="' + pc(xO) + '" x2="' + pc(xO) + '" y1="' + rowY(iO) + '" y2="' + y + '"/>';
+          s += '<line class="fc-guide" x1="' + pc(xC) + '" x2="' + pc(xC) + '" y1="' + y + '" y2="' + rowY(iC) + '"/>';
+          s += '<line class="fc-rest" x1="' + pc(xB) + '" x2="' + pc(xC) + '" y1="' + y + '" y2="' + y + '"/>';
+          s += '<line class="fc-run" x1="' + pc(xO) + '" x2="' + pc(xB) + '" y1="' + y + '" y2="' + y + '"/>';
+          if (wide) s += '<text class="fc-ann" x="' + pc(xB) + '" dx="-14" y="' + (y - 10) + '" text-anchor="end">' + share + "</text>";
+          else s += '<text class="fc-ann" x="' + pc(xO) + '" y="' + (y + 22) + '">' + share + "</text>";
+        }
+        s += '<circle class="fc-dot fc-m' + (price ? " is-price" : "") + '" style="--i:' + n + '" cx="' + pc(fx(r.ll)) + '" cy="' + y + '" r="5.5"/>';
+        s += '<text class="fc-v fc-m" style="--i:' + n + '" x="100%" y="' + (y + 5) + '">' + r.ll.toFixed(4) + "</text>";
+      });
       return s + "</svg>";
     }
 
@@ -252,17 +227,17 @@
     /* ------------------------------------------------ 5. the checks, on one log axis
        An e-value axis from 0.01 at the figure's left edge to 1,000 at its
        right (the four-window gauge's top of scale), graduated at m x 10^k,
-       with the bar at 20. Each e-value starts where a bet starts, at 1. */
+       with the bar at 20. Each e-value starts at 1, no evidence either way. */
     function checks(W, sfx) {
       var HI = F.GAUGE_HI || 1000, L0 = Math.log10(0.01);
       function gx(v) { return (Math.log10(Math.min(v, HI)) - L0) / (Math.log10(HI) - L0); }
       var wide = W > 620, x1 = gx(1);
       var rows = [
-        { name: "The result, at Bet365’s open over 2023–2025", off: "3.9 × 10<tspan class=\"sup\" dy=\"-6\">8</tspan>" },
+        { name: "The result, at the opening price over 2023–2025", off: "3.9 × 10<tspan class=\"sup\" dy=\"-6\">8</tspan>" },
         { name: "Retrained without anything settled in fight week", off: "1.2 × 10<tspan class=\"sup\" dy=\"-6\">8</tspan>" },
         { name: "Price-only controls, no model in them", marks: [0.25, 1.2] },
         { name: "A simulated null, on average", marks: [0.2], cap: "mean e 0.20" },
-        { name: "Sixteen classic price biases, at Bet365’s close", under: true }
+        { name: "Sixteen classic price biases, at the closing price", under: true }
       ];
       var top = 46, rowH = wide ? 50 : 62;
       function rowY(i) { return top + i * rowH + rowH - (wide ? 18 : 22); }
@@ -270,7 +245,7 @@
       var xb = gx(20);
       var s = '<svg class="bx-svg ck-svg" width="100%" height="' + H + '" role="img" aria-labelledby="ck-t' + sfx + ' ck-d' + sfx + '">' +
         '<title id="ck-t' + sfx + '">The checks built to kill the opening-price result, as e-values on a log scale</title>' +
-        '<desc id="ck-d' + sfx + '">A logarithmic e-value axis from 0.01 to 1,000, with the bar at 20. The result at Bet365\'s open over 2023 to 2025, e = 3.9 times 10 to the 8, and the same retrained without anything settled in fight week, 1.2 times 10 to the 8, are both off the scale to the right. Price-only controls with no model in them score 0.25 and 1.2. A simulated null averages 0.20. None of sixteen classic price biases, tested at Bet365\'s close, reached 20.</desc>';
+        '<desc id="ck-d' + sfx + '">A logarithmic e-value axis from 0.01 to 1,000, with the bar at 20. The result at the opening price over 2023 to 2025, e = 3.9 times 10 to the 8, and the same retrained without anything settled in fight week, 1.2 times 10 to the 8, are both off the scale to the right. Price-only controls with no model in them score 0.25 and 1.2. A simulated null averages 0.20. None of sixteen classic price biases, tested at the closing price, reached 20.</desc>';
       // the bar
       s += '<line class="ck-bar" x1="' + pc(xb) + '" x2="' + pc(xb) + '" y1="' + (top - 22) + '" y2="' + axisY + '"/>';
       s += '<text class="bx-k is-b is-mid" x="' + pc(xb) + '" y="' + (top - 28) + '">the bar, 20</text>';
@@ -340,11 +315,13 @@
       return s + "</svg>";
     }
 
-    /* ------------------------------------------------ 7. the live test, as a time ruler
+    /* ------------------------------------------------ 7. the forward test, as a time ruler
        From the freeze on 24 September 2026 to four years on, so the close on
        25 September 2029 and the ranges the protocol gives for a pass, at 60 to
-       90 bets a year, sit at their dates. Above: the calendar; below: years
-       since the freeze. The page script adds today. */
+       90 qualifying fights a year, sit at their dates. Each row is a size the
+       true effect could have: the 2016 to 2026 average, about half of it, and
+       none. Above: the calendar; below: years since the freeze. The page
+       script adds today. */
     function live(L, W, sfx) {
       var wide = W > 620;
       var DAY = 864e5;
@@ -356,14 +333,14 @@
       var yEv = 13, yYr = 52, yAx = 60, top = yAx + 42, rowH = wide ? 50 : 62;
       function rowY(i) { return top + i * rowH + rowH - (wide ? 22 : 18); }
       var rows = [
-        { name: "+19%", sub: "the rule’s 2016–2026 average", a: 1, b: 2, say: "one to two years" },
-        { name: "+10%", sub: "", a: 3, b: 4, say: "three to four years" },
-        { name: "No edge", sub: "", never: true, say: "never" }
+        { name: "As in 2016–2026", sub: "the rule’s average", a: 1, b: 2, say: "one to two years" },
+        { name: "About half that", sub: "", a: 3, b: 4, say: "three to four years" },
+        { name: "None", sub: "", never: true, say: "never" }
       ];
       var yB = rowY(rows.length - 1) + 30, H = yB + 44;
       var s = '<svg class="bx-svg lv2-svg" width="100%" height="' + H + '" role="img" aria-labelledby="lt-t' + sfx + ' lt-d' + sfx + '">' +
-        '<title id="lt-t' + sfx + '">The live test, from its freeze to its close</title>' +
-        '<desc id="lt-d' + sfx + '">Frozen and pushed on 24 September 2026; it closes on 25 September 2029. At 60 to 90 bets a year, a true return of +19%, the rule\'s 2016 to 2026 average, would pass one to two years after the freeze, before the close; +10% would take three to four, so the test would probably close before it passed; with no edge it would never pass.</desc>' +
+        '<title id="lt-t' + sfx + '">The forward test, from its freeze to its close</title>' +
+        '<desc id="lt-d' + sfx + '">Frozen and pushed on 24 September 2026; it closes on 25 September 2029. At 60 to 90 qualifying fights a year, an effect as large as the rule\'s 2016 to 2026 average would pass one to two years after the freeze, before the close; one about half that size would take three to four, so the test would probably close before it passed; with no effect it would never pass.</desc>' +
         "<defs>" + hatch("lt-h" + sfx) + "</defs>";
       var xf = tx(t0), xc = tx(tc);
       // freeze and close
@@ -394,7 +371,7 @@
       s += '<line class="lt-open" x1="' + pc(xf) + '" x2="' + pc(xc) + '" y1="' + (yAx - 1) + '" y2="' + (yAx - 1) + '"/>';
       if (wide) {
         s += '<text class="bx-k" x="0" y="' + (yAx + 4) + '">the calendar</text>';
-        s += '<text class="bx-k" x="0" y="' + (top - 6) + '">a true return of</text>';
+        s += '<text class="bx-k" x="0" y="' + (top - 6) + '">if the true effect is</text>';
       }
       // today, placed by the page script
       s += '<g class="lt-today" data-t0="' + t0 + '" data-t4="' + t4 + '" data-a="' + r2(tx(t0) * 1e4) / 1e4 + '" data-b="' + r2(tx(t4) * 1e4) / 1e4 + '" display="none">' +
@@ -434,20 +411,18 @@
       return s + "</svg>";
     }
 
-    return { clv: clv, ret: ret, knowsClose: knowsClose, knowsOpen: knowsOpen, leak: leak, checks: checks, search: search, live: live };
+    return { tiers: tiers, knowsClose: knowsClose, forecasts: forecasts, leak: leak, checks: checks, search: search, live: live };
   }
 
   function markers(F, data) {
     var B = data.boxing, R = build(F);
     return {
-      vbClvWide: function () { return R.clv(B.unseen, 1000, "-w"); },
-      vbClvNarrow: function () { return R.clv(B.unseen, 358, "-n"); },
-      vbRetWide: function () { return R.ret(B.unseen, 1000, "-w"); },
-      vbRetNarrow: function () { return R.ret(B.unseen, 358, "-n"); },
+      vbTiersWide: function () { return R.tiers(B.unseen, 1000, "-w"); },
+      vbTiersNarrow: function () { return R.tiers(B.unseen, 358, "-n"); },
       vbKnowsWide: function () { return R.knowsClose(B.blend, 1000, "-w"); },
       vbKnowsNarrow: function () { return R.knowsClose(B.blend, 358, "-n"); },
-      vbOpenWide: function () { return R.knowsOpen(1000, "-w"); },
-      vbOpenNarrow: function () { return R.knowsOpen(358, "-n"); },
+      vbForecastsWide: function () { return R.forecasts(B.forecasts, 1000, "-w"); },
+      vbForecastsNarrow: function () { return R.forecasts(B.forecasts, 358, "-n"); },
       vbLeakWide: function () { return R.leak(B.leak, 1000, "-w"); },
       vbLeakNarrow: function () { return R.leak(B.leak, 358, "-n"); },
       vbChecksWide: function () { return R.checks(1300, "-w"); },

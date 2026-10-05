@@ -36,8 +36,8 @@
      x is the site's e-axis, from 0.01 to 1,680. Pointing, tapping, the
      arrow keys or a family chip select a mark, and the readout names it.
      On arrival every mark starts where it would sit with no margin, at its
-     fair-odds e-value on both axes, and drops to what the same bet made
-     after the bookmaker's margin. */
+     fair-price e-value on both axes, and drops to what the same test gives
+     with the market's margin charged. */
   (function scatter() {
     var fig = $("[data-sc]"), src = $("#rs-rows");
     if (!fig || !src) return;
@@ -45,10 +45,10 @@
     try { rows = JSON.parse(src.textContent); } catch (e) { return; }
     var plot = $("[data-sc-plot]", fig), ro = $("[data-sc-ro]", fig);
     var VERDICT = {
-      both: "Clears 20 at fair odds and after the margin, on the most favourable of five seeds: its five-seed median is 12.3. The bar for all 84 at once is 1,680.",
-      fair: "Clears 20 at fair odds, then loses it to the book’s margin. The bar for all 84 at once is 1,680.",
-      up: "Made money at fair odds, and stopped short of the bar of 20.",
-      down: "Lost money at fair odds: an e-value below 1 is a bankroll that shrank."
+      both: "Clears 20 at fair prices and with the margin, on the most favourable of five seeds: its five-seed median is 12.3. The bar for all 84 at once is 1,680.",
+      fair: "Clears 20 at fair prices, then loses it to the market’s margin. The bar for all 84 at once is 1,680.",
+      up: "Above 1 at fair prices, but short of the bar of 20.",
+      down: "Below 1 at fair prices: on these fights the price held up better than the hypothesis."
     };
     function verdict(r) { return r.er >= 20 ? VERDICT.both : r.ef >= 20 ? VERDICT.fair : r.ef >= 1 ? VERDICT.up : VERDICT.down; }
     function rankOf(i) { var c = 0; rows.forEach(function (r) { if (r.ef > rows[i].ef) c++; }); return c + 1; }
@@ -80,7 +80,7 @@
       RO.ef.classList.toggle("is-hit", r.ef >= 20);
       RO.er.textContent = "e = " + F.fmtE(r.er);
       RO.er.classList.toggle("is-hit", r.er >= 20);
-      RO.r.textContent = "Rank " + rankOf(i) + " of 84 at fair odds";
+      RO.r.textContent = "Rank " + rankOf(i) + " of 84 at fair prices";
       RO.t.textContent = verdict(r);
     }
     function show(i) {
@@ -165,7 +165,7 @@
     }
     chips.forEach(function (b) { b.addEventListener("click", function () { setFam(b.getAttribute("data-fam")); }); });
 
-    /* the margin, taken: from the fair-odds diagonal down to what each bet kept */
+    /* the margin, taken: from the fair-price diagonal down to what each test keeps */
     if (still()) return;
     fig.classList.add("rs-anim");
     function colour(S, c, y) {
@@ -211,8 +211,8 @@
 
   /* ------------------------------------------------------------ 4.81 against 20
      The needle rises to what the segment has earned. Then the bouts run at
-     one speed for both prices: at fair odds the projection reaches 20 after
-     100, and the hatched gap fills as it goes; at the book's prices the
+     one speed for both prices: at fair prices the projection reaches 20
+     after 100, and the hatched gap fills as it goes; with the margin the
      count runs on to 253. */
   (function wait() {
     var fig = $("[data-wt]");

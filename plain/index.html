@@ -16,9 +16,9 @@
 <meta property="og:image" content="https://prigodskii.dev/assets/img/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Roman Prigodskii: forecasting models graded against the bookmaker's closing line; co-founder and Head of AI at Gluline. Beside it, vertexmma.com in a browser and the Gluline app on a phone.">
+<meta property="og:image:alt" content="Roman Prigodskii: forecasting models that test how efficient market prices are; co-founder and Head of AI at Gluline. Beside it, vertexmma.com in a browser and the Gluline app on a phone.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image:alt" content="Roman Prigodskii: forecasting models graded against the bookmaker's closing line; co-founder and Head of AI at Gluline. Beside it, vertexmma.com in a browser and the Gluline app on a phone.">
+<meta name="twitter:image:alt" content="Roman Prigodskii: forecasting models that test how efficient market prices are; co-founder and Head of AI at Gluline. Beside it, vertexmma.com in a browser and the Gluline app on a phone.">
 <link rel="icon" href="../assets/img/mark.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../assets/img/mark-180.png">
 <link rel="preload" href="../assets/fonts/mona-sans-200-900-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -347,14 +347,14 @@ h2 + .grp { padding-top: 22px; }
     <div class="row">
       <span class="k">Accepted</span>
       <div class="v">
-        <h3>Testing by betting when the bets are real</h3>
-        <p>An e-value audit of 84 pre-registered market-efficiency hypotheses. Sole author. Accepted as a poster at two NeurIPS 2026 workshops, both non-archival: <i>NewInML</i> and, in a shorter version, <i>E-Values: From Statistics to ML</i>.</p>
+        <h3>An e-value audit of 84 pre-registered market-efficiency hypotheses</h3>
+        <p>Sole author. Accepted as a poster at two NeurIPS 2026 workshops, both non-archival: <i>NewInML</i> and, in a shorter version, <i>E-Values: From Statistics to ML</i>.</p>
         <ul>
-          <li>The null is a bookmaker&rsquo;s posted price, the stake is a stake, and the wealth process is the e-process. 4,141 walk-forward out-of-fold bouts, 1,787 of them carrying an archived closing price.</li>
+          <li>The null hypothesis is market efficiency: the closing price for a fight, with the market&rsquo;s margin taken out, is already the right probability. 4,141 walk-forward out-of-fold bouts, 1,787 of them carrying an archived closing price.</li>
           <li>The best of the 84 reaches e = 151. One pre-registered hypothesis needs 20; all 84 at once need 1,680.</li>
           <li>The 84 slices overlap, so Benjamini-Hochberg&rsquo;s guarantee is not established. Its four discoveries on the 1,191-bout discovery window, one favourable and three against the model, survive neither Benjamini-Yekutieli nor e-BH.</li>
-          <li>A segment written off at p = 0.30 is still growing on the wealth scale: not refuted, 100 bouts short at fair odds.</li>
-          <li>A threshold rule chosen after the fact clears 20 at 31.28 once the search it ran is paid for; charged for the direction it could have searched and the other disagreement statistic it could have used, it falls to 10.43, and at the prices the book offered to 2.82.</li>
+          <li>A segment written off at p = 0.30 is still growing on the e-value scale: not refuted, 100 bouts short at fair prices.</li>
+          <li>A threshold rule chosen after the fact clears 20 at 31.28 once the search it ran is paid for; charged for the direction it could have searched and the other disagreement statistic it could have used, it falls to 10.43, and with the market&rsquo;s margin charged, to 2.82.</li>
           <li>Validated before use: 40,000 null replications give an expected e-value of 0.985 &plusmn; 0.018 per segment. The headline result is negative.</li>
         </ul>
         <p class="src"><span><a href="../papers/newinml.pdf" data-p="prigodskii.dev/papers/newinml.pdf">The paper</a> <small>PDF, 287 KB</small></span><span><a href="../papers/evalues.pdf" data-p="prigodskii.dev/papers/evalues.pdf">Short version</a> <small>PDF, 257 KB</small></span></p>
@@ -407,13 +407,13 @@ h2 + .grp { padding-top: 22px; }
       <span class="k">Live product</span>
       <div class="v">
         <h3>Vertex MMA, <a href="https://vertexmma.com" rel="noopener">vertexmma.com</a></h3>
-        <p>A nine-model UFC forecasting stack, graded against the bookmaker&rsquo;s closing line. English and Russian, virtual currency only.</p>
+        <p>A nine-model UFC forecasting stack, measured against the market&rsquo;s closing price. English and Russian.</p>
         <ul>
           <li>4,581 fighters, 8,906 bouts, 795 events. 243k score-history rows, 86k career bouts, 49k ranking snapshots, 41k round-stat rows, 31k judge scorecards.</li>
           <li>Nine models including a 10,000-run Monte Carlo simulator: a 118-feature winner ensemble over LightGBM, CatBoost and logistic regression, a debut specialist, method models, a cause-specific Poisson finish hazard, a no-intercept decision model.</li>
           <li>Held out from January 2025: accuracy 0.6747, log-loss 0.6137, Brier 0.2124, AUC 0.7244 over 664 bouts.</li>
-          <li>On the 582 priced bouts, 0.6753 / 0.6171 / 0.2140 against the closing line&rsquo;s 0.6838 / 0.5922 / 0.2035: better calibrated, less sharp, and the remaining gap is resolution, which needs information the public record does not contain.</li>
-          <li>Five separate mechanisms keep future information out of the features. Bookmaker odds are never a feature: taking them out cost 1.5 points of test accuracy, and they stayed out.</li>
+          <li>On the 582 priced bouts, 0.6753 / 0.6171 / 0.2140 against the closing price&rsquo;s 0.6838 / 0.5922 / 0.2035: better calibrated, less sharp, and the remaining gap is resolution, which needs information the public record does not contain.</li>
+          <li>Five separate mechanisms keep future information out of the features. Market prices are never a feature: taking them out cost 1.5 points of test accuracy, and they stayed out.</li>
           <li>Roughly two dozen rejected ideas documented beside the shipped ones, each with its reason. Its evaluation is the subject of both papers above.</li>
           <li>Next.js 16, React 19, TypeScript 5.9 strict, Tailwind 4, Postgres, Python 3.12. 35 routes in two languages, 1,533 translation keys each.</li>
         </ul>
@@ -466,17 +466,17 @@ h2 + .grp { padding-top: 22px; }
       <span class="k">Concluded research</span>
       <div class="v">
         <h3>Vertex Boxing</h3>
-        <p>The Vertex MMA models moved to professional boxing, to test whether regional and club lines are soft enough to beat. On every bout the available odds cover, they are not; the anonymous regional card the thesis was aimed at carries no price, so there it cannot be tested. What the model turned out to read is where the line is going.</p>
+        <p>The Vertex MMA models moved to professional boxing, to test whether regional and club fights are priced less efficiently than the top of the sport. On every bout with a market price, they are not; the anonymous regional card the thesis was aimed at carries no price, so there it cannot be tested. What the model turned out to read is where the price is going.</p>
         <ul>
-          <li>Cut by level, closing-line value rises from +0.0044 on four-to-six-round club fights to +0.0180 on twelve-round title fights. On a window the rule was never chosen on, the top gave 2.0 times the closing-line value of the bottom.</li>
-          <li>Blended into the closing price at a weight of 0.17, the model improves its log-loss by +0.0043 nats [+0.0024, +0.0062] on 3,288 priced bouts. On its own it does not beat the closing line, and bets at the closing price make nothing.</li>
-          <li>At the opening price, a median three days before the fight, the blend moves the price 87% of the way to where it closes. Bet there and scored as e-values against a bar of 20 (80 for 2023&ndash;2025, registered as one of four hypotheses), the rule passed on 2016&ndash;2020 (+18% to +24% flat, its protocol timestamped in Bitcoin blocks and pushed to GitHub before the model was trained), on 2023&ndash;2025 (+10.9% at Bet365) and on the January to July 2026 holdout, at <span class="hit">e = 41.8</span>. On 2021&ndash;2023 it fell short, at 12.5.</li>
-          <li>A live test was frozen and pushed publicly on 24 September 2026, before any bout it covers had been fought: Bet365&rsquo;s opening price, one unit on every side where the blend beats it, no stake placed. It can be read at any checkpoint, rejects at 20 and closes on 25 September 2029. The result will be reported either way.</li>
+          <li>Cut by level, the price&rsquo;s move towards the model between the open and the close rises from +0.0044 on four-to-six-round club fights to +0.0180 on twelve-round title fights. On a window the rule was never chosen on, the move at the top was 2.0 times the move at the bottom.</li>
+          <li>Blended into the closing price at a weight of 0.17, the model improves its log-loss by +0.0043 nats [+0.0024, +0.0062] on 3,288 priced bouts. On its own it is a worse forecast than the closing price, and with its margin charged the closing price holds (e = 1.15).</li>
+          <li>At the opening price, a median three days before the fight, the blend moves the price 87% of the way to where it closes. Tested there with e-values at the prices actually posted, against a bar of 20 (80 for 2023&ndash;2025, registered as one of four hypotheses), the opening price&rsquo;s efficiency was rejected on 2016&ndash;2020 (the protocol timestamped in Bitcoin blocks and pushed to GitHub before the model was trained), on 2023&ndash;2025 and on the January to July 2026 holdout, at <span class="hit">e = 41.8</span>. On 2021&ndash;2023 it held, at 12.5.</li>
+          <li>A forward test was frozen and pushed publicly on 24 September 2026, before any bout it covers had been fought: the same test at the opening price, on every fight where the blended forecast rates a fighter above the posted price. It can be read at any checkpoint, rejects at 20 and closes on 25 September 2029. The result will be reported either way.</li>
           <li>Caught and removed a post-bell leak: judges&rsquo; scorecards are published only for fights that went the distance, so their mere presence told the model how a fight had ended. Where judges were recorded, 9.7% of fights ended early; where they were not, 74.3% did.</li>
           <li>A random search over 200 configurations, under a protocol committed before the first fit: none of the five taken forward kept its lead over the model in use on bouts the search never saw.</li>
-          <li>All backtest, concluded September 2026. Zero real bets placed.</li>
+          <li>Every result is a backtest. Concluded September 2026.</li>
         </ul>
-        <p class="src"><a href="https://github.com/romanprigodskii/vertex-boxing/blob/main/docs/REPORT.md" rel="noopener" data-p="github.com/romanprigodskii/vertex-boxing">Report</a><a class="np" href="https://github.com/romanprigodskii/vertex-boxing/blob/main/docs/evalue_protocol_4.md" rel="noopener">The live test</a><a class="np" href="https://github.com/romanprigodskii/vertex-boxing" rel="noopener">Source</a></p>
+        <p class="src"><a href="https://github.com/romanprigodskii/vertex-boxing/blob/main/docs/REPORT.md" rel="noopener" data-p="github.com/romanprigodskii/vertex-boxing">Report</a><a class="np" href="https://github.com/romanprigodskii/vertex-boxing" rel="noopener">Source</a></p>
       </div>
     </div>
     <div class="row">

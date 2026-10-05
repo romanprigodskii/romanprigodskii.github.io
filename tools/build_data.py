@@ -76,7 +76,7 @@ def build(src):
             "bouts": econ["band"]["n"],
             "threshold": 20,
         },
-        # Fair-odds rungs and the same three mixtures charged the book's margin.
+        # Fair-price rungs and the same three mixtures charged the market's margin.
         # evalues.tex: 31.3 / 15.6 / 10.4 fair, 8.5 / 4.2 / 2.8 real.
         "ladder": {
             "fair": econ["exchange"]["ladder_fair"],

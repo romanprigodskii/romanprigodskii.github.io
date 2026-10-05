@@ -4,17 +4,16 @@
    and read correctly without this file. It adds two things:
    - marks that travel: each [data-from] group starts at data-from and slides
      to data-f (fractions of its figure's width) when the figure comes into
-     view: an e-value from 1, where every bet starts; a model's reading from
-     the price it is measured against; the blend along the way from the open
-     to the close;
-   - today, on the live test's time ruler. */
+     view: an e-value from 1, where every e-value starts; a model's reading
+     from the price it is measured against;
+   - today, on the forward test's time ruler. */
 (function () {
   "use strict";
   var RP = window.RP;
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
   var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-  /* ------------------------------------------------ today on the live test */
+  /* ------------------------------------------------ today on the forward test */
   $$(".lt-today").forEach(function (g) {
     var t0 = +g.getAttribute("data-t0"), t4 = +g.getAttribute("data-t4");
     var a = +g.getAttribute("data-a"), b = +g.getAttribute("data-b"), now = Date.now();

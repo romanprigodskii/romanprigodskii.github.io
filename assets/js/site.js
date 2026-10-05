@@ -495,8 +495,10 @@
 
   /* ------------------------------------------------ the 84 on the page's own axis */
   var FAM = { form_momentum: "Form and momentum", style_matchups: "Style matchups", physical_durability: "Physical durability", market_microstructure: "Market microstructure", gap: "Gap", experience_pedigree: "Experience and pedigree", division_context: "Division context", style_and_age: "Style and age", activity_layoff: "Activity and layoff" };
-  var WORDS = { tdd: "takedown defence", ufc: "UFC", elo: "Elo", ko: "KO", womens: "women's", pickem: "pick'em", "4plus": "4+" };
+  var WORDS = { tdd: "takedown defence", ufc: "UFC", elo: "Elo", ko: "KO", womens: "women's", pickem: "near-even", "4plus": "4+" };
+  var NAMES = { womens_thin_handle: "Women's bouts, thinly traded" };
   function sliceName(s) {
+    if (NAMES[s]) return NAMES[s];
     var t = s.split("_").map(function (x) { return WORDS[x] || x; }).join(" ").replace(/ (\d+)d?$/, ", $1 days");
     return t.charAt(0).toUpperCase() + t.slice(1);
   }
@@ -513,10 +515,10 @@
     var plot = $("[data-vd-plot]", vd), tip = $("[data-vd-tip]", vd), say = $("[data-vd-say]", vd), ctl = $("[data-vd-ctl]", vd);
     var V = { key: "ef", bar: 20, rows: null, W: 0, on: -1, pos: {}, stop: null };
     var SAY = {
-      "ef-20": "At fair odds, six of the 84 clear 20, the bar for one hypothesis.",
-      "er-20": "After the bookmaker’s margin, one clears 20, and only on its most favourable seed.",
+      "ef-20": "At fair prices, six of the 84 clear 20, the bar for one hypothesis.",
+      "er-20": "With the market’s margin charged, one clears 20, and only on its most favourable seed.",
       "ef-1680": "Held to 1,680, the bar for all 84 at once, none of them clears. The best stops at 151.",
-      "er-1680": "After the margin and held to 1,680, nothing comes close. The best stops at 21."
+      "er-1680": "With the margin and held to 1,680, nothing comes close. The best stops at 21."
     };
     function render() {
       var W = plot.getBoundingClientRect().width;
@@ -631,7 +633,7 @@
       g.appendChild(p.el);
       tip.hidden = false;
       tip.innerHTML = "<b>" + sliceName(row.s) + "</b><span class=\"t-fam\">" + FAM[row.f] + ", " + F.fmtInt(row.n) + " bouts</span>" +
-        "<span class=\"t-e\">e = " + F.fmtE(row.ef) + " at fair odds, " + F.fmtE(row.er) + " after the margin</span>";
+        "<span class=\"t-e\">e = " + F.fmtE(row.ef) + " at fair prices, " + F.fmtE(row.er) + " with the margin</span>";
       tip.hidden = false;
       var pr = plot.getBoundingClientRect(), vr = vd.getBoundingClientRect();
       var left = pr.left - vr.left + p.x, top = pr.top - vr.top + p.y;

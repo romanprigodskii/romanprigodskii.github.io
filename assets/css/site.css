@@ -353,12 +353,10 @@ html.js .thesis:not(.in) .thesis-s { background-size: 0 2px; color: var(--ink); 
 .lv-bar { fill: var(--ink); }
 .lv-ci { stroke: var(--ink); stroke-width: 1.5; }
 .lv-v { font-size: 15px; font-weight: 600; fill: var(--ink); }
-.lv-ret { font-size: 17px; font-weight: 600; fill: var(--ink); text-anchor: end; }
-.lv-ret.is-neg { fill: var(--ink-3); }
 html.js .lv-bar { transform: scaleX(0); transform-box: fill-box; transform-origin: left; transition: transform 1100ms var(--eo) calc(var(--i) * 120ms); }
 html.js [data-lv].in .lv-bar { transform: none; }
-html.js .lv-ci, html.js .lv-v, html.js .lv-ret { opacity: 0; transition: opacity 500ms ease 1100ms; }
-html.js [data-lv].in .lv-ci, html.js [data-lv].in .lv-v, html.js [data-lv].in .lv-ret { opacity: 1; }
+html.js .lv-ci, html.js .lv-v { opacity: 0; transition: opacity 500ms ease 1100ms; }
+html.js [data-lv].in .lv-ci, html.js [data-lv].in .lv-v { opacity: 1; }
 
 .wg-g { stroke: var(--g-d); stroke-width: 1; shape-rendering: crispEdges; }
 .wg-g.gn, .wg-g.gh { stroke: var(--g-n); }
@@ -837,7 +835,7 @@ html.is-flying.is-lifting body::after { animation-duration: 240ms; animation-tim
   html.js .gl-phones .phone, html.js .ar-strip li { opacity: 1; translate: none; transform: none; transition: none; }
   html.js .thesis-s { transition: none; }
   html.js .thesis:not(.in) .thesis-s { background-size: 100% 2px; color: var(--ink-3); }
-  html.js .lv-bar, html.js .lv-ci, html.js .lv-v, html.js .lv-ret { transform: none; opacity: 1; transition: none; }
+  html.js .lv-bar, html.js .lv-ci, html.js .lv-v { transform: none; opacity: 1; transition: none; }
   html.js .wg-v, html.js .wg-off { transition: none; }
   html.js [data-wg]:not(.in) .wg-v, html.js [data-wg]:not(.in) .wg-off { opacity: 1; }
   html.js .zk-f svg { clip-path: none; transition: none; }
@@ -1240,8 +1238,35 @@ html.js .thesis:not(.in) .thesis-s { background-size: 0 2px; }
 .lv-bar { fill: var(--ink); rx: 3px; }
 .lv-ci { stroke: var(--ink-2); stroke-width: 1.25; }
 .lv-v { font-size: 13px; font-weight: 500; }
-.lv-ret { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; }
-.lv-ret.is-neg { fill: var(--ink-3); }
+
+/* five forecasts of the same fights, by log-loss (the home page and the
+   Vertex Boxing case): the market's prices filled, the forecasts with the
+   model in them as rings, and the run on the blended open */
+.fc-svg { overflow: visible; font-family: var(--f-sans); font-variant-numeric: tabular-nums lining-nums; }
+.fc-svg text { fill: var(--ink); paint-order: stroke; stroke: var(--halo, var(--bg)); stroke-width: 4px; stroke-linejoin: round; }
+.fc-k, .fc-n, .fc-dir { font-size: 12px; fill: var(--ink-3) !important; }
+.fc-n { text-anchor: middle; }
+.fc-dir.is-r { text-anchor: end; }
+.fc-lab { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+.fc-sub { font-size: 12px; font-weight: 400; letter-spacing: 0; fill: var(--ink-3) !important; }
+.fc-g { stroke: var(--line-2); stroke-width: 1; shape-rendering: crispEdges; }
+.fc-row { stroke: var(--line); stroke-width: 1; shape-rendering: crispEdges; }
+.fc-guide { stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 2 3; }
+.fc-run { stroke: var(--ink); stroke-width: 4; stroke-linecap: round; }
+.fc-rest { stroke: var(--ink-3); stroke-width: 2; stroke-dasharray: 0.5 4.5; stroke-linecap: round; }
+.fc-dot { fill: var(--halo, var(--bg)); stroke: var(--ink); stroke-width: 2; }
+.fc-dot.is-price { fill: var(--ink); }
+.fc-ann { font-size: 12.5px; font-weight: 600; }
+.fc-v { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; text-anchor: end; }
+html.js .fc-m { opacity: 0; transition: opacity 500ms ease calc(150ms + var(--i, 0) * 150ms); }
+html.js .fc-run { transform: scaleX(0); transform-box: fill-box; transform-origin: left; transition: transform 1200ms var(--eo) 1000ms; }
+html.js .fc-rest, html.js .fc-guide, html.js .fc-ann { opacity: 0; transition: opacity 500ms ease 1800ms; }
+html.js [data-fc].in .fc-m, html.js [data-fc].in .fc-rest, html.js [data-fc].in .fc-guide, html.js [data-fc].in .fc-ann { opacity: 1; }
+html.js [data-fc].in .fc-run { transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  html.js .fc-m, html.js .fc-rest, html.js .fc-guide, html.js .fc-ann { opacity: 1; transition: none; }
+  html.js .fc-run { transform: none; transition: none; }
+}
 
 .wg-g { stroke: var(--line-2); }
 .wg-g.gn, .wg-g.gh { stroke: var(--line); }
@@ -1326,9 +1351,7 @@ html.js .thesis:not(.in) .thesis-s { background-size: 0 2px; }
 .gl-phones[data-play-group], .stage.gl-stage[data-play-group] { padding-bottom: 56px; }
 .stage.hs-vx-stage[data-play-group] { padding-bottom: max(56px, 3.3vw); }
 @media (min-width: 761px) { .stage.vxm-stage[data-play-group] { padding-bottom: max(56px, 3.6vw); } }
-.stage.hs-bx-stage[data-play-group] { padding-bottom: max(56px, 3.4vw); }
 .stage.vxm-amber[data-play-group] { padding-bottom: 56px; }
-.stage.bx-stage[data-play-group] { padding-bottom: max(56px, min(5.2vw, 84px)); }
 /* Clipwell's bar is docked on its stage's bottom edge, so there the button
    sits in the empty top-right corner of the desktop instead */
 .stage.hs-desk[data-play-group] > .vid-toggle, .cwc-stage .vid-toggle { top: 12px; bottom: auto; }
@@ -1778,18 +1801,10 @@ html.js .hs-vx-stage.in .hs-vx-a,
 html.js .hs-vx-stage.in .hs-vx-m { opacity: 1; translate: 0 0; }
 
 /* ------------------------------------------------------------ Vertex Boxing */
-/* the report on a slate desk beside the level chart, then the four windows */
+/* five forecasts on a tile beside the level chart, then the four windows */
 .hs-bx-r2 { margin-top: clamp(40px, 4.4vw, 72px); align-items: center; }
-.hs-bx-rep { grid-column: 1 / 4; }
-.stage.hs-bx-stage {
-  padding: clamp(22px, 3.4vw, 56px) clamp(18px, 3.8vw, 64px);
-  background:
-    radial-gradient(70% 90% at 24% -20%, oklch(0.92 0.014 248 / 0.95), transparent 62%),
-    linear-gradient(to bottom, oklch(0.84 0.02 250), oklch(0.76 0.024 254) 78%);
-}
-.hs-bx-win { box-shadow: 0 0 0 1px oklch(0.25 0.03 255 / 0.1), 0 2px 4px oklch(0.25 0.03 255 / 0.06), 0 40px 80px -36px oklch(0.27 0.04 255 / 0.5); }
-/* the recording shows the report without GitHub's file tree, so the whole frame shows */
-.hs-bx-win video { aspect-ratio: 2160 / 1350; background: #fff; }
+.hs-bx-fc { --halo: var(--tile); grid-column: 1 / 4; padding: clamp(20px, 2.4vw, 36px) clamp(18px, 2.4vw, 36px) clamp(14px, 1.8vw, 26px); }
+.hs-bx-fc .fig-s { max-width: 56ch; }
 .hs-bx-r2 .bx-a { grid-column: 4 / 6; padding-right: 0; padding-left: clamp(4px, 1.4vw, 24px); }
 .hs-bx-r3 { margin-top: clamp(48px, 5vw, 88px); align-items: start; }
 .hs-bx-foot { grid-column: 1 / 3; }
@@ -1798,8 +1813,6 @@ html.js .hs-vx-stage.in .hs-vx-m { opacity: 1; translate: 0 0; }
 .hs-bx-foot .links { margin-top: 24px; }
 .hs-bx-r3 .bx-b { grid-column: 3 / 6; padding: 0; border-left: 0; }
 
-html.js .hs-bx-stage .hs-bx-win { opacity: 0; translate: 0 28px; transition: opacity 900ms var(--eo) 140ms, translate 1300ms var(--eo) 140ms; }
-html.js .hs-bx-stage.in .hs-bx-win { opacity: 1; translate: 0 0; }
 
 /* ------------------------------------------------------------ Clipwell */
 /* the sage desktop: Clipwell's site in a window, and the bar itself docked
@@ -1960,7 +1973,7 @@ html.js .hs-ar-stage.in .hs-ar-ph, html.js .hs-ar-stage.in .hs-ar-col { opacity:
 /* ------------------------------------------------------------ widths */
 @media (max-width: 1100px) {
   .hs-bx-r2 { align-items: start; }
-  .hs-bx-rep, .hs-bx-r2 .bx-a { grid-column: 1 / 6; }
+  .hs-bx-fc, .hs-bx-r2 .bx-a { grid-column: 1 / 6; }
   .hs-bx-r2 .bx-a { margin-top: 40px; padding-left: 0; }
   .hs-bx-foot { grid-column: 1 / 6; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 var(--gut); }
   .hs-bx-foot > p + p { margin-top: 0; }
@@ -2001,16 +2014,16 @@ html.js .hs-ar-stage.in .hs-ar-ph, html.js .hs-ar-stage.in .hs-ar-col { opacity:
   .hs-vx-fig { margin-top: 28px; }
   .stage.hs-vx-stage { padding: 18px 16px 20px; }
   .hs-vx-a { width: 88%; margin-bottom: 40%; }
-  .hs-vx-a .win-bar, .hs-bx-win .win-bar, .hs-desk-win .win-bar { height: 26px; gap: 8px; padding: 0 10px; }
-  .hs-vx-a .win-dots, .hs-bx-win .win-dots, .hs-desk-win .win-dots { gap: 4px; }
-  .hs-vx-a .win-dots i, .hs-bx-win .win-dots i, .hs-desk-win .win-dots i { width: 7px; height: 7px; }
-  .hs-vx-a .win-url, .hs-bx-win .win-url, .hs-desk-win .win-url { height: 18px; line-height: 18px; font-size: 0.6875rem; padding-inline: 8px; }
-  .hs-vx-a .win-dots + .win-url, .hs-bx-win .win-dots + .win-url, .hs-desk-win .win-dots + .win-url { margin-right: 0; }
+  .hs-vx-a .win-bar, .hs-desk-win .win-bar { height: 26px; gap: 8px; padding: 0 10px; }
+  .hs-vx-a .win-dots, .hs-desk-win .win-dots { gap: 4px; }
+  .hs-vx-a .win-dots i, .hs-desk-win .win-dots i { width: 7px; height: 7px; }
+  .hs-vx-a .win-url, .hs-desk-win .win-url { height: 18px; line-height: 18px; font-size: 0.6875rem; padding-inline: 8px; }
+  .hs-vx-a .win-dots + .win-url, .hs-desk-win .win-dots + .win-url { margin-right: 0; }
   .hs-vx-m { width: 36%; }
   .hs-vx-nums .auc { margin-top: 0; }
   .hs-vx-nums .vs { margin-top: 30px; }
   .hs-bx-r2 { margin-top: 32px; }
-  .stage.hs-bx-stage { padding: 18px 14px; }
+  .hs-bx-fc { padding: 18px 14px 14px; }
   .hs-bx-r2 .bx-a { margin-top: 34px; }
   .hs-bx-r3 { margin-top: 36px; }
   .hs-bx-foot { display: block; }
@@ -2039,7 +2052,6 @@ html.js .hs-ar-stage.in .hs-ar-ph, html.js .hs-ar-stage.in .hs-ar-col { opacity:
 
 @media (prefers-reduced-motion: reduce) {
   html.js .hs-vx-stage .hs-vx-a, html.js .hs-vx-stage .hs-vx-m,
-  html.js .hs-bx-stage .hs-bx-win,
   html.js .hs-desk .hs-desk-win,
   html.js .hs-ar-stage .hs-ar-ph, html.js .hs-ar-stage .hs-ar-col { opacity: 1; translate: none; transition: none; }
   html.js .hs-desk .hs-desk-bar { transform: none; transition: none; }
@@ -2053,7 +2065,7 @@ html.js .hs-ar-stage.in .hs-ar-ph, html.js .hs-ar-stage.in .hs-ar-col { opacity:
 }
 
 @media print {
-  .stage.hs-vx-stage, .stage.hs-bx-stage, .stage.hs-in-stage, .stage.hs-desk, .stage.hs-ar-stage { background: none !important; box-shadow: none !important; }
+  .stage.hs-vx-stage, .stage.hs-in-stage, .stage.hs-desk, .stage.hs-ar-stage { background: none !important; box-shadow: none !important; }
 }
 
 

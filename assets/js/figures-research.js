@@ -15,16 +15,18 @@
 
   /* the same names site.js gives the slices */
   var FAM = { form_momentum: "Form and momentum", style_matchups: "Style matchups", physical_durability: "Physical durability", market_microstructure: "Market microstructure", gap: "Gap", experience_pedigree: "Experience and pedigree", division_context: "Division context", style_and_age: "Style and age", activity_layoff: "Activity and layoff" };
-  var WORDS = { tdd: "takedown defence", ufc: "UFC", elo: "Elo", ko: "KO", womens: "women's", pickem: "pick'em", "4plus": "4+" };
+  var WORDS = { tdd: "takedown defence", ufc: "UFC", elo: "Elo", ko: "KO", womens: "women's", pickem: "near-even", "4plus": "4+" };
+  var NAMES = { womens_thin_handle: "Women's bouts, thinly traded" };
   function sliceName(s) {
+    if (NAMES[s]) return NAMES[s];
     var t = s.split("_").map(function (x) { return WORDS[x] || x; }).join(" ").replace(/ (\d+)d?$/, ", $1 days");
     return t.charAt(0).toUpperCase() + t.slice(1);
   }
   var VERDICT = {
-    both: "Clears 20 at fair odds and after the margin, on the most favourable of five seeds: its five-seed median is 12.3. The bar for all 84 at once is 1,680.",
-    fair: "Clears 20 at fair odds, then loses it to the book’s margin. The bar for all 84 at once is 1,680.",
-    up: "Made money at fair odds, and stopped short of the bar of 20.",
-    down: "Lost money at fair odds: an e-value below 1 is a bankroll that shrank."
+    both: "Clears 20 at fair prices and with the margin, on the most favourable of five seeds: its five-seed median is 12.3. The bar for all 84 at once is 1,680.",
+    fair: "Clears 20 at fair prices, then loses it to the market’s margin. The bar for all 84 at once is 1,680.",
+    up: "Above 1 at fair prices, but short of the bar of 20.",
+    down: "Below 1 at fair prices: on these fights the price held up better than the hypothesis."
   };
   function verdictOf(r) { return r.er >= 20 ? VERDICT.both : r.ef >= 20 ? VERDICT.fair : r.ef >= 1 ? VERDICT.up : VERDICT.down; }
 
@@ -32,10 +34,10 @@
     var pc = F.pc, r2 = F.r2;
 
     /* ------------------------------------------------------------ the 84
-       x: e at fair odds on the site's e-axis (0.01 at the plot's left
-       edge, 1,680 at its right). y: e after the margin, log, 100 down to
-       0.001. Marks under 0.01 at fair odds are off the scale; they stack in
-       the margin, hollow, as on the verdict chart. */
+       x: e at fair prices on the site's e-axis (0.01 at the plot's left
+       edge, 1,680 at its right). y: e with the market's margin, log, 100
+       down to 0.001. Marks under 0.01 at fair prices are off the scale; they
+       stack left of the axis, hollow, as on the verdict chart. */
     var SC_N = 688;
     function scGeo(wide) {
       var g = wide ? { T: 62, DH: 76, rmax: 9, ro: 3.6, wide: true } : { T: 46, DH: 52, rmax: 5.6, ro: 2.5, wide: false };
@@ -66,9 +68,9 @@
       var g = scGeo(wide), T = g.T, Y0 = g.Y0, H = g.H;
       var pos = scPos(rows, g), best = bestIndex(rows);
       var s = '<svg class="rs-sc-svg" width="100%" height="' + r2(H) + '" data-t="' + T + '" data-y0="' + r2(Y0) + '" data-y20="' + r2(g.y(20)) + '" overflow="visible" role="img" aria-labelledby="sc-t' + sfx + ' sc-d' + sfx + '">' +
-        '<title id="sc-t' + sfx + '">All 84 hypotheses, at the wealth each one earned</title>' +
-        '<desc id="sc-d' + sfx + '">Each mark is one pre-registered hypothesis. Horizontally, its e-value at fair odds on a logarithmic axis from 0.01 to 1,680; vertically, the same bet charged the bookmaker\'s margin, on a logarithmic axis from 0.001 to 100. Mark size grows with the number of bouts. Six marks clear 20 at fair odds; one also clears 20 after the margin, at 21.2, on the most favourable of five seeds. None comes near 1,680. Ten marks are under 0.01 at fair odds and sit in the margin.</desc>';
-      // decades only, both ways; e = 1, a bet that broke even, a shade darker
+        '<title id="sc-t' + sfx + '">All 84 hypotheses, at fair prices and with the margin</title>' +
+        '<desc id="sc-d' + sfx + '">Each mark is one pre-registered hypothesis. Horizontally, its e-value at fair prices on a logarithmic axis from 0.01 to 1,680; vertically, the same test with the market\'s margin charged, on a logarithmic axis from 0.001 to 100. Mark size grows with the number of bouts. Six marks clear 20 at fair prices; one also clears 20 with the margin, at 21.2, on the most favourable of five seeds. None comes near 1,680. Ten marks are under 0.01 at fair prices and stack left of the axis.</desc>';
+      // decades only, both ways; e = 1, no evidence either way, a shade darker
       [0.01, 0.1, 1, 10, 100, 1000].forEach(function (v) {
         var x = pc(F.gx(v));
         s += '<line class="rs-gv' + (v === 1 ? " is-1" : "") + '" x1="' + x + '" x2="' + x + '" y1="' + T + '" y2="' + r2(Y0) + '"/>';
@@ -86,7 +88,7 @@
       s += wide ? '<text class="rs-cap" x="100%" dx="-6" y="' + r2(g.y(20) - 5) + '" text-anchor="end">20</text>'
         : '<text class="rs-cap" x="4" y="' + r2(g.y(20) - 5) + '">20</text>';
       s += '<text class="rs-cap" x="100%" dx="-6" y="' + (wide ? 12 : 10) + '" text-anchor="end">' + (wide ? "1,680, the bar for all 84 at once" : "1,680, for all 84") + '</text>';
-      s += '<text class="rs-ax" x="100%" dx="-6" y="' + (wide ? 40 : 25) + '" text-anchor="end">e after the margin</text>';
+      s += '<text class="rs-ax" x="100%" dx="-6" y="' + (wide ? 40 : 25) + '" text-anchor="end">e with the margin</text>';
       [100, 10, 1, 0.1, 0.01, 0.001].forEach(function (v) {
         s += '<text class="rs-yn" x="100%" dx="-6" y="' + r2(g.y(v) - 5) + '" text-anchor="end">' + F.fmtAxis(v) + "</text>";
       });
@@ -103,7 +105,7 @@
       });
       s += '<text class="rs-xn is-bar" x="' + x20 + '" y="' + r2(Y0 + 22) + '">20</text>';
       s += '<text class="rs-xn is-bar is-end" x="100%" y="' + r2(Y0 + 22) + '">1,680</text>';
-      s += '<text class="rs-ax" x="100%" y="' + r2(Y0 + 42) + '" text-anchor="end">e at fair odds</text>';
+      s += '<text class="rs-ax" x="100%" y="' + r2(Y0 + 42) + '" text-anchor="end">e at fair prices</text>';
       var nOff = rows.filter(function (r) { return r.ef < 0.01; }).length;
       if (wide) s += '<text class="rs-off" x="-4" y="' + r2(Y0 + 22) + '">under</text><text class="rs-off" x="-4" y="' + r2(Y0 + 36) + '">0.01</text>';
       else s += '<text class="rs-off is-count" x="0" y="' + r2(Y0 + 42) + '">← ' + nOff + " under 0.01</text>";
@@ -130,8 +132,8 @@
       var rank = rows.filter(function (x) { return x.ef > r.ef; }).length + 1;
       return '<p class="rs-ro-s" data-ro="s">' + esc(sliceName(r.s)) + "</p>" +
         '<p class="rs-ro-f"><span data-ro="f">' + FAM[r.f] + '</span>, <span data-ro="n">' + F.fmtInt(r.n) + "</span> bouts</p>" +
-        '<p class="rs-ro-e"><span><b class="' + (r.ef >= 20 ? "is-hit" : "") + '" data-ro="ef">e = ' + F.fmtE(r.ef) + '</b> at fair odds</span><span><b class="' + (r.er >= 20 ? "is-hit" : "") + '" data-ro="er">e = ' + F.fmtE(r.er) + "</b> after the margin</span></p>" +
-        '<p class="rs-ro-r" data-ro="r">Rank ' + rank + " of 84 at fair odds</p>" +
+        '<p class="rs-ro-e"><span><b class="' + (r.ef >= 20 ? "is-hit" : "") + '" data-ro="ef">e = ' + F.fmtE(r.ef) + '</b> at fair prices</span><span><b class="' + (r.er >= 20 ? "is-hit" : "") + '" data-ro="er">e = ' + F.fmtE(r.er) + "</b> with the margin</span></p>" +
+        '<p class="rs-ro-r" data-ro="r">Rank ' + rank + " of 84 at fair prices</p>" +
         '<p class="rs-ro-t" data-ro="t">' + esc(verdictOf(r)) + "</p>";
     }
     function rowsJson(rows) {
@@ -151,7 +153,7 @@
     /* ------------------------------------------------------------ 4.81 against 20
        Row A is the site's e-axis: the segment's e-value so far, and the gap to
        the bar. Rows B are a bout count, linear: how many more bouts each price
-       needs, from the paper (100 at fair odds, 253 at the book's). */
+       needs, from the paper (100 at fair prices, 253 with the margin). */
     function narrowX(v) { return 0.02 + L(v) / 2 * 0.96; }
     function wait(wide, sfx) {
       var XA = wide ? F.gx : narrowX;
@@ -160,15 +162,15 @@
       var yA = wide ? 78 : 104, y1 = yA + (wide ? 84 : 110), y2 = y1 + (wide ? 46 : 74), yAx = y2 + 16, H = yAx + (wide ? 30 : 48);
       var s = '<svg class="rs-wt-svg" width="100%" height="' + H + '" overflow="visible" role="img" aria-labelledby="wt-t' + sfx + ' wt-d' + sfx + '">' +
         '<title id="wt-t' + sfx + '">A segment written off too early: its e-value so far, and the bouts it still needs</title>' +
-        '<desc id="wt-d' + sfx + '">On the e-value axis the segment stands at 4.81, growing by 0.0143 nats a bout, against a threshold of 20. At fair odds it is 100 bouts short, seventeen months; at the book\'s prices, 253 bouts, three and a half years.</desc>' +
+        '<desc id="wt-d' + sfx + '">On the e-value axis the segment stands at 4.81, growing by 0.0143 nats a bout, against a threshold of 20. At fair prices it is 100 bouts short, seventeen months; with the margin, 253 bouts, three and a half years.</desc>' +
         '<defs><pattern id="wt-h' + sfx + '" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" class="rs-hl"/></pattern></defs>';
       // row A labels
       if (wide) {
         s += '<text class="rs-lab" x="0" y="' + (yA - 18) + '">The e-value so far</text>';
-        s += '<text class="rs-sub" x="0" y="' + (yA - 1) + '">+0.0143 nats per bout, at fair odds</text>';
+        s += '<text class="rs-sub" x="0" y="' + (yA - 1) + '">+0.0143 nats per bout, at fair prices</text>';
       } else {
         s += '<text class="rs-lab" x="0" y="16">The e-value so far</text>';
-        s += '<text class="rs-sub" x="0" y="32">+0.0143 nats per bout, at fair odds</text>';
+        s += '<text class="rs-sub" x="0" y="32">+0.0143 nats per bout, at fair prices</text>';
       }
       // gap, axis, bar
       var xa = XA(4.81), xb = XA(20);
@@ -194,7 +196,7 @@
         '<line class="rs-nl" x1="0" x2="0" y1="-30" y2="0"/><path class="rs-nh is-fill" d="M-6 -30 L6 -30 L0 -21 Z"/></g></svg>';
       s += '<text class="rs-v" data-wt-v x="' + pc(xa) + '" dx="-10" y="' + (yA - 18) + '" text-anchor="end">4.81</text>';
       // the wait, in bouts
-      var rows = [{ y: y1, b: 100, k: "At fair odds", t: "100 bouts: seventeen months" }, { y: y2, b: 253, k: "At the book’s prices", t: "253 bouts: three and a half years" }];
+      var rows = [{ y: y1, b: 100, k: "At fair prices", t: "100 bouts: seventeen months" }, { y: y2, b: 253, k: "With the margin", t: "253 bouts: three and a half years" }];
       rows.forEach(function (r, i) {
         if (wide) s += '<text class="rs-lab is-s" x="0" y="' + (r.y + 5) + '">' + r.k + "</text>";
         s += '<line class="rs-wbase" x1="' + pc(XB(0)) + '" x2="' + pc(XB(BMAX)) + '" y1="' + r.y + '" y2="' + r.y + '"/>';
@@ -220,8 +222,8 @@
 
     /* ------------------------------------------------------------ the ladder
        Three mixtures, each paying for more of the search, as needles on the
-       site's e-axis: filled at fair odds, hollow at the prices the book
-       offered. Blue only where a needle clears 20. */
+       site's e-axis: filled at fair prices, hollow with the market's
+       margin charged. Blue only where a needle clears 20. */
     function ladder(ld, wide, sfx) {
       var X = wide ? F.gx : narrowX;
       var top = wide ? 46 : 36, rowH = wide ? 64 : 84;
@@ -230,7 +232,7 @@
       var bar = ld.threshold;
       var s = '<svg class="rs-ld-svg" width="100%" height="' + H + '" overflow="visible" role="img" aria-labelledby="ld-t' + sfx + ' ld-d' + sfx + '">' +
         '<title id="ld-t' + sfx + '">What a rule chosen after the fact is worth</title>' +
-        '<desc id="ld-d' + sfx + '">Three mixture martingales on the e-value axis, each paying for more of the search. At fair odds: ' + ld.fair.join(", ") + ". At the prices the book offered: " + ld.real.join(", ") + ". Only the first, at fair odds, clears the threshold of " + bar + ".</desc>";
+        '<desc id="ld-d' + sfx + '">Three mixture martingales on the e-value axis, each paying for more of the search. At fair prices: ' + ld.fair.join(", ") + ". With the market's margin: " + ld.real.join(", ") + ". Only the first, at fair prices, clears the threshold of " + bar + ".</desc>";
       var xEnd = wide ? "100%" : pc(X(100));
       s += '<line class="rs-bar" x1="' + pc(X(bar)) + '" x2="' + pc(X(bar)) + '" y1="' + (top - 8) + '" y2="' + (yEnd + 10) + '"/>';
       s += '<text class="rs-cap" x="' + pc(X(bar)) + '" y="' + (top - 15) + '" text-anchor="middle">the bar, 20</text>';

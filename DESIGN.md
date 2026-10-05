@@ -149,8 +149,9 @@ loops preconnects to it as it opens.
 | `.plate` | a neutral tile for a figure |
 
 Every loop in `assets/video/` was recorded from the live product (vertexmma.com,
-gluline.com, Clipwell's site, indelible's site, the Vertex Boxing report) or cut
-from its own footage. indelible's sheets are pages it printed itself, from the
+gluline.com, Clipwell's site, indelible's site) or cut from its own footage; the
+Vertex MMA bout page is two frames of its recording, scrolled again so that the
+loop turns back at the simulation. indelible's sheets are pages it printed itself, from the
 sample study folder in its repository (an invented learner) and a 2-day recheck. They are muted H.264 MP4s with a WebP poster from their first frame,
 `preload="none"`, width and height always set. `site.js` starts loading a loop
 a screen before it arrives, plays it only while it is on screen and gives it one round pause
@@ -187,8 +188,9 @@ node tools/figures.mjs --check         # exit 1 if a page is stale
 | the slide rule | home hero | the bar for k hypotheses is 20k; drag or use the arrow keys |
 | the 84 | home, research | every hypothesis at its e-value on a log axis; switch prices and raise the bar |
 | AUC gauge | home, Vertex MMA | 0.7244 on a scale from a coin flip to 1 |
-| model against the line | home, Vertex MMA | the closing line wins all three scores; the winner is underlined |
-| level bars | home, Vertex Boxing | closing-line value rises with the level of the fight |
+| model against the price | home, Vertex MMA | the closing price wins all three scores; the winner is underlined |
+| level bars | home, Vertex Boxing | how far the price moves towards the model rises with the level of the fight |
+| five forecasts | home, Vertex Boxing | the same fights forecast five ways: the price learns between the open and the close, and blended into the open the model gets 87% of the way there |
 | four windows | home, Vertex Boxing | e-values at the opening price against the bar |
 | the book | home, Zacks | 4,369 stocks, 25 dots at the same scale, opened out into 25 equal positions |
 | the floor | home, Vertex MMA, research | everything measured sits inside the detection floor |
