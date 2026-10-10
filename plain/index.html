@@ -111,7 +111,7 @@ h1 {
 /* how to reach me, on a tile */
 .contact {
   display: grid;
-  grid-template-columns: 1.55fr 1fr 1.1fr 0.8fr;
+  grid-template-columns: 1.55fr 1fr 1.1fr 0.95fr 0.8fr;
   gap: 12px var(--gut);
   margin-top: clamp(28px, 3.2vw, 40px);
   padding: 18px 24px 19px;
@@ -227,6 +227,8 @@ h2 + .grp { padding-top: 22px; }
   .lede { margin-top: 3.2mm; font-size: 10.4pt; line-height: 1.4; letter-spacing: -0.01em; max-width: none; }
   .contact { margin-top: 4mm; padding: 0; gap: 2mm 7mm; grid-template-columns: repeat(4, max-content); border-radius: 0; }
   .contact div:first-child { grid-column: auto; }
+  /* on paper this page is the record; the PDF CV is for the screen */
+  .contact .is-cv { display: none; }
   .contact dt { font-size: 7.4pt; }
   .contact dd { margin-top: 0.4mm; font-size: 9pt; }
   section { margin-top: 6.4mm; }
@@ -258,7 +260,7 @@ h2 + .grp { padding-top: 22px; }
 <header class="hd">
   <p class="top">
     <span>Revised 2 October 2026</span>
-    <span class="top-links"><a href="../">Full version</a><a href="../research/">Research</a></span>
+    <span class="top-links"><a href="../">Full version</a><a href="../research/">Research</a><a href="../cv.pdf">CV</a></span>
     <span class="top-print">prigodskii.dev</span>
   </p>
   <h1>Roman Prigodskii</h1>
@@ -267,6 +269,7 @@ h2 + .grp { padding-top: 22px; }
     <div><dt>Email</dt><dd><a href="mailto:roman@prigodskii.dev">roman@prigodskii.dev</a></dd></div>
     <div><dt>Telegram</dt><dd><a href="https://t.me/prigodskii" rel="me noopener">@prigodskii</a></dd></div>
     <div><dt>GitHub</dt><dd><a href="https://github.com/romanprigodskii" rel="me noopener">romanprigodskii</a></dd></div>
+    <div class="is-cv"><dt>CV</dt><dd><a href="../cv.pdf">PDF, 2 pages</a></dd></div>
     <div><dt>Based in</dt><dd>Moscow</dd></div>
   </dl>
 </header>

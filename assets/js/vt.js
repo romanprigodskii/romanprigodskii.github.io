@@ -443,7 +443,7 @@
   /* Chromium only (Arc included): where WebKit takes the rules, its arrivals
      drop frames under the fetching */
   if (ua && window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports("speculationrules")) {
-    var site = [{ href_matches: "/*" }, { not: { href_matches: "/papers/*" } }, { not: { href_matches: "/assets/*" } }];
+    var site = [{ href_matches: "/*" }, { not: { href_matches: "/papers/*" } }, { not: { href_matches: "/assets/*" } }, { not: { href_matches: "/cv.pdf" } }];
     var sr = document.createElement("script");
     sr.type = "speculationrules";
     sr.textContent = JSON.stringify({ prefetch: [
