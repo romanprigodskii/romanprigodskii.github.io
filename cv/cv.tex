@@ -55,82 +55,90 @@
     SAT Mathematics 790 (Aug 2026)\enspace\textbullet\enspace IELTS 7.0}
 
 \section*{Honours}
-\entry{Moscow Olympiad in Economics}{winner, 1st place by score in the Grade 10 division}{2025/26}
-\cvpoint{Level II on the federal list of olympiads; the 2026 final was held at twelve venues across Russia.}
-\entry{All-Russian Olympiad in Economics}{national finalist in Grades 9 and 10}{2025, 2026}
-\cvpoint{One of 91 Grade 9 finalists in 2025 and of 118 Grade 10 finalists in 2026. In 2024/25 more than 470,000 students entered, most in the open school round, and 392 reached the final in Grades 9 to 11.}
-\entry{Russian Presidential Academy (RANEPA) Olympiad in Economics}{prize-winner, final stage}{\rs{2025/26}{2025, 2026}}
-\cvpoint{Grade 10, Level III on the federal list of olympiads; in Grade 9, prize-winner at the qualifying stage (2024/25).}
-\entry{International Mathematical Modeling Challenge (IM²C)}{commendation, 7th place in Russia}{2026}
-\cvpoint{The Russian national round, with Letovo’s team Elbrus.}
-\entry{All-Russian Olympiad in Mathematics}{prize-winner of the regional stage, Grade 9}{2024/25}
-\entry{Euler Olympiad}{its analogue for Grade 8: prize-winner of the regional stage}{2023/24}
+\entry{Moscow Olympiad in Economics}{Ranked 1st of 201 finalists in Grade 10}{2025/26}
+\cvpoint{Nationwide olympiad: 10,000+ participants in the qualifying round; final held at 12 venues across Russia. Officially recognized on Russia's federal olympiad list.}
+\entry{All-Russian Olympiad in Economics}{National finalist, two consecutive years}{2025, 2026}
 \ifresume\else
-\entry{All-Siberian Open Olympiad in Mathematics}{third-degree diploma, Grade 7}{2022/23}
+\begin{points}
+  \item Qualified for the national final in Grade 9 (one of 91 finalists) and again in Grade 10 (one of 118); placed in the top half of the final both years.
+  \item Russia's top national olympiad: in 2025/26, 530,000+ students entered, 9,330 advanced to the regional round (Grades 9--11), and 390 reached the final.
+\end{points}
 \fi
-\entry{Letovo School}{best MYP personal project in Mathematics\rs{, on the Collatz conjecture (published 2025)}{}}{Mar 2025}
-\cvpoint{``Collatz conjecture'', written in English in Grade 9 with supervisor Kirill Kusakin and published in \emph{Young Scientist}, No.~2 (87), 2025: the residues modulo 4 and 3 that a smallest counterexample would have to fall in.}
+\entry{RANEPA Olympiad in Economics}{Final-round prize-winner, Grade 10}{2025, 2026}
+\cvpoint{National olympiad run by RANEPA, one of Russia's largest universities; officially recognized on Russia's federal olympiad list.}
+\entry{International Mathematical Modeling Challenge (IM²C)}{Commendation, 7th place in the Russian national round}{2026}
+\cvpoint{International team contest in mathematical modeling of real-world problems; competed with Letovo's team ``Elbrus''.}
+\entry{All-Russian Olympiad in Mathematics}{Regional-round prize-winner (Moscow), Grade 9}{2024/25}
+\entry{Leonhard Euler Mathematical Olympiad}{Regional-round prize-winner, Grade 8}{2023/24}
+\cvpoint{Russia's national math olympiad for Grade 8 (the All-Russian Olympiad's regional and final rounds begin at Grade 9).}
+\ifresume\else
+\entry{All-Siberian Open Olympiad in Mathematics}{Third-prize diploma, Grade 7}{2022/23}
+\fi
+\entry{Letovo School}{Best MYP Personal Project in Mathematics}{Mar 2025}
+\cvpoint{Grade 9 project on the Collatz conjecture, written in English: derived congruence conditions (mod 4 and mod 3) that a minimal counterexample must satisfy.}
 
 \section*{Research (papers at \href{https://prigodskii.dev/research/}{prigodskii.dev/research})}
-\entry{Testing by betting when the bets are real}{sole author}{\textbf{Accepted, two NeurIPS 2026 workshops\sep Sep 2026}}
+\entry{\rs{An e-value audit of a deployed forecaster}{An e-value audit of 84 pre-registered hypotheses about a deployed forecaster}}{sole author}{\textbf{Accepted at two NeurIPS 2026 workshops\sep Sep 2026}}
 \begin{points}
-  \item \rs{An e-value audit of \textbf{84 pre-registered market-efficiency hypotheses} about a deployed UFC forecaster. Poster at \textbf{New in ML} and, in a shorter version, \textbf{E-Values: From Statistics to ML}, both non-archival.}%
-          {An e-value audit of \textbf{84 pre-registered market-efficiency hypotheses} about a deployed UFC forecaster, tested against posted market prices over 4,141 walk-forward bouts. Poster at \textbf{New in ML} and, in a shorter version, \textbf{E-Values: From Statistics to ML}, both non-archival. The headline result is negative.}
+  \item \rs{An e-value audit of \textbf{84 pre-registered market-efficiency hypotheses} about a deployed UFC forecaster; posters at \textbf{New in ML} and \textbf{E-Values: From Statistics to ML}, both non-archival.}%
+          {Re-tested my deployed UFC forecaster against market-implied probabilities on \textbf{1,787 bouts}, re-analysing my earlier study with e-values: the model does not beat the market. Poster at \textbf{New in ML}; shorter version at \textbf{E-Values: From Statistics to ML} (both non-archival).}
   \ifresume\else
-  \item The 84 slices overlap, so Benjamini–Hochberg’s guarantee is not established; its four discoveries survive neither Benjamini–Yekutieli nor e-BH. Checked on 40,000 null replications (expected e-value $0.985 \pm 0.018$).
+  \item Priced three routine pitfalls of ML evaluation: Benjamini--Hochberg on overlapping slices (its one favorable discovery fails e-BH), a ``failed replication'' that is still accumulating evidence rather than refuted, and a post-hoc threshold that survives its own search but not transaction costs.
   \fi
 \end{points}
-\entry{Measure the instrument first}{sole author}{\textbf{Working paper\sep 2026}}
+\entry{\rs{Measure the instrument first}{Measure the instrument first: detection floors for model selection and for LLM judges}}{sole author}{\textbf{Working paper\sep 2026}}
 \begin{points}
-  \item \rs{Detection floors: the smallest effect an evaluation could have detected, measured by refitting under a new seed.}%
-          {Detection floors for model selection and for LLM judges: the smallest effect an evaluation could have detected, measured with a null lever, the same recipe refit under a new random seed.}
+  \item \rs{Detection floors: the smallest effect an evaluation could have detected, measured with a null lever, the same recipe refit under a new seed.}%
+          {Measured detection floors with a null lever, the identical pipeline re-run under a new seed: on my deployed forecaster it produced a bigger effect than any of 11 real candidate changes and \textbf{80\%} of the effect of the only improvement ever shipped.}
   \ifresume\else
-  \item Re-seeding alone reproduces \textbf{80\%} of the only change Vertex MMA’s winner model ever shipped; identical reruns of a deployed LLM classifier disagree on 5.6\% of items, a floor of 2.9 agreement points.
+  \item On my production LLM classifier, two identical runs disagree on \textbf{5.6\%} of items: prompt gains under 2.9 points are indistinguishable from noise, and no number of reruns lowers that floor below 2.5.
   \fi
 \end{points}
-\entry{Vertex Boxing}{the Vertex MMA models moved to professional boxing}{\textbf{Public report\sep Jul--Sep 2026}}
+\entry{Vertex Boxing}{Vertex MMA's models ported to professional boxing}{\textbf{Open-source research\sep Jul--Sep 2026}}
 \begin{points}
   \item \rs{Tested on \textbf{413,279 bouts} whether regional and club boxing is priced less efficiently: where priced, it is not. Blended into the opening price, the model passed a pre-registered backtest at {\boldmath$e = 41.8$} against a bar of 20 (2026 holdout).}%
-          {Tested on \textbf{413,279 professional bouts} whether regional and club boxing is priced less efficiently than the top of the sport: where prices exist, it is not. Blended into the opening price, the model passed a test registered in public before its holdout model was trained, at {\boldmath$e = 41.8$} against a bar of 20 (January to July 2026).}
+          {Built a fundamentals model on \textbf{413,279 professional bouts} (1950--2026) to test the founding thesis that market probabilities are least accurate in regional boxing; the evidence says the opposite. Blended with the market's opening probabilities, the model passed a pre-registered 2026 holdout at {\boldmath$e = 41.8$} against a bar of 20.}
   \ifresume\else
-  \item Every result is a backtest. A forward test was frozen in public on 24 September 2026 and runs to 2029.
+  \item Caught target leakage in my own data (judges' IDs appear only when a bout ends on the scorecards) and made the benchmark reproducible to 16 significant digits. A prospective test, registered in public, runs to 2029.
   \fi
 \end{points}
 
 \section*{Experience}
-\entry{Apri Software L.L.C-FZ}{Co-Founder, Engineer and Head of AI}{UAE, remote\sep 2026--Present}
+\entry{Gluline (Apri Software L.L.C-FZ)}{Co-Founder, Engineer and Head of AI}{UAE, remote\sep 2026--Present}
 \begin{points}
   \item \rs{Co-founded the company behind \textbf{Gluline}, a messenger released on the \textbf{App Store} on 19 August 2026, then on \textbf{Google Play} and the web, in ten languages: Android, iOS, web and a Python backend in one repository.}%
-          {Co-founded the company behind \textbf{Gluline}, a messenger released in ten languages on the \textbf{App Store} (19 August 2026), \textbf{Google Play} and the web; Android (Jetpack Compose), iOS (SwiftUI), web and Python/FastAPI in one repository.}
+          {Co-founded the company behind \textbf{Gluline}, a messenger with a built-in AI assistant, released in ten languages on the \textbf{App Store} (19 August 2026), \textbf{Google Play} and the web; Android (Jetpack Compose), iOS (SwiftUI), web and Python/FastAPI in one repository.}
   \item \rs{As Head of AI, responsible for everything the product does with a model, its assistant included.}%
-          {As Head of AI, responsible for everything the product does with a model; the assistant stays off until the user turns it on. Chat content is encrypted on the device with a key for each chat.}
+          {As Head of AI, responsible for everything the product does with a model, including an assistant that takes part in chats and stays off until the user turns it on. Chat content is encrypted on the device with a key for each chat.}
+\end{points}
+\entry{Alfa-Bank}{Intern}{Moscow\sep Jun 2026}
+\begin{points}
+  \item \rs{Built \textbf{Alfa-Romeo}, a working concept of the bank of 2035: a SwiftUI app on a NestJS and Postgres backend, with a Claude copilot that drafts each action and waits for a yes.}%
+          {At Russia's largest private bank, built \textbf{Alfa-Romeo} solo, a working prototype of the bank of 2035: a SwiftUI app spanning retail, business and investing on a self-deployed NestJS and PostgreSQL backend, with live quotes from the Bank of Russia, the Moscow Exchange and CoinGecko.}
   \ifresume\else
-  \item Released through a written checklist: a clean build, \textbf{309 unit tests} and two formal codebase audits. August’s raised 74 candidate findings: 42 confirmed, 32 refuted by an adversarial second pass.
+  \item Designed its LLM copilot to turn plain-language requests into signed, single-use transaction drafts; it can't move a ruble until the user approves with Face ID.
   \fi
 \end{points}
-\entry{Alfa-Bank}{Intern}{2026}
+\entry{Zacks Rank stock-recommendation system}{commissioned by a private investor}{Remote\sep Jul 2026--present}
 \begin{points}
-  \item Built \textbf{Alfa-Romeo}, a working concept of the bank of 2035: 93 iOS screens in SwiftUI on a NestJS and Postgres backend, live rates from the Bank of Russia and CoinGecko, and a Claude copilot that drafts each action and waits for a yes.
+  \item \rs{Archives Zacks' full ranked screen (about 4,400 stocks) each weekday in a SHA-256 hash chain and issues daily buy and sell recommendations; nothing goes to a broker.}%
+          {Built a pipeline that archives Zacks' full ranked screen (about 4,400 stocks) every weekday in a SHA-256 hash chain, so no past day can be quietly edited, and issues daily buy and sell recommendations; nothing goes to a broker.}
+  \ifresume\else
+  \item Showed that 44 sessions cannot resolve an edge (Rank 1: $+8.7\%$/yr, 95\% CI $[-48, +65]$), so the rules were frozen at their defaults before the first recommendation (1 Oct 2026); a \$10,000 paper book fills every call at the next close, and a mutation test catches 23 of 24 planted look-ahead bugs.
+  \fi
 \end{points}
-\entry{Zacks to Interactive Brokers pipeline}{paid client work}{Remote\sep Jul 2026}
-\begin{points}
-  \item \rs{Turns each day’s Zacks screen (4,369 stocks on one day) into an equal-weight book of 25 positions and the orders that close the gap at Interactive Brokers; a dry run so far.}%
-          {Turns each day’s Zacks screen (4,369 stocks on one day) into an equal-weight book of 25 positions and the orders that close the gap at Interactive Brokers. Runs daily on a VPS; a dry run so far, and no order may exceed 10\% of the book.}
-\end{points}
-\entry{SPIEF Junior}{delegate, St Petersburg International Economic Forum}{St Petersburg, Russia\sep Jun 2025}
-\cvpoint{One of the Letovo School delegation to the forum’s programme for school students.}
 
 \section*{Projects (more at \href{https://prigodskii.dev/}{prigodskii.dev})}
 \entry{Vertex MMA}{UFC analytics platform, \href{https://vertexmma.com/}{vertexmma.com}}{\textbf{Next.js, Python, LightGBM\sep 2026--Present}}
 \begin{points}
   \item \rs{A nine-model forecasting stack (\textbf{LightGBM, CatBoost}, logistic regression and a 10,000-run Monte Carlo simulator) over 4,581 fighters and 8,906 bouts, in English and Russian.}%
           {A nine-model forecasting stack: a 118-feature winner ensemble over \textbf{LightGBM, CatBoost} and logistic regression, method and finish models, and a 10,000-run Monte Carlo simulator. English and Russian; 4,581 fighters, 8,906 bouts.}
-  \item \textbf{AUC 0.7244} on 664 bouts held out from January 2025, measured against the market’s closing price, which stays ahead: the model is better calibrated and less sharp.\rs{}{ Market prices are never a feature, and about two dozen rejected ideas are documented with their reasons.}
+  \item \textbf{AUC 0.7244} on 664 bouts held out from January 2025, measured against the market's closing price, which stays ahead: the model is better calibrated and less sharp.\rs{}{ Market prices are never a feature, and about two dozen rejected ideas are documented with their reasons.}
 \end{points}
 \entry{indelible}{open-source self-study tutor for Claude Code}{\textbf{Python\sep Sep 2026}}
 \begin{points}
-  \item \rs{Plans back from the learner’s date, re-tests every skill cold two days later and brings each miss back on a spaced schedule. \textbf{17,743 lines} of standard-library Python, \textbf{588 tests}.}%
-          {Plans back from the learner’s date, closes the theory before the drills, re-tests every skill cold two days later and brings each miss back after 1 day, 3 days, 1 week and 3 weeks. \textbf{17,743 lines} of standard-library Python, \textbf{588 tests}.}
+  \item \rs{Plans back from the learner's date, re-tests every skill cold two days later and brings each miss back on a spaced schedule. \textbf{17,743 lines} of standard-library Python, \textbf{588 tests}, \textbf{600+ downloads}.}%
+          {Plans back from the learner's date, closes the theory before the drills, re-tests every skill cold two days later and brings each miss back after 1 day, 3 days, 1 week and 3 weeks. \textbf{17,743 lines} of standard-library Python, \textbf{588 tests}, \textbf{600+ downloads}.}
 \end{points}
 \entry{Clipwell}{native clipboard history for macOS and Windows}{\textbf{Swift, C\#\sep Jun 2026}}
 \begin{points}
