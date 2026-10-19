@@ -1,21 +1,21 @@
-/* Zacks to Interactive Brokers: the daily run, drawn as a schematic.
+/* Zacks Rank recommendations: the daily run, drawn as a schematic.
 
    Not data: a drawing of the stages one run passes through and the
-   interlocks that can stop it, in order. The client's screen, picks and
+   safeguards that can stop it, in order. The client's screen, picks and
    account stay private, so the only numbers on it are the counts and limits
    the case states: 4,369 stocks in one day's screen, a book of 25 at 4% each,
-   no order over 10% of the book, and a run that would sell more than 80% of
-   what is held stops before it starts.
+   nothing issued after 19:00 UTC, and a day that would sell more than 80% of
+   what is held is not issued.
 
    Two drawings of the same run: across the tile on wide screens (runH), and
    down it on narrow ones (runV). Positions along the run are percentages, so
    the stages keep their places at any width while the type keeps its own
    size. Stages are rounded cards on the tile; the run is a line with a dot
-   that travels it beneath the cards; the dry-run default is a switch that is on. Pre-rendered
+   that travels it beneath the cards and ends at the paper book. Pre-rendered
    into the page by tools/figures.mjs as @zrH and @zrV;
    assets/js/zacks-ibkr.js sends one run through it when it comes into view.
-   Solid lines are what runs today, in dry run; dashed lines are the
-   connection to the account, which comes next. */
+   Solid lines are what runs every trading day; dashed lines go outside the
+   system, to the client, who places their own orders. */
 (function (root) {
   "use strict";
 
@@ -39,17 +39,18 @@
   }
   /* the calendar starts every run */
   function clock(x, y) { return at(x, y, '<circle r="11"/><path d="M0 -5.5 V0 L4 2.4"/>', "zr-clock"); }
-  /* the run's dot, parked where a run ends: just short of the switch */
+  /* the run's dot, parked where a run ends: just short of the paper book */
   function token(x, y, axis) {
     return at(x, y, '<circle r="6" ' + (axis === "x" ? 'cx="-16"' : 'cy="-16"') + "/>", "zr-tok");
   }
-  /* an interlock's lamp: a ring that fills and takes a tick when the run passes it */
+  /* a safeguard's lamp: a ring that fills and takes a tick when the run passes it */
   function lamp(x, y, i) {
     return at(x, y, '<g class="zr-lamp" data-lamp="' + i + '" transform="translate(24 0)"><circle r="8"/><path d="M-3.4 0.2 L-1 2.6 L3.6 -2.2"/></g>');
   }
-  /* the dry-run switch, on: a track with its knob at the far end */
-  function toggle(x, y, dx, dy) {
-    return at(x, y, '<rect class="zr-tg-t" x="' + dx + '" y="' + dy + '" width="42" height="24" rx="12"/><circle class="zr-tg-k" cx="' + (dx + 30) + '" cy="' + (dy + 12) + '" r="9"/>', "zr-tg");
+  /* the paper book: a ledger card with two ruled lines */
+  function ledger(x, y, dx, dy) {
+    return at(x, y, '<rect class="zr-tg-t" x="' + dx + '" y="' + dy + '" width="42" height="24" rx="6"/>' +
+      '<path class="zr-tg-l" d="M' + (dx + 9) + " " + (dy + 9) + " H" + (dx + 33) + " M" + (dx + 9) + " " + (dy + 15) + " H" + (dx + 25) + '"/>', "zr-tg");
   }
   /* a stage of the run; data-lo/-hi/-c are its extent along the run, in the drawing's own units */
   function stage(o, sfx, inner) {
@@ -58,14 +59,14 @@
       '<rect class="zr-ring"' + box + "/>" +
       '<rect class="zr-b"' + box + ' filter="url(#zr-sh' + sfx + ')"/>' + inner + "</g>";
   }
-  function interlocks(o, sfx, lx) {
+  function safeguards(o, sfx, lx) {
     var lt = o.y;
     return stage(o, sfx,
-      T(lx, lt + 27, "Interlocks", "zr-k", ' dx="16"') +
+      T(lx, lt + 27, "Safeguards", "zr-k", ' dx="16"') +
       L(lx, lt + 41, o.r, lt + 41, "zr-rule") +
       lamp(lx, lt + 66, 0) + lamp(lx, lt + 104, 1) +
-      lines(lx, lt + 63, ["No single order over", "10% of the book"], "zr-r", 15, ' dx="42"') +
-      lines(lx, lt + 101, ["No run that sells over", "80% of what is held"], "zr-r", 15, ' dx="42"'));
+      lines(lx, lt + 63, ["Never issued after", "19:00 UTC"], "zr-r", 15, ' dx="42"') +
+      lines(lx, lt + 101, ["No day that sells over", "80% of what is held"], "zr-r", 15, ' dx="42"'));
   }
   function svgOpen(sfx, H, axis, cls) {
     return '<svg class="zr-svg ' + cls + '" width="100%" height="' + H + '" role="img" aria-labelledby="zr-t' + sfx + " zr-d" + sfx + '" data-axis="' + axis + '">' +
@@ -73,10 +74,10 @@
   }
 
   var DESC = "A schematic of one daily run, not data. Every trading day a Zacks screen export is collected on a VPS; one day's screen held 4,369 stocks. " +
-    "It is parsed and validated, and a malformed export stops the run. It becomes an equal-weight target book of 25 positions, 4% each, " +
-    "which is diffed against what the Interactive Brokers account holds; a surprising position stops the run. The difference is the orders that close the gap. " +
-    "Then the interlocks: no single order may exceed 10% of the book, and a run that would sell more than 80% of what is held stops before it starts. " +
-    "Last is the dry-run switch, on by default: nothing is sent to the account unless it is told to. So far it runs in dry run; the connection to the account comes next, on a paper account first.";
+    "It is parsed and validated, and a malformed export stops the run. The screen is archived in a SHA-256 hash chain, so no past day can be edited unnoticed. " +
+    "Frozen rules pick an equal-weight book of 25 names, 4% each; too little volume data stops the run. The day's buys and sells are issued, each fingerprinted with SHA-256. " +
+    "Then the safeguards: nothing is issued after 19:00 UTC, and a day that would sell more than 80% of what is held is not issued. " +
+    "Last is the paper book, which fills every recommendation at the next close and skips none. The recommendations go to the client, outside the system, who places their own orders; nothing is sent to a broker.";
 
   /* ------------------------------------------------------------ across the tile */
   function runH() {
@@ -84,33 +85,30 @@
     var S = [
       { l: 3.6, r: 13.6, t: ["Zacks screen", "export"], n: ["4,369 stocks in", "one day’s screen"] },
       { l: 16.8, r: 26.8, t: ["Parse and", "validate"] },
-      { l: 30.0, r: 40.0, t: ["Target book"], n: ["25 positions at", "equal weight,", "4% each"] },
-      { l: 43.2, r: 53.2, t: ["Diff against", "the account"] },
-      { l: 56.4, r: 64.4, t: ["Orders"], n: ["that close", "the gap"] },
+      { l: 30.0, r: 40.0, t: ["Archive"], n: ["in a SHA-256", "hash chain"] },
+      { l: 43.2, r: 53.2, t: ["25 names,", "4% each"] },
+      { l: 56.4, r: 64.4, t: ["Buys and", "sells"], n: ["each one", "fingerprinted"] },
       { l: 67.6, r: 85.0 }
     ];
     function c(i) { return (S[i].l + S[i].r) / 2; }
-    var A = 88.4, AC = { l: 80, r: 100, t: 4, h: 84 }, UP = 98.6;
+    var A = 88.4, AC = { l: 80, r: 100, t: 4, h: 84 };
     var s = svgOpen(sfx, H, "x", "zr-h");
 
-    // the connection to the account, next: dashed
+    // out of the system, to the client: dashed
     var rail = AC.t + AC.h / 2;
     s += '<g class="zr-next">';
-    s += L(pc(AC.l), rail, pc(c(3)), rail, "zr-dl");
-    s += L(pc(c(3)), rail, pc(c(3)), bt - 2, "zr-dl", "zr-md" + sfx);
-    s += T(pc(c(3)), rail - 10, "what the account holds", "zr-x", ' dx="12"');
-    s += L(pc(A), M, pc(UP), M, "zr-dl");
-    s += L(pc(UP), M, pc(UP), AC.t + AC.h + 2, "zr-dl", "zr-md" + sfx);
-    s += T(pc(UP), M - 10, "orders", "zr-x", ' dx="-10" text-anchor="end"');
+    s += L(pc(c(4)), bt - 2, pc(c(4)), rail, "zr-dl");
+    s += L(pc(c(4)), rail, pc(AC.l - 0.4), rail, "zr-dl", "zr-md" + sfx);
+    s += T(pc(c(4)), rail - 10, "recommendations", "zr-x", ' dx="12"');
     s += '<rect class="zr-acct" x="' + pc(AC.l) + '" y="' + AC.t + '" width="' + pc(AC.r - AC.l) + '" height="' + AC.h + '" rx="' + RX + '"/>';
-    s += lines(pc(AC.l), AC.t + 29, ["Interactive Brokers", "account"], "zr-k is-next", 19, ' dx="16"');
-    s += T(pc(AC.l), AC.t + 69, "connected next", "zr-n", ' dx="16"');
+    s += lines(pc(AC.l), AC.t + 29, ["The client’s", "own account"], "zr-k is-next", 19, ' dx="16"');
+    s += T(pc(AC.l), AC.t + 69, "they place the orders", "zr-n", ' dx="16"');
     s += "</g>";
 
     // the stop bus, and the three conditions that end a run
     var dL = 81.5, lt = M - 62, lh = 124;
     s += '<g class="zr-stop">';
-    [{ x: c(1), t: ["a malformed", "export"], y: bb }, { x: c(3), t: ["a surprising", "position"], y: bb }, { x: dL, t: ["would sell over 80%", "of what is held"], y: lt + lh }].forEach(function (d) {
+    [{ x: c(1), t: ["a malformed", "export"], y: bb }, { x: c(3), t: ["too little", "volume data"], y: bb }, { x: dL, t: ["would sell over 80%", "of what is held"], y: lt + lh }].forEach(function (d) {
       s += L(pc(d.x), d.y, pc(d.x), BUS, "zr-xl");
       s += '<circle class="zr-jn" cx="' + pc(d.x) + '" cy="' + BUS + '" r="3"/>';
       s += lines(pc(d.x), d.y + 24, d.t, "zr-x", 15, ' dx="10"');
@@ -134,15 +132,14 @@
       s += stage({ at: i, lo: b.l, hi: b.r, c: c(i), x: pc(b.l), y: bt, w: pc(b.r - b.l), h: BH }, sfx, inner);
     }
 
-    // the interlocks: one stage, two rows, a lamp each
-    s += interlocks({ at: 5, lo: S[5].l, hi: S[5].r, c: c(5), x: pc(S[5].l), r: pc(S[5].r), y: lt, w: pc(S[5].r - S[5].l), h: lh, cls: "is-locks" }, sfx, pc(S[5].l));
+    // the safeguards: one stage, two rows, a lamp each
+    s += safeguards({ at: 5, lo: S[5].l, hi: S[5].r, c: c(5), x: pc(S[5].l), r: pc(S[5].r), y: lt, w: pc(S[5].r - S[5].l), h: lh, cls: "is-locks" }, sfx, pc(S[5].l));
 
-    // the switch, on by default: nothing goes on to the account
+    // the paper book, where every run ends
     s += '<g class="zr-st is-sw" data-at="6" data-lo="' + A + '" data-hi="' + A + '" data-c="' + A + '">' +
-      toggle(pc(A), M, 0, -12) +
-      T(pc(A), M - 44, "Dry run", "zr-k") +
-      T(pc(A), M - 27, "the default", "zr-n") + "</g>";
-    s += '<g class="zr-out">' + lines(pc(A), M + 36, ["nothing is sent", "unless it is told to"], "zr-o", 15) + "</g>";
+      ledger(pc(A), M, 0, -12) +
+      T(pc(A), M - 27, "Paper book", "zr-k") + "</g>";
+    s += '<g class="zr-out">' + lines(pc(A), M + 36, ["fills every call at", "the next close"], "zr-o", 15) + "</g>";
 
     return s + "</svg>";
   }
@@ -154,9 +151,9 @@
     var S = [
       { t: "Zacks screen export", n: ["4,369 stocks in", "one day’s screen"] },
       { t: "Parse and validate", x: ["a malformed", "export"] },
-      { t: "Target book", n: ["25 positions", "at equal weight,", "4% each"] },
-      { t: "Diff against the account", x: ["a surprising", "position"] },
-      { t: "Orders", n: ["that close", "the gap"] }
+      { t: "Archive", n: ["in a SHA-256", "hash chain"] },
+      { t: "25 names, 4% each", x: ["too little", "volume data"] },
+      { t: "Buys and sells", n: ["each one", "fingerprinted"] }
     ];
     S.forEach(function (b) { b.y = y; y += bh + gap; });
     var lt = y, lh = 124; y += lh + 44;
@@ -165,17 +162,15 @@
     var H = y + 40;
     var s = svgOpen(sfx, H, "y", "zr-v");
 
-    // the connection to the account, next: dashed, up the left-hand side into the diff
-    var dy = S[3].y + bh / 2, rail = 1.2, ay = acT + acH / 2;
+    // out of the system, to the client: dashed, down the left-hand side from the buys and sells
+    var dy = S[4].y + bh / 2, rail = 1.2, ay = acT + acH / 2;
     s += '<g class="zr-next">';
-    s += L(pc(BL), ay, pc(rail), ay, "zr-dl");
-    s += L(pc(rail), ay, pc(rail), dy, "zr-dl");
-    s += L(pc(rail), dy, pc(BL), dy, "zr-dl", "zr-md" + sfx);
-    s += L(pc(X), A + TG, pc(X), acT - 2, "zr-dl", "zr-md" + sfx);
-    s += T(pc(X), A + TG + 25, "orders", "zr-x", ' dx="10"');
+    s += L(pc(BL), dy, pc(rail), dy, "zr-dl");
+    s += L(pc(rail), dy, pc(rail), ay, "zr-dl");
+    s += L(pc(rail), ay, pc(BL - 0.4), ay, "zr-dl", "zr-md" + sfx);
     s += '<rect class="zr-acct" x="' + pc(BL) + '" y="' + acT + '" width="' + pc(BR - BL) + '" height="' + acH + '" rx="' + RX + '"/>';
-    s += lines(pc(X), acT + 26, ["Interactive Brokers", "account"], "zr-k is-next", 19, ' text-anchor="middle"');
-    s += T(pc(BL), acT + acH + 24, "connected next, on a paper account first", "zr-n");
+    s += lines(pc(X), acT + 26, ["The client’s", "own account"], "zr-k is-next", 19, ' text-anchor="middle"');
+    s += T(pc(BL), acT + acH + 24, "recommendations only: they place the orders", "zr-n");
     s += "</g>";
 
     // the stop bus down the right-hand side
@@ -204,14 +199,14 @@
       s += stage({ at: i, lo: b.y, hi: b.y + bh, c: b.y + bh / 2, x: pc(BL), y: b.y, w: pc(BR - BL), h: bh }, sfx, inner);
     });
 
-    s += interlocks({ at: 5, lo: lt, hi: lt + lh, c: lt + lh / 2, x: pc(BL), r: pc(BR), y: lt, w: pc(BR - BL), h: lh, cls: "is-locks" }, sfx, pc(BL));
+    s += safeguards({ at: 5, lo: lt, hi: lt + lh, c: lt + lh / 2, x: pc(BL), r: pc(BR), y: lt, w: pc(BR - BL), h: lh, cls: "is-locks" }, sfx, pc(BL));
 
-    // the switch, on
+    // the paper book
     s += '<g class="zr-st is-sw" data-at="6" data-lo="' + A + '" data-hi="' + (A + TG) + '" data-c="' + A + '">' +
-      toggle(pc(X), A, -21, 0) +
-      T(pc(X), A + 10, "Dry run", "zr-k", ' dx="-36" text-anchor="end"') +
-      T(pc(X), A + 26, "the default", "zr-n", ' dx="-36" text-anchor="end"') + "</g>";
-    s += '<g class="zr-out">' + lines(pc(X), A + 10, ["nothing is sent", "unless it is told to"], "zr-o", 15, ' dx="36"') + "</g>";
+      ledger(pc(X), A, -21, 0) +
+      T(pc(X), A + 10, "Paper book", "zr-k", ' dx="-36" text-anchor="end"') +
+      "</g>";
+    s += '<g class="zr-out">' + lines(pc(X), A + 10, ["fills every call at", "the next close"], "zr-o", 15, ' dx="36"') + "</g>";
 
     return s + "</svg>";
   }

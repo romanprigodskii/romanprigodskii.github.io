@@ -440,8 +440,8 @@ h2 + .grp { padding-top: 22px; }
     <div class="row">
       <span class="k">For a client</span>
       <div class="v">
-        <h3>Zacks to Interactive Brokers execution pipeline</h3>
-        <p>Paid client work, commissioned by a third party. It ingests screen exports from Zacks (4,369 stocks in one day&rsquo;s screen), turns them into an equal-weight book of 25 positions, and works out the orders that close the gap to what the Interactive Brokers account holds. Collection runs every trading day on a VPS. Dry run by default: no single order may exceed 10% of the book, and a run that would sell more than 80% of what is held stops before it starts. The connection to a live account is next, on a paper account first.</p>
+        <h3>Zacks Rank recommendations</h3>
+        <p>Paid client work, commissioned by a private investor. Every trading day a VPS collects the full ranked screen from Zacks (4,369 stocks in one day&rsquo;s screen) and archives it in a SHA-256 hash chain, so no past day can be quietly edited. Fixed rules pick an equal-weight book of 25 and issue the day&rsquo;s buy and sell recommendations, each fingerprinted; the client places their own orders and nothing is sent to a broker. At 44 sessions the archive could not tell the rank&rsquo;s effect from zero (95% interval &minus;48% to +65% a year), so the rules were frozen at their defaults before the first recommendation, on 1&nbsp;October 2026. Since then a paper book has filled every recommendation at the next close, none skipped; a rule change applies only to later months. A year of it can only reveal an edge above roughly 25&ndash;30% a year.</p>
       </div>
     </div>
     <div class="row">

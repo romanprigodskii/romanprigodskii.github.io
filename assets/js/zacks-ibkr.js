@@ -1,11 +1,11 @@
 /* /work/zacks-ibkr/: one run through the schematic.
 
    The drawing in the HTML is the state after a run (every stage in full, the
-   interlocks ticked, the dot parked at the dry-run switch), so without
+   safeguards ticked, the dot parked at the paper book), so without
    JavaScript or with motion reduced that is what shows. Here the stages go
    faint, and when the tile is well into view a dot carries one run through
-   them: it stops at each stage, ticks the two interlocks, and halts at the
-   switch, which is on, so nothing is sent. Then "Run it again" appears
+   them: it stops at each stage, ticks the two safeguards, and halts at the
+   paper book. Then "Run it again" appears
    (its place is kept from the start, so nothing moves when it does). */
 (function () {
   "use strict";
@@ -69,7 +69,7 @@
     busy = true;
     fig.classList.add("is-going");
     var stops = r.stages.map(function (st) { return { el: st, c: stagePx(r, st, "c") }; });
-    var last = stops.pop();                                   // the switch: the run ends just short of it
+    var last = stops.pop();                                   // the paper book: the run ends just short of it
     var pts = [parseFloat(r.from)].concat(stops.map(function (s) { return s.c; }), [last.c - PARK]);
     var i = 0;
     function leg() {
